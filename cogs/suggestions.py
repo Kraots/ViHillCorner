@@ -1,0 +1,48 @@
+import discord
+from discord.ext import commands
+from discord.ext.commands.cooldowns import BucketType
+
+
+def Channel(ctx):
+    return ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016]
+
+class Suggest(commands.Cog):
+    def __init__(self, client):
+        self.client = client
+
+    @commands.command()
+    @commands.check(Channel)
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    async def suggest(self, ctx, *, args):
+        await ctx.message.delete()
+        suggest = discord.Embed(color=0x2F3136, title="", description=f"{args}", timestamp=ctx.message.created_at)
+        suggest.set_author(name=f'{ctx.author.name} suggested:', icon_url=ctx.author.avatar_url)
+        suggestions = self.client.get_channel(750160850593251454)
+        msg = await suggestions.send(embed=suggest)
+        await msg.add_reaction('✅')
+        await msg.add_reaction('❌')
+        em = discord.Embed(color=0x2F3136, description=f'[Suggestion](<{msg.jump_url}>) succesfully added!')
+        await ctx.channel.send(embed=em)
+
+    @suggest.error
+    async def suggest_error(self, ctx, error):
+        if isinstance(error, commands.CheckFailure):
+            await ctx.message.delete()
+            msg = f"To use this command go to <#750160851822182486> or <#750160851822182487>.\n{ctx.author.mention}"
+            await ctx.channel.send(msg, delete_after=6)
+
+        elif isinstance(error, commands.CommandOnCooldown):
+                await ctx.message.delete()
+                msg = 'Your on cooldown, please try again in **{:.2f}**s.'.format(error.retry_after)
+                await ctx.channel.send(msg, delete_after=3)
+
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.message.delete()
+            msg = "You have to add your suggestion, try again in **60.0**s."
+            await ctx.channel.send(msg, delete_after=3)
+
+        else:
+                raise error
+
+def setup (client):
+    client.add_cog(Suggest(client))
