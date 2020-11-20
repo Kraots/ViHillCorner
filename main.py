@@ -1,7 +1,7 @@
 # IMPORTS
 import discord
-import os
 from discord.ext import commands
+import os
 import keep_alive
 
 token = os.environ.get('DISCORD_BOT_SECRET')

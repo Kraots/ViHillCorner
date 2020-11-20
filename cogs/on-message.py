@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import typing
-
+import asyncio
 
 class on_message(commands.Cog):
     def __init__(self, client):
@@ -33,13 +33,15 @@ class on_message(commands.Cog):
         if before.author.id == 374622847672254466:
                 return
         else:
-
-                embed = discord.Embed(color=0xb9b211, description=f'Message edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```')
+                after_logging = self.client.get_channel(750432155179679815)
+                embed = discord.Embed(title="Getting timestamp...", color=0xe64343)
+                msg = await after_logging.send(embed=embed)
+                embed = discord.Embed(color=0xb9b211, description=f'Message edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=msg.created_at)
                 embed.set_author(name=f'{before.author}', icon_url=f'{before.author.avatar_url}')
                 embed.set_footer(text=f'User ID: {before.author.id}')
 
-                after_logging = self.client.get_channel(750432155179679815)
-                await after_logging.send(embed=embed)
+                await asyncio.sleep(0.5)
+                await msg.edit(embed=embed)
 
 
 

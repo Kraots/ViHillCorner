@@ -6,6 +6,45 @@ class Moderation(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+
+
+    @commands.command()
+    @commands.has_role('Staff')
+    async def region(self, ctx, *, args):
+        embed= discord.Embed(title= "***___Where are you from?___***", description= f'\u2800\n{args}', color= 0x2F3136)
+        msg = await ctx.send(embed=embed)
+        await msg.add_reaction('1️⃣')
+        await msg.add_reaction('2️⃣')
+        await msg.add_reaction('3️⃣')
+        await msg.add_reaction('4️⃣')
+        await msg.add_reaction('5️⃣')
+        await msg.add_reaction('6️⃣')
+        await msg.add_reaction('7️⃣')
+
+    @commands.command()
+    @commands.has_role('Staff')
+    async def dms(self, ctx, *, args):
+        embed = discord.Embed(title="***___Dm's?___***", description=f'\u2800\n{args}', color= 0x2F3136)
+        msg = await ctx.send(embed=embed)
+        await msg.add_reaction('<:vampy_yay:774677177282068501>')
+        await msg.add_reaction('<:vampy_cry:750755087986458805>')
+        await msg.add_reaction('<:weird:773538796087803934>')
+
+    @commands.command()
+    @commands.has_role('Staff')
+    async def color(self, ctx, *, args):
+        embed = discord.Embed(title="***___React to get the color you like ;))___***", description=f'\u2800\n{args}', color= 0x2F3136)
+        msg = await ctx.send(embed=embed)
+        await msg.add_reaction('1️⃣')
+        await msg.add_reaction('2️⃣')
+        await msg.add_reaction('3️⃣')
+        await msg.add_reaction('4️⃣')
+        await msg.add_reaction('5️⃣')
+        await msg.add_reaction('6️⃣')
+        await msg.add_reaction('7️⃣')
+        await msg.add_reaction("\U00000038\U0000fe0f\U000020e3")
+        await msg.add_reaction('\U00000039\U0000fe0f\U000020e3')
+
     # Say
     @commands.command()
     @commands.has_role('Staff')
