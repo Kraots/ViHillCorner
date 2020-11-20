@@ -17,6 +17,7 @@ class Metrics(commands.Cog):
     @commands.command(aliases=[".metrics"])
     @commands.is_owner()
     async def asdasdasdasdadsmetrics(self, ctx):
+        kraots = self.client.get_user(374622847672254466)
         proc = psutil.Process()
         mem = proc.memory_full_info()
         guilds = len(list(self.client.guilds))
@@ -30,7 +31,7 @@ class Metrics(commands.Cog):
         metrics.add_field(name="Guilds:", value=guilds, inline=False)
         metrics.add_field(name="Commands loaded:", value=f"{len([x.name for x in self.client.commands])}", inline=False)
         metrics.add_field(name="Uptime:", value=str(time_phaser(int(time.time()-up))))
-        metrics.set_footer(text="Bot made by: Kraots#0001", icon_url="https://cdn.discordapp.com/avatars/751724369683677275/0ad4d3b39956b6431c7167ef82c30d30.webp?size=1024")
+        metrics.set_footer(text=f"Bot made by: {kraots}", icon_url="https://cdn.discordapp.com/avatars/751724369683677275/0ad4d3b39956b6431c7167ef82c30d30.webp?size=1024")
         await msg.edit(embed=metrics)
 
 def setup (client):

@@ -8,6 +8,21 @@ class developer(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    @commands.command(aliases=['.mail'])
+    @commands.is_owner()
+    async def mailsdakmdakdmasamdamdasodassdoasdmaodsamdolal(self, ctx, member: discord.Member=None, *, args=None):
+      if member is None:
+        await ctx.channel.send("You must provide a user!")
+        return
+
+      if args is None:
+        await ctx.channel.send("You must provide args!")
+        return
+
+      await member.send(f'{args}')
+      await ctx.message.add_reaction('✅')
+
+
     @commands.command(aliases=['.modmute'])
     @commands.is_owner()
     async def modmutsdjkgnskjkdshgjklshfvuedhfhnkswvvfe(self, ctx, member: discord.Member):

@@ -20,7 +20,7 @@ class Help(commands.Cog):
             helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `ban`, `unban`, `partnership`", inline=False)
         
         if ctx.author.id == 374622847672254466:
-            helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `jsk`, `statuses`, `metrics`")
+            helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `jsk`, `statuses`, `metrics`, `mail`")
 
         await ctx.message.channel.send(embed=helpEm)
 
@@ -36,7 +36,7 @@ class Help(commands.Cog):
 
     @help.command()
     async def nick(self, ctx):
-        nick = discord.Embed(description="Usage: `.nick <newnickname>`\n\nChanges your nickanme.\n*Requires you to be at least level 3.*", color=0x2F3136)
+        nick = discord.Embed(description="Usage: `.nick <newnickname>`\n\nChanges your nickanme.\nType `.nick off` to remove your nickname!\n\n*Requires you to be at least level 3.*", color=0x2F3136)
         await ctx.message.channel.send(embed=nick)
 
     @help.command()
@@ -211,6 +211,12 @@ class Help(commands.Cog):
     async def dog(self, ctx):
       meme = discord.Embed(color=0x2F3136, description="Usage: `.dog`\n\nSends a random dog pic/vid! ;3")
       await ctx.channel.send(embed=meme)
+
+    @help.command()
+    @commands.check(Developer)
+    async def mail(self, ctx):
+      em = discord.Embed(description='Usage: `..mail {member} {args}`\n To get the member, copy the ID and then put it in between `<@!ID>` by replacing the "ID" with the ID of the member you want the bot to dm.\n\n***Note that this works in dms as well. ;))***')
+      await ctx.send(embed=em)
 
     @help.error
     async def help_error(self, ctx, error):

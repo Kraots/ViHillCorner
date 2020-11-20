@@ -9,6 +9,16 @@ class GlobalErrorHandler(commands.Cog):
   
   @commands.Cog.listener()
   async def on_command_error(self, ctx, error):
+    
+    if hasattr(ctx.command, 'on_error'):
+            return
+
+    cog = ctx.cog
+    if cog:
+        if cog._get_overridden_method(cog.cog_command_error) is not None:
+            return
+    
+    
     if isinstance(error, commands.NotOwner):
       error = discord.Embed(title="ERROR", description="Command Error: You do not own this bot!", color=0xFF00FF)
       

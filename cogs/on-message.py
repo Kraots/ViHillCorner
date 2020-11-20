@@ -34,7 +34,7 @@ class on_message(commands.Cog):
                 return
         else:
 
-                embed = discord.Embed(color=0xb9b211, description=f'Message edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=after.edited_at)
+                embed = discord.Embed(color=0xb9b211, description=f'Message edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```')
                 embed.set_author(name=f'{before.author}', icon_url=f'{before.author.avatar_url}')
                 embed.set_footer(text=f'User ID: {before.author.id}')
 
@@ -53,8 +53,13 @@ class on_message(commands.Cog):
         if message.guild is None and not message.author.bot:
             kraots = self.client.get_user(374622847672254466)
             em = discord.Embed(title=f'{message.author}:', description=f'{message.content}', color=0x2F3136, timestamp=message.created_at)
-                        
-            await kraots.send(embed=em)
+            em.set_footer(text=f'User ID: {message.author.id}')
+
+            if message.author is kraots:
+              return
+            
+            else:                        
+              await kraots.send(embed=em)
 
 
 

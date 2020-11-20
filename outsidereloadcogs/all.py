@@ -63,4 +63,4 @@ class All(commands.Cog):
 
 
 def setup (client):
-  client.add_cog(All(client))
+    client.add_cog(All(client))
