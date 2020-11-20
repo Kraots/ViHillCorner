@@ -14,111 +14,111 @@ class ReactionRoles(commands.Cog):
                     # REGIONS
 
 
-        Europe = discord.utils.get(guild.roles, id=750160850236604541)
-        Australia = discord.utils.get(guild.roles, id=750322356869791756)
-        North_America = discord.utils.get(guild.roles, id=750160850236604540)
-        South_America = discord.utils.get(guild.roles, id=750160850236604539)
-        Asia = discord.utils.get(guild.roles, id=750160850236604543)
-        Oceania = discord.utils.get(guild.roles, id=750160850236604542)
-        Africa = discord.utils.get(guild.roles, id=750160850236604544)
+        Europe = guild.get_role(750160850236604541)
+        Australia = guild.get_role(750322356869791756)
+        North_America = guild.get_role(750160850236604540)
+        South_America = guild.get_role(750160850236604539)
+        Asia = guild.get_role(750160850236604543)
+        Oceania = guild.get_role(750160850236604542)
+        Africa = guild.get_role(750160850236604544)
         REGIONMSG = 779279687711981588
 
 
                     # GENDER
 
 
-        Female = discord.utils.get(guild.roles, id=750160850270027852)
-        Male = discord.utils.get(guild.roles, id=750160850270027853)
-        Other_Gender = discord.utils.get(guild.roles, id=750160850270027851)
+        Female = guild.get_role(750160850270027852)
+        Male = guild.get_role(750160850270027853)
+        Other_Gender = guild.get_role(750160850270027851)
         GENDERMSG = 779281303770103828
 
                     # PRONOUNS
             
-        He_Him = discord.utils.get(guild.roles, id=750160850270027850)
-        She_Her = discord.utils.get(guild.roles, id=750160850270027848)
-        They_Them = discord.utils.get(guild.roles, id=750160850270027849)
+        He_Him = guild.get_role(750160850270027850)
+        She_Her = guild.get_role(750160850270027848)
+        They_Them = guild.get_role(750160850270027849)
         PRONOUNSMSG = 779282022631473172
 
 
                     # AGE
 
 
-        age13 = discord.utils.get(guild.roles, id=750160850270027847)
-        age14 = discord.utils.get(guild.roles, id=750160850270027846)
-        age15 = discord.utils.get(guild.roles, id=750160850253512853)
-        age16 = discord.utils.get(guild.roles, id=750160850253512852)
-        age17 = discord.utils.get(guild.roles, id=750160850253512851)
-        age18 = discord.utils.get(guild.roles, id=750160850253512850)
+        age13 = guild.get_role(750160850270027847)
+        age14 = guild.get_role(750160850270027846)
+        age15 = guild.get_role(750160850253512853)
+        age16 = guild.get_role(750160850253512852)
+        age17 = guild.get_role(750160850253512851)
+        age18 = guild.get_role(750160850253512850)
         AGEMSG = 779282780332621874
 
 
                     # SEXUALITY
 
 
-        Straight = discord.utils.get(guild.roles, id=750160850286936077)
-        Lesbian = discord.utils.get(guild.roles, id=750160850286936076)
-        Gay = discord.utils.get(guild.roles, id=750160850286936078)
-        Bisexual = discord.utils.get(guild.roles, id=750160850286936075)
-        Pansexual = discord.utils.get(guild.roles, id=750160850286936074)
-        Ace_Umbrella = discord.utils.get(guild.roles, id=750160850270027855)
-        Other_Sexuality = discord.utils.get(guild.roles, id=750160850270027854)
+        Straight = guild.get_role(750160850286936077)
+        Lesbian = guild.get_role(750160850286936076)
+        Gay = guild.get_role(750160850286936078)
+        Bisexual = guild.get_role(750160850286936075)
+        Pansexual = guild.get_role(750160850286936074)
+        Ace_Umbrella = guild.get_role(750160850270027855)
+        Other_Sexuality = guild.get_role(750160850270027854)
         SEXUALITYMSG = 779285751845617676
 
 
                     # STATUS
 
-        Single = discord.utils.get(guild.roles, id=750160850253512849)
-        Taken = discord.utils.get(guild.roles, id=750160850253512846)
-        Looking = discord.utils.get(guild.roles, id=750160850253512848)
-        Not_Looking = discord.utils.get(guild.roles, id=750160850253512847)
+        Single = guild.get_role(750160850253512849)
+        Taken = guild.get_role(750160850253512846)
+        Looking = guild.get_role(750160850253512848)
+        Not_Looking = guild.get_role(750160850253512847)
         STATUSMSG = 779287055804661770
 
 
                     # DM'S 
 
 
-        Open = discord.utils.get(guild.roles, id=750160850253512844)
-        Closed = discord.utils.get(guild.roles, id=750160850236604545)
-        Ask = discord.utils.get(guild.roles, id=750160850253512845)
+        Open = guild.get_role(750160850253512844)
+        Closed = guild.get_role(750160850236604545)
+        Ask = guild.get_role(750160850253512845)
         DMSMSG = 779293467527348225
 
 
                     # PINGS
 
 
-        Chat_Revive = discord.utils.get(guild.roles, id=750160850236604537)
-        Welcomer = discord.utils.get(guild.roles, id=750160850077089856)
-        Update = discord.utils.get(guild.roles, id=750160850077089858)
-        Poll = discord.utils.get(guild.roles, id=750160850077089860)
-        Partnership = discord.utils.get(guild.roles, id=750160850077089861)
-        Event = discord.utils.get(guild.roles, id=750160850236604536)
-        VC = discord.utils.get(guild.roles, id=750160850077089857)
-        WYR = discord.utils.get(guild.roles, id=750160850077089855)
-        Random = discord.utils.get(guild.roles, id=750160850077089859)
+        Chat_Revive = guild.get_role(750160850236604537)
+        Welcomer = guild.get_role(750160850077089856)
+        Update = guild.get_role(750160850077089858)
+        Poll = guild.get_role(750160850077089860)
+        Partnership = guild.get_role(750160850077089861)
+        Event = guild.get_role(750160850236604536)
+        VC = guild.get_role(750160850077089857)
+        WYR = guild.get_role(750160850077089855)
+        Random = guild.get_role(750160850077089859)
         PINGSMSG = 779293503821709322
 
 
                     # COLORS
 
 
-        color1 = discord.utils.get(guild.roles, id=750272224170082365)
-        color2 = discord.utils.get(guild.roles, id=750160850299387977)
-        color3 = discord.utils.get(guild.roles, id=750160850299387976)
-        color4 = discord.utils.get(guild.roles, id=750160850299387975)
-        color5 = discord.utils.get(guild.roles, id=750160850299387974)
-        color6 = discord.utils.get(guild.roles, id=750160850299518985)
-        color7 = discord.utils.get(guild.roles, id=750160850299518984)
-        color8 = discord.utils.get(guild.roles, id=750160850299518983)
-        color9 = discord.utils.get(guild.roles, id=750160850299518982)
-        color10 = discord.utils.get(guild.roles, id=750160850299518981)
-        color11 = discord.utils.get(guild.roles, id=750160850299518980)
-        color12 = discord.utils.get(guild.roles, id=750160850299518979)
-        color13 = discord.utils.get(guild.roles, id=750160850299518978)
-        color14 = discord.utils.get(guild.roles, id=750160850299518977)
-        color15 = discord.utils.get(guild.roles, id=750160850295324752)
-        color16 = discord.utils.get(guild.roles, id=750160850299518976)
-        color17 = discord.utils.get(guild.roles, id=750160850295324751)
-        color18 = discord.utils.get(guild.roles, id=750272729533644850)
+        color1 = guild.get_role(750272224170082365)
+        color2 = guild.get_role(750160850299387977)
+        color3 = guild.get_role(750160850299387976)
+        color4 = guild.get_role(750160850299387975)
+        color5 = guild.get_role(750160850299387974)
+        color6 = guild.get_role(750160850299518985)
+        color7 = guild.get_role(750160850299518984)
+        color8 = guild.get_role(750160850299518983)
+        color9 = guild.get_role(750160850299518982)
+        color10 = guild.get_role(750160850299518981)
+        color11 = guild.get_role(750160850299518980)
+        color12 = guild.get_role(750160850299518979)
+        color13 = guild.get_role(750160850299518978)
+        color14 = guild.get_role(750160850299518977)
+        color15 = guild.get_role(750160850295324752)
+        color16 = guild.get_role(750160850299518976)
+        color17 = guild.get_role(750160850295324751)
+        color18 = guild.get_role(750272729533644850)
         COLORSMSG1 = 779389485573079071
         COLORSMSG2 = 779389533875601451
 
@@ -874,111 +874,111 @@ class ReactionRoles(commands.Cog):
                     # REGIONS
 
 
-        Europe = discord.utils.get(guild.roles, id=750160850236604541)
-        Australia = discord.utils.get(guild.roles, id=750322356869791756)
-        North_America = discord.utils.get(guild.roles, id=750160850236604540)
-        South_America = discord.utils.get(guild.roles, id=750160850236604539)
-        Asia = discord.utils.get(guild.roles, id=750160850236604543)
-        Oceania = discord.utils.get(guild.roles, id=750160850236604542)
-        Africa = discord.utils.get(guild.roles, id=750160850236604544)
+        Europe = guild.get_role(750160850236604541)
+        Australia = guild.get_role(750322356869791756)
+        North_America = guild.get_role(750160850236604540)
+        South_America = guild.get_role(750160850236604539)
+        Asia = guild.get_role(750160850236604543)
+        Oceania = guild.get_role(750160850236604542)
+        Africa = guild.get_role(750160850236604544)
         REGIONMSG = 779279687711981588
 
 
                     # GENDER
 
 
-        Female = discord.utils.get(guild.roles, id=750160850270027852)
-        Male = discord.utils.get(guild.roles, id=750160850270027853)
-        Other_Gender = discord.utils.get(guild.roles, id=750160850270027851)
+        Female = guild.get_role(750160850270027852)
+        Male = guild.get_role(750160850270027853)
+        Other_Gender = guild.get_role(750160850270027851)
         GENDERMSG = 779281303770103828
 
                     # PRONOUNS
             
-        He_Him = discord.utils.get(guild.roles, id=750160850270027850)
-        She_Her = discord.utils.get(guild.roles, id=750160850270027848)
-        They_Them = discord.utils.get(guild.roles, id=750160850270027849)
+        He_Him = guild.get_role(750160850270027850)
+        She_Her = guild.get_role(750160850270027848)
+        They_Them = guild.get_role(750160850270027849)
         PRONOUNSMSG = 779282022631473172
 
 
                     # AGE
 
 
-        age13 = discord.utils.get(guild.roles, id=750160850270027847)
-        age14 = discord.utils.get(guild.roles, id=750160850270027846)
-        age15 = discord.utils.get(guild.roles, id=750160850253512853)
-        age16 = discord.utils.get(guild.roles, id=750160850253512852)
-        age17 = discord.utils.get(guild.roles, id=750160850253512851)
-        age18 = discord.utils.get(guild.roles, id=750160850253512850)
+        age13 = guild.get_role(750160850270027847)
+        age14 = guild.get_role(750160850270027846)
+        age15 = guild.get_role(750160850253512853)
+        age16 = guild.get_role(750160850253512852)
+        age17 = guild.get_role(750160850253512851)
+        age18 = guild.get_role(750160850253512850)
         AGEMSG = 779282780332621874
 
 
                     # SEXUALITY
 
 
-        Straight = discord.utils.get(guild.roles, id=750160850286936077)
-        Lesbian = discord.utils.get(guild.roles, id=750160850286936076)
-        Gay = discord.utils.get(guild.roles, id=750160850286936078)
-        Bisexual = discord.utils.get(guild.roles, id=750160850286936075)
-        Pansexual = discord.utils.get(guild.roles, id=750160850286936074)
-        Ace_Umbrella = discord.utils.get(guild.roles, id=750160850270027855)
-        Other_Sexuality = discord.utils.get(guild.roles, id=750160850270027854)
+        Straight = guild.get_role(750160850286936077)
+        Lesbian = guild.get_role(750160850286936076)
+        Gay = guild.get_role(750160850286936078)
+        Bisexual = guild.get_role(750160850286936075)
+        Pansexual = guild.get_role(750160850286936074)
+        Ace_Umbrella = guild.get_role(750160850270027855)
+        Other_Sexuality = guild.get_role(750160850270027854)
         SEXUALITYMSG = 779285751845617676
 
 
                     # STATUS
 
-        Single = discord.utils.get(guild.roles, id=750160850253512849)
-        Taken = discord.utils.get(guild.roles, id=750160850253512846)
-        Looking = discord.utils.get(guild.roles, id=750160850253512848)
-        Not_Looking = discord.utils.get(guild.roles, id=750160850253512847)
+        Single = guild.get_role(750160850253512849)
+        Taken = guild.get_role(750160850253512846)
+        Looking = guild.get_role(750160850253512848)
+        Not_Looking = guild.get_role(750160850253512847)
         STATUSMSG = 779287055804661770
 
 
                     # DM'S 
 
 
-        Open = discord.utils.get(guild.roles, id=750160850253512844)
-        Closed = discord.utils.get(guild.roles, id=750160850236604545)
-        Ask = discord.utils.get(guild.roles, id=750160850253512845)
+        Open = guild.get_role(750160850253512844)
+        Closed = guild.get_role(750160850236604545)
+        Ask = guild.get_role(750160850253512845)
         DMSMSG = 779293467527348225
 
 
                     # PINGS
 
 
-        Chat_Revive = discord.utils.get(guild.roles, id=750160850236604537)
-        Welcomer = discord.utils.get(guild.roles, id=750160850077089856)
-        Update = discord.utils.get(guild.roles, id=750160850077089858)
-        Poll = discord.utils.get(guild.roles, id=750160850077089860)
-        Partnership = discord.utils.get(guild.roles, id=750160850077089861)
-        Event = discord.utils.get(guild.roles, id=750160850236604536)
-        VC = discord.utils.get(guild.roles, id=750160850077089857)
-        WYR = discord.utils.get(guild.roles, id=750160850077089855)
-        Random = discord.utils.get(guild.roles, id=750160850077089859)
+        Chat_Revive = guild.get_role(750160850236604537)
+        Welcomer = guild.get_role(750160850077089856)
+        Update = guild.get_role(750160850077089858)
+        Poll = guild.get_role(750160850077089860)
+        Partnership = guild.get_role(750160850077089861)
+        Event = guild.get_role(750160850236604536)
+        VC = guild.get_role(750160850077089857)
+        WYR = guild.get_role(750160850077089855)
+        Random = guild.get_role(750160850077089859)
         PINGSMSG = 779293503821709322
 
 
                     # COLORS
 
 
-        color1 = discord.utils.get(guild.roles, id=750272224170082365)
-        color2 = discord.utils.get(guild.roles, id=750160850299387977)
-        color3 = discord.utils.get(guild.roles, id=750160850299387976)
-        color4 = discord.utils.get(guild.roles, id=750160850299387975)
-        color5 = discord.utils.get(guild.roles, id=750160850299387974)
-        color6 = discord.utils.get(guild.roles, id=750160850299518985)
-        color7 = discord.utils.get(guild.roles, id=750160850299518984)
-        color8 = discord.utils.get(guild.roles, id=750160850299518983)
-        color9 = discord.utils.get(guild.roles, id=750160850299518982)
-        color10 = discord.utils.get(guild.roles, id=750160850299518981)
-        color11 = discord.utils.get(guild.roles, id=750160850299518980)
-        color12 = discord.utils.get(guild.roles, id=750160850299518979)
-        color13 = discord.utils.get(guild.roles, id=750160850299518978)
-        color14 = discord.utils.get(guild.roles, id=750160850299518977)
-        color15 = discord.utils.get(guild.roles, id=750160850295324752)
-        color16 = discord.utils.get(guild.roles, id=750160850299518976)
-        color17 = discord.utils.get(guild.roles, id=750160850295324751)
-        color18 = discord.utils.get(guild.roles, id=750272729533644850)
+        color1 = guild.get_role(750272224170082365)
+        color2 = guild.get_role(750160850299387977)
+        color3 = guild.get_role(750160850299387976)
+        color4 = guild.get_role(750160850299387975)
+        color5 = guild.get_role(750160850299387974)
+        color6 = guild.get_role(750160850299518985)
+        color7 = guild.get_role(750160850299518984)
+        color8 = guild.get_role(750160850299518983)
+        color9 = guild.get_role(750160850299518982)
+        color10 = guild.get_role(750160850299518981)
+        color11 = guild.get_role(750160850299518980)
+        color12 = guild.get_role(750160850299518979)
+        color13 = guild.get_role(750160850299518978)
+        color14 = guild.get_role(750160850299518977)
+        color15 = guild.get_role(750160850295324752)
+        color16 = guild.get_role(750160850299518976)
+        color17 = guild.get_role(750160850295324751)
+        color18 = guild.get_role(750272729533644850)
         COLORSMSG1 = 779389485573079071
         COLORSMSG2 = 779389533875601451
 
