@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
-import typing
 import asyncio
+import utils.colors as color
 
 class developer(commands.Cog):
 
@@ -33,7 +33,7 @@ class developer(commands.Cog):
         await member.remove_roles(mod)
         await member.add_roles(mute)
 
-        modmute = discord.Embed(color=0xe64343, description=f'Mod {member.mention} has been muted!')
+        modmute = discord.Embed(color=color.red, description=f'Mod {member.mention} has been muted!')
         await ctx.channel.send(embed=modmute)
 
     @commands.command(aliases=['.modunmute'])
@@ -46,7 +46,7 @@ class developer(commands.Cog):
         await member.add_roles(mod)
         await member.remove_roles(mute)
         
-        modunmute = discord.Embed(color=0xe64343, description=f'Mod {member.mention} has been unmuted!')
+        modunmute = discord.Embed(color=color.red, description=f'Mod {member.mention} has been unmuted!')
         await ctx.channel.send(embed=modunmute)
 
     @commands.command(aliases=['.makemod'])
@@ -58,7 +58,7 @@ class developer(commands.Cog):
         await member.add_roles(staff)
         await member.add_roles(mod)
         
-        modunmute = discord.Embed(color=0xe64343, description=f'{member.mention} is now a mod!')
+        modunmute = discord.Embed(color=color.red, description=f'{member.mention} is now a mod!')
         await ctx.channel.send(embed=modunmute)
 
     @commands.command(aliases=['.removemod'])
@@ -70,7 +70,7 @@ class developer(commands.Cog):
         await member.remove_roles(staff)
         await member.remove_roles(mod)
         
-        modunmute = discord.Embed(color=0xe64343, description=f'{member.mention} is no longer a mod!')
+        modunmute = discord.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')
         await ctx.channel.send(embed=modunmute)
 
     @commands.command(aliases=['.shutdown'])
@@ -86,7 +86,7 @@ class developer(commands.Cog):
     @commands.group(invoke_without_command=True, case_insensitive=True, aliases=[".status"])
     @commands.is_owner()
     async def stasdasdasdhbashdgasihdsukahdisuahdaatus(self, ctx):
-      statuses = discord.Embed(title="Statuses:", color=0x2F3136)
+      statuses = discord.Embed(title="Statuses:", color=color.inviscolor)
       statuses.add_field(name="Online:", value="..status online\n   ..status online-playing [custom status]\n   ..status online-listening [custom status]\n   ..status online-watching [custom status]", inline=False)
       statuses.add_field(name="Idle:", value="..status idle\n   ..status idle-playing [custom status]\n   ..status idle-listening [custom status]\n   ..status idle-watching [custom status]", inline=False)
       statuses.add_field(name="Dnd:", value="..status dnd\n   ..status dnd-playing [custom status]\n   ..status dnd-listening [custom status]\n   ..status dnd-watching [custom status]", inline=False)

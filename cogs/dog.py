@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import aiohttp
+import utils.colors as color
 
 class Dog(commands.Cog):
 
@@ -13,7 +14,7 @@ class Dog(commands.Cog):
           async with cs.get("http://random.dog/woof.json") as r:
             data = await r.json()
 
-            embed = discord.Embed(description=f"[Dog]({data['url']})", color=0xe97115, timestamp=ctx.message.created_at)
+            embed = discord.Embed(description=f"[Dog]({data['url']})", color=color.orange, timestamp=ctx.message.created_at)
             embed.set_image(url=data['url'])
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
             await ctx.channel.send(embed=embed)

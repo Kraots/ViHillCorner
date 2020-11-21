@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 
 class Nicks(commands.Cog):
@@ -21,7 +20,10 @@ class Nicks(commands.Cog):
   @nick.error
   async def nick_error(self, ctx, error):
       if isinstance(error, commands.errors.CommandInvokeError):
-          await ctx.send("The nickname is too long. Please choose a nickname that's 32 characters or less!")
+          if ctx.author.id == 374622847672254466:
+              await ctx.send("Bots **do not** have permission to change guild owner's nickname!")
+          else:
+              await ctx.send("The nickname is too long. Please choose a nickname that's 32 characters or less!")
 
 
 def setup (client):

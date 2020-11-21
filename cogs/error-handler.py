@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import asyncio
+import utils.colors as color
 
 class GlobalErrorHandler(commands.Cog):
 
@@ -20,14 +21,14 @@ class GlobalErrorHandler(commands.Cog):
     
     
     if isinstance(error, commands.NotOwner):
-      error = discord.Embed(title="ERROR", description="Command Error: You do not own this bot!", color=0xFF00FF)
+      error = discord.Embed(title="ERROR", description="Command Error: You do not own this bot!", color=color.pink)
       
       await ctx.channel.send(embed=error, delete_after=5)
       await asyncio.sleep(4.5)
       await ctx.message.delete()
 
     elif isinstance(error, commands.errors.CommandInvokeError):
-      error = discord.Embed(title="___ERROR___", description=f'**OUTPUT:**\n\n```{str(error)}```', color=0xFF00FF)
+      error = discord.Embed(title="___ERROR___", description=f'**OUTPUT:**\n\n```{str(error)}```', color=color.pink)
       await ctx.channel.send(embed=error)
 
                           # print(type(error))

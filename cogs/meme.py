@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import random
 import aiohttp
+import utils.colors as color
 
 class Memes(commands.Cog):
   def __init__(self, client):
@@ -16,7 +17,7 @@ class Memes(commands.Cog):
             linkUrl = imgUrl['url']
             titleUrl = imgUrl['title']
             
-            embed = discord.Embed(color=0xe97115, description=f'[{titleUrl}]({linkUrl})', timestamp=ctx.message.created_at)
+            embed = discord.Embed(color=color.orange, description=f'[{titleUrl}]({linkUrl})', timestamp=ctx.message.created_at)
             embed.set_image(url=linkUrl)
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 

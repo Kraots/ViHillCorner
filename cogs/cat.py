@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import aiohttp
+import utils.colors as color
 
 class Cat(commands.Cog):
 
@@ -15,7 +16,7 @@ class Cat(commands.Cog):
 
           imgUrl = data['file']
 
-          embed = discord.Embed(description=f"[Cat]({imgUrl})", color=0xe97115, timestamp=ctx.message.created_at)
+          embed = discord.Embed(description=f"[Cat]({imgUrl})", color=color.orange, timestamp=ctx.message.created_at)
           embed.set_image(url=imgUrl)
           embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
           await ctx.channel.send(embed=embed)

@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands.cooldowns import BucketType
+import utils.colors as color
 
 
 def Channel(ctx):
@@ -15,13 +15,13 @@ class Suggest(commands.Cog):
     @commands.cooldown(1, 60, commands.BucketType.user)
     async def suggest(self, ctx, *, args):
         await ctx.message.delete()
-        suggest = discord.Embed(color=0x2F3136, title="", description=f"{args}", timestamp=ctx.message.created_at)
+        suggest = discord.Embed(color=color.inviscolor, title="", description=f"{args}", timestamp=ctx.message.created_at)
         suggest.set_author(name=f'{ctx.author.name} suggested:', icon_url=ctx.author.avatar_url)
         suggestions = self.client.get_channel(750160850593251454)
         msg = await suggestions.send(embed=suggest)
         await msg.add_reaction('✅')
         await msg.add_reaction('❌')
-        em = discord.Embed(color=0x2F3136, description=f'[Suggestion](<{msg.jump_url}>) succesfully added!')
+        em = discord.Embed(color=color.inviscolor, description=f'[Suggestion](<{msg.jump_url}>) succesfully added!')
         await ctx.channel.send(embed=em)
 
     @suggest.error

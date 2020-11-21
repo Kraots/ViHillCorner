@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-
+import utils.colors as color
 
 class snippets(commands.Cog):
 
@@ -14,7 +14,7 @@ class snippets(commands.Cog):
     @commands.command(hidden=True)
     async def creepy(self, ctx):
 
-            creepy = discord.Embed(color=0xe64343)
+            creepy = discord.Embed(color=color.red)
             creepy.set_image(url="https://cdn.discordapp.com/attachments/751162510454816786/763031145059057704/unknown.png")
 
             msg = await ctx.send(embed=creepy)
@@ -23,7 +23,7 @@ class snippets(commands.Cog):
     @commands.command(hidden=True)
     async def kraots(self, ctx):
 
-            version = discord.Embed(color=0xe64343)
+            version = discord.Embed(color=color.red)
             version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024894/752549480347205682/unknown.png')
 
 
@@ -34,7 +34,7 @@ class snippets(commands.Cog):
     @commands.command(hidden=True)
     async def welcome(self, ctx):
 
-            version = discord.Embed(color=0xe64343)
+            version = discord.Embed(color=color.red)
             version.set_image(url='https://cdn.discordapp.com/attachments/750160851822182482/751095873772978249/unknown.png')
 
 
@@ -44,7 +44,7 @@ class snippets(commands.Cog):
     @commands.command(hidden=True)
     async def fuyu(self, ctx):
 
-            version = discord.Embed(color=0xe64343)
+            version = discord.Embed(color=color.red)
             version.set_image(url='https://cdn.discordapp.com/attachments/751162510454816786/751479743962021939/unknown.png')
 
 
@@ -54,7 +54,7 @@ class snippets(commands.Cog):
     @commands.command(hidden=True)
     async def ViHillCorner(self, ctx):
 
-            version = discord.Embed(color=0xe64343)
+            version = discord.Embed(color=color.red)
             version.set_image(url='https://cdn.discordapp.com/attachments/751162510454816786/765546029474250812/unknown.png')
 
 
@@ -64,7 +64,7 @@ class snippets(commands.Cog):
     @commands.command(hidden=True)
     async def S(self, ctx):
 
-            version = discord.Embed(color=0xe64343)
+            version = discord.Embed(color=color.red)
             version.set_image(url='https://cdn.discordapp.com/attachments/752148605753884792/753937672019640350/unknown.png')
 
 
@@ -74,7 +74,7 @@ class snippets(commands.Cog):
     @commands.command(hidden=True)
     async def thefourhorsemanofsus(self, ctx):
 
-            version = discord.Embed(color=0xe64343)
+            version = discord.Embed(color=color.red)
             version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/754262819846881372/unknown.png')
 
 

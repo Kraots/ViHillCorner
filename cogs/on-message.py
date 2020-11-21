@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
-import typing
 import asyncio
+import utils.colors as color
 
 class on_message(commands.Cog):
     def __init__(self, client):
@@ -11,6 +11,8 @@ class on_message(commands.Cog):
     @commands.Cog.listener('on_message_delete')
     async def on_message_delete(self, message):
 
+        if message.author.bot:
+            return
 
         if message.author.id == 374622847672254466:
                 return
@@ -18,7 +20,7 @@ class on_message(commands.Cog):
         else:
 
                 
-                embed = discord.Embed(color=0xe64343, description=f'Message deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=message.created_at)
+                embed = discord.Embed(color=color.red, description=f'Message deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=message.created_at)
                 embed.set_author(name=f'{message.author}', icon_url=f'{message.author.avatar_url}')
                 embed.set_footer(text=f'User ID: {message.author.id}')
 
@@ -28,15 +30,15 @@ class on_message(commands.Cog):
     @commands.Cog.listener('on_message_edit')
     async def on_message_edit(self, before, after):
 
-        if before.author == self.client.user:
+        if before.author.bot:
                 return
         if before.author.id == 374622847672254466:
                 return
         else:
                 after_logging = self.client.get_channel(750432155179679815)
-                embed = discord.Embed(title="Getting timestamp...", color=0xe64343)
+                embed = discord.Embed(title="Getting timestamp...", color=color.red)
                 msg = await after_logging.send(embed=embed)
-                embed = discord.Embed(color=0xb9b211, description=f'Message edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=msg.created_at)
+                embed = discord.Embed(color=color.yellow, description=f'Message edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=msg.created_at)
                 embed.set_author(name=f'{before.author}', icon_url=f'{before.author.avatar_url}')
                 embed.set_footer(text=f'User ID: {before.author.id}')
 
@@ -54,7 +56,7 @@ class on_message(commands.Cog):
 
         if message.guild is None and not message.author.bot:
             kraots = self.client.get_user(374622847672254466)
-            em = discord.Embed(title=f'{message.author}:', description=f'{message.content}', color=0x2F3136, timestamp=message.created_at)
+            em = discord.Embed(title=f'{message.author}:', description=f'{message.content}', color=color.inviscolor, timestamp=message.created_at)
             em.set_footer(text=f'User ID: {message.author.id}')
 
             if message.author is kraots:

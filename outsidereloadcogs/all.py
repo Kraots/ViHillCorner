@@ -45,20 +45,20 @@ class All(commands.Cog):
   @commands.is_owner()
   async def asdloasdasdasdasfasfafad(self, ctx, extension):
         self.client.load_extension(f'cogs.{extension}')
-        await ctx.send("Cog loaded succesfully!")
+        await ctx.send(f"**{extension}** loaded succesfully!")
 
   @commands.command(help="Reload's the carg", aliases=['.reload'])
   @commands.is_owner()
   async def relasdffasfasfsfbhashuasgfbasfusaefoad(self, ctx, extension):
         self.client.unload_extension(f'cogs.{extension}')
         self.client.load_extension(f'cogs.{extension}')
-        await ctx.send("Cog reloaded succesfully!")
+        await ctx.send(f"**{extension}** reloaded succesfully!")
 
   @commands.command(help="Unload's the carg", aliases=['.unload'])
   @commands.is_owner()
   async def dasdjkhnasduiashdishadkjaskdaskdadkasdmnunload(self, ctx, extension):
         self.client.unload_extension(f'cogs.{extension}')
-        await ctx.send("Cog unloaded succesfully!")
+        await ctx.send(f"**{extension}** unloaded succesfully!")
 
 
 

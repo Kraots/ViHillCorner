@@ -1,0 +1,8 @@
+inviscolor = 0x2F3136
+red = 0xe64343
+pink = 0xFF00FF
+orange = 0xe97115
+pastel = 0xc69eff
+yellow = 0xb9b211
+lightpink = 0xf1a3d8
+blue = 0x708DD0

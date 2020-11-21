@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import utils.colors as color
 
 class BotInfo(commands.Cog):
     def __init__(self, client):
@@ -8,9 +9,8 @@ class BotInfo(commands.Cog):
     @commands.command(hidden=True)
     async def botinfo(self, ctx):
         kraots = self.client.get_user(374622847672254466)
-        guilds = len(list(self.client.guilds))
         cache_summary = f"**{len(self.client.guilds)}** guild(s) and **{len(self.client.users)}** user(s)"
-        botinfo = discord.Embed(title="", color=0x2F3136, timestamp=ctx.message.created_at)
+        botinfo = discord.Embed(title="", color=color.inviscolor, timestamp=ctx.message.created_at)
         botinfo.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
         botinfo.add_field(name="Bot Owner:", value=f"{kraots}", inline=False)
         botinfo.add_field(name="Created at:", value="05/09/2020", inline=False)

@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
-import datetime
-import typing
+import utils.colors as color
 from utils.helpers import fuckmicroseconds
 
 
@@ -22,7 +21,7 @@ class Spotify(commands.Cog):
             m.add_field(name="On:",value =ctx.author.activities[0].album, inline=False)
             m.add_field(name="Total Duration:",value =fuckmicroseconds(ctx.author.activities[0].duration), inline=False)
             m.set_thumbnail(url=ctx.author.activities[0].album_cover_url)
-            m.color = 0x2F3136 
+            m.color = color.inviscolor 
             await ctx.send(embed=m)
         else:
             await ctx.message.delete()

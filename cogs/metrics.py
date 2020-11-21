@@ -1,11 +1,10 @@
 import discord
 from discord.ext import commands
-import typing
-import asyncio
 import psutil
 import humanize
 import time
 from utils.helpers import time_phaser
+import utils.colors as color
 
 up = time.time()
 
@@ -21,11 +20,11 @@ class Metrics(commands.Cog):
         proc = psutil.Process()
         mem = proc.memory_full_info()
         guilds = len(list(self.client.guilds))
-        metrics = discord.Embed(color=0x2F3136)
+        metrics = discord.Embed(color=color.inviscolor)
         start = time.time() * 1000
         msg = await ctx.message.channel.send(embed=metrics)
         end = time.time() * 1000
-        metrics = discord.Embed(title="Metrics", color=0xFF00FF)
+        metrics = discord.Embed(title="Metrics", color=color.pink)
         metrics.add_field(name="Ping:", value=f"Avg. Latency: `{(round(self.client.latency * 1000, 2))}ms`\nRest: `{int(round(end-start, 0))}ms`", inline=False)
         metrics.add_field(name="Memory Usage:", value=f" \n{humanize.naturalsize(mem.rss)} physical memory \n{humanize.naturalsize(mem.vms)} virtual memory \n{humanize.naturalsize(mem.uss)} of which unique to this process", inline=False)
         metrics.add_field(name="Guilds:", value=guilds, inline=False)

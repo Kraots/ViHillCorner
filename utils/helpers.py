@@ -3,6 +3,7 @@ import asyncio
 import time
 import random
 import datetime
+import utils.colors as color
 
 def get_user_image(user: discord.User):
     if str(user.avatar_url_as(static_format='png'))[54:].startswith('a_'):
@@ -21,7 +22,7 @@ def get_member_voice(member: discord.Member):
     return "Not in VC" if not member.voice else member.voice.channel
 
 def profile(ctx, user):
-    em = discord.Embed(timestamp=ctx.message.created_at, colour=0x2F3136)
+    em = discord.Embed(timestamp=ctx.message.created_at, colour=color.inviscolor)
     em.add_field(name='User ID', value=user.id, inline=True)
     if isinstance(user, discord.Member):
         em.add_field(name='Nick', value=user.nick, inline=True)
