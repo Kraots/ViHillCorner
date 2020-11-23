@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import asyncio
 import utils.colors as color
+from discord.ext.commands import Greedy
+from discord import Member
 
 class developer(commands.Cog):
 
@@ -10,8 +12,8 @@ class developer(commands.Cog):
 
     @commands.command(aliases=['.mail'])
     @commands.is_owner()
-    async def mailsdakmdakdmasamdamdasodassdoasdmaodsamdolal(self, ctx, member: discord.Member=None, *, args=None):
-      if member is None:
+    async def mailsdakmdakdmasamdamdasodassdoasdmaodsamdolal(self, ctx, members : Greedy[Member]=None, *, args=None):
+      if members is None:
         await ctx.channel.send("You must provide a user!")
         return
 
@@ -19,59 +21,67 @@ class developer(commands.Cog):
         await ctx.channel.send("You must provide args!")
         return
 
-      await member.send(f'{args}')
-      await ctx.message.add_reaction('✅')
+      for member in members:
+            await member.send(f'{args}')
+            await ctx.message.add_reaction('✅')
 
 
     @commands.command(aliases=['.modmute'])
     @commands.is_owner()
-    async def modmutsdjkgnskjkdshgjklshfvuedhfhnkswvvfe(self, ctx, member: discord.Member):
+    async def modmutsdjkgnskjkdshgjklshfvuedhfhnkswvvfe(self, ctx, members: Greedy[Member]):
         staff = discord.utils.get(ctx.guild.roles, name="Staff")
         mod = discord.utils.get(ctx.guild.roles, name="Mod")
         mute = discord.utils.get(ctx.guild.roles, name="Muted")
-        await member.remove_roles(staff)
-        await member.remove_roles(mod)
-        await member.add_roles(mute)
+        
+        for member in members:
+            await member.add_roles(mute)
+            await member.remove_roles(staff)
+            await member.remove_roles(mod)
 
-        modmute = discord.Embed(color=color.red, description=f'Mod {member.mention} has been muted!')
-        await ctx.channel.send(embed=modmute)
+            modmute = discord.Embed(color=color.red, description=f'Mod {member.mention} has been muted!')
+            await ctx.channel.send(embed=modmute)
+
 
     @commands.command(aliases=['.modunmute'])
     @commands.is_owner()
-    async def modunmasoduhasidhdhjiashdahidasdute(self, ctx, member: discord.Member):
+    async def modunmasoduhasidhdhjiashdahidasdute(self, ctx, members: Greedy[Member]):
         staff = discord.utils.get(ctx.guild.roles, name="Staff")
         mod = discord.utils.get(ctx.guild.roles, name="Mod")
         mute = discord.utils.get(ctx.guild.roles, name="Muted")
-        await member.add_roles(staff)
-        await member.add_roles(mod)
-        await member.remove_roles(mute)
         
-        modunmute = discord.Embed(color=color.red, description=f'Mod {member.mention} has been unmuted!')
-        await ctx.channel.send(embed=modunmute)
+        for member in members: 
+            await member.add_roles(staff)
+            await member.add_roles(mod)
+            await member.remove_roles(mute)
+        
+            modunmute = discord.Embed(color=color.red, description=f'Mod {member.mention} has been unmuted!')
+            await ctx.channel.send(embed=modunmute)
 
     @commands.command(aliases=['.makemod'])
     @commands.is_owner()
-    async def makemasdljknasdkjbaskdhaskdajksdakdhnod(self, ctx, member: discord.Member):
+    async def makemasdljknasdkjbaskdhaskdajksdakdhnod(self, ctx, members: Greedy[Member]):
         staff = discord.utils.get(ctx.guild.roles, name="Staff")
         mod = discord.utils.get(ctx.guild.roles, name="Mod")
 
-        await member.add_roles(staff)
-        await member.add_roles(mod)
+        for member in members:
+            await member.add_roles(staff)
+            await member.add_roles(mod)
         
-        modunmute = discord.Embed(color=color.red, description=f'{member.mention} is now a mod!')
-        await ctx.channel.send(embed=modunmute)
+            modunmute = discord.Embed(color=color.red, description=f'{member.mention} is now a mod!')
+            await ctx.channel.send(embed=modunmute)
 
     @commands.command(aliases=['.removemod'])
     @commands.is_owner()
-    async def askjdhajidasdaihdjisahdjiadihasdremovemod(self, ctx, member: discord.Member):
+    async def askjdhajidasdaihdjisahdjiadihasdremovemod(self, ctx, members: Greedy[Member]):
         staff = discord.utils.get(ctx.guild.roles, name="Staff")
         mod = discord.utils.get(ctx.guild.roles, name="Mod")
         
-        await member.remove_roles(staff)
-        await member.remove_roles(mod)
+        for member in members:
+            await member.remove_roles(staff)
+            await member.remove_roles(mod)
         
-        modunmute = discord.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')
-        await ctx.channel.send(embed=modunmute)
+            modunmute = discord.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')
+            await ctx.channel.send(embed=modunmute)
 
     @commands.command(aliases=['.shutdown'])
     @commands.is_owner()

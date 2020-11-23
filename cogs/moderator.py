@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import asyncio
 import utils.colors as color
+from discord.ext.commands import Greedy
+from discord import Member
 
 class Moderation(commands.Cog):
 
@@ -25,6 +27,19 @@ class Moderation(commands.Cog):
     
         await ctx.channel.send(embed=kick)
 
+    # MASS KICK 
+    @commands.command()
+    @commands.has_role('Staff')
+    async def masskick(self, ctx, members : Greedy[Member], *, reason="Toxicity & Insult"):
+        for member in members:
+            msg = "You have been kicked from **Anime Hangouts!**"
+            reasonn = discord.Embed(description=f'**Reason:** [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
+            await member.send(msg, embed=reasonn)
+            await member.kick()
+            kick = discord.Embed(description=f"{member.mention} has been kicked for the reason: [{reason}]({ctx.message.jump_url})" , color=color.red)
+        
+            await ctx.channel.send(embed=kick)
+
     # Ban
     @commands.command(help=".ban [user] <reason>")
     @commands.has_role('Staff')
@@ -40,6 +55,26 @@ class Moderation(commands.Cog):
         ban = discord.Embed(description=f"{member.mention} has been banned from the server." , color=color.red)
 
         await ctx.channel.send(embed=ban)
+
+
+    # MASS BAN 
+    @commands.command()
+    @commands.has_role('Staff')
+    async def massban(self, ctx, members : Greedy[Member]):
+        
+        reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/rD5z5Jp")
+        reasonn.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
+        msg="You have been banned from Anime Hangouts. If you think that this has been applied in error please submit a detailed appeal at the following link."
+        
+        for member in members:
+            await member.send(msg, embed=reasonn)
+          
+            await member.ban()
+
+            ban = discord.Embed(description=f"{member.mention} has been banned from the server." , color=color.red)
+
+            await ctx.channel.send(embed=ban)
+
 
 
 
@@ -74,14 +109,32 @@ class Moderation(commands.Cog):
     async def mute(self, ctx, member : discord.Member, *, reason="Toxicity & Insult"):
         role = discord.utils.get(ctx.guild.roles, name='Muted')
         await member.add_roles(role)     
-        unban = discord.Embed(description= f'{member.mention} has been muted for **{reason}**.' , color=color.red)
+        unban = discord.Embed(description= f'{member.mention} has been muted for [{reason}]({ctx.message.jump_url}).' , color=color.red)
         
         msg = await ctx.send(embed=unban)
         await msg.add_reaction('🗑️') 
-        reason = discord.Embed(description=f'**Reason:** [{reason}]({ctx.message.jump_url}).')
+        reason = discord.Embed(description=f'**Reason:** [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
         msg="You were muted in Anime Hangouts"
 
         await member.send(msg, embed=reason)
+
+    # MASS MUTE
+    @commands.command(help=".mute [user] <reason>")
+    @commands.has_role('Staff')
+    async def massmute(self, ctx, members : Greedy[Member], *, reason="Toxicity & Insult"):
+        role = discord.utils.get(ctx.guild.roles, name='Muted')
+        for member in members:
+            await member.add_roles(role)     
+            unban = discord.Embed(description= f'{member.mention} has been muted for [{reason}]({ctx.message.jump_url}).' , color=color.red)
+            
+            msg = await ctx.send(embed=unban)
+            await msg.add_reaction('🗑️') 
+            reasonn = discord.Embed(description=f'**Reason:** [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
+            msg="You were muted in Anime Hangouts"
+
+            await member.send(msg, embed=reasonn)
+
+
 
 
     # Unmute
@@ -96,6 +149,20 @@ class Moderation(commands.Cog):
         await msg.add_reaction('🗑️')
 
         await member.send("You have been unmuted in Anime Hangouts")
+
+    # MASS UNMUTE 
+    @commands.command(help=".unmute [user]")
+    @commands.has_role('Staff')
+    async def massunmute(self, ctx, members : Greedy[Member]):
+        role = discord.utils.get(ctx.guild.roles, name='Muted')
+        for member in members:
+            await member.remove_roles(role)     
+            unban = discord.Embed(description= f'{member.mention} has been unmuted.' , color=color.red)
+            
+            msg = await ctx.send(embed=unban)
+            await msg.add_reaction('🗑️')
+
+            await member.send("You have been unmuted in Anime Hangouts")
 
 
     @commands.command(aliases=["ps"])
