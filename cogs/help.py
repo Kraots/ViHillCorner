@@ -15,10 +15,10 @@ class Help(commands.Cog):
         helpEm.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
         helpEm.set_author(name="Command Help")
         helpEm.set_thumbnail(url="https://cdn.discordapp.com/attachments/752148605753884792/772510591565824000/00795f0d4b6710316662326aedb9d502.png")
-        helpEm.add_field(name="User Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `serverinfo`, `snippets`, `actions`, `waifu`, `invite`, `ad`, `rawad`, `suggest`, `spotify`, `meme`,`cat`, `dog`, `snipe`")
+        helpEm.add_field(name="User Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `serverinfo`, `snippets`, `actions`, `waifu`, `invite`, `ad`, `rawad`, `suggest`, `spotify`, `meme`,`cat`, `dog`, `snipe`, `nsfw`")
         helpEm.add_field(name="Info Commands", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`", inline=False)
         if "Staff" in [role.name for role in ctx.message.author.roles]:
-            helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `ban`, `unban`, `partnership`", inline=False)
+            helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `ban`, `unban`, `partnership`, `nsfw`", inline=False)
         
         if ctx.author.id == 374622847672254466:
             helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `jsk`, `statuses`, `metrics`, `mail`")
@@ -223,6 +223,18 @@ class Help(commands.Cog):
     async def snipe(self, ctx):
         em = discord.Embed(description='Usage: `.snipe`\n\nSnipe the last deleted message in the channel!', color=color.inviscolor)
         await ctx.send(embed=em)
+
+    @help.command()
+    async def nsfw(self, ctx):
+        if "Staff" in [role.name for role in ctx.message.author.roles]:
+
+            em = discord.Embed(color=color.inviscolor, description='Usage:\n `.nsfw add {user}` \n `.nsfw remove {user}`\n\nGive the user perms to see the nsfw channel or remove them!')
+            await ctx.send(embed=em)
+
+        else:
+
+            em = discord.Embed(color=color.inviscolor, description='Usage: `.nsfw`\nGet a random nsfw pic! **USE ONLY IN <#780374324598145055>**')
+            await ctx.send(embed=em)
 
     @help.error
     async def help_error(self, ctx, error):

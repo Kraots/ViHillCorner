@@ -60,5 +60,8 @@ def time_phaser(seconds):
 def Developer(ctx):
     return ctx.author.id == 374622847672254466
 
+def NSFW(ctx):
+    return ctx.channel.id == 780374324598145055
+
 def fuckmicroseconds(delta):
     return delta - datetime.timedelta(microseconds=delta.microseconds)

@@ -20,15 +20,17 @@ class snippets(commands.Cog):
             msg = await ctx.send(embed=creepy)
             await msg.add_reaction('🗑️')
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=['carrots'])
     async def kraots(self, ctx):
 
-            version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024894/752549480347205682/unknown.png')
-
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
+            version = discord.Embed(color=color.red, description='<:hug:750751796317913218> Taking a break! Nothing to worry about! <:hug:750751796317913218>')
+#            version.set_image(url='https://cdn.discordapp.com/attachments/750160851822182482/779839054782005248/Screenshot_20201116_020704.jpg')
+# https://cdn.discordapp.com/attachments/750160852380024894/752549480347205682/unknown.png
+            
+            
+            await ctx.send(embed=version)
+           # msg = await ctx.send(embed=version)
+           # await msg.add_reaction('🗑️')
 
 
     @commands.command(hidden=True)
@@ -81,6 +83,32 @@ class snippets(commands.Cog):
             msg = await ctx.send(embed=version)
             await msg.add_reaction('🗑️')
 
+    @commands.command()
+    async def nikki(self, ctx):
+
+        nikki = discord.Embed(color=color.red)
+        nikki.set_image(url='https://cdn.discordapp.com/attachments/750160851822182482/779835701079834674/IMG_20201122_002834.png')
+
+        msg = await ctx.send(embed=nikki)
+        await msg.add_reaction('🗑️')
+
+    @commands.command()
+    async def mina(self, ctx):
+
+        mina = discord.Embed(color=color.red)
+        mina.set_image(url='https://cdn.discordapp.com/attachments/750160851822182482/779838737927634964/Screenshot_20201119_013203.jpg')
+
+        msg = await ctx.send(embed=mina)
+        await msg.add_reaction('🗑️')
+
+    @commands.command()
+    async def pandie(self, ctx):
+
+        pandie = discord.Embed(color=color.red)
+        pandie.set_image(url='https://cdn.discordapp.com/attachments/757857924168024064/780144695090348052/unknown.png')
+
+        msg = await ctx.send(embed=pandie)
+        await msg.add_reaction('🗑️')
 
 def setup (client):
     client.add_cog(snippets(client))

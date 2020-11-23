@@ -259,6 +259,15 @@ class actions(commands.Cog):
             msg = await ctx.send(mention, embed=bearhug)
             await msg.add_reaction('🗑️')
 
+    @commands.command()
+    async def moan(self, ctx):
+        
+        moan = discord.Embed(color=color.red)
+        moan.set_image(url='https://cdn.discordapp.com/attachments/752148605753884792/780369437895163904/moangif.gif')
+
+        msg = await ctx.channel.send(embed=moan)
+        await msg.add_reaction('🗑️')
+
 
 
 
