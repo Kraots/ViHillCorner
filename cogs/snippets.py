@@ -23,14 +23,14 @@ class snippets(commands.Cog):
     @commands.command(hidden=True, aliases=['carrots'])
     async def kraots(self, ctx):
 
-            version = discord.Embed(color=color.red, description='<:hug:750751796317913218> Taking a break! Nothing to worry about! <:hug:750751796317913218>')
-#            version.set_image(url='https://cdn.discordapp.com/attachments/750160851822182482/779839054782005248/Screenshot_20201116_020704.jpg')
-# https://cdn.discordapp.com/attachments/750160852380024894/752549480347205682/unknown.png
+            version = discord.Embed(color=color.red)
+            version.set_image(url='https://cdn.discordapp.com/attachments/750160851822182482/780695175562395678/image0.png')
+# https://cdn.discordapp.com/attachments/750160852380024894/752549480347205682/unknown.png <-- .help one 
+# https://cdn.discordapp.com/attachments/750160851822182482/779839054782005248/Screenshot_20201116_020704.jpg <-- wanna fuck mina yes one
+
             
-            
-            await ctx.send(embed=version)
-           # msg = await ctx.send(embed=version)
-           # await msg.add_reaction('🗑️')
+            msg = await ctx.send(embed=version)
+            await msg.add_reaction('🗑️')
 
 
     @commands.command(hidden=True)
@@ -105,7 +105,8 @@ class snippets(commands.Cog):
     async def pandie(self, ctx):
 
         pandie = discord.Embed(color=color.red)
-        pandie.set_image(url='https://cdn.discordapp.com/attachments/757857924168024064/780144695090348052/unknown.png')
+        pandie.set_image(url='https://cdn.discordapp.com/attachments/750160851822182482/780601078227402772/Screenshot_20201124_030953.jpg') 
+       # pandie.set_image(url='https://cdn.discordapp.com/attachments/757857924168024064/780144695090348052/unknown.png')
 
         msg = await ctx.send(embed=pandie)
         await msg.add_reaction('🗑️')
