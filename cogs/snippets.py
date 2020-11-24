@@ -1,6 +1,21 @@
 import discord
 from discord.ext import commands
 import utils.colors as color
+import os
+
+creepy = os.environ.get('CREEPY')
+kraots1 = os.environ.get('KRAOTS1')
+kraots2 = os.environ.get('KRAOTS2')
+kraots3 = os.environ.get('KRAOTS3')
+welcome = os.environ.get('WELCOME')
+fuyu = os.environ.get('FUYU')
+vihillcorner = os.environ.get('VIHILLCORNER')
+s = os.environ.get('S')
+thefourhorsemanofsus = os.environ.get('THEFOURHORSEMANOFSUS')
+nikki = os.environ.get('NIKKI')
+mina = os.environ.get('MINA')
+pandie1 = os.environ.get('PANDIE1')
+pandie2 = os.environ.get('PANDIE2')
 
 class snippets(commands.Cog):
 
@@ -15,7 +30,7 @@ class snippets(commands.Cog):
     async def creepy(self, ctx):
 
             creepy = discord.Embed(color=color.red)
-            creepy.set_image(url="https://cdn.discordapp.com/attachments/751162510454816786/763031145059057704/unknown.png")
+            creepy.set_image(url=creepy)
 
             msg = await ctx.send(embed=creepy)
             await msg.add_reaction('🗑️')
@@ -24,9 +39,7 @@ class snippets(commands.Cog):
     async def kraots(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160851822182482/780695175562395678/image0.png')
-# https://cdn.discordapp.com/attachments/750160852380024894/752549480347205682/unknown.png <-- .help one 
-# https://cdn.discordapp.com/attachments/750160851822182482/779839054782005248/Screenshot_20201116_020704.jpg <-- wanna fuck mina yes one
+            version.set_image(url=kraots3)
 
             
             msg = await ctx.send(embed=version)
@@ -37,7 +50,7 @@ class snippets(commands.Cog):
     async def welcome(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160851822182482/751095873772978249/unknown.png')
+            version.set_image(url=welcome)
 
 
             msg = await ctx.send(embed=version)
@@ -47,7 +60,7 @@ class snippets(commands.Cog):
     async def fuyu(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/751162510454816786/751479743962021939/unknown.png')
+            version.set_image(url=fuyu)
 
 
             msg = await ctx.send(embed=version)
@@ -57,7 +70,7 @@ class snippets(commands.Cog):
     async def ViHillCorner(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/751162510454816786/765546029474250812/unknown.png')
+            version.set_image(url=vihillcorner)
 
 
             msg = await ctx.send(embed=version)
@@ -67,7 +80,7 @@ class snippets(commands.Cog):
     async def S(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/752148605753884792/753937672019640350/unknown.png')
+            version.set_image(url=s)
 
 
             msg = await ctx.send(embed=version)
@@ -77,7 +90,7 @@ class snippets(commands.Cog):
     async def thefourhorsemanofsus(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/754262819846881372/unknown.png')
+            version.set_image(url=thefourhorsemanofsus)
 
 
             msg = await ctx.send(embed=version)
@@ -87,7 +100,7 @@ class snippets(commands.Cog):
     async def nikki(self, ctx):
 
         nikki = discord.Embed(color=color.red)
-        nikki.set_image(url='https://cdn.discordapp.com/attachments/750160851822182482/779835701079834674/IMG_20201122_002834.png')
+        nikki.set_image(url=nikki)
 
         msg = await ctx.send(embed=nikki)
         await msg.add_reaction('🗑️')
@@ -96,7 +109,7 @@ class snippets(commands.Cog):
     async def mina(self, ctx):
 
         mina = discord.Embed(color=color.red)
-        mina.set_image(url='https://cdn.discordapp.com/attachments/750160851822182482/779838737927634964/Screenshot_20201119_013203.jpg')
+        mina.set_image(url=mina)
 
         msg = await ctx.send(embed=mina)
         await msg.add_reaction('🗑️')
@@ -105,8 +118,8 @@ class snippets(commands.Cog):
     async def pandie(self, ctx):
 
         pandie = discord.Embed(color=color.red)
-        pandie.set_image(url='https://cdn.discordapp.com/attachments/750160851822182482/780601078227402772/Screenshot_20201124_030953.jpg') 
-       # pandie.set_image(url='https://cdn.discordapp.com/attachments/757857924168024064/780144695090348052/unknown.png')
+        pandie.set_image(url=pandie2) 
+
 
         msg = await ctx.send(embed=pandie)
         await msg.add_reaction('🗑️')

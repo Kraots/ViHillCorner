@@ -1,6 +1,35 @@
 import discord
 from discord.ext import commands
 import utils.colors as color
+import os
+
+huggles = os.environ.get("HUGGLES")
+grouphug = os.environ.get("GROUPHUG")
+eat = os.environ.get("EAT")
+chew = os.environ.get("CHEW")
+sip = os.environ.get("SIP")
+clap = os.environ.get("CLAP")
+cry = os.environ.get("CRY")
+rofl = os.environ.get("ROFL")
+lol = os.environ.get("LOL")
+kill = os.environ.get("KILL")
+pat = os.environ.get("PAT")
+rub = os.environ.get("RUB")
+nom = os.environ.get("NOM")
+catpat = os.environ.get("CATPAT")
+hug = os.environ.get("HUG")
+pillow = os.environ.get("PILLOW")
+spray = os.environ.get("SPRAT")
+hype = os.environ.get("HYPE")
+specialkiss = os.environ.get("SPECIALKISS")
+kiss = os.environ.get("KISS")
+ily = os.environ.get("ILY")
+nocry = os.environ.get("NOCRY")
+shrug = os.environ.get("SHRUG")
+smug = os.environ.get("SMUG")
+bearhug = os.environ.get("BEARHUG")
+moan = os.environ.get("MOAN")
+
 
 class actions(commands.Cog):
 
@@ -11,7 +40,7 @@ class actions(commands.Cog):
     async def huggles(self, ctx, *, mention=None,):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/737981297212915712/751115114106585243/374622847672254466.gif')
+            version.set_image(url=huggles)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -21,7 +50,7 @@ class actions(commands.Cog):
     async def grouphug(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://media.tenor.com/images/8e157a9853d6537cd26859b51eff8baa/tenor.gif')
+            version.set_image(url=grouphug)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -31,7 +60,7 @@ class actions(commands.Cog):
     async def eat(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751185646227554394/tenor_1.gif')
+            version.set_image(url=eat)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -41,7 +70,7 @@ class actions(commands.Cog):
     async def chew(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751185891833282721/tenor_2.gif')
+            version.set_image(url=chew)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -51,7 +80,7 @@ class actions(commands.Cog):
     async def sip(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751210657973796945/tenor_3.gif')
+            version.set_image(url=sip)
 
 
             msg = await ctx.send(embed=version)
@@ -61,7 +90,7 @@ class actions(commands.Cog):
     async def clap(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751210657029816455/tenor_2.gif')
+            version.set_image(url=clap)
 
 
             msg = await ctx.send(embed=version)
@@ -71,7 +100,7 @@ class actions(commands.Cog):
     async def cry(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/752148605753884792/778205851319926794/crygifforaction.gif')
+            version.set_image(url=cry)
 
 
             msg = await ctx.send(embed=version)
@@ -81,7 +110,7 @@ class actions(commands.Cog):
     async def rofl(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751226102130671716/tenor_5.gif')
+            version.set_image(url=rofl)
 
 
             msg = await ctx.send(embed=version)
@@ -91,7 +120,7 @@ class actions(commands.Cog):
     async def lol(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751228793041059910/tenor_7.gif')
+            version.set_image(url=lol)
 
 
             msg = await ctx.send(embed=version)
@@ -101,7 +130,7 @@ class actions(commands.Cog):
     async def kill(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751229626952581170/tenor_8.gif')
+            version.set_image(url=kill)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -111,7 +140,7 @@ class actions(commands.Cog):
     async def pat(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751229628202483772/tenor_9.gif')
+            version.set_image(url=pat)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -121,7 +150,7 @@ class actions(commands.Cog):
     async def rub(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751275129064915054/tenor-1.gif')
+            version.set_image(url=rub)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -131,7 +160,7 @@ class actions(commands.Cog):
     async def nom(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751276651223973980/tenor-3.gif')
+            version.set_image(url=nom)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -141,7 +170,7 @@ class actions(commands.Cog):
     async def catpat(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751350319698411520/tenor_10.gif')
+            version.set_image(url=catpat)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -151,7 +180,7 @@ class actions(commands.Cog):
     async def hug(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751350320222961664/tenor_11.gif')
+            version.set_image(url=hug)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -161,7 +190,7 @@ class actions(commands.Cog):
     async def pillow(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751357844497891368/tenor-4.gif')
+            version.set_image(url=pillow)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -171,7 +200,7 @@ class actions(commands.Cog):
     async def spray(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/744576171110301708/751138135299064001/image0.gif')
+            version.set_image(url=spray)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -181,7 +210,7 @@ class actions(commands.Cog):
     async def hype(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/750160852380024893/751210656568705105/tenor_1.gif')
+            version.set_image(url=hype)
 
 
             msg = await ctx.send(embed=version)
@@ -193,7 +222,7 @@ class actions(commands.Cog):
     async def specialkiss(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/752148605753884792/754984869569888276/KIS.gif')
+            version.set_image(url=specialkiss)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -204,7 +233,7 @@ class actions(commands.Cog):
     async def kiss(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/755149503685722193/756648389025726595/send_help_pls.gif')
+            version.set_image(url=kiss)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -214,7 +243,7 @@ class actions(commands.Cog):
     async def ily(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/752148605753884792/754965447165607936/tenor-6.gif')
+            version.set_image(url=ily)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -224,7 +253,7 @@ class actions(commands.Cog):
     async def nocry(self, ctx, *, mention=None):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/752148605753884792/754398142551818291/tenor-5.gif')
+            version.set_image(url=nocry)
 
 
             msg = await ctx.send(mention, embed=version)
@@ -234,7 +263,7 @@ class actions(commands.Cog):
     async def shrug(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/755149503685722193/755151733994553374/tenor_1.gif')
+            version.set_image(url=shrug)
 
 
             msg = await ctx.send(embed=version)
@@ -244,7 +273,7 @@ class actions(commands.Cog):
     async def smug(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url='https://cdn.discordapp.com/attachments/755149503685722193/755151245206880296/smug.gif')
+            version.set_image(url=smug)
 
 
             msg = await ctx.send(embed=version)
@@ -254,7 +283,7 @@ class actions(commands.Cog):
     async def bearhug(self, ctx, *, mention=None):
 
             bearhug = discord.Embed(color=color.red)
-            bearhug.set_image(url="https://cdn.discordapp.com/attachments/750160851822182482/761861335922769920/image0.gif")
+            bearhug.set_image(url=bearhug)
             
             msg = await ctx.send(mention, embed=bearhug)
             await msg.add_reaction('🗑️')
@@ -263,7 +292,7 @@ class actions(commands.Cog):
     async def moan(self, ctx):
         
         moan = discord.Embed(color=color.red)
-        moan.set_image(url='https://cdn.discordapp.com/attachments/752148605753884792/780369437895163904/moangif.gif')
+        moan.set_image(url=moan)
 
         msg = await ctx.channel.send(embed=moan)
         await msg.add_reaction('🗑️')
