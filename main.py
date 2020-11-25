@@ -13,6 +13,7 @@ client = commands.Bot(command_prefix='.', case_insensitive=True, intents=intents
 client.remove_command("help")
 client.load_extension("jishaku")
 
+
 # COGS
 for filename in os.listdir('./cogs'):
   if filename.endswith('.py'):
@@ -21,6 +22,7 @@ for filename in os.listdir('./cogs'):
 for filename in os.listdir('./outsidereloadcogs'):
   if filename.endswith('.py'):
     client.load_extension(f'outsidereloadcogs.{filename[:-3]}')
+
 
 
 # RUN

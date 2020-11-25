@@ -19,7 +19,7 @@ nom = os.environ.get("NOM")
 catpat = os.environ.get("CATPAT")
 hug = os.environ.get("HUG")
 pillow = os.environ.get("PILLOW")
-spray = os.environ.get("SPRAT")
+spray = os.environ.get("SPRAY")
 hype = os.environ.get("HYPE")
 specialkiss = os.environ.get("SPECIALKISS")
 kiss = os.environ.get("KISS")
@@ -27,8 +27,8 @@ ily = os.environ.get("ILY")
 nocry = os.environ.get("NOCRY")
 shrug = os.environ.get("SHRUG")
 smug = os.environ.get("SMUG")
-bearhug = os.environ.get("BEARHUG")
-moan = os.environ.get("MOAN")
+bearhugg = os.environ.get("BEARHUG")
+moann = os.environ.get("MOAN")
 
 
 class actions(commands.Cog):
@@ -283,7 +283,7 @@ class actions(commands.Cog):
     async def bearhug(self, ctx, *, mention=None):
 
             bearhug = discord.Embed(color=color.red)
-            bearhug.set_image(url=bearhug)
+            bearhug.set_image(url=bearhugg)
             
             msg = await ctx.send(mention, embed=bearhug)
             await msg.add_reaction('🗑️')
@@ -292,7 +292,7 @@ class actions(commands.Cog):
     async def moan(self, ctx):
         
         moan = discord.Embed(color=color.red)
-        moan.set_image(url=moan)
+        moan.set_image(url=moann)
 
         msg = await ctx.channel.send(embed=moan)
         await msg.add_reaction('🗑️')

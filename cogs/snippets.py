@@ -3,7 +3,7 @@ from discord.ext import commands
 import utils.colors as color
 import os
 
-creepy = os.environ.get('CREEPY')
+creeepy = os.environ.get('CREEPY')
 kraots1 = os.environ.get('KRAOTS1')
 kraots2 = os.environ.get('KRAOTS2')
 kraots3 = os.environ.get('KRAOTS3')
@@ -12,10 +12,12 @@ fuyu = os.environ.get('FUYU')
 vihillcorner = os.environ.get('VIHILLCORNER')
 s = os.environ.get('S')
 thefourhorsemanofsus = os.environ.get('THEFOURHORSEMANOFSUS')
-nikki = os.environ.get('NIKKI')
-mina = os.environ.get('MINA')
+nikkki = os.environ.get('NIKKI')
+minaaa = os.environ.get('MINAA')
 pandie1 = os.environ.get('PANDIE1')
 pandie2 = os.environ.get('PANDIE2')
+teiss = os.environ.get('TEIS')
+galactuss = os.environ.get('GALACTUS')
 
 class snippets(commands.Cog):
 
@@ -30,7 +32,7 @@ class snippets(commands.Cog):
     async def creepy(self, ctx):
 
             creepy = discord.Embed(color=color.red)
-            creepy.set_image(url=creepy)
+            creepy.set_image(url=creeepy)
 
             msg = await ctx.send(embed=creepy)
             await msg.add_reaction('🗑️')
@@ -100,7 +102,7 @@ class snippets(commands.Cog):
     async def nikki(self, ctx):
 
         nikki = discord.Embed(color=color.red)
-        nikki.set_image(url=nikki)
+        nikki.set_image(url=nikkki)
 
         msg = await ctx.send(embed=nikki)
         await msg.add_reaction('🗑️')
@@ -109,7 +111,7 @@ class snippets(commands.Cog):
     async def mina(self, ctx):
 
         mina = discord.Embed(color=color.red)
-        mina.set_image(url=mina)
+        mina.set_image(url=kraots2)
 
         msg = await ctx.send(embed=mina)
         await msg.add_reaction('🗑️')
@@ -122,6 +124,24 @@ class snippets(commands.Cog):
 
 
         msg = await ctx.send(embed=pandie)
+        await msg.add_reaction('🗑️')
+
+    @commands.command()
+    async def teis(self, ctx):
+
+        teis = discord.Embed(color=color.red)
+        teis.set_image(url=teiss)
+
+        msg = await ctx.send(embed=teis)
+        await msg.add_reaction('🗑️')
+
+    @commands.command()
+    async def galactus(self, ctx):
+
+        galactus = discord.Embed(color=color.red)
+        galactus.set_image(url=galactuss)
+
+        msg = await ctx.send(embed=galactus)
         await msg.add_reaction('🗑️')
 
 def setup (client):
