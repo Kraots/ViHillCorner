@@ -17,7 +17,8 @@ minaaa = os.environ.get('MINAA')
 pandie1 = os.environ.get('PANDIE1')
 pandie2 = os.environ.get('PANDIE2')
 teiss = os.environ.get('TEIS')
-galactuss = os.environ.get('GALACTUS')
+galactus1 = os.environ.get('GALACTUS1')
+galactus2 = os.environ.get('GALACTUS2')
 
 class snippets(commands.Cog):
 
@@ -139,7 +140,7 @@ class snippets(commands.Cog):
     async def galactus(self, ctx):
 
         galactus = discord.Embed(color=color.red)
-        galactus.set_image(url=galactuss)
+        galactus.set_image(url=galactus2)
 
         msg = await ctx.send(embed=galactus)
         await msg.add_reaction('🗑️')

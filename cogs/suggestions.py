@@ -1,17 +1,14 @@
 import discord
 from discord.ext import commands
 import utils.colors as color
-
-
-def Channel(ctx):
-    return ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016]
+from utils.helpers import BotChannels
 
 class Suggest(commands.Cog):
     def __init__(self, client):
         self.client = client
 
     @commands.command()
-    @commands.check(Channel)
+    @commands.check(BotChannels)
     @commands.cooldown(1, 60, commands.BucketType.user)
     async def suggest(self, ctx, *, args):
         await ctx.message.delete()

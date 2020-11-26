@@ -65,3 +65,6 @@ def NSFW(ctx):
 
 def fuckmicroseconds(delta):
     return delta - datetime.timedelta(microseconds=delta.microseconds)
+
+def BotChannels(ctx):
+    return ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016]

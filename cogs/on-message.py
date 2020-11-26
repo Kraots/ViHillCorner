@@ -18,14 +18,17 @@ class on_message(commands.Cog):
                 return
 
         else:
+                message_logging = self.client.get_channel(750432155179679815)
 
+                embedd = discord.Embed(title="Getting timestamp...", color=color.red)
+                msg = await message_logging.send(embed=embedd)                
+                embedd = discord.Embed(color=color.red, description=f'[Message]({message.jump_url}) deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=msg.created_at)
+                embedd.set_author(name=f'{message.author}', icon_url=f'{message.author.avatar_url}')
+                embedd.set_footer(text=f'User ID: {message.author.id}')
                 
-                embed = discord.Embed(color=color.red, description=f'Message deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=message.created_at)
-                embed.set_author(name=f'{message.author}', icon_url=f'{message.author.avatar_url}')
-                embed.set_footer(text=f'User ID: {message.author.id}')
-
-        message_logging = self.client.get_channel(750432155179679815)
-        await message_logging.send(embed=embed)
+                await asyncio.sleep(0.5)
+                await msg.edit(embed=embedd)
+        
 
     @commands.Cog.listener('on_message_edit')
     async def on_message_edit(self, before, after):
@@ -36,14 +39,15 @@ class on_message(commands.Cog):
                 return
         else:
                 after_logging = self.client.get_channel(750432155179679815)
+
                 embed = discord.Embed(title="Getting timestamp...", color=color.red)
-                msg = await after_logging.send(embed=embed)
-                embed = discord.Embed(color=color.yellow, description=f'Message edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=msg.created_at)
+                gettimestamp = await after_logging.send(embed=embed)
+                embed = discord.Embed(color=color.yellow, description=f'[Message]({before.jump_url}) edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=gettimestamp.created_at)
                 embed.set_author(name=f'{before.author}', icon_url=f'{before.author.avatar_url}')
                 embed.set_footer(text=f'User ID: {before.author.id}')
 
                 await asyncio.sleep(0.5)
-                await msg.edit(embed=embed)
+                await gettimestamp.edit(embed=embed)
 
 
 

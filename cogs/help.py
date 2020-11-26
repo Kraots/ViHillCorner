@@ -15,8 +15,8 @@ class Help(commands.Cog):
         helpEm.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
         helpEm.set_author(name="Command Help")
         helpEm.set_thumbnail(url="https://cdn.discordapp.com/attachments/752148605753884792/772510591565824000/00795f0d4b6710316662326aedb9d502.png")
-        helpEm.add_field(name="User Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `serverinfo`, `snippets`, `actions`, `waifu`, `invite`, `ad`, `rawad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`")
-        helpEm.add_field(name="Info Commands", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`", inline=False)
+        helpEm.add_field(name="User Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `serverinfo`, `snippets`, `actions`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`")
+        helpEm.add_field(name="Info Commands", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`", inline=False)
         if "Staff" in [role.name for role in ctx.message.author.roles]:
             helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `massmute`, `tempmute`, `unmute`, `massunmute`, `kick`, `masskick`, `ban`, `massban`, `unban`, `massunban`, `partnership`, `nsfw add | remove`", inline=False)
         
@@ -87,7 +87,12 @@ class Help(commands.Cog):
 
     @help.command()
     async def ad(self, ctx):
-        ad = discord.Embed(description="Usage: `.ad`\n\nGet the server's advertising text.", color=color.inviscolor)
+        embed = discord.Embed(description="Usage: `.ad {your ad}`\n\nAdvertise your server in the advertisement channel ;3\nUse only in <#750160851822182486> or <#750160851822182487>", color=color.inviscolor)
+        await ctx.channel.send(embed=embed)
+
+    @help.command()
+    async def serverad(self, ctx):
+        ad = discord.Embed(description="Usage: `.serverad`\n\nGet the server's advertising text.", color=color.inviscolor)
         await ctx.channel.send(embed=ad)
 
     @help.command()

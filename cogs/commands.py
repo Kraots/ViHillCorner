@@ -3,7 +3,7 @@ from discord.ext import commands
 import psutil
 import os
 import utils.colors as color
-
+from utils.helpers import time_phaser, BotChannels
 
 class command(commands.Cog):
 
@@ -79,7 +79,7 @@ class command(commands.Cog):
         await ctx.channel.send(embed=embed)
 
     @commands.command()
-    async def ad(self, ctx):
+    async def serverad(self, ctx):
         await ctx.message.delete()
         ad = discord.Embed(color=color.inviscolor, title="Here's the ad to the server:", description="**__Anime Hangouts__**\nAnime Hangouts is mainly for anime & talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\nConvinced?\n\nhttps://discord.gg/Uf2kA8q")
         ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
@@ -95,7 +95,7 @@ class command(commands.Cog):
         await ctx.channel.send(embed=ad)
 
     @commands.command(aliases=['chat revive', 'revive', 'revive chat'])
-    @commands.cooldown(1, 720, commands.BucketType.guild)
+    @commands.cooldown(1, 7200, commands.BucketType.guild)
     async def _asdjknasdjkn(self, ctx):
         await ctx.message.delete()
         msg = '<@&750160850236604537>'
@@ -106,9 +106,6 @@ class command(commands.Cog):
     async def _sdlajkndasjkdn(self, ctx):
         guild = self.client.get_guild(750160850077089853)
         await ctx.channel.send(f'Members left untill the server can apply for the *discord partership program:* \n\n`{500 - guild.member_count + 12}`')
-
-
-
 
 def setup (client):
     client.add_cog(command(client))
