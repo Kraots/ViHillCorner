@@ -180,7 +180,7 @@ class Help(commands.Cog):
     @help.command()
     @commands.has_role('Staff')
     async def masskick(self, ctx):
-        kick = discord.Embed(description="Usage: `.masskick {user1} {user2} {user3} {reason}`\n\nKicks an user from the server!", color=color.inviscolor)
+        kick = discord.Embed(description="Usage: `.masskick {user1} {user2} {user3} {reason}`\n\nKicks the users from the server!", color=color.inviscolor)
         await ctx.send(embed=kick)
 
     @help.command()
@@ -192,7 +192,7 @@ class Help(commands.Cog):
     @help.command()
     @commands.has_role("Staff")
     async def massban(self, ctx):
-        ban = discord.Embed(description="Usage: `.ban {user1} {user2} {user3}`\n\nBans a users.", color=color.inviscolor)
+        ban = discord.Embed(description="Usage: `.ban {user1} {user2} {user3}`\n\nBans the users.", color=color.inviscolor)
         await ctx.channel.send(embed=ban)
 
     @help.command()

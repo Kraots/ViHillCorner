@@ -43,18 +43,23 @@ class Moderation(commands.Cog):
     # Ban
     @commands.command(help=".ban [user] <reason>")
     @commands.has_role('Staff')
-    async def ban(self, ctx, member : discord.Member, *, reason="Toxicty & Insult"):
+    async def ban(self, ctx, user : discord.User, *, reason="Toxicty & Insult"):
+        guild = self.client.get_guild(750160850077089853)
 
-        reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/rD5z5Jp")
-        reasonn.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
-        msg="You have been banned from Anime Hangouts. If you think that this has been applied in error please submit a detailed appeal at the following link."
-        await member.send(msg, embed=reasonn)
-          
-        await member.ban()
+        if guild.get_member(user.id) is not None:
+            reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/rD5z5Jp")
+            reasonn.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
+            msg="You have been banned from Anime Hangouts. If you think that this has been applied in error please submit a detailed appeal at the following link."
+            await user.send(msg, embed=reasonn)
+            ban = discord.Embed(description=f"`{user}` has been banned from the server." , color=color.red)
+            await ctx.channel.send(embed=ban)
+            await guild.ban(discord.Object(id=user.id))
 
-        ban = discord.Embed(description=f"{member.mention} has been banned from the server." , color=color.red)
+        else:
 
-        await ctx.channel.send(embed=ban)
+            await guild.ban(discord.Object(id=user.id))
+            ban = discord.Embed(description=f"`{user}` has been banned from the server." , color=color.red)
+            await ctx.channel.send(embed=ban)
 
 
     # MASS BAN 
@@ -83,16 +88,27 @@ class Moderation(commands.Cog):
     # Unban
     @commands.command(help=".unban [user_ID]")
     @commands.has_role('Staff')
-    async def unban(self, ctx, member: discord.Member):
-        guild = self.client.get_guild(750160850077089853)
-        await guild.unban(member)
+    async def unban(self, ctx, user: discord.User):
+        guild1 = self.client.get_guild(750160850077089853)
+        guild2 = self.client.get_guild(752467788425330738)
+        await guild1.unban(discord.Object(id=user.id))
         unban = discord.Embed(description= "The user has been unbanned from the server" , color=color.red)
         
         msg = await ctx.send(embed=unban)
         await msg.add_reaction('🗑️')
         msg="Congrats! You have been unbanned from Anime Hangouts. Come back: https://discord.gg/mFm5GrQ"
-        await member.send(msg)
-        await member.guild.kick(member)
+        await user.send(msg)
+        if guild2.get_member(user.id) is not None:
+            await user.guild2.kick(user)
+        else:
+            return
+
+    @unban.error
+    async def unban_error(self, ctx, error):
+        if isinstance(error, commands.errors.CommandInvokeError):
+            await ctx.send('That user is not banned!')
+
+
 
 
 
