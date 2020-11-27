@@ -18,7 +18,7 @@ class Help(commands.Cog):
         helpEm.add_field(name="User Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `serverinfo`, `snippets`, `actions`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `calc`")
         helpEm.add_field(name="Info Commands", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`", inline=False)
         if "Staff" in [role.name for role in ctx.message.author.roles]:
-            helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `massmute`, `tempmute`, `unmute`, `massunmute`, `kick`, `masskick`, `ban`, `massban`, `unban`, `massunban`, `partnership`, `nsfw`, `slwomode`", inline=False)
+            helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `massmute`, `tempmute`, `unmute`, `massunmute`, `kick`, `masskick`, `ban`, `massban`, `unban`, `massunban`, `partnership`, `nsfw`, `slowmode`", inline=False)
         
         if ctx.author.id == 374622847672254466:
             helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `jsk`, `statuses`, `metrics`, `mail`")

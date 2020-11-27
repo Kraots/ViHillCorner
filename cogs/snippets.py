@@ -19,6 +19,7 @@ pandie2 = os.environ.get('PANDIE2')
 teiss = os.environ.get('TEIS')
 galactus1 = os.environ.get('GALACTUS1')
 galactus2 = os.environ.get('GALACTUS2')
+lepoledancer = os.environ.get('LEPOLEDANCER')
 
 class snippets(commands.Cog):
 
@@ -144,6 +145,15 @@ class snippets(commands.Cog):
 
         msg = await ctx.send(embed=galactus)
         await msg.add_reaction('🗑️')
+
+    @commands.command(aliases=['le-pole-dancer'])
+    async def asdjnadjaksldkbnasdjhbsadjbasjkdbasjkdbfsjkajihfb(self, ctx):
+
+        lepoledancerr = discord.Embed(color=color.red)
+        lepoledancerr.set_image(url=lepoledancer)
+
+        msg = await ctx.send(embed=lepoledancerr)
+        await msg.add_reaction('🗑️')        
 
 def setup (client):
     client.add_cog(snippets(client))
