@@ -4,11 +4,43 @@ import asyncio
 import utils.colors as color
 from discord.ext.commands import Greedy
 from discord import Member
+import re
+from utils.helpers import time_phaser
+import typing
+
+time_regex = re.compile("(?:(\d{1,5})(h|s|m|d))+?")
+time_dict = {"h":3600, "s":1, "m":60, "d":86400}
+
+class TimeConverter(commands.Converter):
+    async def convert(self, ctx, argument):
+        args = argument.lower()
+        matches = re.findall(time_regex, args)
+        time = 0
+        for v, k in matches:
+            try:
+                time += time_dict[k]*float(v)
+            except KeyError:
+                raise commands.BadArgument("{} is an invalid time-key! h/m/s/d are valid!".format(k))
+            except ValueError:
+                raise commands.BadArgument("{} is not a number!".format(v))
+        return time
 
 class Moderation(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+
+    # SLOWMODE
+    @commands.command()
+    @commands.has_role('Staff')
+    async def slowmode(self, ctx, *, time : TimeConverter):
+        await ctx.message.delete()
+        if time:
+            await ctx.channel.edit(slowmode_delay=time)
+            await ctx.author.send(f'Set slowmode for <#{ctx.channel.id}> to {time_phaser(time)} !')
+        else:
+            await ctx.channel.edit(slowmode_delay=0)
+            await ctx.author.send(f'Disabled slowmode for <#{ctx.channel.id}> !')
 
     # Say
     @commands.command()

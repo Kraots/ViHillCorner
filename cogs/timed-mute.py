@@ -3,6 +3,7 @@ import asyncio
 import re
 from discord.ext import commands
 import utils.colors as color
+from utils.helpers import time_phaser
 
 
 time_regex = re.compile("(?:(\d{1,5})(h|s|m|d))+?")
@@ -33,7 +34,7 @@ class MuteCog(commands.Cog):
         &mute @Someone 1d"""
         role = discord.utils.get(ctx.guild.roles, name="Muted")
         await member.add_roles(role)
-        unban = discord.Embed(description= f'{member.mention} has been muted for **{time} seconds**.' , color=color.red)
+        unban = discord.Embed(description= f'{member.mention} has been muted for **{time_phaser(time)}**.' , color=color.red)
         
         msg = await ctx.send(embed=unban)
         await msg.add_reaction('🗑️') 

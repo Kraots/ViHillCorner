@@ -13,7 +13,7 @@ class on_join(commands.Cog):
         welcome = discord.Embed(description='\n\n***Go get roles from*** <#750160850593251448>\n***Go get a color from*** <#750173385266299010>\n***Go get read the rules and see the punishment if u break them at*** <#750160850303582236>\n***Go introduce yourself at*** <#750160850593251449>\n\nEnjoy your stay\n\n', color=color.pastel)
         welcome.set_thumbnail(url=f'{member.avatar_url}')
         guild = self.client.get_guild(750160850077089853)
-        msg = f'Hey {member.mention}, welcome to **Anime Hangouts!** \nYou are our **{guild.member_count - 12}** member.\n\n\n<@&750160850077089856>'
+        msg = f'Hey {member.mention}, welcome to **Anime Hangouts!** \nYou are our **{guild.member_count - 11}** member.\n\n\n<@&750160850077089856>'
         await channel.send(msg, embed=welcome)
         role1 = discord.utils.get(member.guild.roles, name="Member")        
         await member.add_roles(role1)

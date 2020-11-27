@@ -18,7 +18,7 @@ class Help(commands.Cog):
         helpEm.add_field(name="User Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `serverinfo`, `snippets`, `actions`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `calc`")
         helpEm.add_field(name="Info Commands", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`", inline=False)
         if "Staff" in [role.name for role in ctx.message.author.roles]:
-            helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `massmute`, `tempmute`, `unmute`, `massunmute`, `kick`, `masskick`, `ban`, `massban`, `unban`, `massunban`, `partnership`, `nsfw add | remove`", inline=False)
+            helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `massmute`, `tempmute`, `unmute`, `massunmute`, `kick`, `masskick`, `ban`, `massban`, `unban`, `massunban`, `partnership`, `nsfw`, `slwomode`", inline=False)
         
         if ctx.author.id == 374622847672254466:
             helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `jsk`, `statuses`, `metrics`, `mail`")
@@ -280,6 +280,12 @@ class Help(commands.Cog):
     @help.command()
     async def calc(self, ctx):
         embed = discord.Embed(color=color.inviscolor, description='Usage:\n\n`.calc add {a} {b}`\n`.calc substract {a} {b}`\n`.calc multiply {a} {b}`\n`.calc divide {a} {b}`\n\n*WARNING: NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`!!!*\n\nExample:\n\n`.calc divide 4 2` will result `2.0`\n`.calc divide 4.6 2.3` will result an error!!')
+        await ctx.channel.send(embed=embed)
+
+    @help.command()
+    @commands.has_role('Staff')
+    async def slowmode(self, ctx):
+        embed = discord.Embed(color=color.inviscolor, description="Usage: `.slowmode {time}`\n\nExample:\n\n`.slowmode 5h` => will set the slowmode to 5h\n`.slowmode 3s` => will change the slowmode to 3s\n`.slowmode off` => will disabled the slowmode\n\n*NOTE: ANY OTHER TIME THAT DOES NOT INCLUDE s |  h, or if it's a letter, then the slowmode will be disabled regardless*")
         await ctx.channel.send(embed=embed)
 
     @help.error
