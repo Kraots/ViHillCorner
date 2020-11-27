@@ -77,6 +77,15 @@ class on_message(commands.Cog):
             else:
                 await message.channel.send("It's `^rank` in <#750160851822182486> or <#750160851822182487>, NOOB!")
                 return
+
+        if message.content.startswith('!level'):
+            if message.channel.id in [750160851822182486, 750160851822182487]:
+                await message.channel.send("It's `^rank`, noob!")
+                return
+            
+            else:
+                await message.channel.send("It's `^rank` in <#750160851822182486> or <#750160851822182487>, NOOB!")
+                return
         
         elif message.content.startswith('!help'):
             await message.channel.send("It's `.help`, noob!")
