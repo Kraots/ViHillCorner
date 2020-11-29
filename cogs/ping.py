@@ -14,18 +14,18 @@ class Ping(commands.Cog):
 
     @commands.command(help="Check bot's ping", hidden=True)
     async def ping(self, ctx):
-            botinfo = discord.Embed(title="Pong!", description="_Pinging..._", color=color.inviscolor)
+            botinfo = discord.Embed(title="Pong!", description="_Pinging..._", color=color.lightpink)
             start = time.time() * 1000
             msg = await ctx.message.channel.send(embed=botinfo)
             end = time.time() * 1000
-            botinfo = discord.Embed(title="Pong!", description=f"Avg. Latency: `{(round(self.client.latency * 1000, 2))}ms`\nRest: `{int(round(end-start, 0))}ms`", color=color.inviscolor)
+            botinfo = discord.Embed(title="Pong!", description=f"Avg. Latency: `{(round(self.client.latency * 1000, 2))}ms`\nRest: `{int(round(end-start, 0))}ms`", color=color.lightpink)
             botinfo.set_footer(text="Online For: " + str(time_phaser(int(time.time()-up))))
             await msg.edit(embed=botinfo)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
     async def uptime(self, ctx):
-        uptime = discord.Embed(description=f"Bot has been online for: " + str(time_phaser(int(time.time()-up))), color=color.inviscolor)
+        uptime = discord.Embed(description=f"Bot has been online for: " + str(time_phaser(int(time.time()-up))), color=color.lightpink)
         uptime.set_footer(text=f'Bot made by: Kraots#0001', icon_url="https://cdn.discordapp.com/avatars/751724369683677275/0ad4d3b39956b6431c7167ef82c30d30.webp?size=1024")
         msg = await ctx.channel.send(embed=uptime)
         await msg.add_reaction('🗑️')

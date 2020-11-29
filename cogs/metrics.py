@@ -13,7 +13,7 @@ class Metrics(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(aliases=[".metrics"])
+    @commands.command(aliases=["!metrics"])
     @commands.is_owner()
     async def asdasdasdasdadsmetrics(self, ctx):
         kraots = self.client.get_user(374622847672254466)

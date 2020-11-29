@@ -13,14 +13,14 @@ class command(commands.Cog):
     @commands.command(help="Get a list of all actions")
     async def actions(self, context):
 
-            version = discord.Embed(title="Here's the list of all actions", description="`.ily`\n`.huggle` \n`.grouphug`\n`.bearhug`\n`.nocry` \n`.chew` \n`.eat` \n`.spray` \n`.sip` \n`.hype` \n`.clap` \n`.cry` \n`.lol` \n`.rofl` \n`.kill` \n`.pat` \n`.nom` \n`.rub` \n`.hug` \n`.catpat` \n`.pillow` \n`.kiss`\n`.shrug`\n`.smug` ", color=color.inviscolor)
+            version = discord.Embed(title="Here's the list of all actions", description="`!ily`\n`!huggle` \n`!grouphug`\n`!bearhug`\n`!nocry` \n`!chew` \n`!eat` \n`!spray` \n`!sip` \n`!hype` \n`!clap` \n`!cry` \n`!lol` \n`!rofl` \n`!kill` \n`!pat` \n`!nom` \n`!rub` \n`!hug` \n`!catpat` \n`!pillow` \n`!kiss`\n`!shrug`\n`!smug` ", color=color.lightpink)
             version.set_footer(text=f'Requested by: {context.author}', icon_url=context.author.avatar_url)
             await context.message.channel.send(embed=version)
 
     @commands.command(help="Get a list of all snippets")
     async def snippets(self, context):
 
-            version = discord.Embed(title="Here's the list of all snippets", description="`.fuyu`\n`.welcome`\n`.kraots`\n`.vihillcorner`\n`.s`\n`.thefourhorsemanofsus`\n`.creepy`\n`.nikki`\n`.mina`\n`.pandie`\n`.teis`\n`.galactus`\n`.le-pole-dancer` ", color=color.inviscolor)
+            version = discord.Embed(title="Here's the list of all snippets", description="`!fuyu`\n`!welcome`\n`!kraots`\n`!vihillcorner`\n`!s`\n`!thefourhorsemanofsus`\n`!creepy`\n`!nikki`\n`!mina`\n`!pandie`\n`!teis`\n`!galactus`\n`!le-pole-dancer` ", color=color.lightpink)
             version.set_footer(text=f'Requested by: {context.author}', icon_url=context.author.avatar_url)
             await context.message.channel.send(embed=version)
 
@@ -29,7 +29,7 @@ class command(commands.Cog):
         if member is None:
             member = ctx.author
         
-        embed = discord.Embed(color=color.inviscolor)
+        embed = discord.Embed(color=color.lightpink)
         embed.add_field(name=f"{member.name}'s account was made on:", value=member.created_at.strftime("%a, %#d %B %Y, %I:%M %p UTC"))
         await ctx.channel.send(embed=embed)
 
@@ -38,14 +38,14 @@ class command(commands.Cog):
         if member is None:
             member = ctx.author
         
-        embed = discord.Embed(color=color.inviscolor)
+        embed = discord.Embed(color=color.lightpink)
         embed.add_field(name=f"{member.name} joined on:", value=member.joined_at.strftime("%a, %#d %B %Y, %I:%M %p UTC"))
         await ctx.channel.send(embed=embed)
 
     @commands.command(help="Get a list of all snippets", aliases=["inv", "invite"])
     async def _invite(self, context):
 
-            version = discord.Embed(title="Here's the invite:", description="[Anime Hangouts](https://discord.gg/Uf2kA8q)", color=color.inviscolor)
+            version = discord.Embed(title="Here's the invite:", description="[Anime Hangouts](https://discord.gg/Uf2kA8q)", color=color.lightpink)
             version.set_footer(text=f'Requested by: {context.author}', icon_url=context.author.avatar_url)
 
             await context.message.channel.send(embed=version)
@@ -71,7 +71,7 @@ class command(commands.Cog):
     async def ee(self, ctx, emoji: discord.PartialEmoji):
         await ctx.message.delete()
 
-        embed = discord.Embed(color=color.inviscolor)
+        embed = discord.Embed(color=color.lightpink)
         embed.set_image(url=emoji.url)
         embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
 
@@ -80,7 +80,7 @@ class command(commands.Cog):
     @commands.command()
     async def serverad(self, ctx):
         await ctx.message.delete()
-        ad = discord.Embed(color=color.inviscolor, title="Here's the ad to the server:", description="**__Anime Hangouts__**\nAnime Hangouts is mainly for anime & talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\nConvinced?\n\nhttps://discord.gg/Uf2kA8q")
+        ad = discord.Embed(color=color.lightpink, title="Here's the ad to the server:", description="**__Anime Hangouts__**\nAnime Hangouts is mainly for anime & talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\nConvinced?\n\nhttps://discord.gg/Uf2kA8q")
         ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
         await ctx.channel.send(embed=ad)
@@ -88,7 +88,7 @@ class command(commands.Cog):
     @commands.command(aliases=["ra"])
     async def rawad(self, ctx):
         await ctx.message.delete()
-        ad = discord.Embed(color=color.inviscolor, title="Here's the raw ad version of the server:", description="```**__Anime Hangouts__**\nAnime Hangouts is mainly for anime & talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\nConvinced?\n\nhttps://discord.gg/Uf2kA8q```")
+        ad = discord.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```**__Anime Hangouts__**\nAnime Hangouts is mainly for anime & talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\nConvinced?\n\nhttps://discord.gg/Uf2kA8q```")
         ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
         await ctx.channel.send(embed=ad)

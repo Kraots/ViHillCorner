@@ -76,6 +76,7 @@ class Moderation(commands.Cog):
     @commands.has_role('Staff')
     async def ban(self, ctx, user : discord.User, *, reason="Toxicty & Insult"):
         guild = self.client.get_guild(750160850077089853)
+        guild2 = self.client.get_guild(752467788425330738)
 
         if guild.get_member(user.id) is not None:
             reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/rD5z5Jp")
@@ -85,12 +86,26 @@ class Moderation(commands.Cog):
             ban = discord.Embed(description=f"`{user}` has been banned from the server." , color=color.red)
             await ctx.channel.send(embed=ban)
             await guild.ban(discord.Object(id=user.id))
+            return
 
         else:
 
             await guild.ban(discord.Object(id=user.id))
             ban = discord.Embed(description=f"`{user}` has been banned from the server." , color=color.red)
             await ctx.channel.send(embed=ban)
+            return
+
+        if guild.get_member(user.id) is not None:
+            await user.send('It seems like your ban appeal has been denied, GG! XD')
+            await guild2.ban(discord.Object(id=user.id))
+            await ctx.channel.send('Banned')
+            return
+
+        else: 
+            await guild2.ban(discord.Object(id=user.id))
+            await ctx.channel.send('Banned')
+            return
+
 
 
     # MASS BAN 

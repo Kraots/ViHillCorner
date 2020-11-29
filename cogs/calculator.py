@@ -31,28 +31,28 @@ class Calculator(commands.Cog):
     async def add_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.message.delete()
-            embed = discord.Embed(title='***___WARNING:___***', description='NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`!!!*\n\nExample:\n\n`.calc divide 4 2` will result `2.0`\n`.calc divide 4.6 2.3` will result an error!!', color=color.inviscolor)
+            embed = discord.Embed(title='***___WARNING:___***', description='NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`!!!*\n\nExample:\n\n`!calc divide 4 2` will result `2.0`\n`!calc divide 4.6 2.3` will result an error!!', color=color.inviscolor)
             await ctx.channel.send(embed=embed, delete_after=10)
 
     @substract.error
     async def substract_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.message.delete()
-            embed = discord.Embed(title='***___WARNING:___***', description='NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`!!!*\n\nExample:\n\n`.calc divide 4 2` will result `2.0`\n`.calc divide 4.6 2.3` will result an error!!', color=color.inviscolor)
+            embed = discord.Embed(title='***___WARNING:___***', description='NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`!!!*\n\nExample:\n\n`!calc divide 4 2` will result `2.0`\n`!calc divide 4.6 2.3` will result an error!!', color=color.inviscolor)
             await ctx.channel.send(embed=embed, delete_after=10)
 
     @multiply.error
     async def multiply_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.message.delete()
-            embed = discord.Embed(title='***___WARNING:___***', description='NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`!!!*\n\nExample:\n\n`.calc divide 4 2` will result `2.0`\n`.calc divide 4.6 2.3` will result an error!!', color=color.inviscolor)
+            embed = discord.Embed(title='***___WARNING:___***', description='NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`!!!*\n\nExample:\n\n`!calc divide 4 2` will result `2.0`\n`!calc divide 4.6 2.3` will result an error!!', color=color.inviscolor)
             await ctx.channel.send(embed=embed, delete_after=20)
 
     @divide.error
     async def divide_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.message.delete()
-            embed = discord.Embed(title='***___WARNING:___***', description='NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`!!!*\n\nExample:\n\n`.calc divide 4 2` will result `2.0`\n`.calc divide 4.6 2.3` will result an error!!', color=color.inviscolor)
+            embed = discord.Embed(title='***___WARNING:___***', description='NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`!!!*\n\nExample:\n\n`!calc divide 4 2` will result `2.0`\n`!calc divide 4.6 2.3` will result an error!!', color=color.inviscolor)
             await ctx.channel.send(embed=embed, delete_after=10)
 
 

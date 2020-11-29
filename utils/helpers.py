@@ -22,7 +22,7 @@ def get_member_voice(member: discord.Member):
     return "Not in VC" if not member.voice else member.voice.channel
 
 def profile(ctx, user):
-    em = discord.Embed(timestamp=ctx.message.created_at, colour=color.inviscolor)
+    em = discord.Embed(timestamp=ctx.message.created_at, colour=color.lightpink)
     em.add_field(name='User ID', value=user.id, inline=True)
     if isinstance(user, discord.Member):
         em.add_field(name='Nick', value=user.nick, inline=True)

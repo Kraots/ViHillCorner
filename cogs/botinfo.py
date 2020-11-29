@@ -10,7 +10,7 @@ class BotInfo(commands.Cog):
     async def botinfo(self, ctx):
         kraots = self.client.get_user(374622847672254466)
         cache_summary = f"**{len(self.client.guilds)}** guild(s) and **{len(self.client.users)}** user(s)"
-        botinfo = discord.Embed(title="", color=color.inviscolor, timestamp=ctx.message.created_at)
+        botinfo = discord.Embed(title="", color=color.lightpink, timestamp=ctx.message.created_at)
         botinfo.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
         botinfo.add_field(name="Bot Owner:", value=f"{kraots}", inline=False)
         botinfo.add_field(name="Created at:", value="05/09/2020", inline=False)

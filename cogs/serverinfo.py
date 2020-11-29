@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import utils.colors as color
 
 class ServerInfo(commands.Cog):
 
@@ -43,7 +44,7 @@ class ServerInfo(commands.Cog):
             role_count = len(server.roles)
             emoji_count = len(server.emojis)
 
-            em = discord.Embed(color=0x2F3136)
+            em = discord.Embed(color=color.lightpink)
             em.add_field(name='Name', value=server.name)
             em.add_field(name='Owner', value=server.owner, inline=False)
             em.add_field(name='Members', value=server.member_count)

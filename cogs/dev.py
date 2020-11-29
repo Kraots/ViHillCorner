@@ -10,7 +10,7 @@ class developer(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(aliases=['.mail'])
+    @commands.command(aliases=['!mail'])
     @commands.is_owner()
     async def mailsdakmdakdmasamdamdasodassdoasdmaodsamdolal(self, ctx, members : Greedy[Member]=None, *, args=None):
       if members is None:
@@ -26,7 +26,7 @@ class developer(commands.Cog):
             await ctx.message.add_reaction('✅')
 
 
-    @commands.command(aliases=['.modmute'])
+    @commands.command(aliases=['!modmute'])
     @commands.is_owner()
     async def modmutsdjkgnskjkdshgjklshfvuedhfhnkswvvfe(self, ctx, members: Greedy[Member]):
         staff = discord.utils.get(ctx.guild.roles, name="Staff")
@@ -42,7 +42,7 @@ class developer(commands.Cog):
             await ctx.channel.send(embed=modmute)
 
 
-    @commands.command(aliases=['.modunmute'])
+    @commands.command(aliases=['!modunmute'])
     @commands.is_owner()
     async def modunmasoduhasidhdhjiashdahidasdute(self, ctx, members: Greedy[Member]):
         staff = discord.utils.get(ctx.guild.roles, name="Staff")
@@ -57,7 +57,7 @@ class developer(commands.Cog):
             modunmute = discord.Embed(color=color.red, description=f'Mod {member.mention} has been unmuted!')
             await ctx.channel.send(embed=modunmute)
 
-    @commands.command(aliases=['.makemod'])
+    @commands.command(aliases=['!makemod'])
     @commands.is_owner()
     async def makemasdljknasdkjbaskdhaskdajksdakdhnod(self, ctx, members: Greedy[Member]):
         staff = discord.utils.get(ctx.guild.roles, name="Staff")
@@ -70,7 +70,7 @@ class developer(commands.Cog):
             modunmute = discord.Embed(color=color.red, description=f'{member.mention} is now a mod!')
             await ctx.channel.send(embed=modunmute)
 
-    @commands.command(aliases=['.removemod'])
+    @commands.command(aliases=['!removemod'])
     @commands.is_owner()
     async def askjdhajidasdaihdjisahdjiadihasdremovemod(self, ctx, members: Greedy[Member]):
         staff = discord.utils.get(ctx.guild.roles, name="Staff")
@@ -83,7 +83,7 @@ class developer(commands.Cog):
             modunmute = discord.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')
             await ctx.channel.send(embed=modunmute)
 
-    @commands.command(aliases=['.shutdown'])
+    @commands.command(aliases=['!shutdown'])
     @commands.is_owner()
     async def asdjklnasdjskdhnajkshdjkashdjkhaskdhajdhasjd(self, ctx):
         await ctx.message.add_reaction('✅')
@@ -93,14 +93,14 @@ class developer(commands.Cog):
     
     
     
-    @commands.group(invoke_without_command=True, case_insensitive=True, aliases=[".status"])
+    @commands.group(invoke_without_command=True, case_insensitive=True, aliases=["!status"])
     @commands.is_owner()
     async def stasdasdasdhbashdgasihdsukahdisuahdaatus(self, ctx):
-      statuses = discord.Embed(title="Statuses:", color=color.inviscolor)
-      statuses.add_field(name="Online:", value="..status online\n   ..status online-playing [custom status]\n   ..status online-listening [custom status]\n   ..status online-watching [custom status]", inline=False)
-      statuses.add_field(name="Idle:", value="..status idle\n   ..status idle-playing [custom status]\n   ..status idle-listening [custom status]\n   ..status idle-watching [custom status]", inline=False)
-      statuses.add_field(name="Dnd:", value="..status dnd\n   ..status dnd-playing [custom status]\n   ..status dnd-listening [custom status]\n   ..status dnd-watching [custom status]", inline=False)
-      statuses.add_field(name="Offline:", value="..status offline", inline=False)
+      statuses = discord.Embed(title="Statuses:", color=color.lightpink)
+      statuses.add_field(name="Online:", value="!!status online\n   !!status online-playing [custom status]\n   !!status online-listening [custom status]\n   !!status online-watching [custom status]", inline=False)
+      statuses.add_field(name="Idle:", value="!!status idle\n   !!status idle-playing [custom status]\n   !!status idle-listening [custom status]\n   !!status idle-watching [custom status]", inline=False)
+      statuses.add_field(name="Dnd:", value="!!status dnd\n   !!status dnd-playing [custom status]\n   !!status dnd-listening [custom status]\n   !!status dnd-watching [custom status]", inline=False)
+      statuses.add_field(name="Offline:", value="!!status offline", inline=False)
       await ctx.channel.send(embed=statuses, delete_after=5)
       await asyncio.sleep(4)
       await ctx.message.delete()
