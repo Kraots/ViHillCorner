@@ -13,10 +13,9 @@ class Help(commands.Cog):
     async def help(self, ctx):
         helpEm = discord.Embed(description="", color=color.lightpink)
         helpEm.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-        helpEm.set_author(name="Command Help")
         helpEm.set_thumbnail(url="https://cdn.discordapp.com/attachments/752148605753884792/772510591565824000/00795f0d4b6710316662326aedb9d502.png")
-        helpEm.add_field(name="User Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `serverinfo`, `snippets`, `actions`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `calc`, `topic`")
-        helpEm.add_field(name="Info Commands", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`", inline=False)
+        helpEm.add_field(name="Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `calc`, `topic`")
+        helpEm.add_field(name="Info Commands", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `snippets`, `actions`, `serverinfo`", inline=False)
         if "Staff" in [role.name for role in ctx.message.author.roles]:
             helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `massmute`, `tempmute`, `unmute`, `massunmute`, `kick`, `masskick`, `ban`, `massban`, `unban`, `massunban`, `partnership`, `nsfw`, `slowmode`", inline=False)
         

@@ -20,7 +20,7 @@ class command(commands.Cog):
     @commands.command(help="Get a list of all snippets")
     async def snippets(self, context):
 
-            version = discord.Embed(title="Here's the list of all snippets", description="`!fuyu`\n`!welcome`\n`!kraots`\n`!vihillcorner`\n`!s`\n`!thefourhorsemanofsus`\n`!creepy`\n`!nikki`\n`!mina`\n`!pandie`\n`!teis`\n`!galactus`\n`!le-pole-dancer` ", color=color.lightpink)
+            version = discord.Embed(title="Here's the list of all snippets", description="`!fuyu`\n`!welcome`\n`!kraots`\n`!vihillcorner`\n`!s`\n`!thefourhorsemanofsus`\n`!creepy`\n`!nikki`\n`!mina`\n`!pandie`\n`!teis`\n`!galactus`\n`!le-pole-dancer`\n`!kewi` ", color=color.lightpink)
             version.set_footer(text=f'Requested by: {context.author}', icon_url=context.author.avatar_url)
             await context.message.channel.send(embed=version)
 

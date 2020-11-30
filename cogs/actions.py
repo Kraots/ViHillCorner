@@ -37,7 +37,13 @@ class actions(commands.Cog):
         self.client = client
 
     @commands.command(hidden=True)
-    async def huggles(self, ctx, *, mention=None,):
+    async def rape(self, ctx, *, mention=None,):
+
+        await ctx.send('https://cdn.discordapp.com/attachments/745298904832278530/782729248623427614/video0-1_1.mp4')
+
+    @commands.command(hidden=True)
+    async def huggles(self, ctx, *, mention=None):
+
 
             version = discord.Embed(color=color.red)
             version.set_image(url=huggles)

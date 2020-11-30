@@ -20,13 +20,21 @@ teiss = os.environ.get('TEIS')
 galactus1 = os.environ.get('GALACTUS1')
 galactus2 = os.environ.get('GALACTUS2')
 lepoledancer = os.environ.get('LEPOLEDANCER')
+kewii = os.environ.get('KEWI')
 
 class snippets(commands.Cog):
 
     def __init__(self, client):
         self.client = client
 
+    @commands.command(hidden=True)
+    async def kewi(self, ctx):
 
+            creepy = discord.Embed(color=color.red)
+            creepy.set_image(url=kewii)
+
+            msg = await ctx.send(embed=creepy)
+            await msg.add_reaction('🗑️')
 
 
 
