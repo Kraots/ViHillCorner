@@ -20,7 +20,7 @@ class Help(commands.Cog):
             helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `massmute`, `tempmute`, `unmute`, `massunmute`, `kick`, `masskick`, `ban`, `massban`, `unban`, `massunban`, `partnership`, `nsfw`, `slowmode`", inline=False)
         
         if ctx.author.id == 374622847672254466:
-            helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
+            helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
 
         await ctx.message.channel.send(embed=helpEm)
 
@@ -273,7 +273,7 @@ class Help(commands.Cog):
 
         else:
 
-            em = discord.Embed(color=color.lightpink, description='Usage: `!nsfw`\nGet a random nsfw pic! **USE ONLY IN <#780374324598145055>**')
+            em = discord.Embed(color=color.lightpink, description='Usage: `!nsfw yuri | hentai`\nGet a random `yuri | hentai` pic! **USE ONLY IN <#780374324598145055>**')
             await ctx.send(embed=em)
 
     @help.command()

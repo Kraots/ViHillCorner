@@ -4,6 +4,12 @@ import asyncio
 import utils.colors as color
 from discord.ext.commands import Greedy
 from discord import Member
+import os
+import sys
+    
+def restart_program():
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
 
 class developer(commands.Cog):
 
@@ -89,6 +95,11 @@ class developer(commands.Cog):
         await ctx.message.add_reaction('✅')
         await self.client.close()
 
+    @commands.command(aliases=['!restart'])
+    @commands.is_owner()
+    async def restasdkjbashkdfhsdfjhasuyhfasfart(self, ctx):
+        await ctx.send("*Restarting...*")
+        restart_program()
     
     
     

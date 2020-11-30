@@ -5,6 +5,7 @@ import utils.colors as color
 from utils.helpers import NSFW
 from discord.ext.commands import Greedy
 from discord import Member
+import random
 
 class NSFW(commands.Cog):
 
@@ -14,6 +15,11 @@ class NSFW(commands.Cog):
     @commands.group(invoke_without_command=True, case_insensitive=True)
     @commands.check(NSFW)
     async def nsfw(self, ctx):
+        await ctx.send('`!nsfw hentai` | `!nsfw yuri`')
+
+    @nsfw.command()
+    @commands.check(NSFW)
+    async def hentai(self, ctx):
         async with aiohttp.ClientSession() as cs:
           async with cs.get("https://www.reddit.com/r/hentai/random/.json") as r:
             res = await r.json()
@@ -25,6 +31,22 @@ class NSFW(commands.Cog):
             embed.set_image(url=imgUrl)
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
             await ctx.channel.send(embed=embed)
+
+    @nsfw.command()
+    @commands.check(NSFW)
+    async def yuri(self, ctx):
+        async with aiohttp.ClientSession() as cs:
+          async with cs.get("https://www.reddit.com/r/yuri.json") as r:
+            res = await r.json()
+            imgUrl = res['data']['children'] [random.randint(0, 24)]['data']
+            linkUrl = imgUrl['url']
+            titleUrl = imgUrl['title']
+
+            embed = discord.Embed(description=f'[{titleUrl}]({linkUrl})', timestamp=ctx.message.created_at, color=color.pastel)
+            embed.set_image(url=linkUrl)
+            embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+            await ctx.channel.send(embed=embed)
+
 
     @nsfw.command()
     @commands.has_role('Staff')
@@ -58,9 +80,20 @@ class NSFW(commands.Cog):
                 await ctx.send('Invalid format!\nUse: `.nsfw add {user}` or `.nsfw remove {user}`!')
             else:
 
-                msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ {ctx.author.mention}"
+                msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
                 await ctx.channel.send(msg)
 
+    @hentai.error
+    async def hentai_error(self, ctx, error):
+        if isinstance(error, commands.CheckFailure):
+            msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
+            await ctx.channel.send(msg)
+
+    @yuri.error
+    async def yuri_error(self, ctx, error):
+        if isinstance(error, commands.CheckFailure):
+            msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
+            await ctx.channel.send(msg)
 
 
 
