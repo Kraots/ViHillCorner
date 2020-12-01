@@ -5,7 +5,6 @@ import utils.colors as color
 from utils.helpers import NSFW
 from discord.ext.commands import Greedy
 from discord import Member
-import random
 
 class NSFW(commands.Cog):
 
@@ -15,7 +14,7 @@ class NSFW(commands.Cog):
     @commands.group(invoke_without_command=True, case_insensitive=True)
     @commands.check(NSFW)
     async def nsfw(self, ctx):
-        await ctx.send('`!nsfw hentai` | `!nsfw yuri`')
+        await ctx.send('`!nsfw hentai` | `!nsfw yuri` | `!nsfw tentacle`')
 
     @nsfw.command()
     @commands.check(NSFW)
@@ -36,9 +35,24 @@ class NSFW(commands.Cog):
     @commands.check(NSFW)
     async def yuri(self, ctx):
         async with aiohttp.ClientSession() as cs:
-          async with cs.get("https://www.reddit.com/r/yuri.json") as r:
+          async with cs.get("https://www.reddit.com/r/yuri/random/.json") as r:
             res = await r.json()
-            imgUrl = res['data']['children'] [random.randint(0, 24)]['data']
+            imgUrl = res[0]['data']['children'] [0]['data']
+            linkUrl = imgUrl['url']
+            titleUrl = imgUrl['title']
+
+            embed = discord.Embed(description=f'[{titleUrl}]({linkUrl})', timestamp=ctx.message.created_at, color=color.pastel)
+            embed.set_image(url=linkUrl)
+            embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+            await ctx.channel.send(embed=embed)
+
+    @nsfw.command()
+    @commands.check(NSFW)
+    async def tentacle(self, ctx):
+        async with aiohttp.ClientSession() as cs:
+          async with cs.get("https://www.reddit.com/r/Tentai/random/.json") as r:
+            res = await r.json()
+            imgUrl = res[0]['data']['children'] [0]['data']
             linkUrl = imgUrl['url']
             titleUrl = imgUrl['title']
 
@@ -95,6 +109,11 @@ class NSFW(commands.Cog):
             msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
             await ctx.channel.send(msg)
 
+    @tentacle.error
+    async def tentacle_error(self, ctx, error):
+        if isinstance(error, commands.CheckFailure):
+            msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
+            await ctx.channel.send(msg)
 
 
 

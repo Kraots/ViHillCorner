@@ -273,7 +273,7 @@ class Help(commands.Cog):
 
         else:
 
-            em = discord.Embed(color=color.lightpink, description='Usage: `!nsfw yuri | hentai`\nGet a random `yuri | hentai` pic! **USE ONLY IN <#780374324598145055>**')
+            em = discord.Embed(color=color.lightpink, description='Usage: `!nsfw yuri | hentai | tentacle`\nGet a random `yuri | hentai | tentacle` pic! **USE ONLY IN <#780374324598145055>**')
             await ctx.send(embed=em)
 
     @help.command()

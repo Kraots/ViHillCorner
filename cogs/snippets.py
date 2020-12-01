@@ -7,7 +7,7 @@ creeepy = os.environ.get('CREEPY')
 kraots1 = os.environ.get('KRAOTS1')
 kraots2 = os.environ.get('KRAOTS2')
 kraots3 = os.environ.get('KRAOTS3')
-kraots4 = os.environ.get('KRAOTS4')
+kraotss = os.environ.get('KRAOTS4')
 welcome = os.environ.get('WELCOME')
 fuyu = os.environ.get('FUYU')
 vihillcorner = os.environ.get('VIHILLCORNER')
@@ -23,11 +23,22 @@ galactus2 = os.environ.get('GALACTUS2')
 lepoledancer = os.environ.get('LEPOLEDANCER')
 kewii = os.environ.get('KEWI')
 twilight = os.environ.get('TWILIGHT')
+onii = os.environ.get('ONII')
 
 class snippets(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+
+
+    @commands.command(hidden=True)
+    async def onii(self, ctx):
+
+            creepy = discord.Embed(color=color.red)
+            creepy.set_image(url=onii)
+
+            msg = await ctx.send(embed=creepy)
+            await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
     async def twilight(self, ctx):
@@ -62,7 +73,7 @@ class snippets(commands.Cog):
     async def kraots(self, ctx):
 
             version = discord.Embed(color=color.red)
-            version.set_image(url=kraots4)
+            version.set_image(url=kraotss)
 
             
             msg = await ctx.send(embed=version)

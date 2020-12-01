@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import random
 import aiohttp
 import utils.colors as color
 
@@ -11,9 +10,9 @@ class Memes(commands.Cog):
   @commands.command()
   async def meme(self, ctx):
     async with aiohttp.ClientSession() as cs:
-        async with cs.get('https://www.reddit.com/r/dankmemes/new.json?sort=hot') as r:
+        async with cs.get('https://www.reddit.com/r/dankmemes/random/.json') as r:
             res = await r.json()
-            imgUrl = res['data']['children'] [random.randint(0, 24)]['data']
+            imgUrl = res[0]['data']['children'] [0]['data']
             linkUrl = imgUrl['url']
             titleUrl = imgUrl['title']
             

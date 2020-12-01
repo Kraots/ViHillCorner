@@ -340,8 +340,5 @@ class developer(commands.Cog):
 
 
 
-
-
-
 def setup (client):
     client.add_cog(developer(client))
