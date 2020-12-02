@@ -24,7 +24,7 @@ class Metrics(commands.Cog):
         start = time.time() * 1000
         msg = await ctx.message.channel.send(embed=metrics)
         end = time.time() * 1000
-        metrics = discord.Embed(title="Metrics", color=color.pink)
+        metrics = discord.Embed(title="Metrics", color=color.inviscolor)
         metrics.add_field(name="Ping:", value=f"Avg. Latency: `{(round(self.client.latency * 1000, 2))}ms`\nRest: `{int(round(end-start, 0))}ms`", inline=False)
         metrics.add_field(name="Memory Usage:", value=f" \n{humanize.naturalsize(mem.rss)} physical memory \n{humanize.naturalsize(mem.vms)} virtual memory \n{humanize.naturalsize(mem.uss)} of which unique to this process", inline=False)
         metrics.add_field(name="Guilds:", value=guilds, inline=False)
