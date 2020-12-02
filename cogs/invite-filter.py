@@ -12,6 +12,7 @@ class InviteFilter(commands.Cog):
         self.client = client
 
     @commands.Cog.listener()
+    @commands.guild_only()
     async def on_message(self, message: discord.Message):
         guild = self.client.get_guild(750160850077089853)
         message.content = message.content.lower()
@@ -19,6 +20,8 @@ class InviteFilter(commands.Cog):
         role = guild.get_role(750465726069997658)
         Logchannel = guild.get_channel(781777255885570049)
         if message.content.startswith('!ad'):
+            return
+        if message.author.id == 751724369683677275:
             return
         else:
 
