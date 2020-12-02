@@ -46,7 +46,7 @@ class NSFW(commands.Cog):
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
             await ctx.channel.send(embed=embed)
 
-    @nsfw.command()
+    @nsfw.command(aliases=['tentacles'])
     @commands.check(NSFW)
     async def tentacle(self, ctx):
         async with aiohttp.ClientSession() as cs:
