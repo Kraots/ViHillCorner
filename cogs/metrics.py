@@ -12,10 +12,14 @@ class Metrics(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.prefix = ";;"
+    async def cog_check(self, ctx):
+        return ctx.prefix == self.prefix
 
-    @commands.command(aliases=["!metrics"])
+
+    @commands.command()
     @commands.is_owner()
-    async def asdasdasdasdadsmetrics(self, ctx):
+    async def metrics(self, ctx):
         kraots = self.client.get_user(374622847672254466)
         proc = psutil.Process()
         mem = proc.memory_full_info()

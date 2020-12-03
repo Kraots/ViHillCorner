@@ -9,6 +9,9 @@ class command(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.process = psutil.Process(os.getpid())
+        self.prefix = "!"
+    async def cog_check(self, ctx):
+        return ctx.prefix == self.prefix
     
     @commands.command(help="Get a list of all actions")
     async def actions(self, context):
@@ -80,7 +83,7 @@ class command(commands.Cog):
     @commands.command()
     async def serverad(self, ctx):
         await ctx.message.delete()
-        ad = discord.Embed(color=color.lightpink, title="Here's the ad to the server:", description="**__Anime Hangouts__**\nAnime Hangouts is mainly for anime & talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\nConvinced?\n\nhttps://discord.gg/Uf2kA8q")
+        ad = discord.Embed(color=color.lightpink, title="Here's the ad to the server:", description="**__Anime Hangouts__**\nAnime Hangouts is mainly for anime & talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\n\nhttps://discord.gg/Uf2kA8q")
         ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
         await ctx.channel.send(embed=ad)
@@ -88,7 +91,7 @@ class command(commands.Cog):
     @commands.command(aliases=["ra"])
     async def rawad(self, ctx):
         await ctx.message.delete()
-        ad = discord.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```**__Anime Hangouts__**\nAnime Hangouts is mainly for anime & talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\nConvinced?\n\nhttps://discord.gg/Uf2kA8q```")
+        ad = discord.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```**__Anime Hangouts__**\nAnime Hangouts is mainly for anime & talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\n\nhttps://discord.gg/Uf2kA8q```")
         ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
         await ctx.channel.send(embed=ad)

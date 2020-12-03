@@ -6,6 +6,10 @@ class info(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.prefix = "!"
+    async def cog_check(self, ctx):
+        return ctx.prefix == self.prefix
+
         
         # SFW
 

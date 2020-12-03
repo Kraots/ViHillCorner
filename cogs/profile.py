@@ -7,6 +7,10 @@ class Userinfo(commands.Cog):
     """ Get info for user"""
     def __init__(self, bot):
         self.bot = bot
+        self.prefix = "!"
+    async def cog_check(self, ctx):
+        return ctx.prefix == self.prefix
+
 
     @commands.group(invoke_without_command=True)
     async def profile(self, ctx, *, user: typing.Optional[discord.Member]):

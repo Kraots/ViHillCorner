@@ -15,10 +15,14 @@ class developer(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.prefix = ";;"
+    async def cog_check(self, ctx):
+        return ctx.prefix == self.prefix
 
-    @commands.command(aliases=['!mail'])
+
+    @commands.command()
     @commands.is_owner()
-    async def mailsdakmdakdmasamdamdasodassdoasdmaodsamdolal(self, ctx, members : Greedy[Member]=None, *, args=None):
+    async def mail(self, ctx, members : Greedy[Member]=None, *, args=None):
       if members is None:
         await ctx.channel.send("You must provide a user!")
         return
@@ -32,9 +36,9 @@ class developer(commands.Cog):
             await ctx.message.add_reaction('✅')
 
 
-    @commands.command(aliases=['!modmute'])
+    @commands.command()
     @commands.is_owner()
-    async def modmutsdjkgnskjkdshgjklshfvuedhfhnkswvvfe(self, ctx, members: Greedy[Member]):
+    async def modmute(self, ctx, members: Greedy[Member]):
         staff = discord.utils.get(ctx.guild.roles, name="Staff")
         mod = discord.utils.get(ctx.guild.roles, name="Mod")
         mute = discord.utils.get(ctx.guild.roles, name="Muted")
@@ -48,9 +52,9 @@ class developer(commands.Cog):
             await ctx.channel.send(embed=modmute)
 
 
-    @commands.command(aliases=['!modunmute'])
+    @commands.command()
     @commands.is_owner()
-    async def modunmasoduhasidhdhjiashdahidasdute(self, ctx, members: Greedy[Member]):
+    async def modunmute(self, ctx, members: Greedy[Member]):
         staff = discord.utils.get(ctx.guild.roles, name="Staff")
         mod = discord.utils.get(ctx.guild.roles, name="Mod")
         mute = discord.utils.get(ctx.guild.roles, name="Muted")
@@ -63,9 +67,9 @@ class developer(commands.Cog):
             modunmute = discord.Embed(color=color.red, description=f'Mod {member.mention} has been unmuted!')
             await ctx.channel.send(embed=modunmute)
 
-    @commands.command(aliases=['!makemod'])
+    @commands.command()
     @commands.is_owner()
-    async def makemasdljknasdkjbaskdhaskdajksdakdhnod(self, ctx, members: Greedy[Member]):
+    async def makemod(self, ctx, members: Greedy[Member]):
         staff = discord.utils.get(ctx.guild.roles, name="Staff")
         mod = discord.utils.get(ctx.guild.roles, name="Mod")
 
@@ -76,9 +80,9 @@ class developer(commands.Cog):
             modunmute = discord.Embed(color=color.red, description=f'{member.mention} is now a mod!')
             await ctx.channel.send(embed=modunmute)
 
-    @commands.command(aliases=['!removemod'])
+    @commands.command()
     @commands.is_owner()
-    async def askjdhajidasdaihdjisahdjiadihasdremovemod(self, ctx, members: Greedy[Member]):
+    async def removemod(self, ctx, members: Greedy[Member]):
         staff = discord.utils.get(ctx.guild.roles, name="Staff")
         mod = discord.utils.get(ctx.guild.roles, name="Mod")
         
@@ -89,29 +93,29 @@ class developer(commands.Cog):
             modunmute = discord.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')
             await ctx.channel.send(embed=modunmute)
 
-    @commands.command(aliases=['!shutdown'])
+    @commands.command()
     @commands.is_owner()
-    async def asdjklnasdjskdhnajkshdjkashdjkhaskdhajdhasjd(self, ctx):
+    async def shutdown(self, ctx):
         await ctx.message.add_reaction('✅')
         await self.client.close()
 
-    @commands.command(aliases=['!restart'])
+    @commands.command()
     @commands.is_owner()
-    async def restasdkjbashkdfhsdfjhasuyhfasfart(self, ctx):
+    async def restart(self, ctx):
         await ctx.send("*Restarting...*")
         restart_program()
     
     
     
     
-    @commands.group(invoke_without_command=True, case_insensitive=True, aliases=["!status"])
+    @commands.group(invoke_without_command=True, case_insensitive=True)
     @commands.is_owner()
-    async def stasdasdasdhbashdgasihdsukahdisuahdaatus(self, ctx):
+    async def status(self, ctx):
       statuses = discord.Embed(title="Statuses:", color=color.lightpink)
-      statuses.add_field(name="Online:", value="!!status online\n   !!status online-playing [custom status]\n   !!status online-listening [custom status]\n   !!status online-watching [custom status]", inline=False)
-      statuses.add_field(name="Idle:", value="!!status idle\n   !!status idle-playing [custom status]\n   !!status idle-listening [custom status]\n   !!status idle-watching [custom status]", inline=False)
-      statuses.add_field(name="Dnd:", value="!!status dnd\n   !!status dnd-playing [custom status]\n   !!status dnd-listening [custom status]\n   !!status dnd-watching [custom status]", inline=False)
-      statuses.add_field(name="Offline:", value="!!status offline", inline=False)
+      statuses.add_field(name="Online:", value=";;status online\n   ;;status online-playing [custom status]\n   ;;status online-listening [custom status]\n   ;;status online-watching [custom status]", inline=False)
+      statuses.add_field(name="Idle:", value=";;status idle\n   ;;status idle-playing [custom status]\n   ;;status idle-listening [custom status]\n   ;;status idle-watching [custom status]", inline=False)
+      statuses.add_field(name="Dnd:", value=";;status dnd\n   ;;status dnd-playing [custom status]\n   ;;status dnd-listening [custom status]\n   ;;status dnd-watching [custom status]", inline=False)
+      statuses.add_field(name="Offline:", value=";;status offline", inline=False)
       await ctx.channel.send(embed=statuses, delete_after=5)
       await asyncio.sleep(4)
       await ctx.message.delete()
@@ -126,7 +130,7 @@ class developer(commands.Cog):
 
    
    
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command()
+    @status.command()
     @commands.is_owner()
     async def online(self, ctx):
       await ctx.message.delete()
@@ -135,7 +139,7 @@ class developer(commands.Cog):
 
 
 
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command(aliases=["online-playing"])
+    @status.command(aliases=["online-playing"])
     @commands.is_owner()
     async def onlinegame(self, ctx, *, args=None):
       await ctx.message.delete()
@@ -149,7 +153,7 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.online, activity=listening)
         await ctx.channel.send("**[ONLINE] [PLAYING]** Status succesfully changed.", delete_after=5)
 
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command(aliases=["online-listening"])
+    @status.command(aliases=["online-listening"])
     @commands.is_owner()
     async def onlinelistening(self, ctx, *, args=None):
       await ctx.message.delete()
@@ -163,7 +167,7 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.online, activity=listening)
         await ctx.channel.send("**[ONLINE] [LISTENING]** Status succesfully changed.", delete_after=5)
 
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command(aliases=["online-watching"])
+    @status.command(aliases=["online-watching"])
     @commands.is_owner()
     async def onlinewatching(self, ctx, *, args=None):
       await ctx.message.delete()
@@ -194,7 +198,7 @@ class developer(commands.Cog):
 
 
 
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command()
+    @status.command()
     @commands.is_owner()
     async def idle(self, ctx):
       await ctx.message.delete()
@@ -203,7 +207,7 @@ class developer(commands.Cog):
 
 
 
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command(aliases=["idle-playing"])
+    @status.command(aliases=["idle-playing"])
     @commands.is_owner()
     async def idleplaying(self, ctx, *, args=None):
       await ctx.message.delete()
@@ -217,7 +221,7 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.idle, activity=listening)
         await ctx.channel.send("**[IDLE] [PLAYING]** Status succesfully changed.", delete_after=5)
 
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command(aliases=["idle-listening"])
+    @status.command(aliases=["idle-listening"])
     @commands.is_owner()
     async def idlelistening(self, ctx, *, args=None):
       await ctx.message.delete()
@@ -231,7 +235,7 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.idle, activity=listening)
         await ctx.channel.send("**[IDLE] [LISTENING]** Status succesfully changed.", delete_after=5)
 
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command(aliases=["idle-watching"])
+    @status.command(aliases=["idle-watching"])
     @commands.is_owner()
     async def idlewatching(self, ctx, *, args=None):
       await ctx.message.delete()
@@ -262,7 +266,7 @@ class developer(commands.Cog):
 
 
 
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command()
+    @status.command()
     @commands.is_owner()
     async def dnd(self, ctx):
       await ctx.message.delete()
@@ -271,7 +275,7 @@ class developer(commands.Cog):
 
 
 
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command(aliases=["dnd-playing"])
+    @status.command(aliases=["dnd-playing"])
     @commands.is_owner()
     async def dndplaying(self, ctx, *, args=None):
       await ctx.message.delete()
@@ -285,7 +289,7 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.do_not_disturb, activity=listening)
         await ctx.channel.send("**[DND] [PLAYING]** Status succesfully changed.", delete_after=5)
 
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command(aliases=["dnd-listening"])
+    @status.command(aliases=["dnd-listening"])
     @commands.is_owner()
     async def dndlistening(self, ctx, *, args=None):
       await ctx.message.delete()
@@ -299,7 +303,7 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.do_not_disturb, activity=listening)
         await ctx.channel.send("**[DND] [LISTENING]** Status succesfully changed.", delete_after=5)
 
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command(aliases=["dnd-watching"])
+    @status.command(aliases=["dnd-watching"])
     @commands.is_owner()
     async def dndwatching(self, ctx, *, args=None):
       await ctx.message.delete()
@@ -328,7 +332,7 @@ class developer(commands.Cog):
 
 
 
-    @stasdasdasdhbashdgasihdsukahdisuahdaatus.command()
+    @status.command()
     @commands.is_owner()
     async def offline(self, ctx):
       await ctx.message.delete()

@@ -8,6 +8,11 @@ class Help(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.prefix = "!"
+    async def cog_check(self, ctx):
+        return ctx.prefix == self.prefix
+
+
 
     @commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
     async def help(self, ctx):
@@ -231,10 +236,10 @@ class Help(commands.Cog):
     @commands.check(Developer)
     async def statuses(self, ctx):
       statuses = discord.Embed(title="Statuses:", color=color.lightpink)
-      statuses.add_field(name="Online:", value="!!status online\n   !!status online-playing [custom status]\n   !!status online-listening [custom status]\n   !!status online-watching [custom status]", inline=False)
-      statuses.add_field(name="Idle:", value="!!status idle\n   !!status idle-playing [custom status]\n   !!status idle-listening [custom status]\n   !!status idle-watching [custom status]", inline=False)
-      statuses.add_field(name="Dnd:", value="!!status dnd\n   !!status dnd-playing [custom status]\n   !!status dnd-listening [custom status]\n   !!status dnd-watching [custom status]", inline=False)
-      statuses.add_field(name="Offline:", value="!!status offline", inline=False)
+      statuses.add_field(name="Online:", value=";;status online\n   ;;status online-playing [custom status]\n   ;;status online-listening [custom status]\n   ;;status online-watching [custom status]", inline=False)
+      statuses.add_field(name="Idle:", value=";;status idle\n   ;;status idle-playing [custom status]\n   ;;status idle-listening [custom status]\n   ;;status idle-watching [custom status]", inline=False)
+      statuses.add_field(name="Dnd:", value=";;status dnd\n   ;;status dnd-playing [custom status]\n   ;;status dnd-listening [custom status]\n   ;;status dnd-watching [custom status]", inline=False)
+      statuses.add_field(name="Offline:", value=";;status offline", inline=False)
 
       await ctx.channel.send(embed=statuses)
 
@@ -256,7 +261,7 @@ class Help(commands.Cog):
     @help.command()
     @commands.check(Developer)
     async def mail(self, ctx):
-      em = discord.Embed(description='Usage: `!!mail {member} {args}`\n To get the member, copy the ID and then put it in between `<@!ID>` by replacing the "ID" with the ID of the member you want the bot to dm.\n\n***Note that this command works in dms as well. ;))***')
+      em = discord.Embed(description='Usage: `;;mail {member} {args}`\n To get the member, copy the ID and then put it in between `<@!ID>` by replacing the "ID" with the ID of the member you want the bot to dm.\n\n***Note that this command works in dms as well. ;))***')
       await ctx.send(embed=em)
 
     @help.command()
@@ -278,7 +283,7 @@ class Help(commands.Cog):
 
     @help.command()
     async def calc(self, ctx):
-        embed = discord.Embed(color=color.lightpink, description='Usage:\n\n`!calc add {a} {b}`\n`!calc substract {a} {b}`\n`!calc multiply {a} {b}`\n`!calc divide {a} {b}`\n\n*WARNING: NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`!!!*\n\nExample:\n\n`!calc divide 4 2` will result `2.0`\n`!calc divide 4.6 2.3` will result an error!!')
+        embed = discord.Embed(color=color.lightpink, description='Usage:\n\n`!calc add {a} {b}`\n`!calc substract {a} {b}`\n`!calc multiply {a} {b}`\n`!calc divide {a} {b}`\n\n*WARNING: NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`;;!*\n\nExample:\n\n`!calc divide 4 2` will result `2.0`\n`!calc divide 4.6 2.3` will result an error;;')
         await ctx.channel.send(embed=embed)
 
     @help.command()

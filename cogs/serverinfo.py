@@ -6,6 +6,10 @@ class ServerInfo(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        self.prefix = "!"
+    async def cog_check(self, ctx):
+        return ctx.prefix == self.prefix
+
 
     @commands.group(aliases=['server', 'sinfo', 'si'], pass_context=True, invoke_without_command=True)
     async def serverinfo(self, ctx, *, msg=""):

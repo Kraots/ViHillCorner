@@ -11,6 +11,10 @@ up = time.time()
 class Ping(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.prefix = "!"
+    async def cog_check(self, ctx):
+        return ctx.prefix == self.prefix
+
 
     @commands.command(help="Check bot's ping", hidden=True)
     async def ping(self, ctx):

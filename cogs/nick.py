@@ -3,6 +3,10 @@ from discord.ext import commands
 class Nicks(commands.Cog):
   def __init__(self, client):
     self.client = client
+    self.prefix = "!"
+  async def cog_check(self, ctx):
+    return ctx.prefix == self.prefix
+
 
   @commands.group(invoke_without_command=True, case_insensitive=True)
   @commands.has_any_role('Mod', 'lvl 3+', 'lvl 5+', 'lvl 10+', 'lvl 15+', 'lvl 20+', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+')
