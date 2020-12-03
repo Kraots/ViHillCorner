@@ -3,6 +3,7 @@ from discord.ext import commands
 import psutil
 import os
 import utils.colors as color
+import datetime as dt
 
 class command(commands.Cog):
 
@@ -31,18 +32,34 @@ class command(commands.Cog):
     async def created(self, ctx, member: discord.Member=None):
         if member is None:
             member = ctx.author
+        duration = dt.datetime.now() - member.created_at 
+
+        hours, remainder = divmod(int(duration .total_seconds()), 3600)
+        minutes, seconds = divmod(remainder, 60)
+        days, hours = divmod(hours, 24)
+        weeks, days = divmod(days, 7)
+        months, weeks = divmod(weeks, 4)
+        years, months = divmod(months, 12)
         
         embed = discord.Embed(color=color.lightpink)
-        embed.add_field(name=f"{member.name}'s account was made on:", value=member.created_at.strftime("%a, %#d %B %Y, %I:%M %p UTC"))
+        embed.add_field(name='Create Date:', value=f"{member.name}'s account was made **{years}** years, **{months}** months, **{weeks}** weeks, **{days}** days, **{minutes}** minutes and **{seconds}** seconds ago.")
         await ctx.channel.send(embed=embed)
 
     @commands.command()
     async def joined(self, ctx, member: discord.Member=None):
         if member is None:
             member = ctx.author
-        
+
+        duration = dt.datetime.now() - member.joined_at 
+
+        hours, remainder = divmod(int(duration .total_seconds()), 3600)
+        minutes, seconds = divmod(remainder, 60)
+        days, hours = divmod(hours, 24)
+        weeks, days = divmod(days, 7)
+        months, weeks = divmod(weeks, 4)
+
         embed = discord.Embed(color=color.lightpink)
-        embed.add_field(name=f"{member.name} joined on:", value=member.joined_at.strftime("%a, %#d %B %Y, %I:%M %p UTC"))
+        embed.add_field(name="Join Date:", value=f"{member.name} joined **{months}** months, **{weeks}** weeks, **{days}** days, **{minutes}** minutes and **{seconds}** seconds ago.")
         await ctx.channel.send(embed=embed)
 
     @commands.command(help="Get a list of all snippets", aliases=["inv", "invite"])
