@@ -24,6 +24,7 @@ lepoledancer = os.environ.get('LEPOLEDANCER')
 kewii = os.environ.get('KEWI')
 twilight = os.environ.get('TWILIGHT')
 onii = os.environ.get('ONII')
+vivian = os.environ.get("VIVIAN")
 
 class snippets(commands.Cog):
 
@@ -33,7 +34,14 @@ class snippets(commands.Cog):
     async def cog_check(self, ctx):
         return ctx.prefix == self.prefix
 
+    @commands.command()
+    async def V(self, ctx):
 
+        v = discord.Embed(color=color.red)
+        v.set_image(url=vivian)
+
+        msg = await ctx.send(embed=v)
+        await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
     async def onii(self, ctx):

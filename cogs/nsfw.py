@@ -18,7 +18,7 @@ class NSFW(commands.Cog):
     @commands.group(invoke_without_command=True, case_insensitive=True)
     @commands.check(NSFW)
     async def nsfw(self, ctx):
-        await ctx.send('`!nsfw hentai` | `!nsfw yuri` | `!nsfw tentacle`')
+        await ctx.send('`!nsfw hentai` | `!nsfw yuri` | `!nsfw tentacle` | `!nsfw real`')
 
     @nsfw.command()
     @commands.check(NSFW)
@@ -65,6 +65,20 @@ class NSFW(commands.Cog):
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
             await ctx.channel.send(embed=embed)
 
+    @nsfw.command()
+    @commands.check(NSFW)
+    async def real(self, ctx):
+        async with aiohttp.ClientSession() as cs:
+          async with cs.get("https://www.reddit.com/r/pornpics/random/.json") as r:
+            res = await r.json()
+            imgUrl = res[0]['data']['children'] [0]['data']
+            linkUrl = imgUrl['url']
+            titleUrl = imgUrl['title']
+
+            embed = discord.Embed(description=f'[{titleUrl}]({linkUrl})', timestamp=ctx.message.created_at, color=color.pastel)
+            embed.set_image(url=linkUrl)
+            embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+            await ctx.channel.send(embed=embed)
 
     @nsfw.command()
     @commands.has_role('Staff')
