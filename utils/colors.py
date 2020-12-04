@@ -6,3 +6,4 @@ pastel = 0xc69eff
 yellow = 0xb9b211
 lightpink = 0xf1a3d8
 blue = 0x708DD0
+reds = 0xf93b3b
