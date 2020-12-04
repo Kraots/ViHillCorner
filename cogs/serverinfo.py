@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 import utils.colors as color
+import datetime as dt
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 class ServerInfo(commands.Cog):
 
@@ -48,6 +51,8 @@ class ServerInfo(commands.Cog):
             role_count = len(server.roles)
             emoji_count = len(server.emojis)
 
+            diff = relativedelta(datetime.utcnow(), server.created_at)
+
             em = discord.Embed(color=color.lightpink)
             em.add_field(name='Name', value=server.name)
             em.add_field(name='Owner', value=server.owner, inline=False)
@@ -59,7 +64,7 @@ class ServerInfo(commands.Cog):
             em.add_field(name='Highest role', value="Staff")
             em.add_field(name='Number of roles', value=str(role_count))
             em.add_field(name='Number of emotes', value=str(emoji_count))
-            em.add_field(name='Created At', value=server.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S'))
+            em.add_field(name='Created At', value=f"{diff.months} months, {diff.weeks} weeks, {diff.days} days, {diff.hours} hours and {diff.seconds} seconds ago.")
             em.set_thumbnail(url=server.icon_url)
             em.set_author(name='Server Info')
             em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)

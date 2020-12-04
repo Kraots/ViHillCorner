@@ -4,6 +4,8 @@ import psutil
 import os
 import utils.colors as color
 import datetime as dt
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 class command(commands.Cog):
 
@@ -32,17 +34,11 @@ class command(commands.Cog):
     async def created(self, ctx, member: discord.Member=None):
         if member is None:
             member = ctx.author
-        duration = dt.datetime.now() - member.created_at 
 
-        hours, remainder = divmod(int(duration .total_seconds()), 3600)
-        minutes, seconds = divmod(remainder, 60)
-        days, hours = divmod(hours, 24)
-        weeks, days = divmod(days, 7)
-        months, weeks = divmod(weeks, 4)
-        years, months = divmod(months, 12)
+        diff = relativedelta(datetime.utcnow(), member.created_at)
         
         embed = discord.Embed(color=color.lightpink)
-        embed.add_field(name='Create Date:', value=f"{member.name}'s account was made **{years}** years, **{months}** months, **{weeks}** weeks, **{days}** days, **{minutes}** minutes and **{seconds}** seconds ago.")
+        embed.add_field(name='Create Date:', value=f"{member.name}'s account was made **{diff.years}** years, **{diff.months}** months, **{diff.weeks}** weeks, **{diff.days}** days , **{diff.hours}** hours, **{diff.minutes}** minutes and **{diff.seconds}** seconds ago.")
         await ctx.channel.send(embed=embed)
 
     @commands.command()
@@ -50,16 +46,10 @@ class command(commands.Cog):
         if member is None:
             member = ctx.author
 
-        duration = dt.datetime.now() - member.joined_at 
-
-        hours, remainder = divmod(int(duration .total_seconds()), 3600)
-        minutes, seconds = divmod(remainder, 60)
-        days, hours = divmod(hours, 24)
-        weeks, days = divmod(days, 7)
-        months, weeks = divmod(weeks, 4)
+        diff = relativedelta(datetime.utcnow(), member.joined_at)
 
         embed = discord.Embed(color=color.lightpink)
-        embed.add_field(name="Join Date:", value=f"{member.name} joined **{months}** months, **{weeks}** weeks, **{days}** days, **{minutes}** minutes and **{seconds}** seconds ago.")
+        embed.add_field(name="Join Date:", value=f"{member.name} joined **{diff.months}** months, **{diff.weeks}** weeks, **{diff.days}** days, **{diff.hours}** hours, **{diff.minutes}** minutes and **{diff.seconds}** seconds ago.")
         await ctx.channel.send(embed=embed)
 
     @commands.command(help="Get a list of all snippets", aliases=["inv", "invite"])

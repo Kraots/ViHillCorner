@@ -3,6 +3,8 @@ import asyncio
 import time
 import random
 import datetime as dt
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 import utils.colors as color
 
 def get_user_image(user: discord.User):
@@ -23,22 +25,8 @@ def get_member_voice(member: discord.Member):
 
 def profile(ctx, user):
 
-    duration = dt.datetime.now() - user.created_at 
-
-    createdhours, remainder = divmod(int(duration .total_seconds()), 3600)
-    createdminutes, createdseconds = divmod(remainder, 60)
-    createddays, createdhours = divmod(createdhours, 24)
-    createdweeks, createddays = divmod(createddays, 7)
-    createdmonths, createdweeks = divmod(createdweeks, 4)
-    createdyears, createdmonths = divmod(createdmonths, 12)
-
-    durationn = dt.datetime.now() - user.joined_at 
-
-    joinedhours, remainder = divmod(int(durationn .total_seconds()), 3600)
-    joinedminutes, joinedseconds = divmod(remainder, 60)
-    joineddays, joinedhours = divmod(joinedhours, 24)
-    joinedweeks, joineddays = divmod(joineddays, 7)
-    joinedmonths, joinedweeks = divmod(joinedweeks, 4)
+    diff = relativedelta(datetime.utcnow(), user.created_at)
+    diff2 = relativedelta(datetime.utcnow(), user.joined_at)
 
     em = discord.Embed(timestamp=ctx.message.created_at, colour=color.lightpink)
     em.add_field(name='User ID', value=user.id, inline=False)
@@ -48,9 +36,9 @@ def profile(ctx, user):
         em.add_field(name='In Voice', value=get_member_voice(user), inline=False)
         em.add_field(name='Game', value=user.activity, inline=False)
         em.add_field(name='Highest Role', value=get_member_role(user), inline=False)
-        em.add_field(name='Join Date', value=f'{joinedmonths} months, {joinedweeks} weeks, {joineddays} days, {joinedminutes} minutes and {joinedseconds} seconds ago.')
+        em.add_field(name='Join Date', value=f"{diff2.months} months, {diff2.weeks} weeks, {diff2.days} days , {diff2.hours} hours, {diff2.minutes} minutes and {diff2.seconds} seconds ago.")
         em.add_field(name="Avatar", value=f'[Click Here]({get_user_image(user)})', inline=False)
-    em.add_field(name='Account Created', value=f'{createdyears} years, {createdmonths} months, {createdweeks} weeks, {createddays} days, {createdminutes} minutes and {createdseconds} seconds ago.', inline=False)
+    em.add_field(name='Account Created', value=f"{diff.years} years, {diff.months} months, {diff.weeks} weeks, {diff.days} days , {diff.hours} hours, {diff.minutes} minutes and {diff.seconds} seconds ago.", inline=False)
     em.set_thumbnail(url=get_user_image(user))
     em.set_author(name=user, icon_url=user.avatar_url)
     em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url) 
