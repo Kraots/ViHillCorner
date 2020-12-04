@@ -19,7 +19,7 @@ class Help(commands.Cog):
         helpEm = discord.Embed(description="", color=color.lightpink)
         helpEm.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
         helpEm.set_thumbnail(url="https://cdn.discordapp.com/attachments/752148605753884792/772510591565824000/00795f0d4b6710316662326aedb9d502.png")
-        helpEm.add_field(name="Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `calc`, `topic`")
+        helpEm.add_field(name="Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `calc`, `topic`, `gayrate`, `straightrate` , `simprate`")
         helpEm.add_field(name="Info Commands", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `snippets`, `actions`, `serverinfo`", inline=False)
         if "Staff" in [role.name for role in ctx.message.author.roles]:
             helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `massmute`, `tempmute`, `unmute`, `massunmute`, `kick`, `masskick`, `ban`, `massban`, `unban`, `massunban`, `partnership`, `nsfw`, `slowmode`", inline=False)
@@ -28,6 +28,21 @@ class Help(commands.Cog):
             helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
 
         await ctx.message.channel.send(embed=helpEm)
+
+    @help.command()
+    async def gayrate(self, ctx):
+        embed = discord.Embed(description='Usage: `!gayrate [user]`', color=color.lightpink)
+        await ctx.send(embed=embed)
+
+    @help.command()
+    async def straightrate(self, ctx):
+        embed = discord.Embed(description='Usage: `!straightrate [user]`', color=color.lightpink)
+        await ctx.send(embed=embed)
+
+    @help.command()
+    async def simprate(self, ctx):
+        embed = discord.Embed(description='Usage: `!simprate [user]`', color=color.lightpink)
+        await ctx.send(embed=embed)
 
     @help.command()
     async def revive(self, ctx):

@@ -32,7 +32,6 @@ class Moderation(commands.Cog):
     async def cog_check(self, ctx):
         return ctx.prefix == self.prefix
 
-
     # SLOWMODE
     @commands.command()
     @commands.has_role('Staff')

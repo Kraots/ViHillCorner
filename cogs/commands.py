@@ -6,6 +6,8 @@ import utils.colors as color
 import datetime as dt
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
+import random
+from random import randint
 
 class command(commands.Cog):
 
@@ -115,6 +117,65 @@ class command(commands.Cog):
     async def _sdlajkndasjkdn(self, ctx):
         guild = self.client.get_guild(750160850077089853)
         await ctx.channel.send(f'Members left untill the server can apply for the *discord partership program:* \n\n`{500 - guild.member_count + 11}`')
+
+    @commands.command()
+    async def gayrate(self, ctx, member : discord.Member=None):
+        gayrate = randint(1, 100)
+        randomcolour = randint(0, 0xffffff)
+
+        if member is None:
+            embed1 = discord.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
+            
+            await ctx.send(embed=embed1)
+
+        elif member is ctx.author:
+            embed1 = discord.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
+
+            await ctx.send(embed=embed1)
+
+        else:
+            embed2 = discord.Embed(title='Gay rating machine', description=f'{member.name} is {gayrate}% gay :gay_pride_flag:', color=randomcolour)
+            await ctx.send(embed=embed2)
+
+    @commands.command()
+    async def simprate(self, ctx, member : discord.Member=None):
+        simprate = randint(1, 100)
+        randomcolour = randint(0, 0xffffff)
+
+        if member is None:
+            embed1 = discord.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
+            
+            await ctx.send(embed=embed1)
+
+        elif member is ctx.author:
+            embed1 = discord.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
+
+            await ctx.send(embed=embed1)
+
+        else:
+            embed2 = discord.Embed(title='Simp rating machine', description=f'{member.name} is {simprate}% simp ', color=randomcolour)
+            await ctx.send(embed=embed2)
+
+    @commands.command()
+    async def straightrate(self, ctx, member : discord.Member=None):
+        simprate = randint(1, 100)
+        randomcolour = randint(0, 0xffffff)
+
+        if member is None:
+            embed1 = discord.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
+            
+            await ctx.send(embed=embed1)
+
+        elif member is ctx.author:
+            embed1 = discord.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
+
+            await ctx.send(embed=embed1)
+
+        else:
+            embed2 = discord.Embed(title='Straight rating machine', description=f'{member.name} is {simprate}% straight ', color=randomcolour)
+            await ctx.send(embed=embed2)
+
+
 
 def setup (client):
     client.add_cog(command(client))
