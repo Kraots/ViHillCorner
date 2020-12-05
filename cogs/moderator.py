@@ -48,6 +48,7 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def say(self, ctx, *, arg):
+        await ctx.message.delete()
         await ctx.send(arg)
     
     # Kick

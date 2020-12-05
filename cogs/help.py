@@ -20,7 +20,8 @@ class Help(commands.Cog):
         helpEm.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
         helpEm.set_thumbnail(url="https://cdn.discordapp.com/attachments/752148605753884792/772510591565824000/00795f0d4b6710316662326aedb9d502.png")
         helpEm.add_field(name="Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `calc`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`")
-        helpEm.add_field(name="Info Commands", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `snippets`, `actions`, `serverinfo`", inline=False)
+        helpEm.add_field(name="Economy", value="`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`", inline=False)
+        helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `snippets`, `actions`, `serverinfo`", inline=False)
         if "Staff" in [role.name for role in ctx.message.author.roles]:
             helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `massmute`, `tempmute`, `unmute`, `massunmute`, `kick`, `masskick`, `ban`, `massban`, `unban`, `massunban`, `partnership`, `nsfw`, `slowmode`", inline=False)
         
@@ -318,7 +319,7 @@ class Help(commands.Cog):
 
     @help.command()
     async def calc(self, ctx):
-        embed = discord.Embed(color=color.lightpink, description='Usage:\n\n`!calc add {a} {b}`\n`!calc substract {a} {b}`\n`!calc multiply {a} {b}`\n`!calc divide {a} {b}`\n\n*WARNING: NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`;;!*\n\nExample:\n\n`!calc divide 4 2` will result `2.0`\n`!calc divide 4.6 2.3` will result an error;;')
+        embed = discord.Embed(color=color.lightpink, description='Usage:\n\n`!calc add {a} {b}`\n`!calc subtract {a} {b}`\n`!calc multiply {a} {b}`\n`!calc divide {a} {b}`\n\n*WARNING: NUMBERS LIKE `2,3` OR `2.3` WILL NOT WORK! USE ONLY NUMBERS LIKE `2` OR `3`;;!*\n\nExample:\n\n`!calc divide 4 2` will result `2.0`\n`!calc divide 4.6 2.3` will result an error;;')
         await ctx.channel.send(embed=embed)
 
     @help.command()
@@ -332,11 +333,56 @@ class Help(commands.Cog):
         embed = discord.Embed(color=color.lightpink, description='Usage: `!topic`\n\nGet a random topic to talk about, lolz.')
         await ctx.send(embed=embed)
 
+    @help.command(aliases=['balance'])
+    async def bal(self, ctx):
+        if "Staff" in [role.name for role in ctx.message.author.roles]:
+            embedd = discord.Embed(description="Usage: \n`!bal`\n`!bal add [amount] [user]`\n\nCheck your or another user's balance!\nAdd money to an user.\n***DO NOT ABUSE!!!***\n***ABUSE = REMOVE PERMS***", color=color.lightpink)
+            await ctx.send(embed=embedd)
+
+        else:
+            embed = discord.Embed(description="Usage: `!bal`\n\nCheck your or another user's balance!", color=color.lightpink)
+            await ctx.send(embed=embed)
+
+    @help.command(aliases=['deposit'])
+    async def dep(self, ctx):
+        embed = discord.Embed(description="Usage: `!dep [amount]`\n\nDeposit the amount of money from your wallet into the bank!", color=color.lightpink)
+        await ctx.send(embed=embed)
+
+    @help.command(aliases=['withdraw', "with"])
+    async def _with(self, ctx):
+        embed = discord.Embed(description="Usage: `!with [amount]`\n\nWithdraw the amount of money from your bank into your wallet!", color=color.lightpink)
+        await ctx.send(embed=embed)
+
+    @help.command()
+    async def beg(self, ctx):
+        embed = discord.Embed(description="Usage: `!beg`\n\nBeg to get some money, peasant!\n*You can only use this command each 5 seconds!*", color=color.lightpink)
+        await ctx.send(embed=embed)
+
+    @help.command()
+    async def steal(self, ctx):
+        embed = discord.Embed(description="Usage: `!steal`\n\nSteal some money from someone's wallet!", color=color.lightpink)
+        await ctx.send(embed=embed)
+
+    @help.command()
+    async def rob(self, ctx):
+        embed = discord.Embed(description="Usage: `!rob`\n\nRob someone!", color=color.lightpink)
+        await ctx.send(embed=embed)
+
+    @help.command()
+    async def slots(self, ctx):
+        embed = discord.Embed(description="Usage: `!slots [amount]`\n\nBet your money in the slots machine!", color=color.lightpink)
+        await ctx.send(embed=embed)
+
+    @help.command()
+    async def give(self, ctx):
+        embed = discord.Embed(description="Usage: `!give [user] [amount]`\n\nBe a kind person and give some of your money from ur bank to someone else's!", color=color.lightpink)
+        await ctx.send(embed=embed)
+
     @help.error
     async def help_error(self, ctx, error):
         if isinstance(error, commands.TooManyArguments):
           return
-
+ 
 
 
 
