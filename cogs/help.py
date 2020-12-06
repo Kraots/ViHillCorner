@@ -19,7 +19,7 @@ class Help(commands.Cog):
 		helpEm = discord.Embed(description="", color=color.lightpink)
 		helpEm.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 		helpEm.set_thumbnail(url="https://cdn.discordapp.com/attachments/752148605753884792/772510591565824000/00795f0d4b6710316662326aedb9d502.png")
-		helpEm.add_field(name="Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `calc`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `birthday`")
+		helpEm.add_field(name="Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `calc`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `birthday`, `intro`, `whois`")
 		helpEm.add_field(name="Economy", value="`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`", inline=False)
 		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `snippets`, `actions`, `serverinfo`", inline=False)
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
@@ -29,6 +29,16 @@ class Help(commands.Cog):
 			helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
 
 		await ctx.message.channel.send(embed=helpEm)
+
+	@help.command()
+	async def intro(self, ctx):
+		em = discord.Embed(color=color.lightpink, description="Usage: \n`!intro` - set your intro\n`!intro remove/delete` - remove/delete your intro`\n\n c:")
+		await ctx.send(embed=em)
+
+	@help.command(aliases=['wi'])
+	async def whois(self, ctx):
+		em = discord.Embed(color=color.lightpink, description="Usage: `!whois [user]`\n\nCheck someone's intro!")
+		await ctx.send(embed=em)
 
 	@help.command()
 	async def birthday(self, ctx):
