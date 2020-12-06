@@ -38,7 +38,7 @@ class EcoCommands(commands.Cog):
 			id_ = leader_board[amt]
 			mem = self.client.get_user(id_)
 			name = mem.name
-			em.add_field(name=f"{index}. {name}", value=f"`{amt}` coins", inline=False)
+			em.add_field(name=f"{index}. {name}", value="`{:,}` coins".format(amt), inline=False)
 			if index == x:
 				break
 			
@@ -64,14 +64,14 @@ class EcoCommands(commands.Cog):
 		bank_amt = users[str(user.id)]['bank']
 		total_amt = users[str(user.id)]["wallet"] + users[str(user.id)]["bank"]
 		em = discord.Embed(title=f"{member.name}'s balance", color=color.lightpink)
-		em.add_field(name="Wallet Balance", value=f"`{wallet_amt}` coins", inline=False)
-		em.add_field(name="Bank Balance", value=f"`{bank_amt}` coins", inline=False)
-		em.add_field(name="Total Balance", value=f"`{total_amt}` coins")
+		em.add_field(name="Wallet Balance", value="`{:,}` coins".format(wallet_amt), inline=False)
+		em.add_field(name="Bank Balance", value="`{:,}` coins".format(bank_amt), inline=False)
+		em.add_field(name="Total Balance", value="`{:,}` coins".format(total_amt))
 		await ctx.send(embed=em)
 
-	@balance.command()
+	@balance.command(aliases=['add-bank'])
 	@commands.has_role('Staff')
-	async def add(self, ctx, amount = None, member: discord.Member = None):
+	async def add_bank(self, ctx, amount = None, member: discord.Member = None):
 		kraots = self.client.get_user(374622847672254466)
 		if member is None:
 			member = ctx.author
@@ -87,13 +87,41 @@ class EcoCommands(commands.Cog):
 		await update_bank(member, amount, "bank")
 		
 			
-		await ctx.send(f"Successfully added `{amount}` coins, and deposited them into the bank!")
+		await ctx.send("Successfully added `{:,}` coins, and deposited them into the bank!".format(amount))
+
 		if ctx.author.id == kraots.id:
-			return			
+			return
 		else:
-				embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description=f"`{ctx.author}` added `{amount}` coins to `{member}`.\n\n`{ctx.author.id}` - person who added the money\n`{member.id}` - person who got the money")
+			embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added `{:,}` coins to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+	
+			await kraots.send(embed=embed)
+
+	@balance.command(aliases=['add-wallet'])
+	@commands.has_role('Staff')
+	async def wallet(self, ctx, amount = None, member: discord.Member = None):
+		kraots = self.client.get_user(374622847672254466)
+		if member is None:
+			member = ctx.author
+
+		if amount is None:
+			await ctx.send("Please specify the amount of money you want to add!")
+			return
+
+		await open_account(member)
+
+		amount = int(amount)
+
+		await update_bank(member, amount, "wallet")
+		
 			
-				await kraots.send(embed=embed)
+		await ctx.send("Successfully added `{:,}` coins to the wallet!".format(amount))
+
+		if ctx.author.id == kraots.id:
+			return
+		else:
+			embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added `{:,}` coins to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+	
+			await kraots.send(embed=embed)
 
 	@balance.command(aliases=['set-bank'])
 	@commands.has_role('Staff')
@@ -116,13 +144,13 @@ class EcoCommands(commands.Cog):
 		with open("mainbank.json", "w") as f:
 			json.dump(users, f)
 
-		await ctx.send(f"Balance successfully set to `{amount}` coins in the bank!")
+		await ctx.send("Balance successfully set to `{:,}` coins in the bank!".format(amount))
 		
 		if ctx.author.id == kraots.id:
 			return		
 		
 		else:
-			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description=f"`{ctx.author}` set balance to `{amount}` coins in the bank for `{member}`.\n\n`{ctx.author.id}` - person who set the money\n`{member.id}` - person who got the money")
+			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to `{:,}` coins in the bank for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
 			await kraots.send(embed=embed)
 
 	@balance.command()
@@ -172,13 +200,13 @@ class EcoCommands(commands.Cog):
 		with open("mainbank.json", "w") as f:
 			json.dump(users, f)
 
-		await ctx.send(f"Balance successfully set to `{amount}` coins in the wallet!")
+		await ctx.send("Balance successfully set to `{:,}` coins in the wallet!".format(amount))
 		
 		if ctx.author.id == kraots.id:
 			return
 		
 		else:
-			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description=f"`{ctx.author}` set balance to `{amount}` coins in the wallet for `{member}`.\n\n`{ctx.author.id}` - person who set the money\n`{member.id}` - person who got the money")
+			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to `{:,}` coins in the wallet for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
 		
 			await kraots.send(embed=embed)
 
@@ -214,7 +242,7 @@ class EcoCommands(commands.Cog):
 		await update_bank(ctx.author, amount)
 		await update_bank(ctx.author, -1*amount, "bank")
 
-		await ctx.send(f"Successfully withdrew `{amount}` coins!")
+		await ctx.send("Successfully withdrew `{:,}` coins!".format(amount))
 
 
 			# DEPOSIT
@@ -245,7 +273,7 @@ class EcoCommands(commands.Cog):
 		await update_bank(ctx.author, -1*amount)
 		await update_bank(ctx.author, amount, "bank")
 
-		await ctx.send(f"Successfully deposited `{amount}` coins!")
+		await ctx.send("Successfully deposited `{:,}` coins!".format(amount))
 
 
 			# GIVE
@@ -274,7 +302,7 @@ class EcoCommands(commands.Cog):
 		await update_bank(ctx.author, -1*amount, "bank")
 		await update_bank(member, amount, "bank")
 
-		await ctx.send(f"You gave `{amount}` coins to {member.name}.")
+		await ctx.send("You gave `{:,}` coins to {}.".format(amount, member.name))
 
 
 
@@ -307,25 +335,25 @@ class EcoCommands(commands.Cog):
 			await update_bank(ctx.author, earnings)
 			await update_bank(member, -1*earnings, "wallet")
 
-			await ctx.send(f"You robbed {member.name} and got `{earnings}` coins!")
+			await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
 
 		elif chance == 3:
 			await update_bank(ctx.author, earnings)
 			await update_bank(member, -1*earnings, "wallet")
 
-			await ctx.send(f"You robbed {member.name} and got `{earnings}` coins!")
+			await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
 
 		elif chance == 7:
 			await update_bank(ctx.author, earnings)
 			await update_bank(member, -1*earnings, "wallet")
 
-			await ctx.send(f"You robbed {member.name} and got `{earnings}` coins!")
+			await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
 
 		elif chance == 10:
 			await update_bank(ctx.author, earnings)
 			await update_bank(member, -1*earnings, "wallet")
 
-			await ctx.send(f"You robbed {member.name} and got `{earnings}` coins!")
+			await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
 
 		else:
 			await update_bank(ctx.author, -350, "wallet")
@@ -340,7 +368,6 @@ class EcoCommands(commands.Cog):
 	@commands.cooldown(1, 7, commands.BucketType.user)
 	async def slots(self, ctx, amount = None):
 		await open_account(ctx.author)
-		
 		if amount is None:
 			await ctx.send('Please enter the amount you want to withdraw.')
 			return
@@ -371,19 +398,25 @@ class EcoCommands(commands.Cog):
 
 		if final[0] == final[1] == final[2]:
 			await update_bank(ctx.author, 2.5*amount)
-			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description=f"{final}\n\nYou bet a total of `{amount}` coins and won `{2.5*amount}` coins")
+			users = await get_bank_data()
+			wallet_amt = users[str(ctx.author.id)]['wallet']
+			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou bet a total of `{:,}` coins and won `{:,}` coins. \nNow in wallet: `{:,}`.".formant(final, amount, 2.5*amount, wallet_amt))
 			await asyncio.sleep(0.2)
 			await msg.edit(embed=winembed)
 
 		elif final[0] == final[1] or final[0] == final[2] or final[2] == final[1]:
 			await update_bank(ctx.author, 2*amount)
-			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description=f"{final}\n\nYou bet a total amount of `{amount}` coins and won `{2*amount}` coins")
+			users = await get_bank_data()
+			wallet_amt = users[str(ctx.author.id)]['wallet']
+			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou bet a total amount of `{:,}` coins and won `{:,}` coins. \nNow in wallet: `{:,}`.".format(final, amount, 2*amount, wallet_amt))
 			await asyncio.sleep(0.2)
 			await msg.edit(embed=winembed)
 
 		else:
 			await update_bank(ctx.author, -1*amount)
-			lostembed = discord.Embed(color=color.red, title="LOST!", description=f"{final}\n\nYou bet a total amount of `{amount}` coins but you lost them! :c")
+			users = await get_bank_data()
+			wallet_amt = users[str(ctx.author.id)]['wallet']
+			lostembed = discord.Embed(color=color.red, title="LOST!", description="{}\n\nYou bet a total amount of `{:,}` coins but you lost them! :c\nNow in wallet: `{:,}`.".format(final, amount, wallet_amt))
 			await asyncio.sleep(0.2)
 			await msg.edit(embed=lostembed)
 
@@ -426,7 +459,7 @@ class EcoCommands(commands.Cog):
 		user = ctx.author
 		users = await get_bank_data()
 
-		await ctx.send("You worked and got `5000` coins. The money have been deposited into your bank!")
+		await ctx.send("You worked and got `5,000` coins. The money have been deposited into your bank!")
 
 		users[str(user.id)]["bank"] += 5000
 
@@ -452,28 +485,28 @@ class EcoCommands(commands.Cog):
 
 		if aaaa == 2:
 			users[str(user.id)]["wallet"] += earnings
-			await ctx.send(f"<:weird:773538796087803934> you commited a bigger crime and got `{earnings}` coins.")
+			await ctx.send("<:weird:773538796087803934> you commited a bigger crime and got `{:,}` coins.".format(earnings))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
 
 		if aaaa == 7:
 			users[str(user.id)]["wallet"] += earningss
-			await ctx.send(f"<:weird:773538796087803934> you commited a smaller crime and got `{earningss}` coins.")
+			await ctx.send("<:weird:773538796087803934> you commited a smaller crime and got `{:,}` coins.".format(earningss))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
 
 		if aaaa == 5:
 			users[str(user.id)]["wallet"] += earningsss
-			await ctx.send(f"<:weird:773538796087803934> you commited a medium crime and got `{earningsss}` coins.")
+			await ctx.send("<:weird:773538796087803934> you commited a medium crime and got `{:,}` coins.".format(earningsss))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
 
 		else:
 			users[str(user.id)]["wallet"] -= losts
-			await ctx.send(f"You lost `{losts}` coins from your wallet.")
+			await ctx.send("You lost `{:,}` coins from your wallet.".format(losts))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
@@ -529,41 +562,51 @@ class EcoCommands(commands.Cog):
 			return
 
 	@gtn.error
-	async def gtn_error(sel, ctx, error):
+	async def gtn_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f"You've already played the game, come back in {time_phaserr(error.retry_after)}."
 				await ctx.channel.send(msg)
 
 	@crime.error
-	async def crime_error(sel, ctx, error):
+	async def crime_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f'You can commit crimes again in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
 
 
 	@work.error
-	async def work_error(sel, ctx, error):
+	async def work_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f'You can work again in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
 
 	@beg.error
-	async def beg_error(sel, ctx, error):
+	async def beg_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f'You can have more coins in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
 
 	@rob.error
-	async def steal_error(sel, ctx, error):
+	async def steal_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f'You can steal more in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
 
 	@slots.error
-	async def slots_error(sel, ctx, error):
+	async def slots_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f'You can bet your money in te slots machine in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
+
+	@deposit.error
+	async def dep_error(self, ctx, error):
+		if isinstance(error, commands.errors.CommandInvokeError):
+			await ctx.send("Invalid amount! Please deposit numbers only!")
+
+	@withdraw.error
+	async def with_error(self, ctx, error):
+		if isinstance(error, commands.errors.CommandInvokeError):
+			await ctx.send("Invalid amount! Please deposit numbers only!")
 
 
 
