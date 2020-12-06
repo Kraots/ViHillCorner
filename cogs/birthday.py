@@ -22,7 +22,7 @@ class Birthdays(commands.Cog):
 
 		birthday = users[str(user.id)]["birthdaydate"]
 
-		em = discord.Embed(color=color.reds, title=f"{member.name}'s Birthay is on:", description = f"`{birthday}`")
+		em = discord.Embed(color=color.blue, title=f"{member.name}'s Birthay is on:", description = f"`{birthday}`")
 		em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
 		await ctx.send(embed=em)
 
