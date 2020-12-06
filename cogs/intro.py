@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import asyncio
 import json
+from utils.helpers import BotChannels
 
 class Intros(commands.Cog):
 
@@ -12,6 +13,7 @@ class Intros(commands.Cog):
 
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
+	@commands.check(BotChannels)
 	async def intro(self, ctx):
 		await ctx.message.delete()
 		

@@ -32,7 +32,7 @@ class Help(commands.Cog):
 
 	@help.command()
 	async def intro(self, ctx):
-		em = discord.Embed(color=color.lightpink, description="Usage: \n`!intro` - set your intro\n`!intro remove/delete` - remove/delete your intro`\n\n c:")
+		em = discord.Embed(color=color.lightpink, description="Usage: \n\n`!intro` - set your intro\n`!intro remove/delete` - remove/delete your intro")
 		await ctx.send(embed=em)
 
 	@help.command(aliases=['wi'])
