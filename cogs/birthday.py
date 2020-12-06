@@ -52,8 +52,11 @@ class Birthdays(commands.Cog):
 
 
 
-
-
+	@set.error
+	async def birthday_set_error(self, ctx, error):
+		if isinstance(error, commands.MissingRequiredArgument):
+			await ctx.send("**Please specify your birthday!**")
+			
 
 
 
