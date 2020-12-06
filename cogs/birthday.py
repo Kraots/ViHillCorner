@@ -51,7 +51,6 @@ class Birthdays(commands.Cog):
 		await ctx.send("Succesfully deleted your birthday from the list!")
 
 
-
 	@set.error
 	async def birthday_set_error(self, ctx, error):
 		if isinstance(error, commands.MissingRequiredArgument):
