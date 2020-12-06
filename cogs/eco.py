@@ -520,6 +520,7 @@ class EcoCommands(commands.Cog):
 	@commands.cooldown(1, 3, commands.BucketType.user)
 	async def gtn(self, ctx):
 		channel = ctx.message.channel
+		usercheck = ctx.author.id
 		await channel.send('Pick a number between 1 and 10.')
 		await open_account(ctx.author)
 		user = ctx.author
@@ -530,7 +531,7 @@ class EcoCommands(commands.Cog):
 		number = random.randint(1, 10)
 
 		def check(message):
-			return message.channel == channel
+			return message.author.id == usercheck and message.channel.id == channel.id
 			try:
 				int(message.content)
 				return True
