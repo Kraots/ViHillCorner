@@ -41,6 +41,9 @@ class Spotify(commands.Cog):
                 m.color = discord.Color.green() 
                 await ctx.send(embed=m)
                 return
+
+            else:
+                await ctx.send("No spotify activity detected!")
             
 
     @spotify.error
@@ -63,6 +66,9 @@ class Spotify(commands.Cog):
                 m.set_thumbnail(url=member.activities[0].album_cover_url)
                 m.color = discord.Color.green()
                 await ctx.send(embed=m)
+            
+            else:
+                await ctx.send("No spotify activity detected!")
 
 
 
