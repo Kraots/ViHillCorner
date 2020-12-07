@@ -477,7 +477,7 @@ class EcoCommands(commands.Cog):
 		user = ctx.author
 		users = await get_bank_data()
 
-		aaaa = randint(1, 8)
+		aaaa = randint(1, 7)
 		earnings = randint(500, 1500)
 		earningss = randint(100, 420)
 		earningsss = randint(400, 800)
@@ -505,7 +505,7 @@ class EcoCommands(commands.Cog):
 				json.dump(users, f)
 			return
 
-		if aaaa == 8:
+		if aaaa == 7:
 			users[str(user.id)]["wallet"] += earningssss
 			await ctx.send("<:weird:773538796087803934> you commited a large crime and got `{:,}` coins.".format(earningssss))
 			with open("mainbank.json", "w") as f:
