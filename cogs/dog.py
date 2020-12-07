@@ -18,7 +18,7 @@ class Dog(commands.Cog):
           async with cs.get("http://random.dog/woof.json") as r:
             data = await r.json()
 
-            embed = discord.Embed(description=f"[Dog]({data['url']})", color=color.orange, timestamp=ctx.message.created_at)
+            embed = discord.Embed(title="Dog", url=data['url'], color=color.orange, timestamp=ctx.message.created_at)
             embed.set_image(url=data['url'])
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
             await ctx.channel.send(embed=embed)

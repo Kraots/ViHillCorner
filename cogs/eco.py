@@ -481,6 +481,7 @@ class EcoCommands(commands.Cog):
 		earnings = randint(500, 1500)
 		earningss = randint(100, 420)
 		earningsss = randint(400, 800)
+		earningssss = randint(5000, 50000)
 		losts = randint(300, 700)
 
 		if aaaa == 2:
@@ -500,6 +501,13 @@ class EcoCommands(commands.Cog):
 		if aaaa == 5:
 			users[str(user.id)]["wallet"] += earningsss
 			await ctx.send("<:weird:773538796087803934> you commited a medium crime and got `{:,}` coins.".format(earningsss))
+			with open("mainbank.json", "w") as f:
+				json.dump(users, f)
+			return
+
+		if aaaa == 10:
+			users[str(user.id)]["wallet"] += earningssss
+			await ctx.send("<:weird:773538796087803934> you commited a large crime and got `{:,}` coins.".format(earningssss))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
@@ -632,7 +640,7 @@ async def open_account(user):
 	else:
 		users[str(user.id)] = {}
 		users[str(user.id)]['wallet'] = 0
-		users[str(user.id)]['bank'] = 0
+		users[str(user.id)]['bank'] = 1000
 
 	with open("mainbank.json", "w") as f:
 		json.dump(users, f)

@@ -57,8 +57,7 @@ class command(commands.Cog):
     @commands.command(help="Get a list of all snippets", aliases=["inv", "invite"])
     async def _invite(self, context):
 
-            version = discord.Embed(title="Here's the invite:", description="[Anime Hangouts](https://discord.gg/Uf2kA8q)", color=color.lightpink)
-            version.set_footer(text=f'Requested by: {context.author}', icon_url=context.author.avatar_url)
+            version = discord.Embed(title="Anime Hangouts", url="https://discord.gg/Uf2kA8q", color=color.lightpink)
 
             await context.message.channel.send(embed=version)
 
@@ -73,7 +72,7 @@ class command(commands.Cog):
         if member is None:
             member = ctx.author
 
-        avatar = discord.Embed(description=f'[{member.name}]({member.avatar_url})', color=color.blue)
+        avatar = discord.Embed(title=f"{member.name}", url=f"{member.avatar_url}", color=color.blue)
         avatar.set_image(url=member.avatar_url)
         avatar.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 

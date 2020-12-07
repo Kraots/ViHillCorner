@@ -19,7 +19,7 @@ class Cat(commands.Cog):
 
           imgUrl = data['file']
 
-          embed = discord.Embed(description=f"[Cat]({imgUrl})", color=color.orange, timestamp=ctx.message.created_at)
+          embed = discord.Embed(title="Cat", url=imgUrl, color=color.orange, timestamp=ctx.message.created_at)
           embed.set_image(url=imgUrl)
           embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
           await ctx.channel.send(embed=embed)

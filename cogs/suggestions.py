@@ -22,7 +22,7 @@ class Suggest(commands.Cog):
         msg = await suggestions.send(embed=suggest)
         await msg.add_reaction('✅')
         await msg.add_reaction('❌')
-        em = discord.Embed(color=color.inviscolor, description=f'[Suggestion](<{msg.jump_url}>) succesfully added!')
+        em = discord.Embed(color=color.inviscolor, description=f"[Suggestion]({msg.jump_url}) successfully added!")
         await ctx.channel.send(embed=em)
 
     @suggest.error

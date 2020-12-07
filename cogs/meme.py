@@ -22,7 +22,7 @@ class Memes(commands.Cog):
             linkUrl = imgUrl['url']
             titleUrl = imgUrl['title']
             
-            embed = discord.Embed(color=color.orange, description=f'[{titleUrl}]({linkUrl})', timestamp=ctx.message.created_at)
+            embed = discord.Embed(color=color.orange, title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at)
             embed.set_image(url=linkUrl)
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 

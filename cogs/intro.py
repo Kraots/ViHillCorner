@@ -2,17 +2,21 @@ import discord
 from discord.ext import commands
 import asyncio
 import json
-from utils.helpers import BotChannels
+from utils.helpers import BotChannels, time_phaserr
 
 class Intros(commands.Cog):
 
 	def __init__(self, client):
 		self.client = client
+		self.prefix = "!"
+	async def cog_check(self, ctx):
+		return ctx.prefix == self.prefix
 
 
 
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
+	@commands.cooldown(1, 30, commands.BucketType.user)
 	@commands.check(BotChannels)
 	async def intro(self, ctx):
 		await ctx.message.delete()
@@ -221,6 +225,7 @@ class Intros(commands.Cog):
 
 
 	@commands.command(aliases=['wi'])
+	@commands.cooldown(1, 20, commands.BucketType.user)
 	async def whois(self, ctx, member: discord.Member= None):
 		await ctx.message.delete()
 		if member is None:
@@ -260,7 +265,15 @@ class Intros(commands.Cog):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			return
 
+		elif isinstance(error, commands.CommandOnCooldown):
+			msg = f'Please wait {time_phaserr(error.retry_after)}.'
+			await ctx.channel.send(msg)
 
+	@whois.error
+	async def work_error(self, ctx, error):
+		if isinstance(error, commands.CommandOnCooldown):
+				msg = f'Please wait {time_phaserr(error.retry_after)}.'
+				await ctx.channel.send(msg)
 
 
 
