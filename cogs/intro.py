@@ -48,7 +48,7 @@ class Intros(commands.Cog):
 
 		introname = users[str(user.id)]["name"]
 		
-		if introname != "123454321123454321kraotsnamenotsetkraots123454321123454321":
+		if introname != "123454321kraotsnamenotsetkraots123454321":
 			await ctx.send("You already have intro set, would you like to edit your intro?")
 			
 			try:
