@@ -15,8 +15,8 @@ class Intros(commands.Cog):
 
 
 
-	@commands.group(invoke_without_command=True, case_insensitive=True)
-	@commands.cooldown(1, 30, commands.BucketType.user)
+	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
+	@commands.cooldown(1, 5, commands.BucketType.user)
 	@commands.check(BotChannels)
 	async def intro(self, ctx):
 		await ctx.message.delete()
@@ -48,7 +48,7 @@ class Intros(commands.Cog):
 
 		introname = users[str(user.id)]["name"]
 		
-		if introname != "kraotsnamenotsetkraots":
+		if introname != "123454321123454321kraotsnamenotsetkraots123454321123454321":
 			await ctx.send("You already have intro set, would you like to edit your intro?")
 			
 			try:
@@ -208,7 +208,7 @@ class Intros(commands.Cog):
 		user = ctx.author
 		users = await get_intro_data()
 
-		users[str(user.id)]["name"] = "kraotsnamenotsetkraots"
+		users[str(user.id)]["name"] = "123454321kraotsnamenotsetkraots123454321"
 		users[str(user.id)]["location"] = "None"
 		users[str(user.id)]["age"] = "None"
 		users[str(user.id)]["gender"] = "None"
@@ -227,7 +227,6 @@ class Intros(commands.Cog):
 	@commands.command(aliases=['wi'])
 	@commands.cooldown(1, 20, commands.BucketType.user)
 	async def whois(self, ctx, member: discord.Member= None):
-		await ctx.message.delete()
 		if member is None:
 			member = ctx.author
 
@@ -243,10 +242,11 @@ class Intros(commands.Cog):
 		introgender = users[str(user.id)]["gender"]
 		introinterests = users[str(user.id)]["interests"]
 
-		if introname == "kraotsnamenotsetkraots":
+		if introname == "123454321kraotsnamenotsetkraots123454321":
 			await ctx.send("User does not have any intro!")
 
 		else:
+			await ctx.message.delete()
 			em = discord.Embed(color=member.color)
 			em.set_author(name=member, url=member.avatar_url, icon_url=member.avatar_url)
 			em.set_thumbnail(url=member.avatar_url)
@@ -268,6 +268,9 @@ class Intros(commands.Cog):
 		elif isinstance(error, commands.CommandOnCooldown):
 			msg = f'Please wait {time_phaserr(error.retry_after)}.'
 			await ctx.channel.send(msg)
+
+		elif isinstance(error, commands.TooManyArguments):
+			return
 
 	@whois.error
 	async def work_error(self, ctx, error):
@@ -292,7 +295,7 @@ async def open_intro(user):
 
 	else:
 		users[str(user.id)] = {}
-		users[str(user.id)]["name"] = "kraotsnamenotsetkraots"
+		users[str(user.id)]["name"] = "123454321kraotsnamenotsetkraots123454321"
 		users[str(user.id)]["location"] = "None"
 		users[str(user.id)]["age"] = "None"
 		users[str(user.id)]["gender"] = "None"
