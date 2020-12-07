@@ -17,6 +17,7 @@ nikkki = os.environ.get('NIKKI')
 minaaa = os.environ.get('MINAA')
 pandie1 = os.environ.get('PANDIE1')
 pandie2 = os.environ.get('PANDIE2')
+pandie3 = os.environ.get('PANDIE3')
 teiss = os.environ.get('TEIS')
 galactus1 = os.environ.get('GALACTUS1')
 galactus2 = os.environ.get('GALACTUS2')
@@ -164,7 +165,7 @@ class snippets(commands.Cog):
     async def pandie(self, ctx):
 
         pandie = discord.Embed(color=color.red)
-        pandie.set_image(url=pandie2) 
+        pandie.set_image(url=pandie3) 
 
 
         msg = await ctx.send(embed=pandie)
