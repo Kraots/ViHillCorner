@@ -23,21 +23,17 @@ class EcoCommands(commands.Cog):
 	async def leaderboard(self, ctx, x = 10):
 		users = await get_bank_data()
 		leader_board = {}
-		total = []
-		for user in users:
-			name = int(user)
-			total_amount = users[user]["wallet"] + users[user]["bank"]
-			leader_board[total_amount] = name
-			total.append(total_amount)
-
-		total = sorted(total, reverse = True)
-
-		em = discord.Embed(title=f"Top {x} richest people", color=color.reds)
-		index = 1
-		for amt in total:
-			id_ = leader_board[amt]
-			mem = self.client.get_user(id_)
+				
+		for uid, details in users.items():  
+			user = self.client.get_user(int(uid))  
+			leader_board[user] = details['wallet'] + details['bank']  
+		
+		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True)  
+		
+		em = discord.Embed(title=f'Top {x} richest people', color=color.reds) 
+		for index, (mem, amt) in enumerate(leader_board[:x], start=1): 
 			name = mem.name
+
 			em.add_field(name=f"{index}. {name}", value="`{:,}` coins".format(amt), inline=False)
 			if index == x:
 				break

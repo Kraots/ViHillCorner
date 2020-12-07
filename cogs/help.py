@@ -113,7 +113,7 @@ class Help(commands.Cog):
 
 	@help.command()
 	async def nick(self, ctx):
-		nick = discord.Embed(description="Usage: `!nick <newnickname>`\n\nChanges your nickanme.\nType `!nick off/remove` to remove your nickname!\n\n*Requires you to be at least level 3.*", color=color.lightpink)
+		nick = discord.Embed(description="Usage: `!nick <newnickname>`\n\nChanges your nickname.\n\nType `!nick off/remove` to remove your nickname!\n\n*Requires you to be at least level 3.*", color=color.lightpink)
 		await ctx.message.channel.send(embed=nick)
 
 	@help.command()
