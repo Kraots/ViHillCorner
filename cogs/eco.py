@@ -581,7 +581,7 @@ class EcoCommands(commands.Cog):
 		users = await get_bank_data()
 
 		aaaa = randint(1, 7)
-		bbbb = randint(1, 10)
+		bbbb = randint(1, 50)
 		earnings = randint(800, 2500)
 		earningss = randint(300, 620)
 		earningsss = randint(600, 1200)
@@ -617,7 +617,7 @@ class EcoCommands(commands.Cog):
 				json.dump(users, f)
 			return
 
-		elif bbbb == 5:
+		elif bbbb == 2:
 			users[str(user.id)]["wallet"] += earningssssss
 			await ctx.send(":smirk: :smirk: :yum: :yum: you not only sucked {}'s pp dry and swallowed his white stuff, but he also filled every hole untill his white stuff is dripping out of every hole and u got `{:,}` coins.".format(kraots.name, earningssssss))
 			with open("mainbank.json", "w") as f:
