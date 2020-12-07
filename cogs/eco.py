@@ -34,7 +34,7 @@ class EcoCommands(commands.Cog):
 		for index, (mem, amt) in enumerate(leader_board[:x], start=1): 
 			name = mem.name
 
-			em.add_field(name=f"{index}. {name}", value="`{:,}` coins".format(amt), inline=False)
+			em.add_field(name=f"{index}.   {name}", value="`{:,}` coins".format(amt), inline=False)
 			if index == x:
 				break
 			
@@ -665,11 +665,14 @@ class EcoCommands(commands.Cog):
 				msg = f'You can have more coins in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
 
+
+
 	@rob.error
 	async def steal_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f'You can steal more in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
+
 
 	@slots.error
 	async def slots_error(self, ctx, error):
@@ -677,15 +680,23 @@ class EcoCommands(commands.Cog):
 				msg = f'You can bet your money in the slots machine in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
 
+		elif isinstance(error, commands.errors.CommandInvokeError):
+			await ctx.send("Invalid amount! Please deposit numbers only, and no commas!")
+
 	@deposit.error
 	async def dep_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid amount! Please deposit numbers only!")
+			await ctx.send("Invalid amount! Please deposit numbers only, and no commas!")
 
 	@withdraw.error
 	async def with_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid amount! Please deposit numbers only!")
+			await ctx.send("Invalid amount! Please deposit numbers only, and no commas!")
+
+	@give.error
+	async def give_error(self, ctx, error):
+		if isinstance(error, commands.errors.CommandInvokeError):
+			await ctx.send("Invalid amount! Please deposit numbers only, and no commas!")
 
 
 
