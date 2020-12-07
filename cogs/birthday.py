@@ -11,7 +11,7 @@ class Birthdays(commands.Cog):
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 
-	@commands.group(invoke_without_command=True, case_insensitive=True)
+	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bday', 'b-day'])
 	async def birthday(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
