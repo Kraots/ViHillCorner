@@ -32,7 +32,7 @@ class on_join(commands.Cog):
 		
 		introchannel = guild.get_channel(750160850593251449)
 		
-		msgg = await member.send("Welcome to `Anime Hangouts`, would you like to introduce yourself?")
+		await member.send("Welcome to `Anime Hangouts`, would you like to introduce yourself?")
 
 		channel = member.dm_channel
 		
@@ -55,7 +55,7 @@ class on_join(commands.Cog):
 			await self.client.wait_for('message', timeout= 360, check=newmember)
 
 		except asyncio.TimeoutError:
-			await msgg.edit("Welcome to `Anime Hangouts`, would you like to introduce yourself?\n\n*Expired*\nYou can do it later in the bots channels by typing `!intro`.")
+			return
 
 		else:
 
