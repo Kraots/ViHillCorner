@@ -224,9 +224,11 @@ class EcoCommands(commands.Cog):
 			await ctx.send('Please enter the amount you want to withdraw.')
 			return
 
+		amount = "all"
+
 		bal = await update_bank(ctx.author)
 
-		if amount == "all":
+		if amount == amount.lower():
 			amount = bal[1]
 
 		amount = int(amount)
@@ -253,11 +255,12 @@ class EcoCommands(commands.Cog):
 		await open_account(ctx.author)
 		
 		if amount is None:
-			await ctx.send('Please enter the amount you want to withdraw.')
+			await ctx.send('Please enter the amount you want to deposit.')
 			return
+		amount = "all"
 
 		bal = await update_bank(ctx.author)
-		if amount == "all":
+		if amount == amount.lower():
 			amount = bal[0]
 
 		amount = int(amount)
@@ -372,9 +375,10 @@ class EcoCommands(commands.Cog):
 			await ctx.send('Please enter the amount you want to withdraw.')
 			return
 
-		
+		amount = "all"
+
 		bal = await update_bank(ctx.author)
-		if amount == "all":
+		if amount == amount.lower():
 			amount = bal[0]
 		
 		amount = int(amount)
@@ -477,7 +481,7 @@ class EcoCommands(commands.Cog):
 		user = ctx.author
 		users = await get_bank_data()
 
-		aaaa = randint(1, 10)
+		aaaa = randint(1, 8)
 		earnings = randint(500, 1500)
 		earningss = randint(100, 420)
 		earningsss = randint(400, 800)
@@ -491,21 +495,21 @@ class EcoCommands(commands.Cog):
 				json.dump(users, f)
 			return
 
-		if aaaa == 7:
+		if aaaa == 4:
 			users[str(user.id)]["wallet"] += earningss
 			await ctx.send("<:weird:773538796087803934> you commited a smaller crime and got `{:,}` coins.".format(earningss))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
 
-		if aaaa == 5:
+		if aaaa == 6:
 			users[str(user.id)]["wallet"] += earningsss
 			await ctx.send("<:weird:773538796087803934> you commited a medium crime and got `{:,}` coins.".format(earningsss))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
 
-		if aaaa == 10:
+		if aaaa == 8:
 			users[str(user.id)]["wallet"] += earningssss
 			await ctx.send("<:weird:773538796087803934> you commited a large crime and got `{:,}` coins.".format(earningssss))
 			with open("mainbank.json", "w") as f:
@@ -580,37 +584,46 @@ class EcoCommands(commands.Cog):
 		user = ctx.author
 		users = await get_bank_data()
 
-		aaaa = randint(1, 10)
+		aaaa = randint(1, 7)
+		bbbb = randint(1, 10)
 		earnings = randint(800, 2500)
 		earningss = randint(300, 620)
 		earningsss = randint(600, 1200)
 		earningssss = randint(20000, 150000)
+		earningssssss = randint(500000, 10000000)
 		losts = randint(1000, 1200)
 
-		if aaaa == 2:
+		if aaaa == 1:
 			users[str(user.id)]["wallet"] += earnings
 			await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earnings))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
 
-		if aaaa == 7:
+		if aaaa == 4:
 			users[str(user.id)]["wallet"] += earningss
-			await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking and got `{:,}` coins.".format(earningss))
+			await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earningss))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
 
-		if aaaa == 5:
+		if aaaa == 6:
 			users[str(user.id)]["wallet"] += earningsss
 			await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earningsss))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
 
-		if aaaa == 10:
+		if aaaa == 7:
 			users[str(user.id)]["wallet"] += earningssss
 			await ctx.send(":smirk: you sucked {}'s pp dry and swallowed his white stuff got `{:,}` coins.".format(kraots.name, earningssss))
+			with open("mainbank.json", "w") as f:
+				json.dump(users, f)
+			return
+
+		if bbbb == 5:
+			users[str(user.id)]["wallet"] += earningssssss
+			await ctx.send(":smirk: :smirk: :yum: :yum: you not only sucked {}'s pp dry and swallowed his white stuff, but he also filled every hole untill his white stuff is dripping out of every hole and u got `{:,}` coins.".format(kraots.name, earningssssss))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
@@ -666,15 +679,15 @@ class EcoCommands(commands.Cog):
 				msg = f'You can bet your money in te slots machine in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
 
-	@deposit.error
-	async def dep_error(self, ctx, error):
-		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid amount! Please deposit numbers only!")
+#	@deposit.error
+#	async def dep_error(self, ctx, error):
+#		if isinstance(error, commands.errors.CommandInvokeError):
+#			await ctx.send("Invalid amount! Please deposit numbers only!")
 
-	@withdraw.error
-	async def with_error(self, ctx, error):
-		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid amount! Please deposit numbers only!")
+#	@withdraw.error
+#	async def with_error(self, ctx, error):
+#		if isinstance(error, commands.errors.CommandInvokeError):
+#			await ctx.send("Invalid amount! Please deposit numbers only!")
 
 
 

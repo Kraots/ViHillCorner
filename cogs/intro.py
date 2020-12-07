@@ -60,7 +60,7 @@ class Intros(commands.Cog):
 			else:
 
 
-				await channel.send("What's your name?")
+				await channel.send("What's your name? {}".format(ctx.author.mention))
 
 				try:
 					name = await self.client.wait_for('message', timeout= 180, check=check)
@@ -69,7 +69,7 @@ class Intros(commands.Cog):
 					return
 
 				else:
-					await channel.send("Where are you from?")
+					await channel.send("Where are you from? {}".format(ctx.author.mention))
 					
 					try:
 						location = await self.client.wait_for('message', timeout= 180, check=check)
@@ -78,7 +78,7 @@ class Intros(commands.Cog):
 						return
 
 					else:
-						await channel.send("How old are you?")
+						await channel.send("How old are you? {}".format(ctx.author.mention))
 
 						try:
 							age = await self.client.wait_for('message', timeout= 180, check=checkk)
@@ -93,7 +93,7 @@ class Intros(commands.Cog):
 							return
 
 						else:
-							await channel.send("What's your gender?")
+							await channel.send("What's your gender? {}".format(ctx.author.mention))
 							
 							try:
 								gender = await self.client.wait_for('message', timeout= 180, check=check) 
@@ -102,7 +102,7 @@ class Intros(commands.Cog):
 								return
 
 							else:
-								await channel.send("What are u interested to?")
+								await channel.send("What are u interested to? {}".format(ctx.author.mention))
 
 								try:
 									interests = await self.client.wait_for('message', timeout= 360, check=check)
@@ -131,7 +131,7 @@ class Intros(commands.Cog):
 
 		else:
 			
-			await channel.send("What's your name?")
+			await channel.send("What's your name? {}".format(ctx.author.mention))
 
 			try:
 				name = await self.client.wait_for('message', timeout= 180, check=check)
@@ -140,7 +140,7 @@ class Intros(commands.Cog):
 				return
 
 			else:
-				await channel.send("Where are you from?")
+				await channel.send("Where are you from? {}".format(ctx.author.mention))
 				
 				try:
 					location = await self.client.wait_for('message', timeout= 180, check=check)
@@ -149,7 +149,7 @@ class Intros(commands.Cog):
 					return
 
 				else:
-					await channel.send("How old are you?")
+					await channel.send("How old are you? {}".format(ctx.author.mention))
 
 					try:
 						age = await self.client.wait_for('message', timeout= 180, check=checkk)
@@ -164,7 +164,7 @@ class Intros(commands.Cog):
 						return
 
 					else:
-						await channel.send("What's your gender?")
+						await channel.send("What's your gender? {}".format(ctx.author.mention))
 						
 						try:
 							gender = await self.client.wait_for('message', timeout= 180, check=check) 
@@ -173,7 +173,7 @@ class Intros(commands.Cog):
 							return
 
 						else:
-							await channel.send("What are u interested to?")
+							await channel.send("What are u interested to? {}".format(ctx.author.mention))
 
 							try:
 								interests = await self.client.wait_for('message', timeout= 360, check=check)
