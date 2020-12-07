@@ -45,7 +45,7 @@ class Help(commands.Cog):
 		em = discord.Embed(color=color.lightpink, description="Usage: `!whois [user]`\n\nCheck someone's intro!")
 		await ctx.send(embed=em)
 
-	@help.command()
+	@help.command(aliases=['b-day', 'bday'])
 	async def birthday(self, ctx):
 		embed = discord.Embed(color=color.lightpink, description="Usage: \n`!birthday [user]` - see when's someone's birthday \n`!birthday set [birthday]` - set your birthday!\n`!birthday remove` - remove your birthday from the list! \n`!birthday delete` - delete your birthday from the list!\n\n***NOTE:***\n `!birthday remove` & `birthday delete` are and do the exact same thing!")
 		await ctx.send(embed=embed)
