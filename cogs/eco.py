@@ -224,11 +224,10 @@ class EcoCommands(commands.Cog):
 			await ctx.send('Please enter the amount you want to withdraw.')
 			return
 
-		amount = "all"
 
 		bal = await update_bank(ctx.author)
 
-		if amount == amount.lower():
+		if amount.lower() == "all":
 			amount = bal[1]
 
 		amount = int(amount)
@@ -257,10 +256,9 @@ class EcoCommands(commands.Cog):
 		if amount is None:
 			await ctx.send('Please enter the amount you want to deposit.')
 			return
-		amount = "all"
 
 		bal = await update_bank(ctx.author)
-		if amount == amount.lower():
+		if amount.lower() == "all":
 			amount = bal[0]
 
 		amount = int(amount)
@@ -375,10 +373,8 @@ class EcoCommands(commands.Cog):
 			await ctx.send('Please enter the amount you want to withdraw.')
 			return
 
-		amount = "all"
-
 		bal = await update_bank(ctx.author)
-		if amount == amount.lower():
+		if amount.lower() == "all":
 			amount = bal[0]
 		
 		amount = int(amount)
@@ -600,28 +596,28 @@ class EcoCommands(commands.Cog):
 				json.dump(users, f)
 			return
 
-		if aaaa == 4:
+		elif aaaa == 4:
 			users[str(user.id)]["wallet"] += earningss
 			await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earningss))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
 
-		if aaaa == 6:
+		elif aaaa == 6:
 			users[str(user.id)]["wallet"] += earningsss
 			await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earningsss))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
 
-		if aaaa == 7:
+		elif aaaa == 7:
 			users[str(user.id)]["wallet"] += earningssss
 			await ctx.send(":smirk: you sucked {}'s pp dry and swallowed his white stuff got `{:,}` coins.".format(kraots.name, earningssss))
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
 
-		if bbbb == 5:
+		elif bbbb == 5:
 			users[str(user.id)]["wallet"] += earningssssss
 			await ctx.send(":smirk: :smirk: :yum: :yum: you not only sucked {}'s pp dry and swallowed his white stuff, but he also filled every hole untill his white stuff is dripping out of every hole and u got `{:,}` coins.".format(kraots.name, earningssssss))
 			with open("mainbank.json", "w") as f:
@@ -634,6 +630,12 @@ class EcoCommands(commands.Cog):
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
+
+
+
+
+
+
 
 	@ppsuck.error
 	async def ppsuck_error(self, ctx, error):
@@ -679,15 +681,15 @@ class EcoCommands(commands.Cog):
 				msg = f'You can bet your money in te slots machine in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
 
-#	@deposit.error
-#	async def dep_error(self, ctx, error):
-#		if isinstance(error, commands.errors.CommandInvokeError):
-#			await ctx.send("Invalid amount! Please deposit numbers only!")
+	@deposit.error
+	async def dep_error(self, ctx, error):
+		if isinstance(error, commands.errors.CommandInvokeError):
+			await ctx.send("Invalid amount! Please deposit numbers only!")
 
-#	@withdraw.error
-#	async def with_error(self, ctx, error):
-#		if isinstance(error, commands.errors.CommandInvokeError):
-#			await ctx.send("Invalid amount! Please deposit numbers only!")
+	@withdraw.error
+	async def with_error(self, ctx, error):
+		if isinstance(error, commands.errors.CommandInvokeError):
+			await ctx.send("Invalid amount! Please deposit numbers only!")
 
 
 
