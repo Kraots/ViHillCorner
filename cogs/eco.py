@@ -471,7 +471,7 @@ class EcoCommands(commands.Cog):
 				# CRIME
 
 	@commands.command()
-	@commands.cooldown(1, 20, commands.BucketType.user)
+	@commands.cooldown(1, 15, commands.BucketType.user)
 	async def crime(self, ctx):
 		await open_account(ctx.author)
 		user = ctx.author
@@ -518,8 +518,6 @@ class EcoCommands(commands.Cog):
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
-
-
 
 				# GUESS THE NUMBER
 
@@ -569,6 +567,67 @@ class EcoCommands(commands.Cog):
 			with open("mainbank.json", "w") as f:
 				json.dump(users, f)
 			return
+
+
+                # PP SUCK (credigs : PANDIE)
+
+
+	@commands.command()
+	@commands.cooldown(1, 10, commands.BucketType.user)
+	async def ppsuck(self, ctx):
+		kraots = self.client.get_user(374622847672254466)
+		await open_account(ctx.author)
+		user = ctx.author
+		users = await get_bank_data()
+
+		aaaa = randint(1, 10)
+		earnings = randint(800, 2500)
+		earningss = randint(300, 620)
+		earningsss = randint(600, 1200)
+		earningssss = randint(20000, 150000)
+		losts = randint(1000, 1200)
+
+		if aaaa == 2:
+			users[str(user.id)]["wallet"] += earnings
+			await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earnings))
+			with open("mainbank.json", "w") as f:
+				json.dump(users, f)
+			return
+
+		if aaaa == 7:
+			users[str(user.id)]["wallet"] += earningss
+			await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking and got `{:,}` coins.".format(earningss))
+			with open("mainbank.json", "w") as f:
+				json.dump(users, f)
+			return
+
+		if aaaa == 5:
+			users[str(user.id)]["wallet"] += earningsss
+			await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earningsss))
+			with open("mainbank.json", "w") as f:
+				json.dump(users, f)
+			return
+
+		if aaaa == 10:
+			users[str(user.id)]["wallet"] += earningssss
+			await ctx.send(":smirk: you sucked {}'s pp dry and swallowed his white stuff got `{:,}` coins.".format(kraots.name, earningssss))
+			with open("mainbank.json", "w") as f:
+				json.dump(users, f)
+			return
+
+		else:
+			users[str(user.id)]["wallet"] -= losts
+			await ctx.send("You did a fucking bad job at sucking and lost `{:,}` coins from your wallet.".format(losts))
+			with open("mainbank.json", "w") as f:
+				json.dump(users, f)
+			return
+
+	@ppsuck.error
+	async def ppsuck_error(self, ctx, error):
+		if isinstance(error, commands.CommandOnCooldown):
+				msg = f"OK OK CHILLE, IK U WANT THAT WHITE STUFF BUT PLEASE WAIT {time_phaserr(error.retry_after)}."
+				await ctx.channel.send(msg)
+
 
 	@gtn.error
 	async def gtn_error(self, ctx, error):
