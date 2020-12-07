@@ -83,7 +83,7 @@ class EcoCommands(commands.Cog):
 		await update_bank(member, amount, "bank")
 		
 			
-		await ctx.send("Successfully added `{:,}` coins, and deposited them into the bank!".format(amount))
+		await ctx.send("Successfully added `{:,}` coins, and deposited them into the bank for `{}`!".format(amount, member.name))
 
 		if ctx.author.id == kraots.id:
 			return
@@ -110,7 +110,7 @@ class EcoCommands(commands.Cog):
 		await update_bank(member, amount, "wallet")
 		
 			
-		await ctx.send("Successfully added `{:,}` coins to the wallet!".format(amount))
+		await ctx.send("Successfully added `{:,}` coins to the wallet for `{}`!".format(amount, member.name))
 
 		if ctx.author.id == kraots.id:
 			return
@@ -140,7 +140,7 @@ class EcoCommands(commands.Cog):
 		with open("mainbank.json", "w") as f:
 			json.dump(users, f)
 
-		await ctx.send("Balance successfully set to `{:,}` coins in the bank!".format(amount))
+		await ctx.send("Balance successfully set to `{:,}` coins in the bank for `{}`!".format(amount, member.name))
 		
 		if ctx.author.id == kraots.id:
 			return		
@@ -166,7 +166,7 @@ class EcoCommands(commands.Cog):
 		with open("mainbank.json", "w") as f:
 			json.dump(users, f)
 
-		await ctx.send(f"Reseted balance for {member.name}.")
+		await ctx.send(f"Reseted balance for `{member.name}`.")
 		
 		if ctx.author.id == kraots.id:
 			return
@@ -196,7 +196,7 @@ class EcoCommands(commands.Cog):
 		with open("mainbank.json", "w") as f:
 			json.dump(users, f)
 
-		await ctx.send("Balance successfully set to `{:,}` coins in the wallet!".format(amount))
+		await ctx.send("Balance successfully set to `{:,}` coins in the wallet for `{}`!".format(amount, member.name))
 		
 		if ctx.author.id == kraots.id:
 			return
@@ -299,7 +299,7 @@ class EcoCommands(commands.Cog):
 		await update_bank(ctx.author, -1*amount, "bank")
 		await update_bank(member, amount, "bank")
 
-		await ctx.send("You gave `{:,}` coins to {}.".format(amount, member.name))
+		await ctx.send("You gave `{:,}` coins to `{}`.".format(amount, member.name))
 
 
 
