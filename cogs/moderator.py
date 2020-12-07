@@ -49,7 +49,7 @@ class Moderation(commands.Cog):
     @commands.is_owner()
     async def say(self, ctx, *, arg):
         await ctx.message.delete()
-		await ctx.send(arg)
+        await ctx.send(arg)
     
     # Kick
     @commands.command(help=".kick [user] <reason>")
