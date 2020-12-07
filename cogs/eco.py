@@ -674,7 +674,7 @@ class EcoCommands(commands.Cog):
 	@slots.error
 	async def slots_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f'You can bet your money in te slots machine in {time_phaserr(error.retry_after)}.'
+				msg = f'You can bet your money in the slots machine in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
 
 	@deposit.error
