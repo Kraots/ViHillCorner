@@ -372,7 +372,7 @@ class Help(commands.Cog):
 	@help.command(aliases=['balance'])
 	async def bal(self, ctx):
 		if ctx.author.id == 374622847672254466:
-			embedd = discord.Embed(description="Usage: \n`!bal`\n\nCheck your or another user's balance!\n\n**[MANAGE]**\n\n`!bal add-wallet [amount] [user]`\n`!bal add-bank [amount] [user]`\n`!bal set-wallet [amount][user]`\n`!bal set-bank [amount] [user]`\n`!bal reset [user]`\n\nAdd money to an user's bank/wallet.\nSet user's bank/wallet coins.\nReset a user's balance back to 0.", color=color.lightpink)
+			embedd = discord.Embed(description="\n\n**[MANAGE]**\n\n`!bal add-wallet [amount] [user]`\n`!bal add-bank [amount] [user]`\n`!bal set-wallet [amount][user]`\n`!bal set-bank [amount] [user]`\n`!bal reset [user]`\n\nAdd money to an user's bank/wallet.\nSet user's bank/wallet coins.\nReset a user's balance back to 0.", color=color.lightpink)
 			await ctx.send(embed=embedd)
 
 		else:
