@@ -4,6 +4,13 @@ import asyncio
 import json
 from utils.helpers import BotChannels, time_phaserr
 
+positive_messages=["yes",
+				   "sure",
+				   "yeah why not",
+				   "yeah",
+				   "sure why not"
+				   ]
+
 class Intros(commands.Cog):
 
 	def __init__(self, client):
@@ -44,7 +51,7 @@ class Intros(commands.Cog):
 				return False
 
 		def alreadyhas(message):
-			return message.content.lower() == "yes" and message.author.id == usercheck and message.channel.id == channel.id
+			return message.content.lower() in positive_messages and message.author.id == usercheck and message.channel.id == channel.id
 
 		introname = users[str(user.id)]["name"]
 		

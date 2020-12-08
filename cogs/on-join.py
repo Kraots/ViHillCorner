@@ -4,6 +4,13 @@ import utils.colors as color
 import json
 import asyncio
 
+positive_messages=["yes",
+				   "sure",
+				   "yeah why not",
+				   "yeah",
+				   "sure why not"
+				   ]
+
 class on_join(commands.Cog):
 
 	def __init__(self, client):
@@ -48,7 +55,7 @@ class on_join(commands.Cog):
 				return False
 
 		def newmember(message):
-			return message.content.lower() == "yes" and message.channel.id == channel.id
+			return message.content.lower() in positive_messages and message.channel.id == channel.id
 
 		try:
 
