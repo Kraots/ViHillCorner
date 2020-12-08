@@ -32,7 +32,7 @@ class Help(commands.Cog):
 
 	@help.command()
 	async def reclist(self, ctx):
-		em = discord.Embed(color=color.lightpink, description="**Usage:**\n`!reclist [user]` - check your/someone else's reclist\n`!reclist set` - set your reclist\n`!reclist add` - add recs to ur reclist\n`!reclist remove/delete` - delete/remove ur reclist!\n\nReclist stands for recommandations list, please recommend anime only!")
+		em = discord.Embed(color=color.lightpink, description="**Usage:**\n`!reclist [user]` - check your/someone else's reclist\n`!reclist set` - set your reclist\n`!reclist add` - add recs to ur reclist\n`!reclist remove/delete` - delete/remove ur reclist!\n\nReclist stands for recommendations list, please recommend anime only!")
 		await ctx.send(embed=em)
 
 	@help.command()
@@ -237,7 +237,7 @@ class Help(commands.Cog):
 	@help.command()
 	@commands.has_role("Staff")
 	async def tempmute(self, ctx):
-		tempmute = discord.Embed(description="Usage: `!tempmute <user> <time>`\n**.tempmute @BananaBoy69 1 s|m|h|d**\n s - second\n m - minute\n h - hour\n d - day\n\nTempmutes a user with the  given time.\n**DO NOT GO ABOVE 24H**", color=color.lightpink)
+		tempmute = discord.Embed(description="Usage: `!tempmute <user> <time>`\n**!tempmute @BananaBoy69 1 s|m|h|d**\n s - second\n m - minute\n h - hour\n d - day\n\nTempmutes a user with the  given time.\n**DO NOT GO ABOVE 24H**", color=color.lightpink)
 		await ctx.channel.send(embed=tempmute)
 
 	@help.command()
