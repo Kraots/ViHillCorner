@@ -23,7 +23,6 @@ class Intros(commands.Cog):
 
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
-	@commands.cooldown(1, 5, commands.BucketType.user)
 	@commands.check(BotChannels)
 	async def intro(self, ctx):
 		await ctx.message.delete()
@@ -53,9 +52,8 @@ class Intros(commands.Cog):
 		def alreadyhas(message):
 			return message.content.lower() in positive_messages and message.author.id == usercheck and message.channel.id == channel.id
 
-		introname = users[str(user.id)]["name"]
 		
-		if introname != "123454321kraotsnamenotsetkraots123454321":
+		if str(user.id) in users:
 			await ctx.send("You already have intro set, would you like to edit your intro?")
 			
 			try:
@@ -200,32 +198,32 @@ class Intros(commands.Cog):
 								await introchannel.send(embed=em)
 								await ctx.channel.send("Intro added successfully.")
 
-								await update_intro(ctx.author, name.content, "name")
-								await update_intro(ctx.author, location.content, "location")
-								await update_intro(ctx.author, agenumber, "age")
-								await update_intro(ctx.author, gender.content, "gender")
-								await update_intro(ctx.author, interests.content, "interests")
+								users[str(user.id)] = {}
+								users[str(user.id)]["name"] = name.content
+								users[str(user.id)]["location"] = location.content
+								users[str(user.id)]["age"] = agenumber
+								users[str(user.id)]["gender"] = gender.content
+								users[str(user.id)]["interests"] = interests.content
+
+								with open("intros.json", "w") as f:
+									json.dump(users, f)
+
+								return
 
 
 
 	@intro.command(aliases=["remove"])
 	async def delete(self, ctx):
-		await ctx.message.delete()
+		
 		await open_intro(ctx.author)
-		user = ctx.author
+
 		users = await get_intro_data()
 
-		users[str(user.id)]["name"] = "123454321kraotsnamenotsetkraots123454321"
-		users[str(user.id)]["location"] = "None"
-		users[str(user.id)]["age"] = "None"
-		users[str(user.id)]["gender"] = "None"
-		users[str(user.id)]["interests"] = "None"
+		del users[str(ctx.author.id)]
 
 		with open("intros.json", "w") as f:
 			json.dump(users, f)
 
-
-		
 		await ctx.send("Intro deleted.")
 
 
@@ -248,9 +246,10 @@ class Intros(commands.Cog):
 		introage = users[str(user.id)]["age"]
 		introgender = users[str(user.id)]["gender"]
 		introinterests = users[str(user.id)]["interests"]
-
-		if introname == "123454321kraotsnamenotsetkraots123454321":
+		
+		if str(user.id) not in users:
 			await ctx.send("User does not have any intro!")
+			return
 
 		else:
 			await ctx.message.delete()
@@ -263,9 +262,19 @@ class Intros(commands.Cog):
 			em.add_field(name="Gender", value=introgender, inline=False)
 			em.add_field(name="Interests", value=introinterests, inline=False)
 			await ctx.send(embed=em)
-							
 
 
+
+
+
+	@whois.error
+	async def wi_error(self, ctx, error):
+		if isinstance(error, commands.errors.CommandInvokeError):
+			await ctx.channel.send("User does not have any intro!")
+
+		elif isinstance(error, commands.CommandOnCooldown):
+				msg = f'Please wait {time_phaserr(error.retry_after)}.'
+				await ctx.channel.send(msg)
 
 	@intro.error
 	async def intro_error(self, ctx, error):
@@ -279,15 +288,6 @@ class Intros(commands.Cog):
 		elif isinstance(error, commands.TooManyArguments):
 			return
 
-	@whois.error
-	async def work_error(self, ctx, error):
-		if isinstance(error, commands.CommandOnCooldown):
-				msg = f'Please wait {time_phaserr(error.retry_after)}.'
-				await ctx.channel.send(msg)
-
-
-
-
 
 
 
@@ -300,24 +300,12 @@ async def open_intro(user):
 	if str(user.id) in users:
 		return False
 
-	else:
-		users[str(user.id)] = {}
-		users[str(user.id)]["name"] = "123454321kraotsnamenotsetkraots123454321"
-		users[str(user.id)]["location"] = "None"
-		users[str(user.id)]["age"] = "None"
-		users[str(user.id)]["gender"] = "None"
-		users[str(user.id)]["interests"] = "None"
-
-	with open("intros.json", "w") as f:
-		json.dump(users, f)
-
-	return True
-
 async def get_intro_data():
 	with open("intros.json", "r") as f:
 		users = json.load(f)
 
 	return users
+
 
 async def update_intro(user, change, mode):
 	users = await get_intro_data()
@@ -334,9 +322,6 @@ async def update_intro(user, change, mode):
 
 	introstotal = [users[str(user.id)]["name"], users[str(user.id)]["location"], users[str(user.id)]["age"], users[str(user.id)]["gender"], users[str(user.id)]["interests"]]
 	return introstotal
-
-
-
 
 
 

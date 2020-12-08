@@ -19,7 +19,7 @@ class Help(commands.Cog):
 		helpEm = discord.Embed(description="", color=color.lightpink)
 		helpEm.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 		helpEm.set_thumbnail(url="https://cdn.discordapp.com/attachments/752148605753884792/772510591565824000/00795f0d4b6710316662326aedb9d502.png")
-		helpEm.add_field(name="Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `calc`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `birthday`, `intro`, `whois`")
+		helpEm.add_field(name="Commands", value="`revive`, `ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `calc`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `birthday`, `intro`, `whois`, `reclist`")
 		helpEm.add_field(name="Economy", value="`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `ppsuck`", inline=False)
 		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `snippets`, `actions`, `serverinfo`", inline=False)
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
@@ -29,6 +29,11 @@ class Help(commands.Cog):
 			helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
 
 		await ctx.message.channel.send(embed=helpEm)
+
+	@help.command()
+	async def reclist(self, ctx):
+		em = discord.Embed(color=color.lightpink, description="**Usage:**\n`!reclist [user]` - check your/someone else's reclist\n`!reclist set` - set your reclist\n`!reclist add` - add recs to ur reclist\n`!reclist remove/delete` - delete/remove ur reclist!\n\nReclist stands for recommandations list, please recommend anime only!")
+		await ctx.send(embed=em)
 
 	@help.command()
 	async def ppsuck(self, ctx):

@@ -26,16 +26,27 @@ class Birthdays(commands.Cog):
 		em.set_author(name=f"{member.name}'s birthday is on:", url=member.avatar_url, icon_url=member.avatar_url)
 		await ctx.send(embed=em)
 
-	@birthday.command()
+
+
+
+	@birthday.command(aliases=['add'])
 	async def set(self, ctx, *, args):
 		await open_birthday(ctx.author)
 
+		user = ctx.author
+
 		users = await get_birthday_data()
 
-		del users[str(ctx.author.id)]["birthdaydate"]
-		
-		await update_birthday(ctx.author, args)
-		await ctx.send(f"Succesfully set your birthday to `{args}`.")
+		users[str(user.id)] = {}
+		users[str(user.id)]['birthdaydate'] = args
+
+		with open("birthdaylist.json", "w") as f:
+			json.dump(users, f)
+
+		await ctx.message.delete()
+		await ctx.send(f"Birthday set to `{args}`")
+
+
 
 	@birthday.command(aliases=['remove'])
 	async def delete(self, ctx):
@@ -43,19 +54,20 @@ class Birthdays(commands.Cog):
 
 		users = await get_birthday_data()
 
-		del users[str(ctx.author.id)]["birthdaydate"]
+		del users[str(ctx.author.id)]
 
-		reseted = "Birthday not set!"
+		with open("birthdaylist.json", "w") as f:
+			json.dump(users, f)
 
-		await update_birthday(ctx.author, reseted)
 		await ctx.send("Succesfully deleted your birthday from the list!")
 
 
-	@set.error
-	async def birthday_set_error(self, ctx, error):
-		if isinstance(error, commands.MissingRequiredArgument):
-			await ctx.send("**Please specify your birthday!**")
-			
+	@birthday.error
+	async def bday_error(self, ctx, error):
+		if isinstance(error, commands.errors.CommandInvokeError):
+			await ctx.send("User does not have any birthday set!")
+
+
 
 
 
@@ -81,30 +93,12 @@ async def open_birthday(user):
 	if str(user.id) in users:
 		return False
 
-	else:
-		users[str(user.id)] = {}
-		users[str(user.id)]['birthdaydate'] = "Birthday not set!"
-
-	with open("birthdaylist.json", "w") as f:
-		json.dump(users, f)
-
-	return True
-
 async def get_birthday_data():
 	with open("birthdaylist.json", "r") as f:
 		users = json.load(f)
 
 	return users
 
-async def update_birthday(user, change = "Birthday not set!", mode = "birthdaydate"):
-	users = await get_birthday_data()
-	users[str(user.id)][mode] = change
-	
-	with open("birthdaylist.json", "w") as f:
-		json.dump(users, f)
-
-	bal = users[str(user.id)]["birthdaydate"]
-	return bal
 
 
 def setup(client):
