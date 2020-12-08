@@ -66,7 +66,7 @@ class EcoCommands(commands.Cog):
 		await ctx.send(embed=em)
 
 	@balance.command(aliases=['add-bank'])
-	@commands.has_role('Staff')
+	@commands.is_owner()
 	async def add_bank(self, ctx, amount = None, member: discord.Member = None):
 		kraots = self.client.get_user(374622847672254466)
 		if member is None:
@@ -93,7 +93,7 @@ class EcoCommands(commands.Cog):
 			await kraots.send(embed=embed)
 
 	@balance.command(aliases=['add-wallet'])
-	@commands.has_role('Staff')
+	@commands.is_owner()
 	async def wallet(self, ctx, amount = None, member: discord.Member = None):
 		kraots = self.client.get_user(374622847672254466)
 		if member is None:
@@ -120,7 +120,7 @@ class EcoCommands(commands.Cog):
 			await kraots.send(embed=embed)
 
 	@balance.command(aliases=['set-bank'])
-	@commands.has_role('Staff')
+	@commands.is_owner()
 	async def set_bank(self, ctx, amount = None, member: discord.Member = None):
 		kraots = self.client.get_user(374622847672254466)
 		if member is None:
@@ -150,7 +150,7 @@ class EcoCommands(commands.Cog):
 			await kraots.send(embed=embed)
 
 	@balance.command()
-	@commands.has_role('Staff')
+	@commands.is_owner()
 	async def reset(self, ctx, member: discord.Member = None):
 		kraots = self.client.get_user(374622847672254466)
 		if member is None:
@@ -176,7 +176,7 @@ class EcoCommands(commands.Cog):
 			await kraots.send(embed=embed)
 
 	@balance.command(aliases=['set-wallet'])
-	@commands.has_role('Staff')
+	@commands.is_owner()
 	async def set_wallet(self, ctx, amount = None, member: discord.Member = None):
 		kraots = self.client.get_user(374622847672254466)
 		if member is None:
