@@ -14,15 +14,8 @@ class Nicks(commands.Cog):
             await ctx.author.edit(nick=nick)
             await ctx.send(f'I have changed your nickname to `{nick}`')
 
-  @nick.command()
+  @nick.command(aliases=['reset', "remove"])
   async def off(self, ctx, nick=None):
-      if nick is None:
-          nick = ctx.author.name
-      await ctx.author.edit(nick=ctx.author.name)
-      await ctx.send("Nickname succesfully removed!")
-
-  @nick.command()
-  async def remove(self, ctx, nick=None):
       if nick is None:
           nick = ctx.author.name
       await ctx.author.edit(nick=ctx.author.name)
