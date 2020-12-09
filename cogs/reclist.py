@@ -53,6 +53,7 @@ class Birthdays(commands.Cog):
 		thechange = f"\n{args}"
 
 		await update_arec(user, thechange)
+		await ctx.message.delete()
 		await ctx.send("Succesfully added to your reclist!")
 
 
