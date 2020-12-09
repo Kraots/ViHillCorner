@@ -40,7 +40,7 @@ class Birthdays(commands.Cog):
 			json.dump(users, f)
 
 		await ctx.message.delete()
-		await ctx.send(f"Reclist set!")
+		await ctx.send(f"Reclist set! {user.mention}")
 
 
 
@@ -54,7 +54,7 @@ class Birthdays(commands.Cog):
 
 		await update_arec(user, thechange)
 		await ctx.message.delete()
-		await ctx.send("Succesfully added to your reclist!")
+		await ctx.send("Succesfully added to your reclist! {}".format(user.mention))
 
 
 
@@ -71,7 +71,7 @@ class Birthdays(commands.Cog):
 
 		with open("AnimeList.json", "w") as f:
 			json.dump(users, f)
-		await ctx.send("Succesfully deleted your reclist!")
+		await ctx.send("Succesfully deleted your reclist! {}".format(ctx.author.mention))
 
 
 

@@ -44,7 +44,7 @@ class Birthdays(commands.Cog):
 			json.dump(users, f)
 
 		await ctx.message.delete()
-		await ctx.send(f"Birthday set to `{args}`")
+		await ctx.send(f"Birthday set! {user.mention}")
 
 
 
@@ -59,7 +59,7 @@ class Birthdays(commands.Cog):
 		with open("birthdaylist.json", "w") as f:
 			json.dump(users, f)
 
-		await ctx.send("Succesfully deleted your birthday from the list!")
+		await ctx.send("Succesfully deleted your birthday from the list! {}".format(ctx.author.mention))
 
 
 	@birthday.error
