@@ -34,7 +34,9 @@ class on_join(commands.Cog):
 
 		
 		
-		
+		await open_intro(member)
+		user = member
+		users = await get_intro_data()
 		
 		
 		introchannel = guild.get_channel(750160850593251449)
@@ -44,10 +46,10 @@ class on_join(commands.Cog):
 		channel = member.dm_channel
 		
 		def check(message):
-			return message.channel.id == channel.id
+			return message.channel.id == channel.id and message.author.id == user.id
 
 		def checkk(message):
-			return message.channel.id == channel.id
+			return message.channel.id == channel.id and message.author.id == user.id
 			try:
 				int(message.content)
 				return True
@@ -55,7 +57,7 @@ class on_join(commands.Cog):
 				return False
 
 		def newmember(message):
-			return message.content.lower() in positive_messages and message.channel.id == channel.id
+			return message.content.lower() in positive_messages and message.channel.id == channel.id and message.author.id == user.id
 
 		try:
 
@@ -65,10 +67,6 @@ class on_join(commands.Cog):
 			return
 
 		else:
-
-			await open_intro(member)
-			user = member
-			users = await get_intro_data()
 
 			await channel.send("What's your name?")
 
@@ -132,11 +130,17 @@ class on_join(commands.Cog):
 								await introchannel.send(embed=em)
 								await member.send("Intro added successfully.")
 
-								await update_intro(member, name.content, "name")
-								await update_intro(member, location.content, "location")
-								await update_intro(member, agenumber, "age")
-								await update_intro(member, gender.content, "gender")
-								await update_intro(member, interests.content, "interests")
+								users[str(user.id)] = {}
+								users[str(user.id)]["name"] = name.content
+								users[str(user.id)]["location"] = location.content
+								users[str(user.id)]["age"] = agenumber
+								users[str(user.id)]["gender"] = gender.content
+								users[str(user.id)]["interests"] = interests.content
+
+								with open("intros.json", "w") as f:
+									json.dump(users, f)
+
+								return
 
 
 
@@ -153,40 +157,11 @@ async def open_intro(user):
 	if str(user.id) in users:
 		return False
 
-	else:
-		users[str(user.id)] = {}
-		users[str(user.id)]["name"] = "kraotsnamenotsetkraots"
-		users[str(user.id)]["location"] = "None"
-		users[str(user.id)]["age"] = "None"
-		users[str(user.id)]["gender"] = "None"
-		users[str(user.id)]["interests"] = "None"
-
-	with open("intros.json", "w") as f:
-		json.dump(users, f)
-
-	return True
-
 async def get_intro_data():
 	with open("intros.json", "r") as f:
 		users = json.load(f)
 
 	return users
-
-async def update_intro(user, change, mode):
-	users = await get_intro_data()
-
-	users[str(user.id)][mode] = change
-	users[str(user.id)][mode] = change
-	users[str(user.id)][mode] = change
-	users[str(user.id)][mode] = change
-	users[str(user.id)][mode] = change
-
-	
-	with open("intros.json", "w") as f:
-		json.dump(users, f)
-
-	introstotal = [users[str(user.id)]["name"], users[str(user.id)]["location"], users[str(user.id)]["age"], users[str(user.id)]["gender"], users[str(user.id)]["interests"]]
-	return introstotal
 
 def setup (client):
 	client.add_cog(on_join(client))
