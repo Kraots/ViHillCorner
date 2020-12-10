@@ -9,12 +9,10 @@ class on_ready(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        activity = discord.Activity(type=discord.ActivityType.watching, name='carrots')
-        await self.client.change_presence(status=discord.Status.dnd, activity=activity)
         print('Bot succsesfully went online')
         print('Servers connected to:')
         for guild in self.client.guilds:
-                print(guild.name)
+                print(f"Name: {guild.name} | ID: {guild.id} | Members: {guild.member_count}")
 
 
 def setup (client):

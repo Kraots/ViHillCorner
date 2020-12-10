@@ -3,6 +3,9 @@ import discord
 from discord.ext import commands
 import os
 import keep_alive
+import random
+import asyncio
+
 
 token = os.environ.get('DISCORD_BOT_SECRET')
 
@@ -24,7 +27,26 @@ for filename in os.listdir('./outsidereloadcogs'):
     client.load_extension(f'outsidereloadcogs.{filename[:-3]}')
 
 
+# TASK LOOP
+async def ch_pr():
+    await client.wait_until_ready()
+    guild = client.get_guild(750160850077089853)
+
+    status_list = ["carrots", f"{guild.member_count - 12} members"]
+
+    while not client.is_closed():
+
+        status = random.choice(status_list)
+
+        activity = discord.Activity(type=discord.ActivityType.watching, name=status)
+
+        await client.change_presence(status=discord.Status.dnd, activity=activity)
+
+        await asyncio.sleep(60)
+
+
 
 # RUN
+client.loop.create_task(ch_pr())
 keep_alive.keep_alive()
 client.run(token)
