@@ -30,7 +30,7 @@ class NSFW(commands.Cog):
             imgUrl = EntryPoint['url']
             Title = EntryPoint['title']
 
-            embed = discord.Embed(description=f'[{Title}]({imgUrl})', timestamp=ctx.message.created_at, color=color.pastel)
+            embed = discord.Embed(title=Title, url=imgUrl, timestamp=ctx.message.created_at, color=color.pastel)
             embed.set_image(url=imgUrl)
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
             await ctx.channel.send(embed=embed)
@@ -45,7 +45,7 @@ class NSFW(commands.Cog):
             linkUrl = imgUrl['url']
             titleUrl = imgUrl['title']
 
-            embed = discord.Embed(description=f'[{titleUrl}]({linkUrl})', timestamp=ctx.message.created_at, color=color.pastel)
+            embed = discord.Embed(title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at, color=color.pastel)
             embed.set_image(url=linkUrl)
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
             await ctx.channel.send(embed=embed)
@@ -60,7 +60,7 @@ class NSFW(commands.Cog):
             linkUrl = imgUrl['url']
             titleUrl = imgUrl['title']
 
-            embed = discord.Embed(description=f'[{titleUrl}]({linkUrl})', timestamp=ctx.message.created_at, color=color.pastel)
+            embed = discord.Embed(title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at, color=color.pastel)
             embed.set_image(url=linkUrl)
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
             await ctx.channel.send(embed=embed)
@@ -75,7 +75,7 @@ class NSFW(commands.Cog):
             linkUrl = imgUrl['url']
             titleUrl = imgUrl['title']
 
-            embed = discord.Embed(description=f'[{titleUrl}]({linkUrl})', timestamp=ctx.message.created_at, color=color.pastel)
+            embed = discord.Embed(title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at, color=color.pastel)
             embed.set_image(url=linkUrl)
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
             await ctx.channel.send(embed=embed)
