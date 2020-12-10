@@ -26,13 +26,11 @@ for filename in os.listdir('./outsidereloadcogs'):
   if filename.endswith('.py'):
     client.load_extension(f'outsidereloadcogs.{filename[:-3]}')
 
-
-# TASK LOOP
+# LOOP TASK
 async def ch_pr():
     await client.wait_until_ready()
-    guild = client.get_guild(750160850077089853)
 
-    status_list = ["carrots", f"{guild.member_count - 12} members"]
+    status_list = ["carrots", "ur mom", "you", "anime", "over the members"]
 
     while not client.is_closed():
 
@@ -43,7 +41,6 @@ async def ch_pr():
         await client.change_presence(status=discord.Status.dnd, activity=activity)
 
         await asyncio.sleep(60)
-
 
 
 # RUN
