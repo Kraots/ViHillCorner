@@ -20,7 +20,7 @@ class info(commands.Cog):
         msg = await ctx.send(mention, embed=sfw)
         await msg.add_reaction('🗑️')
 
-    @commands.command()
+    @commands.command(aliases=['lvl'])
     async def level(self, ctx, *, mention=None):
         lvl = discord.Embed(title="How to lvl up", description="You can level up in this server by chatting in any channel. Spamming or `XP farming` would result in level reset. \n\nTo check your rank, send `^rank` in <#750160851822182486>.", color=color.red)
 
