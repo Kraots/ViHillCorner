@@ -38,9 +38,18 @@ class command(commands.Cog):
             member = ctx.author
 
         diff = relativedelta(datetime.utcnow(), member.created_at)
+
+        duration = dt.datetime.now() - member.created_at 
+
+        hours, remainder = divmod(int(duration .total_seconds()), 3600)
+        minutes, seconds = divmod(remainder, 60)
+        days, hours = divmod(hours, 24)
+        weeks, days = divmod(days, 7)
+        months, weeks = divmod(weeks, 4)
+        years, months = divmod(months, 12)
         
         embed = discord.Embed(color=color.lightpink)
-        embed.add_field(name='Create Date:', value=f"{member.name}'s account was made **{diff.years}** years, **{diff.months}** months, **{diff.weeks}** weeks, **{diff.days}** days , **{diff.hours}** hours, **{diff.minutes}** minutes and **{diff.seconds}** seconds ago.")
+        embed.add_field(name='Create Date:', value=f"{member.name}'s account was made **{diff.years}** years, **{diff.months}** months, **{diff.weeks}** weeks, **{days}** days , **{diff.hours}** hours, **{diff.minutes}** minutes and **{diff.seconds}** seconds ago.")
         await ctx.channel.send(embed=embed)
 
     @commands.command()
@@ -50,8 +59,17 @@ class command(commands.Cog):
 
         diff = relativedelta(datetime.utcnow(), member.joined_at)
 
+        duration = dt.datetime.now() - member.joined_at 
+
+        hours, remainder = divmod(int(duration .total_seconds()), 3600)
+        minutes, seconds = divmod(remainder, 60)
+        days, hours = divmod(hours, 24)
+        weeks, days = divmod(days, 7)
+        months, weeks = divmod(weeks, 4)
+        years, months = divmod(months, 12)
+
         embed = discord.Embed(color=color.lightpink)
-        embed.add_field(name="Join Date:", value=f"{member.name} joined **{diff.months}** months, **{diff.weeks}** weeks, **{diff.days}** days, **{diff.hours}** hours, **{diff.minutes}** minutes and **{diff.seconds}** seconds ago.")
+        embed.add_field(name="Join Date:", value=f"{member.name} joined **{diff.months}** months, **{diff.weeks}** weeks, **{days}** days, **{diff.hours}** hours, **{diff.minutes}** minutes and **{diff.seconds}** seconds ago.")
         await ctx.channel.send(embed=embed)
 
     @commands.command(help="Get a list of all snippets", aliases=["inv", "invite"])
