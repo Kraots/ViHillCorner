@@ -70,7 +70,7 @@ class Moderation(commands.Cog):
             reasonn = discord.Embed(description=f'**Reason:** [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
             await member.send(msg, embed=reasonn)
             await member.kick()
-            kick = discord.Embed(description=f"{member.mention} has been kicked for the reason: [{reason}]({ctx.message.jump_url})" , color=color.red)
+            kick = discord.Embed(description=f"`{member}` has been kicked for the reason: [{reason}]({ctx.message.jump_url})" , color=color.red)
         
             await ctx.channel.send(embed=kick)
 
@@ -87,13 +87,13 @@ class Moderation(commands.Cog):
         try: 
             await member.send(msg, embed=reasonn)
             await guild.ban(discord.Object(id=member.id))
-            bann = discord.Embed(description=f"`{member.mention}` has been banned from the server." , color=color.red)
+            bann = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
 
             await ctx.send(embed=bann)
 
         except discord.Forbidden:
             await guild.ban(discord.Object(id=member.id))
-            bann = discord.Embed(description=f"{member.mention} has been banned from the server." , color=color.red)
+            bann = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
 
             await ctx.send(embed=bann)
 
@@ -112,7 +112,7 @@ class Moderation(commands.Cog):
           
             await member.ban()
 
-            ban = discord.Embed(description=f"{member.mention} has been banned from the server." , color=color.red)
+            ban = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
 
             await ctx.channel.send(embed=ban)
 
@@ -129,7 +129,7 @@ class Moderation(commands.Cog):
         await guild.fetch_ban(member)
         await guild.unban(discord.Object(id=member.id))
         
-        unban = discord.Embed(description= f"`{member.mention}` has been unbanned from the server" , color=color.red)
+        unban = discord.Embed(description= f"`{member}` has been unbanned from the server" , color=color.red)
 
         msg = await ctx.send(embed=unban)
         await msg.add_reaction('🗑️')
