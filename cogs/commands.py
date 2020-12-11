@@ -75,7 +75,8 @@ class command(commands.Cog):
     @commands.command(help="Get a list of all snippets", aliases=["inv", "invite"])
     async def _invite(self, context):
 
-            version = discord.Embed(title="Anime Hangouts", url="https://discord.gg/Uf2kA8q", color=color.lightpink)
+            version = discord.Embed(title="Here's your invite", description="[Anime Hangouts](https://discord.gg/Uf2kA8q)", color=color.lightpink)
+            version.set_footer(text=f"Requested by: {context.author}", icon_url=context.author.avatar_url)
 
             await context.message.channel.send(embed=version)
 
