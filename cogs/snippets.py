@@ -45,14 +45,14 @@ class snippets(commands.Cog):
         msg = await ctx.send(embed=v)
         await msg.add_reaction('🗑️')
 
-    @commands.command(hidden=True)
-    async def onii(self, ctx):
+#    @commands.command(hidden=True)
+#    async def onii(self, ctx):
 
-            creepy = discord.Embed(color=color.red)
-            creepy.set_image(url=onii)
+#            creepy = discord.Embed(color=color.red)
+#            creepy.set_image(url=onii)
 
-            msg = await ctx.send(embed=creepy)
-            await msg.add_reaction('🗑️')
+#            msg = await ctx.send(embed=creepy)
+#            await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
     async def twilight(self, ctx):
@@ -144,14 +144,14 @@ class snippets(commands.Cog):
             msg = await ctx.send(embed=version)
             await msg.add_reaction('🗑️')
 
-    @commands.command()
-    async def nikki(self, ctx):
+#    @commands.command()
+#    async def nikki(self, ctx):
 
-        nikki = discord.Embed(color=color.red)
-        nikki.set_image(url=nikkki)
+#        nikki = discord.Embed(color=color.red)
+#        nikki.set_image(url=nikkki)
 
-        msg = await ctx.send(embed=nikki)
-        await msg.add_reaction('🗑️')
+#        msg = await ctx.send(embed=nikki)
+#        await msg.add_reaction('🗑️')
 
     @commands.command()
     async def mina(self, ctx):
