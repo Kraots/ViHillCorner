@@ -126,6 +126,11 @@ class CustomRoles(commands.Cog):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.send("You do not have any custom role! What are you trying to delete???\nType `!cr create` to create your custom role!")
 
+	@create.error
+	async def create_error(self, ctx, error):
+		if isinstance(error, commands.errors.CommandInvokeError):
+			await ctx.send("The name is too long or the hex color you put is invalid.")
+
 	@cr.error
 	async def cr_error(self, ctx, error):
 		if isinstance(error, commands.errors.MissingAnyRole):
