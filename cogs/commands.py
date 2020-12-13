@@ -18,6 +18,17 @@ class command(commands.Cog):
     async def cog_check(self, ctx):
         return ctx.prefix == self.prefix
     
+    @commands.command(aliases=["perm-calc"])
+    async def perm_calc(self, ctx):
+        em = discord.Embed(color=color.lightpink, title= " Here's the link to the permission calculator for bots. ", description = "https://discordapi.com/permissions.html#2147483647")
+        await ctx.send(embed=em)
+
+
+    @commands.command(aliases=["dev-portal"])
+    async def dev_portal(self, ctx):
+        em = discord.Embed(color=color.lightpink, title = " Here's the link to dev portal. ", description="https://discord.com/developers/applications")
+        await ctx.send(embed=em)
+
     @commands.command(help="Get a list of all actions")
     async def actions(self, context):
 
