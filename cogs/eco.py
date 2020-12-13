@@ -704,8 +704,20 @@ class EcoCommands(commands.Cog):
 
 
 
+	@commands.Cog.listener()
+	async def on_member_remove(self, member):
+		user = member
 
+		await open_account(user)
 
+		users = await get_bank_data()
+
+		if str(user.id) in users:
+			del users[str(user.id)]
+
+		with open("mainbank.json", "w") as f:
+			json.dump(users, f)
+			
 
 
 
