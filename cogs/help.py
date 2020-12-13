@@ -32,7 +32,7 @@ class Help(commands.Cog):
 
 	@help.command()
 	async def cr(self, ctx):
-		em = discord.Embed(color=color.lightpink, description="**Usage**:\n\nSimply type `!cr` to see the available commands, their name are pretty self-explanatory.\n\n*You need to be at least lvl 40+ to use these command c:*")
+		em = discord.Embed(color=color.lightpink, description="**Usage**:\n\nSimply type `!cr` to see the available commands, their name are pretty self-explanatory.\n\n*You need to be at least lvl 40+ to use this command c:*")
 		await ctx.send(embed=em)
 
 	@help.command()
