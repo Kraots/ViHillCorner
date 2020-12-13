@@ -46,7 +46,7 @@ class CustomRoles(commands.Cog):
 
 			else:
 				
-				await ctx.send("What color do u want it to have, please give the hex number.\nExample: `#ffffff`")
+				await ctx.send("What color do u want it to have, please give the hex code.\nExample: `#ffffff`")
 
 				try:
 					precolor = await self.client.wait_for('message', timeout=50, check=check)
