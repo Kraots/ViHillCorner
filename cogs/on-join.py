@@ -11,6 +11,12 @@ positive_messages=["yes",
 				   "sure why not"
 				   ]
 
+status_pos=[
+			"taken",
+			"single",
+			"complicated"
+			]
+
 class on_join(commands.Cog):
 
 	def __init__(self, client):
@@ -58,6 +64,9 @@ class on_join(commands.Cog):
 
 		def newmember(message):
 			return message.content.lower() in positive_messages and message.channel.id == channel.id and message.author.id == user.id
+
+		def rel_reply(message):
+			return message.content.lower() in status_pos and message.channel.id == channel.id and message.author.id == user.id
 
 		try:
 
@@ -110,37 +119,49 @@ class on_join(commands.Cog):
 							return
 
 						else:
-							await channel.send("What are u interested to?")
-
+							await channel.send("Relationship status? `single` | `taken` | `complicated`")
+							
 							try:
-								interests = await self.client.wait_for('message', timeout= 360, check=check)
+								prestatuss = await self.client.wait_for('message', timeout= 180, check=rel_reply)
+								status = prestatuss.content
 
 							except asyncio.TimeoutError:
 								return
 
 							else:
-								em = discord.Embed(color=member.color)
-								em.set_author(name=member, url=member.avatar_url, icon_url=member.avatar_url)
-								em.set_thumbnail(url=member.avatar_url)
-								em.add_field(name="Name", value=name.content, inline=True)
-								em.add_field(name="Location", value=location.content, inline=True)
-								em.add_field(name="Age", value=agenumber, inline=True)
-								em.add_field(name="Gender", value=gender.content, inline=False)
-								em.add_field(name="Interests", value=interests.content, inline=False)
-								await introchannel.send(embed=em)
-								await member.send("Intro added successfully.")
+								await channel.send("What are u interested to?")
 
-								users[str(user.id)] = {}
-								users[str(user.id)]["name"] = name.content
-								users[str(user.id)]["location"] = location.content
-								users[str(user.id)]["age"] = agenumber
-								users[str(user.id)]["gender"] = gender.content
-								users[str(user.id)]["interests"] = interests.content
+								try:
+									interests = await self.client.wait_for('message', timeout= 360, check=check)
 
-								with open("intros.json", "w") as f:
-									json.dump(users, f)
+								except asyncio.TimeoutError:
+									return
 
-								return
+								else:
+									em = discord.Embed(color=member.color)
+									em.set_author(name=member, url=member.avatar_url, icon_url=member.avatar_url)
+									em.set_thumbnail(url=member.avatar_url)
+									em.add_field(name="Name", value=name.content, inline=True)
+									em.add_field(name="Location", value=location.content, inline=True)
+									em.add_field(name="Age", value=agenumber, inline=True)
+									em.add_field(name="Gender", value=gender.content, inline=False)
+									em.add_field(name="Relationship Status", value=status, inline=True)
+									em.add_field(name="Interests", value=interests.content, inline=False)
+									await introchannel.send(embed=em)
+									await member.send("Intro added successfully.")
+
+									users[str(user.id)] = {}
+									users[str(user.id)]["name"] = name.content
+									users[str(user.id)]["location"] = location.content
+									users[str(user.id)]["age"] = agenumber
+									users[str(user.id)]["gender"] = gender.content
+									users[str(user.id)]["status"] = status
+									users[str(user.id)]["interests"] = interests.content
+
+									with open("intros.json", "w") as f:
+										json.dump(users, f)
+
+									return
 
 
 

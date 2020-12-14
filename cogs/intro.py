@@ -11,6 +11,12 @@ positive_messages=["yes",
 				   "sure why not"
 				   ]
 
+status_pos=[
+			"taken",
+			"single",
+			"complicated"
+			]
+
 class Intros(commands.Cog):
 
 	def __init__(self, client):
@@ -23,6 +29,7 @@ class Intros(commands.Cog):
 
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
+	@commands.cooldown(1, 360, commands.BucketType.user)
 	@commands.check(BotChannels)
 	async def intro(self, ctx):
 		await ctx.message.delete()
@@ -51,6 +58,9 @@ class Intros(commands.Cog):
 
 		def alreadyhas(message):
 			return message.content.lower() in positive_messages and message.author.id == usercheck and message.channel.id == channel.id
+
+		def status_reply(message):
+			return message.content.lower() in status_pos and message.author.id == usercheck and message.channel.id == channel.id
 
 		
 		if str(user.id) in users:
@@ -107,32 +117,45 @@ class Intros(commands.Cog):
 								return
 
 							else:
-								await channel.send("What are u interested to? {}".format(ctx.author.mention))
-
+								await channel.send("Relationship status? `single` | `taken` | `complicated` {}".format(ctx.author.mention))
+								
 								try:
-									interests = await self.client.wait_for('message', timeout= 360, check=check)
-
+									prestatuss = await self.client.wait_for('message', timeout= 180, check=status_reply)
+									status = prestatuss.content
+									
 								except asyncio.TimeoutError:
 									return
 
 								else:
-									em = discord.Embed(color=ctx.author.color)
-									em.set_author(name=ctx.author, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
-									em.set_thumbnail(url=ctx.author.avatar_url)
-									em.add_field(name="Name", value=name.content, inline=True)
-									em.add_field(name="Location", value=location.content, inline=True)
-									em.add_field(name="Age", value=agenumber, inline=True)
-									em.add_field(name="Gender", value=gender.content, inline=False)
-									em.add_field(name="Interests", value=interests.content, inline=False)
-									await introchannel.send(embed=em)
-									await ctx.channel.send("Intro edited successfully.")
+									await channel.send("What are u interested to? {}".format(ctx.author.mention))
 
-									await update_intro(ctx.author, name.content, "name")
-									await update_intro(ctx.author, location.content, "location")
-									await update_intro(ctx.author, agenumber, "age")
-									await update_intro(ctx.author, gender.content, "gender")
-									await update_intro(ctx.author, interests.content, "interests")
-									return
+									try:
+										interests = await self.client.wait_for('message', timeout= 360, check=check)
+
+									except asyncio.TimeoutError:
+										return
+
+									else:
+										em = discord.Embed(color=ctx.author.color)
+										em = discord.Embed(color=ctx.author.color)
+										em.set_author(name=ctx.author, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
+										em.set_thumbnail(url=ctx.author.avatar_url)
+										em.add_field(name="Name", value=name.content, inline=True)
+										em.add_field(name="Location", value=location.content, inline=True)
+										em.add_field(name="Age", value=agenumber, inline=True)
+										em.add_field(name="Gender", value=gender.content, inline=False)
+										em.add_field(name="Relationship Status", value=status, inline=True)
+										em.add_field(name="Interests", value=interests.content, inline=False)
+										await introchannel.send(embed=em)
+										await ctx.channel.send("Intro edited successfully.")
+
+										await update_intro(ctx.author, name.content, "name")
+										await update_intro(ctx.author, location.content, "location")
+										await update_intro(ctx.author, agenumber, "age")
+										await update_intro(ctx.author, gender.content, "gender")
+										await update_intro(ctx.author, status, "status")
+										await update_intro(ctx.author, interests.content, "interests")
+										return
 
 		else:
 			
@@ -178,37 +201,50 @@ class Intros(commands.Cog):
 							return
 
 						else:
-							await channel.send("What are u interested to? {}".format(ctx.author.mention))
-
+							await channel.send("Relationship status? `single` | `taken` | `complicated` {}".format(ctx.author.mention))
+							
 							try:
-								interests = await self.client.wait_for('message', timeout= 360, check=check)
-
+								prestatuss = await self.client.wait_for('message', timeout= 180, check=status_reply)
+								status = prestatuss.content
+							
 							except asyncio.TimeoutError:
 								return
 
 							else:
-								em = discord.Embed(color=ctx.author.color)
-								em.set_author(name=ctx.author, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
-								em.set_thumbnail(url=ctx.author.avatar_url)
-								em.add_field(name="Name", value=name.content, inline=True)
-								em.add_field(name="Location", value=location.content, inline=True)
-								em.add_field(name="Age", value=agenumber, inline=True)
-								em.add_field(name="Gender", value=gender.content, inline=False)
-								em.add_field(name="Interests", value=interests.content, inline=False)
-								await introchannel.send(embed=em)
-								await ctx.channel.send("Intro added successfully.")
+								await channel.send("What are u interested to? {}".format(ctx.author.mention))
 
-								users[str(user.id)] = {}
-								users[str(user.id)]["name"] = name.content
-								users[str(user.id)]["location"] = location.content
-								users[str(user.id)]["age"] = agenumber
-								users[str(user.id)]["gender"] = gender.content
-								users[str(user.id)]["interests"] = interests.content
+								try:
+									interests = await self.client.wait_for('message', timeout= 360, check=check)
 
-								with open("intros.json", "w") as f:
-									json.dump(users, f)
+								except asyncio.TimeoutError:
+									return
 
-								return
+								else:
+									em = discord.Embed(color=ctx.author.color)
+									em = discord.Embed(color=ctx.author.color)
+									em.set_author(name=ctx.author, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
+									em.set_thumbnail(url=ctx.author.avatar_url)
+									em.add_field(name="Name", value=name.content, inline=True)
+									em.add_field(name="Location", value=location.content, inline=True)
+									em.add_field(name="Age", value=agenumber, inline=True)
+									em.add_field(name="Gender", value=gender.content, inline=False)
+									em.add_field(name="Relationship Status", value=status, inline=True)
+									em.add_field(name="Interests", value=interests.content, inline=False)
+									await introchannel.send(embed=em)
+									await ctx.channel.send("Intro edited successfully.")
+
+									users[str(user.id)] = {}
+									users[str(user.id)]["name"] = name.content
+									users[str(user.id)]["location"] = location.content
+									users[str(user.id)]["age"] = agenumber
+									users[str(user.id)]["gender"] = gender.content
+									users[str(user.id)]["status"] = status
+									users[str(user.id)]["interests"] = interests.content
+
+									with open("intros.json", "w") as f:
+										json.dump(users, f)
+
+									return
 
 
 
@@ -245,6 +281,7 @@ class Intros(commands.Cog):
 		introlocation = users[str(user.id)]["location"]
 		introage = users[str(user.id)]["age"]
 		introgender = users[str(user.id)]["gender"]
+		relationshipstatus = user[str(user.id)]["status"]
 		introinterests = users[str(user.id)]["interests"]
 		
 		if str(user.id) not in users:
@@ -260,6 +297,7 @@ class Intros(commands.Cog):
 			em.add_field(name="Location", value=introlocation, inline=True)
 			em.add_field(name="Age", value=introage, inline=True)
 			em.add_field(name="Gender", value=introgender, inline=False)
+			em.add_field(name="Relationship Status", value=relationshipstatus, inline=True)
 			em.add_field(name="Interests", value=introinterests, inline=False)
 			await ctx.send(embed=em)
 
