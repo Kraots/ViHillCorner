@@ -71,7 +71,7 @@ class CustomRoles(commands.Cog):
 						json.dump(users, f)
 
 					positions = {
-						newcr: 79
+						newcr: 80
 					}
 					await guild.edit_role_positions(positions=positions)
 
