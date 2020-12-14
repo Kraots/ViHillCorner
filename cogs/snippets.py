@@ -35,7 +35,7 @@ class snippets(commands.Cog):
         self.prefix = "!"
     async def cog_check(self, ctx):
         return ctx.prefix == self.prefix
-
+        
     @commands.command()
     async def V(self, ctx):
 

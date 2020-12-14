@@ -9,7 +9,7 @@ class CustomRoles(commands.Cog):
 		self.client = client
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
-	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+')	
+	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")	
 	async def cr(self, ctx):
 		await ctx.send("`!cr create` | `!cr delete`")
 
@@ -71,7 +71,7 @@ class CustomRoles(commands.Cog):
 						json.dump(users, f)
 
 					positions = {
-						newcr: 80
+						newcr: 65
 					}
 					await guild.edit_role_positions(positions=positions)
 

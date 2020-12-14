@@ -231,7 +231,7 @@ class Intros(commands.Cog):
 									em.add_field(name="Relationship Status", value=status, inline=True)
 									em.add_field(name="Interests", value=interests.content, inline=False)
 									await introchannel.send(embed=em)
-									await ctx.channel.send("Intro edited successfully.")
+									await ctx.channel.send("Intro added successfully.")
 
 									users[str(user.id)] = {}
 									users[str(user.id)]["name"] = name.content
@@ -281,7 +281,7 @@ class Intros(commands.Cog):
 		introlocation = users[str(user.id)]["location"]
 		introage = users[str(user.id)]["age"]
 		introgender = users[str(user.id)]["gender"]
-		relationshipstatus = user[str(user.id)]["status"]
+		relationshipstatus = users[str(user.id)]["status"]
 		introinterests = users[str(user.id)]["interests"]
 		
 		if str(user.id) not in users:

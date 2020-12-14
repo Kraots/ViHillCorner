@@ -3,6 +3,7 @@ from discord.ext import commands
 import utils.colors as color
 import json
 import asyncio
+from random import randint
 
 positive_messages=["yes",
 				   "sure",
@@ -24,19 +25,95 @@ class on_join(commands.Cog):
 
 	@commands.Cog.listener('on_member_join')
 	async def on_member_join(self, member):
+
+
 		guild = self.client.get_guild(750160850077089853)
 		welcomechannel = guild.get_channel(750160850303582237)
 
-		welcome = discord.Embed(description='\n\n***Go get roles from*** <#779276428045975573>\n***Go get a color from*** <#779388444304211991>\n***Go get read the rules and see the punishment if u break them at*** <#750160850303582236>\n***Go introduce yourself at*** <#750160850593251449>\n\nEnjoy your stay\n\n', color=color.pastel)
+		welcome = discord.Embed(description="\n\n***Go get a color from*** <#779388444304211991>\n***Go get read the rules and see the punishment if u break them at*** <#750160850303582236>\n***Don't forget to introduce yourself by typing `!intro` in a bots channel!**\n\nEnjoy your stay\n\n", color=color.pastel)
 		welcome.set_thumbnail(url=member.avatar_url)
-		msg = f'Hey {member.mention}, welcome to **Anime Hangouts!** \nYou are our **{guild.member_count - 11}** member.\n\n\n<@&750160850077089856>'
+		msg = f'Hey {member.mention}, welcome to **Anime Hangouts!** \nYou are our **{guild.member_count - 11}** member.\n\n\n‎'
 		await welcomechannel.send(msg, embed=welcome)
-		role1 = discord.utils.get(member.guild.roles, name="Member")        
-		await member.add_roles(role1)
-		role2 = discord.utils.get(member.guild.roles, name="≻─────── ⋆ Epic Roles ⋆ ───────≺")
-		await member.add_roles(role2)
-		role3 = discord.utils.get(member.guild.roles, name="≻──────── ⋆ Pings  ⋆ ────────≺")
-		await member.add_roles(role3)
+
+
+		color1 = guild.get_role(750272224170082365)
+		color2 = guild.get_role(750160850299387977)
+		color3 = guild.get_role(750160850299387976)
+		color4 = guild.get_role(750160850299387975)
+		color5 = guild.get_role(750160850299387974)
+		color6 = guild.get_role(750160850299518985)
+		color7 = guild.get_role(750160850299518984)
+		color8 = guild.get_role(750160850299518983)
+		color9 = guild.get_role(750160850299518982)
+		color10 = guild.get_role(750160850299518981)
+		color11 = guild.get_role(750160850299518980)
+		color12 = guild.get_role(750160850299518979)
+		color13 = guild.get_role(750160850299518978)
+		color14 = guild.get_role(750160850299518977)
+		color15 = guild.get_role(750160850295324752)
+		color16 = guild.get_role(750160850299518976)
+		color17 = guild.get_role(750160850295324751)
+		color18 = guild.get_role(750272729533644850)
+		color19 = guild.get_role(788112413261168660)
+
+		choice = randint(1, 19)
+
+		if choice == 1:
+			await member.add_roles(color1)
+
+		elif choice == 2:
+			await member.add_roles(color2)
+
+		elif choice == 3:
+			await member.add_roles(color3)
+
+		elif choice == 4:
+			await member.add_roles(color4)
+
+		elif choice == 5:
+			await member.add_roles(color5)
+
+		elif choice == 6:
+			await member.add_roles(color6)
+
+		elif choice == 7:
+			await member.add_roles(color7)
+
+		elif choice == 8:
+			await member.add_roles(color8)
+
+		elif choice == 9:
+			await member.add_roles(color9)
+
+		elif choice == 10:
+			await member.add_roles(color10)
+
+		elif choice == 11:
+			await member.add_roles(color11)
+
+		elif choice == 12:
+			await member.add_roles(color12)
+
+		elif choice == 13:
+			await member.add_roles(color13)
+
+		elif choice == 14:
+			await member.add_roles(color14)
+
+		elif choice == 15:
+			await member.add_roles(color15)
+
+		elif choice == 16:
+			await member.add_roles(color16)
+
+		elif choice == 17:
+			await member.add_roles(color17)
+
+		elif choice == 18:
+			await member.add_roles(color18)
+		
+		elif choice == 19:
+			await member.add_roles(color19)
 
 		
 		
