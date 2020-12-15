@@ -247,7 +247,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
             
-        elif message_id == COLORSMSG2:
+        if message_id == COLORSMSG2:
 
             if payload.emoji.name == '\U00000031\U0000fe0f\U000020e3': # COLOR1
                 await member.add_roles(color10)
@@ -453,7 +453,7 @@ class ReactionRoles(commands.Cog):
 							# WHITE
         
         
-        elif message_id == COLORSMSG3:
+        if message_id == COLORSMSG3:
 
             if payload.emoji.name == '\U00000031\U0000fe0f\U000020e3': # COLOR 1
                 await member.add_roles(color19)
