@@ -123,7 +123,7 @@ class Moderation(commands.Cog):
     async def ban(self, ctx, member : discord.User, *, reason="Toxicty & Insult"):
         guild = self.client.get_guild(750160850077089853)
 
-        reasonn = discord.Embed(description="Unban appeal server \n https://discord.gg/pVmwxtkrxx")
+        reasonn = discord.Embed(description="Unban appeal server \n https://discord.gg/m3Zyaj5Vc4")
         reasonn.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
         msg="You have been banned from `Anime Hangouts`. If you think that this has been applied in error please submit a detailed appeal at the following link."
 
@@ -157,7 +157,7 @@ class Moderation(commands.Cog):
     @commands.has_role('Staff')
     async def massban(self, ctx, members : Greedy[Member], *, reason="Toxicity & Insult"):
         
-        reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/pVmwxtkrxx")
+        reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/m3Zyaj5Vc4")
         reasonn.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
         msg="You have been banned from `Anime Hangouts`. If you think that this has been applied in error please submit a detailed appeal at the following link."
         
