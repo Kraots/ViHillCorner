@@ -318,9 +318,9 @@ class Help(commands.Cog):
 	@commands.check(Developer)
 	async def statuses(self, ctx):
 		statuses = discord.Embed(title="Statuses:", color=color.lightpink)
-		statuses.add_field(name="Online:", value=";;status online\n   ;;status online-playing [custom status]\n   ;;status online-listening [custom status]\n   ;;status online-watching [custom status]", inline=False)
-		statuses.add_field(name="Idle:", value=";;status idle\n   ;;status idle-playing [custom status]\n   ;;status idle-listening [custom status]\n   ;;status idle-watching [custom status]", inline=False)
-		statuses.add_field(name="Dnd:", value=";;status dnd\n   ;;status dnd-playing [custom status]\n   ;;status dnd-listening [custom status]\n   ;;status dnd-watching [custom status]", inline=False)
+		statuses.add_field(name="Online:", value=";;status online\n   ;;status online playing [custom status]\n   ;;status online listening [custom status]\n   ;;status online watching [custom status]", inline=False)
+		statuses.add_field(name="Idle:", value=";;status idle\n   ;;status idle playing [custom status]\n   ;;status idle listening [custom status]\n   ;;status idle watching [custom status]", inline=False)
+		statuses.add_field(name="Dnd:", value=";;status dnd\n   ;;status dnd playing [custom status]\n   ;;status dnd listening [custom status]\n   ;;status dnd watching [custom status]", inline=False)
 		statuses.add_field(name="Offline:", value=";;status offline", inline=False)
 
 		await ctx.channel.send(embed=statuses)

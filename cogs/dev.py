@@ -112,9 +112,9 @@ class developer(commands.Cog):
     @commands.is_owner()
     async def status(self, ctx):
       statuses = discord.Embed(title="Statuses:", color=color.lightpink)
-      statuses.add_field(name="Online:", value=";;status online\n   ;;status online-playing [custom status]\n   ;;status online-listening [custom status]\n   ;;status online-watching [custom status]", inline=False)
-      statuses.add_field(name="Idle:", value=";;status idle\n   ;;status idle-playing [custom status]\n   ;;status idle-listening [custom status]\n   ;;status idle-watching [custom status]", inline=False)
-      statuses.add_field(name="Dnd:", value=";;status dnd\n   ;;status dnd-playing [custom status]\n   ;;status dnd-listening [custom status]\n   ;;status dnd-watching [custom status]", inline=False)
+      statuses.add_field(name="Online:", value=";;status online\n   ;;status online playing [custom status]\n   ;;status online listening [custom status]\n   ;;status online watching [custom status]", inline=False)
+      statuses.add_field(name="Idle:", value=";;status idle\n   ;;status idle playing [custom status]\n   ;;status idle listening [custom status]\n   ;;status idle watching [custom status]", inline=False)
+      statuses.add_field(name="Dnd:", value=";;status dnd\n   ;;status dnd playing [custom status]\n   ;;status dnd listening [custom status]\n   ;;status dnd watching [custom status]", inline=False)
       statuses.add_field(name="Offline:", value=";;status offline", inline=False)
       await ctx.channel.send(embed=statuses, delete_after=5)
       await asyncio.sleep(4)
@@ -130,7 +130,7 @@ class developer(commands.Cog):
 
    
    
-    @status.command()
+    @status.group(invoke_without_command=True, case_insensitive=True)
     @commands.is_owner()
     async def online(self, ctx):
       await ctx.message.delete()
@@ -139,9 +139,9 @@ class developer(commands.Cog):
 
 
 
-    @status.command(aliases=["online-playing"])
+    @online.command(aliases=["playing"])
     @commands.is_owner()
-    async def onlinegame(self, ctx, *, args=None):
+    async def online_playing(self, ctx, *, args=None):
       await ctx.message.delete()
       
       if args is None:
@@ -153,9 +153,9 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.online, activity=listening)
         await ctx.channel.send("**[ONLINE] [PLAYING]** Status succesfully changed.", delete_after=5)
 
-    @status.command(aliases=["online-listening"])
+    @online.command(aliases=["listening"])
     @commands.is_owner()
-    async def onlinelistening(self, ctx, *, args=None):
+    async def online_listening(self, ctx, *, args=None):
       await ctx.message.delete()
       
       if args is None:
@@ -167,9 +167,9 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.online, activity=listening)
         await ctx.channel.send("**[ONLINE] [LISTENING]** Status succesfully changed.", delete_after=5)
 
-    @status.command(aliases=["online-watching"])
+    @online.command(aliases=["watching"])
     @commands.is_owner()
-    async def onlinewatching(self, ctx, *, args=None):
+    async def online_watching(self, ctx, *, args=None):
       await ctx.message.delete()
       
       if args is None:
@@ -198,7 +198,7 @@ class developer(commands.Cog):
 
 
 
-    @status.command()
+    @status.group(invoke_without_command=True, case_insensitive=True)
     @commands.is_owner()
     async def idle(self, ctx):
       await ctx.message.delete()
@@ -207,9 +207,9 @@ class developer(commands.Cog):
 
 
 
-    @status.command(aliases=["idle-playing"])
+    @idle.command(aliases=["playing"])
     @commands.is_owner()
-    async def idleplaying(self, ctx, *, args=None):
+    async def idle_playing(self, ctx, *, args=None):
       await ctx.message.delete()
       
       if args is None:
@@ -221,9 +221,9 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.idle, activity=listening)
         await ctx.channel.send("**[IDLE] [PLAYING]** Status succesfully changed.", delete_after=5)
 
-    @status.command(aliases=["idle-listening"])
+    @idle.command(aliases=["listening"])
     @commands.is_owner()
-    async def idlelistening(self, ctx, *, args=None):
+    async def idle_listening(self, ctx, *, args=None):
       await ctx.message.delete()
       
       if args is None:
@@ -235,9 +235,9 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.idle, activity=listening)
         await ctx.channel.send("**[IDLE] [LISTENING]** Status succesfully changed.", delete_after=5)
 
-    @status.command(aliases=["idle-watching"])
+    @idle.command(aliases=["watching"])
     @commands.is_owner()
-    async def idlewatching(self, ctx, *, args=None):
+    async def idle_watching(self, ctx, *, args=None):
       await ctx.message.delete()
       
       if args is None:
@@ -266,7 +266,7 @@ class developer(commands.Cog):
 
 
 
-    @status.command()
+    @status.group(invoke_without_command=True, case_insensitive=True)
     @commands.is_owner()
     async def dnd(self, ctx):
       await ctx.message.delete()
@@ -275,9 +275,9 @@ class developer(commands.Cog):
 
 
 
-    @status.command(aliases=["dnd-playing"])
+    @status.command(aliases=["playing"])
     @commands.is_owner()
-    async def dndplaying(self, ctx, *, args=None):
+    async def dnd_playing(self, ctx, *, args=None):
       await ctx.message.delete()
       
       if args is None:
@@ -289,9 +289,9 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.do_not_disturb, activity=listening)
         await ctx.channel.send("**[DND] [PLAYING]** Status succesfully changed.", delete_after=5)
 
-    @status.command(aliases=["dnd-listening"])
+    @status.command(aliases=["listening"])
     @commands.is_owner()
-    async def dndlistening(self, ctx, *, args=None):
+    async def dnd_listening(self, ctx, *, args=None):
       await ctx.message.delete()
       
       if args is None:
@@ -303,9 +303,9 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.do_not_disturb, activity=listening)
         await ctx.channel.send("**[DND] [LISTENING]** Status succesfully changed.", delete_after=5)
 
-    @status.command(aliases=["dnd-watching"])
+    @status.command(aliases=["watching"])
     @commands.is_owner()
-    async def dndwatching(self, ctx, *, args=None):
+    async def dnd_watching(self, ctx, *, args=None):
       await ctx.message.delete()
       
       if args is None:
