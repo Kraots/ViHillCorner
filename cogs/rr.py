@@ -71,7 +71,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000032\U0000fe0f\U000020e3': # COLOR2 
+            elif payload.emoji.name == '\U00000032\U0000fe0f\U000020e3': # COLOR2 
                 await member.add_roles(color2)
                 await member.remove_roles(color1)
                 await member.remove_roles(color3)
@@ -93,7 +93,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
             
-            if payload.emoji.name == '\U00000033\U0000fe0f\U000020e3': # COLOR3 
+            elif payload.emoji.name == '\U00000033\U0000fe0f\U000020e3': # COLOR3 
                 await member.add_roles(color3)
                 await member.remove_roles(color2)
                 await member.remove_roles(color1)
@@ -115,7 +115,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000034\U0000fe0f\U000020e3': # COLOR4 
+            elif payload.emoji.name == '\U00000034\U0000fe0f\U000020e3': # COLOR4 
                 await member.add_roles(color4)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -137,7 +137,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000035\U0000fe0f\U000020e3': # COLOR5 
+            elif payload.emoji.name == '\U00000035\U0000fe0f\U000020e3': # COLOR5 
                 await member.add_roles(color5)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -159,7 +159,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
             
-            if payload.emoji.name == '\U00000036\U0000fe0f\U000020e3': # COLOR6 
+            elif payload.emoji.name == '\U00000036\U0000fe0f\U000020e3': # COLOR6 
                 await member.add_roles(color6)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -181,7 +181,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000037\U0000fe0f\U000020e3': # COLOR7 
+            elif payload.emoji.name == '\U00000037\U0000fe0f\U000020e3': # COLOR7 
                 await member.add_roles(color7)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -203,7 +203,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000038\U0000fe0f\U000020e3': # COLOR8 
+            elif payload.emoji.name == '\U00000038\U0000fe0f\U000020e3': # COLOR8 
                 await member.add_roles(color8)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -225,7 +225,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000039\U0000fe0f\U000020e3': # COLOR9
+            elif payload.emoji.name == '\U00000039\U0000fe0f\U000020e3': # COLOR9
                 await member.add_roles(color9)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -247,7 +247,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
             
-        if message_id == COLORSMSG2:
+        elif message_id == COLORSMSG2:
 
             if payload.emoji.name == '\U00000031\U0000fe0f\U000020e3': # COLOR1
                 await member.add_roles(color10)
@@ -271,7 +271,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000032\U0000fe0f\U000020e3': # COLOR1
+            elif payload.emoji.name == '\U00000032\U0000fe0f\U000020e3': # COLOR1
                 await member.add_roles(color11)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -293,7 +293,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000033\U0000fe0f\U000020e3': # COLOR1
+            elif payload.emoji.name == '\U00000033\U0000fe0f\U000020e3': # COLOR1
                 await member.add_roles(color12)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -315,7 +315,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
             
-            if payload.emoji.name == '\U00000034\U0000fe0f\U000020e3': # COLOR1
+            elif payload.emoji.name == '\U00000034\U0000fe0f\U000020e3': # COLOR1
                 await member.add_roles(color13)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -337,7 +337,8 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000035\U0000fe0f\U000020e3': # COLOR1
+
+            elif payload.emoji.name == '\U00000035\U0000fe0f\U000020e3': # COLOR1
                 await member.add_roles(color14)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -359,7 +360,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000036\U0000fe0f\U000020e3': # COLOR1
+            elif payload.emoji.name == '\U00000036\U0000fe0f\U000020e3': # COLOR1
                 await member.add_roles(color15)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -381,7 +382,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000037\U0000fe0f\U000020e3': # COLOR1
+            elif payload.emoji.name == '\U00000037\U0000fe0f\U000020e3': # COLOR1
                 await member.add_roles(color16)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -403,7 +404,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000038\U0000fe0f\U000020e3': # COLOR1
+            elif payload.emoji.name == '\U00000038\U0000fe0f\U000020e3': # COLOR1
                 await member.add_roles(color17)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -425,7 +426,7 @@ class ReactionRoles(commands.Cog):
                 await member.remove_roles(color19)
                 return
 
-            if payload.emoji.name == '\U00000039\U0000fe0f\U000020e3': # COLOR1
+            elif payload.emoji.name == '\U00000039\U0000fe0f\U000020e3': # COLOR1
                 await member.add_roles(color18)
                 await member.remove_roles(color2)
                 await member.remove_roles(color3)
@@ -452,7 +453,7 @@ class ReactionRoles(commands.Cog):
 							# WHITE
         
         
-        if message_id == COLORSMSG3:
+        elif message_id == COLORSMSG3:
 
             if payload.emoji.name == '\U00000031\U0000fe0f\U000020e3': # COLOR 1
                 await member.add_roles(color19)
