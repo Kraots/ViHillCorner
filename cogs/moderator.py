@@ -5,7 +5,7 @@ import utils.colors as color
 from discord.ext.commands import Greedy
 from discord import Member
 import re
-from utils.helpers import time_phaser
+from utils.helpers import time_phaserr
 
 time_regex = re.compile("(?:(\d{1,5})(h|s|m|d))+?")
 time_dict = {"h":3600, "s":1, "m":60, "d":86400}
@@ -36,14 +36,32 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.has_role('Staff')
     async def slowmode(self, ctx, *, time : TimeConverter):
+        guild = self.client.get_guild(750160850077089853)
+        log_channel = guild.get_channel(788377362739494943)
         await ctx.message.delete()
+
         if time:
             await ctx.channel.edit(slowmode_delay=time)
-            await ctx.author.send(f'Set slowmode for <#{ctx.channel.id}> to {time_phaser(time)} !')
+            await ctx.author.send(f'Set slowmode for <#{ctx.channel.id}> to {time_phaserr(time)} !')
+            
+            em = discord.Embed(color=color.reds, title="___SLOWMODE___", timestamp = ctx.message.created_at)
+            em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+            em.add_field(name="Action", value=f"`Set slowmode to {time_phaserr(time)}`", inline=False)
+            em.add_field(name="Channel", value=f"<#{ctx.channel.id}>",inline=False)
+
+            await log_channel.send(embed=em)
+            return
+
         else:
             await ctx.channel.edit(slowmode_delay=0)
             await ctx.author.send(f'Disabled slowmode for <#{ctx.channel.id}> !')
 
+            em = discord.Embed(color=color.reds, title="___SLOWMODE___", timestamp = ctx.message.created_at)
+            em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+            em.add_field(name="Action", value=f"`Disabled slowmode`", inline=False)
+            em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+            
+            await log_channel.send(embed=em)
     # Say
     @commands.command()
     @commands.is_owner()
@@ -54,25 +72,50 @@ class Moderation(commands.Cog):
     # Kick
     @commands.command(help=".kick [user] <reason>")
     @commands.has_role('Staff')
-    async def kick(self, ctx, member : discord.Member, *, reason="not specified"):
+    async def kick(self, ctx, member : discord.Member, *, reason="Toxicity & Insult"):
+        guild = self.client.get_guild(750160850077089853)
+        log_channel = guild.get_channel(788377362739494943)
+        msg = "You have been kicked from `Anime Hangouts`!"
+        await member.send(msg)
         await member.kick(reason=reason)
     
-        kick = discord.Embed(description=f"The user has been kicked for the reason: **{reason}**" , color=color.red)
+        kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=color.red)
     
         await ctx.channel.send(embed=kick)
+
+
+        em = discord.Embed(color=color.reds, title="___KICK___", timestamp = ctx.message.created_at)
+        em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+        em.add_field(name="Action", value=f"`Used the kick command`", inline=False)
+        em.add_field(name="Member", value=f"`{member}`", inline=False)
+        em.add_field(name="Reason", value=f"`{reason}`", inline=False)
+        em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+    
+        await log_channel.send(embed=em)
 
     # MASS KICK 
     @commands.command()
     @commands.has_role('Staff')
     async def masskick(self, ctx, members : Greedy[Member], *, reason="Toxicity & Insult"):
+        guild = self.client.get_guild(750160850077089853)
+        log_channel = guild.get_channel(788377362739494943)
         for member in members:
-            msg = "You have been kicked from **Anime Hangouts!**"
-            reasonn = discord.Embed(description=f'**Reason:** [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
+            msg = "You have been kicked from `Anime Hangouts`!"
+            reasonn = discord.Embed(description=f'`Reason:` [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
             await member.send(msg, embed=reasonn)
             await member.kick()
             kick = discord.Embed(description=f"`{member}` has been kicked for the reason: [{reason}]({ctx.message.jump_url})" , color=color.red)
         
             await ctx.channel.send(embed=kick)
+
+            em = discord.Embed(color=color.reds, title="___MASSKICK___", timestamp = ctx.message.created_at)
+            em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+            em.add_field(name="Action", value=f"`Used the masskick command`", inline=False)
+            em.add_field(name="Member", value=f"`{member}`", inline=False)
+            em.add_field(name="Reason", value=f"`{reason}`", inline=False)
+            em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+        
+            await log_channel.send(embed=em)
 
     # Ban
     @commands.command(help=".ban [user] <reason>")
@@ -80,9 +123,9 @@ class Moderation(commands.Cog):
     async def ban(self, ctx, member : discord.User, *, reason="Toxicty & Insult"):
         guild = self.client.get_guild(750160850077089853)
 
-        reasonn = discord.Embed(description="Unban appeal server \n https://discord.gg/rD5z5Jp")
+        reasonn = discord.Embed(description="Unban appeal server \n https://discord.gg/pVmwxtkrxx")
         reasonn.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
-        msg="You have been banned from Anime Hangouts. If you think that this has been applied in error please submit a detailed appeal at the following link."
+        msg="You have been banned from `Anime Hangouts`. If you think that this has been applied in error please submit a detailed appeal at the following link."
 
         try: 
             await member.send(msg, embed=reasonn)
@@ -97,15 +140,26 @@ class Moderation(commands.Cog):
 
             await ctx.send(embed=bann)
 
+        log_channel = guild.get_channel(788377362739494943)
+
+        em = discord.Embed(color=color.reds, title="___BAN___", timestamp = ctx.message.created_at)
+        em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+        em.add_field(name="Action", value=f"`Used the ban command`", inline=False)
+        em.add_field(name="Member", value=f"`{member}`", inline=False)
+        em.add_field(name="Reason", value=f"`{reason}`", inline=False)
+        em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+
+        await log_channel.send(embed=em)
+
 
     # MASS BAN 
     @commands.command()
     @commands.has_role('Staff')
-    async def massban(self, ctx, members : Greedy[Member]):
+    async def massban(self, ctx, members : Greedy[Member], *, reason="Toxicity & Insult"):
         
-        reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/rD5z5Jp")
+        reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/pVmwxtkrxx")
         reasonn.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
-        msg="You have been banned from Anime Hangouts. If you think that this has been applied in error please submit a detailed appeal at the following link."
+        msg="You have been banned from `Anime Hangouts`. If you think that this has been applied in error please submit a detailed appeal at the following link."
         
         for member in members:
             await member.send(msg, embed=reasonn)
@@ -115,6 +169,18 @@ class Moderation(commands.Cog):
             ban = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
 
             await ctx.channel.send(embed=ban)
+
+            guild = self.client.get_guild(750160850077089853)
+            log_channel = guild.get_channel(788377362739494943)
+
+            em = discord.Embed(color=color.reds, title="___MASSBAN___", timestamp = ctx.message.created_at)
+            em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+            em.add_field(name="Action", value=f"`Used the massban command`", inline=False)
+            em.add_field(name="Member", value=f"`{member}`", inline=False)
+            em.add_field(name="Reason", value=f"`{reason}`", inline=False)
+            em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+
+            await log_channel.send(embed=em)
 
 
 
@@ -131,10 +197,20 @@ class Moderation(commands.Cog):
         
         unban = discord.Embed(description= f"`{member}` has been unbanned from the server" , color=color.red)
 
-        msg = await ctx.send(embed=unban)
-        await msg.add_reaction('🗑️')
+        await ctx.send(embed=unban)
+
+        log_channel = guild.get_channel(788377362739494943)
+
+        em = discord.Embed(color=color.reds, title="___UNBAN___", timestamp = ctx.message.created_at)
+        em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+        em.add_field(name="Action", value=f"`Used the unban command`", inline=False)
+        em.add_field(name="Member", value=f"`{member}`", inline=False)
+        em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+
+        await log_channel.send(embed=em)
+
         try:
-            msg="Congrats! You have been unbanned from Anime Hangouts. Come back: https://discord.gg/mFm5GrQ"
+            msg="Congrats! You have been unbanned from `Anime Hangouts`. Come back: https://discord.gg/mFm5GrQ"
             await member.send(msg)
             await ctx.guild.kick(member)
         except discord.Forbidden:
@@ -151,12 +227,21 @@ class Moderation(commands.Cog):
             
             unban = discord.Embed(description= "The user has been unbanned from the server" , color=color.red)
 
-            msg = await ctx.send(embed=unban)
-            await msg.add_reaction('🗑️')
-            msg="Congrats! You have been unbanned from Anime Hangouts. Come back: https://discord.gg/mFm5GrQ"
+            await ctx.send(embed=unban)
+
+            msg = "Congrats! You have been unbanned from `Anime Hangouts`. Come back: https://discord.gg/mFm5GrQ"
             await member.send(msg)
             await member.guild.kick(member)
 
+            log_channel = guild.get_channel(788377362739494943)
+
+            em = discord.Embed(color=color.reds, title="___MASSUNBAN___", timestamp = ctx.message.created_at)
+            em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+            em.add_field(name="Action", value=f"`Used the massunban command`", inline=False)
+            em.add_field(name="Member", value=f"`{member}`", inline=False)
+            em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+
+            await log_channel.send(embed=em)
 
 
 
@@ -168,36 +253,67 @@ class Moderation(commands.Cog):
             await ctx.message.delete()
             await ctx.channel.purge(limit=amount)
 
+            guild = self.client.get_guild(750160850077089853)
+            log_channel = guild.get_channel(788377362739494943)
+
+            em = discord.Embed(color=color.reds, title="___PURGE / CLEAR___", timestamp = ctx.message.created_at)
+            em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+            em.add_field(name="Action", value=f"`Used the clear / purge command`", inline=False)
+            em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+
+            await log_channel.send(embed=em)
+
     # Mute
     @commands.command(help=".mute [user] <reason>")
     @commands.has_role('Staff')
     async def mute(self, ctx, member : discord.Member, *, reason="Toxicity & Insult"):
-        role = discord.utils.get(ctx.guild.roles, name='Muted')
-        await member.add_roles(role)     
+        guild = self.client.get_guild(750160850077089853)
+        muted = guild.get_role(750465726069997658)
+        await member.add_roles(muted)     
         unban = discord.Embed(description= f'{member.mention} has been muted for [{reason}]({ctx.message.jump_url}).' , color=color.red)
         
-        msg = await ctx.send(embed=unban)
-        await msg.add_reaction('🗑️') 
+        await ctx.send(embed=unban)
         reason = discord.Embed(description=f'**Reason:** [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
-        msg="You were muted in Anime Hangouts"
+        msg="You were muted in `Anime Hangouts`."
 
         await member.send(msg, embed=reason)
+
+        log_channel = guild.get_channel(788377362739494943)
+
+        em = discord.Embed(color=color.reds, title="___MUTE___", timestamp = ctx.message.created_at)
+        em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+        em.add_field(name="Action", value=f"`Used the mute command`", inline=False)
+        em.add_field(name="Member", value=f"`{member}`", inline=False)
+        em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+
+        await log_channel.send(embed=em)
+
 
     # MASS MUTE
     @commands.command(help=".mute [user] <reason>")
     @commands.has_role('Staff')
     async def massmute(self, ctx, members : Greedy[Member], *, reason="Toxicity & Insult"):
-        role = discord.utils.get(ctx.guild.roles, name='Muted')
+        guild = self.client.get_guild(750160850077089853)
+        muted = guild.get_role(750465726069997658)
         for member in members:
-            await member.add_roles(role)     
+            await member.add_roles(muted)     
             unban = discord.Embed(description= f'{member.mention} has been muted for [{reason}]({ctx.message.jump_url}).' , color=color.red)
             
-            msg = await ctx.send(embed=unban)
-            await msg.add_reaction('🗑️') 
+            await ctx.send(embed=unban)
             reasonn = discord.Embed(description=f'**Reason:** [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
-            msg="You were muted in Anime Hangouts"
+            msg="You were muted in `Anime Hangouts`."
 
             await member.send(msg, embed=reasonn)
+
+            log_channel = guild.get_channel(788377362739494943)
+
+            em = discord.Embed(color=color.reds, title="___MASSMUTE___", timestamp = ctx.message.created_at)
+            em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+            em.add_field(name="Action", value=f"`Used the massmute command`", inline=False)
+            em.add_field(name="Member", value=f"`{member}`", inline=False)
+            em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+
+            await log_channel.send(embed=em)
 
 
 
@@ -206,38 +322,70 @@ class Moderation(commands.Cog):
     @commands.command(help=".unmute [user]")
     @commands.has_role('Staff')
     async def unmute(self, ctx, member : discord.Member):
-        role = discord.utils.get(ctx.guild.roles, name='Muted')
-        await member.remove_roles(role)     
+        guild = self.client.get_guild(750160850077089853)
+        muted = guild.get_role(750465726069997658)
+        await member.remove_roles(muted)     
         unban = discord.Embed(description= f'{member.mention} has been unmuted.' , color=color.red)
         
-        msg = await ctx.send(embed=unban)
-        await msg.add_reaction('🗑️')
+        await ctx.send(embed=unban)
 
-        await member.send("You have been unmuted in Anime Hangouts")
+        await member.send("You have been unmuted in `Anime Hangouts`.")
+
+        log_channel = guild.get_channel(788377362739494943)
+
+        em = discord.Embed(color=color.reds, title="___UNMUTE___", timestamp = ctx.message.created_at)
+        em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+        em.add_field(name="Action", value=f"`Used the unmute command`", inline=False)
+        em.add_field(name="Member", value=f"`{member}`", inline=False)
+        em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+
+        await log_channel.send(embed=em)
 
     # MASS UNMUTE 
     @commands.command(help=".unmute [user]")
     @commands.has_role('Staff')
     async def massunmute(self, ctx, members : Greedy[Member]):
-        role = discord.utils.get(ctx.guild.roles, name='Muted')
+        guild = self.client.get_guild(750160850077089853)
+        muted = guild.get_role(750465726069997658)
         for member in members:
-            await member.remove_roles(role)     
+            await member.remove_roles(muted)     
             unban = discord.Embed(description= f'{member.mention} has been unmuted.' , color=color.red)
             
-            msg = await ctx.send(embed=unban)
-            await msg.add_reaction('🗑️')
+            await ctx.send(embed=unban)
 
-            await member.send("You have been unmuted in Anime Hangouts")
+            await member.send("You have been unmuted in `Anime Hangouts`.")
+
+            log_channel = guild.get_channel(788377362739494943)
+
+            em = discord.Embed(color=color.reds, title="___MASSUNMUTE___", timestamp = ctx.message.created_at)
+            em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+            em.add_field(name="Action", value=f"`Used the massunmute command`", inline=False)
+            em.add_field(name="Member", value=f"`{member}`", inline=False)
+            em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+
+            await log_channel.send(embed=em)
 
 
     @commands.command(aliases=["ps"])
     @commands.has_role('Staff')
     async def partnership(self, ctx, *, arg):
+        guild = self.client.get_guild(750160850077089853)
         await ctx.message.delete()
         embed = discord.Embed(title="NEW PARTNERSHIP", description=f'{arg}', color=color.red)
         embed.set_footer(text=f'Partnership by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
         await ctx.channel.send(embed=embed)
+
+
+        log_channel = guild.get_channel(788377362739494943)
+
+        em = discord.Embed(color=color.reds, title="___PARTNERSHIP___", timestamp = ctx.message.created_at)
+        em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+        em.add_field(name="Action", value=f"`Used the partnership command`", inline=False)
+        em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+
+        await log_channel.send(embed=em)
+
         await asyncio.sleep(1)
         await ctx.channel.send("<@&750160850077089861>")
 
