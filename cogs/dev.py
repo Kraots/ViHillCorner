@@ -275,7 +275,7 @@ class developer(commands.Cog):
 
 
 
-    @status.command(aliases=["playing"])
+    @dnd.command(aliases=["playing"])
     @commands.is_owner()
     async def dnd_playing(self, ctx, *, args=None):
       await ctx.message.delete()
@@ -289,7 +289,7 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.do_not_disturb, activity=listening)
         await ctx.channel.send("**[DND] [PLAYING]** Status succesfully changed.", delete_after=5)
 
-    @status.command(aliases=["listening"])
+    @dnd.command(aliases=["listening"])
     @commands.is_owner()
     async def dnd_listening(self, ctx, *, args=None):
       await ctx.message.delete()
@@ -303,7 +303,7 @@ class developer(commands.Cog):
         await self.client.change_presence(status=discord.Status.do_not_disturb, activity=listening)
         await ctx.channel.send("**[DND] [LISTENING]** Status succesfully changed.", delete_after=5)
 
-    @status.command(aliases=["watching"])
+    @dnd.command(aliases=["watching"])
     @commands.is_owner()
     async def dnd_watching(self, ctx, *, args=None):
       await ctx.message.delete()
