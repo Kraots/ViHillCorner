@@ -134,14 +134,6 @@ class command(commands.Cog):
 
         await ctx.channel.send(embed=ad)
 
-    @commands.command(aliases=['chat revive', 'revive', 'revive chat'])
-    @commands.cooldown(1, 7200, commands.BucketType.guild)
-    async def _asdjknasdjkn(self, ctx):
-        await ctx.message.delete()
-        msg = '<@&750160850236604537>'
-        revive = self.client.get_channel(761652915450413106)
-        await revive.send(msg)
-
     @commands.command(aliases=["untill-partner", "up"])
     async def _sdlajkndasjkdn(self, ctx):
         guild = self.client.get_guild(750160850077089853)
