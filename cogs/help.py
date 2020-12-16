@@ -298,7 +298,7 @@ class Help(commands.Cog):
 	@commands.has_role("Staff")
 	async def tempmute(self, ctx):
 		tempmute = discord.Embed(title="***Usage:***", description="```!tempmute <user> <time>```", color=color.lightpink)
-		tempmute.add_field(name="***Example:***", value="**!tempmute @BananaBoy69 1 s|m|h|d**", inline=False)
+		tempmute.add_field(name="***Example:***", value="!tempmute @BananaBoy69 1 s|m|h|d", inline=False)
 		tempmute.add_field(name="***Info:***", value="• s - second\n• m - minute\n• h - hour\n• d - day\n\n• Tempmutes a user with the  given time.", inline=False)
 		tempmute.add_field(name="***Warning:***", value="**DO NOT GO ABOVE 12H**", inline=False)
 		await ctx.channel.send(embed=tempmute)
