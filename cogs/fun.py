@@ -3,6 +3,7 @@ from discord.ext import commands
 import random
 from random import randint
 import utils.colors as color
+from utils.helpers import time_phaserr
 import asyncio
 
 class Fun(commands.Cog):
@@ -386,7 +387,30 @@ class Fun(commands.Cog):
                 await asyncio.sleep(4)
 
 
+    @commands.command()
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    async def vampify(self, ctx, *args):
+        vampify = " <:vampy:773535195210973237> ".join(args)
+        await ctx.send(vampify)
+        await ctx.message.delete()
 
+    @commands.command()
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    async def clapify(self, ctx, *args):
+        clapify = " 👏 ".join(args)
+        await ctx.send(clapify)
+        await ctx.message.delete()
+
+    @vampify.error
+    async def vampify_error(self, ctx, error):
+        if isinstance(error, commands.errors.CommandOnCooldown):
+            await ctx.send(f"You're on cooldown, try again in {time_phaserr(error.retry_after)}.")
+
+
+    @clapify.error
+    async def clapify_error(self, ctx, error):
+        if isinstance(error, commands.errors.CommandOnCooldown):
+            await ctx.send(f"You're on cooldown, try again in {time_phaserr(error.retry_after)}.")
 
 
 

@@ -3,6 +3,11 @@ from discord.ext import commands
 import asyncio
 import json
 
+nono_list = [
+				"staff",
+				"mod"
+			]
+
 class CustomRoles(commands.Cog):
 
 	def __init__(self, client):
@@ -40,6 +45,9 @@ class CustomRoles(commands.Cog):
 
 			try:
 				crname = await self.client.wait_for('message', timeout=50, check=check)
+				if crname.content.lower() in nono_list:
+					await ctx.send("You tried, but no, lol!")
+					return
 
 			except asyncio.TimeoutError:
 				return
