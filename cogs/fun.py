@@ -348,7 +348,7 @@ class Fun(commands.Cog):
                     "don't tell anyone but of course >///<"
 
                     ]
-        await ctx.send(f':8ball:** | {ctx.author.name} asked:** {question}\n<:blank:784359834317225995>** | Answer:** {random.choice(responses)}')
+        await ctx.send(f':8ball:** | {ctx.author.name} asked:** {question}\n<:blank:788666214318735360>** | Answer:** {random.choice(responses)}')
 
 
 

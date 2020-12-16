@@ -30,7 +30,7 @@ for filename in os.listdir('./outsidereloadcogs'):
 async def ch_pr():
     await client.wait_until_ready()
 
-    status_list = ["carrots", "ur mom", "you", "anime", "over the members", "hating carrots", "pain", "carrots is fine","carrots did it again", "carrots dumb"]
+    status_list = ["carrots", "ur mom", "you", "anime", "over the members"]
 
     while not client.is_closed():
 
