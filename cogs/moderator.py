@@ -75,13 +75,23 @@ class Moderation(commands.Cog):
     async def kick(self, ctx, member : discord.Member, *, reason="Toxicity & Insult"):
         guild = self.client.get_guild(750160850077089853)
         log_channel = guild.get_channel(788377362739494943)
-        msg = "You have been kicked from `Anime Hangouts`!"
-        await member.send(msg)
-        await member.kick(reason=reason)
-    
-        kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=color.red)
-    
-        await ctx.channel.send(embed=kick)
+        
+        try:
+                
+            msg = "You have been kicked from `Anime Hangouts`!"
+            await member.send(msg)
+            await guild.kick(member, reason=reason)
+        
+            kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=color.red)
+        
+            await ctx.channel.send(embed=kick)
+
+        except discord.HTTPException:
+            await guild.kick(member, reason=reason)
+        
+            kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=color.red)
+        
+            await ctx.channel.send(embed=kick)
 
 
         em = discord.Embed(color=color.reds, title="___KICK___", timestamp = ctx.message.created_at)
@@ -100,13 +110,22 @@ class Moderation(commands.Cog):
         guild = self.client.get_guild(750160850077089853)
         log_channel = guild.get_channel(788377362739494943)
         for member in members:
-            msg = "You have been kicked from `Anime Hangouts`!"
-            reasonn = discord.Embed(description=f'`Reason:` [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
-            await member.send(msg, embed=reasonn)
-            await member.kick()
-            kick = discord.Embed(description=f"`{member}` has been kicked for the reason: [{reason}]({ctx.message.jump_url})" , color=color.red)
-        
-            await ctx.channel.send(embed=kick)
+            try:
+                    
+                msg = "You have been kicked from `Anime Hangouts`!"
+                reasonn = discord.Embed(description=f'`Reason:` [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
+                await member.send(msg, embed=reasonn)
+                await guild.kick(member, reason=reason)
+                kick = discord.Embed(description=f"`{member}` has been kicked for the reason: [{reason}]({ctx.message.jump_url})" , color=color.red)
+            
+                await ctx.channel.send(embed=kick)
+
+            except discord.HTTPException:
+                await guild.kick(member, reason=reason)
+            
+                kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=color.red)
+            
+                await ctx.channel.send(embed=kick)
 
             em = discord.Embed(color=color.reds, title="___MASSKICK___", timestamp = ctx.message.created_at)
             em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
@@ -119,7 +138,7 @@ class Moderation(commands.Cog):
 
     # Ban
     @commands.command(help=".ban [user] <reason>")
-    @commands.has_role('Staff')
+    @commands.has_role("Staff")
     async def ban(self, ctx, member : discord.User, *, reason="Toxicty & Insult"):
         guild = self.client.get_guild(750160850077089853)
 
@@ -129,13 +148,13 @@ class Moderation(commands.Cog):
 
         try: 
             await member.send(msg, embed=reasonn)
-            await guild.ban(discord.Object(id=member.id))
+            await guild.ban(discord.Object(id=member.id), reason=reason)
             bann = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
 
             await ctx.send(embed=bann)
 
-        except discord.Forbidden:
-            await guild.ban(discord.Object(id=member.id))
+        except discord.HTTPException:
+            await guild.ban(discord.Object(id=member.id), reason=reason)
             bann = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
 
             await ctx.send(embed=bann)
@@ -162,13 +181,22 @@ class Moderation(commands.Cog):
         msg="You have been banned from `Anime Hangouts`. If you think that this has been applied in error please submit a detailed appeal at the following link."
         
         for member in members:
-            await member.send(msg, embed=reasonn)
-          
-            await member.ban()
+            try:
+                await member.send(msg, embed=reasonn)
+            
+                await member.ban()
 
-            ban = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
+                ban = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
 
-            await ctx.channel.send(embed=ban)
+                await ctx.channel.send(embed=ban)
+
+            except discord.HTTPException:
+                await member.ban()
+
+                ban = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
+
+                await ctx.channel.send(embed=ban)
+
 
             guild = self.client.get_guild(750160850077089853)
             log_channel = guild.get_channel(788377362739494943)
@@ -192,6 +220,7 @@ class Moderation(commands.Cog):
     @commands.has_role('Staff')
     async def unban(self, ctx, member: discord.User):
         guild = self.client.get_guild(750160850077089853)
+        guild2 = self.client.get_guild(788384492175884299)
         await guild.fetch_ban(member)
         await guild.unban(discord.Object(id=member.id))
         
@@ -212,15 +241,17 @@ class Moderation(commands.Cog):
         try:
             msg="Congrats! You have been unbanned from `Anime Hangouts`. Come back: https://discord.gg/mFm5GrQ"
             await member.send(msg)
-            await ctx.guild.kick(member)
-        except discord.Forbidden:
-            return
+            await guild2.kick(member)
+        
+        except discord.HTTPException:
+            await guild2.kick(member)
 
     # MASS UNBAN
     @commands.command(help=".unban [user_ID]")
     @commands.has_role('Staff')
     async def massunban(self, ctx, members: Greedy[Member]):
         guild = self.client.get_guild(750160850077089853)
+        guild2 = self.client.get_guild(788384492175884299)
         for member in members:
 
             await guild.unban(member)
@@ -229,9 +260,13 @@ class Moderation(commands.Cog):
 
             await ctx.send(embed=unban)
 
-            msg = "Congrats! You have been unbanned from `Anime Hangouts`. Come back: https://discord.gg/mFm5GrQ"
-            await member.send(msg)
-            await member.guild.kick(member)
+            try:
+                msg = "Congrats! You have been unbanned from `Anime Hangouts`. Come back: https://discord.gg/mFm5GrQ"
+                await member.send(msg)
+                await guild2.kick(member)
+
+            except discord.HTTPException:
+                await guild2.kick(member)
 
             log_channel = guild.get_channel(788377362739494943)
 
