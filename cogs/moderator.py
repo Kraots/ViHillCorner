@@ -253,7 +253,7 @@ class Moderation(commands.Cog):
         guild = self.client.get_guild(750160850077089853)
         guild2 = self.client.get_guild(788384492175884299)
         for member in members:
-
+            
             await guild.unban(member)
             
             unban = discord.Embed(description= "The user has been unbanned from the server" , color=color.red)
