@@ -100,7 +100,8 @@ class command(commands.Cog):
     @commands.command(hidden=True)
     async def membercount(self, ctx):
             guild = self.client.get_guild(750160850077089853)
-            await ctx.channel.send(f'`{guild.member_count - 12}` members.') 
+            member_count = len([m for m in guild.members if not m.bot])
+            await ctx.channel.send(f'`{member_count}` members.') 
 
     @commands.command(hidden=True, aliases=["av", "avatar"])
     async def _av(self, ctx, member: discord.Member = None):
@@ -143,7 +144,8 @@ class command(commands.Cog):
     @commands.command(aliases=["untill-partner", "up"])
     async def _sdlajkndasjkdn(self, ctx):
         guild = self.client.get_guild(750160850077089853)
-        await ctx.channel.send(f'Members left untill the server can apply for the *discord partership program:* \n\n`{500 - guild.member_count + 12}`')
+        member_count = len([m for m in guild.members if not m.bot])
+        await ctx.channel.send(f'Members left untill the server can apply for the *discord partership program:* \n\n`{500 - member_count}`')
 
 
 
