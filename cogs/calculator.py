@@ -30,6 +30,10 @@ class Calculator(commands.Cog):
     async def divide(self, ctx, a: float, b:float):
         await ctx.channel.send(f'{a} / {b} =  `{a/b}`')
 
+    @calc.command(pass_context=True, aliases = ['sr', 'power'])
+    async def root(self, ctx, a: float, b: float):
+        await ctx.channel.send(f"{a} ^ {b} = `{a**b}`")
+
     @add.error
     async def add_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
@@ -47,6 +51,11 @@ class Calculator(commands.Cog):
 
     @divide.error
     async def divide_error(self, ctx, error):
+        if isinstance(error, commands.BadArgument):
+            await ctx.message.delete()
+
+    @root.error
+    async def sr_error(self, ctx, error):
         if isinstance(error, commands.BadArgument):
             await ctx.message.delete()
 
