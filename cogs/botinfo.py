@@ -20,7 +20,8 @@ class BotInfo(commands.Cog):
         botinfo.add_field(name="Info", value=f"This bot is not sharded and can see {cache_summary}")
         botinfo.add_field(name="Commands loaded", value=f"{len([x.name for x in self.client.commands])}", inline=False)
         botinfo.add_field(name="About:", value="*This bot is a private bot (meaning it is not open sourced) made only for Anime Hangouts, so do not ask to host it or to add it to your server!*", inline=True)
-        botinfo.set_thumbnail(url="https://cdn.discordapp.com/avatars/751724369683677275/0ad4d3b39956b6431c7167ef82c30d30.webp?size=1024")
+        botinfo.add_field(name="Vote:", value="\n[Click Here](https://top.gg/servers/750160850077089853/vote)", inline=False)
+        botinfo.set_thumbnail(url=self.client.user.avatar_url)
         await ctx.channel.send(embed=botinfo)
 
 def setup (client):

@@ -18,6 +18,12 @@ class command(commands.Cog):
     async def cog_check(self, ctx):
         return ctx.prefix == self.prefix
     
+    @commands.command()
+    async def vote(self, ctx):
+        em = discord.Embed(title="Click Here", url="https://top.gg/servers/750160850077089853/vote", color=color.lightpink)
+        
+        await ctx.send(embed=em)
+
     @commands.command(aliases=["perm-calc"])
     async def perm_calc(self, ctx):
         em = discord.Embed(color=color.lightpink, title= " Here's the link to the permission calculator for bots. ", description = "https://discordapi.com/permissions.html#2147483647")

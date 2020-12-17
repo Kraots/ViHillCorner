@@ -109,7 +109,7 @@ class NSFW(commands.Cog):
     async def nsfw_error(self, ctx, error):
         if isinstance(error, commands.CheckFailure):
             if "Staff" in [role.name for role in ctx.message.author.roles]:
-                await ctx.send('Invalid format!\nUse: `!nsfw add {user}` or `!nsfw remove {user}`!')
+                await ctx.send('Invalid format!\nUse: `!nsfw add <users>` or `!nsfw remove <users>`!')
             else:
 
                 msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"

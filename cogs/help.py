@@ -20,7 +20,7 @@ class Help(commands.Cog):
 		helpEm.set_thumbnail(url=self.client.user.avatar_url)
 		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `calc`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`")
 		helpEm.add_field(name="Economy", value="`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `ppsuck`", inline=False)
-		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `snippets`, `actions`, `serverinfo`", inline=False)
+		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `snippets`, `actions`, `serverinfo`, `vote`", inline=False)
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
 			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `massmute`, `tempmute`, `unmute`, `massunmute`, `kick`, `masskick`, `ban`, `massban`, `unban`, `massunban`, `partnership`, `nsfw`, `slowmode`", inline=False)
 		
@@ -412,7 +412,7 @@ class Help(commands.Cog):
 	async def nsfw(self, ctx):
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
 
-			em = discord.Embed(color=color.lightpink, title='***Usage:***', description='```!nsfw add <user> | remove <user>```')
+			em = discord.Embed(color=color.lightpink, title='***Usage:***', description='```!nsfw add <users> | remove <users>```')
 			em.add_field(name="***Info:***", value="• Give the user perms to see the nsfw channel or remove them!", inline=False)
 			await ctx.send(embed=em)
 
