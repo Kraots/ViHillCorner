@@ -10,54 +10,39 @@ class Calculator(commands.Cog):
     async def cog_check(self, ctx):
         return ctx.prefix == self.prefix
 
-    @commands.group(invoke_without_command=True, case_insensitive=True)
-    async def calc(self, ctx):
-        pass
+    @commands.command()
+    async def calc(self, ctx, a : float, operator, b : float):
+        if operator == "+":
+            title = "Sum"
+            result = a+b
+            operation = f"{a} + {b}"
 
-    @calc.command(pass_context=True)
-    async def add(self, ctx, a: float, b:float):
-        await ctx.channel.send(f'{a} + {b}= `{a+b}`')
-        
-    @calc.command(pass_context=True)
-    async def subtract(self, ctx, a: float, b:float):
-        await ctx.channel.send(f'{a} - {b} =  `{a-b}`')
-        
-    @calc.command(pass_context=True)
-    async def multiply(self, ctx, a: float, b:float):
-        await ctx.channel.send(f'{a} * {b} =  `{a*b}`')
-        
-    @calc.command(pass_context=True)
-    async def divide(self, ctx, a: float, b:float):
-        await ctx.channel.send(f'{a} / {b} =  `{a/b}`')
+        elif operator == "-":
+            title = "Division"
+            result = a-b
+            operation = f"{a} - {b}"
 
-    @calc.command(pass_context=True, aliases = ['sr', 'power'])
-    async def root(self, ctx, a: float, b: float):
-        await ctx.channel.send(f"{a} ^ {b} = `{a**b}`")
+        elif operator == "/":
+            title = "Subtraction"
+            result = a/b
+            operation = f"{a} / {b}"
 
-    @add.error
-    async def add_error(self, ctx, error):
-        if isinstance(error, commands.BadArgument):
-            await ctx.message.delete()
+        elif operator == "*":
+            title = "Multiplication"
+            result = a*b
+            operation = f"{a} * {b}"
 
-    @subtract.error
-    async def substract_error(self, ctx, error):
-        if isinstance(error, commands.BadArgument):
-            await ctx.message.delete()
+        elif operator == "^":
+            title = "Square Root"
+            result = a**b
+            operation = f"{a} ^ {b}"
 
-    @multiply.error
-    async def multiply_error(self, ctx, error):
-        if isinstance(error, commands.BadArgument):
-            await ctx.message.delete()
+        em = discord.Embed(color=color.lightpink, title=title)
+        em.add_field(name="Operation:", value=operation)
+        em.add_field(name="Result:", value=result)
 
-    @divide.error
-    async def divide_error(self, ctx, error):
-        if isinstance(error, commands.BadArgument):
-            await ctx.message.delete()
+        await ctx.send(embed=em)
 
-    @root.error
-    async def sr_error(self, ctx, error):
-        if isinstance(error, commands.BadArgument):
-            await ctx.message.delete()
 
 
 

@@ -425,8 +425,8 @@ class Help(commands.Cog):
 
 	@help.command()
 	async def calc(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title='***Usage:***', description='```!calc add <a> <b> | subtract <a> <b> | multiply <a> <b> | divide <a> <b> | root <a> <b>```')
-		embed.add_field(name="***Aliases:***", value="• For root only:\n\u2800\u2800\u2800- sr\n\u2800\u2800\u2800- power", inline=False)
+		embed = discord.Embed(color=color.lightpink, title='***Usage:***', description='```!calc <a> <operator> <b>```')
+		embed.add_field(name="***Operators:***", value="• `+`\n• `-`\n• `*`\n• `/`\n• `^`", inline=False)
 		embed.add_field(name="***Info:***", value="• Basic calculator for basic operations!", inline=False)
 		await ctx.channel.send(embed=embed)
 
