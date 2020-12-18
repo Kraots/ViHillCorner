@@ -22,6 +22,19 @@ class developer(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
+    async def rules(self, ctx):
+        em = discord.Embed(color=color.lightpink, title="Anime Hangouts Rerver Rules", description="We have a small but strict set of rules on our server. Please read over them and take them on board. If you don't understand anything or need some clarification, feel free to ask any staff member!")
+        em.add_field(name="Rule 1", value="Follow the [Discord Community Guidelines](https://discord.com/guidelines) and [Terms Of Service](https://discord.com/terms).", inline=False)
+        em.add_field(name="Rule 2", value="Follow the [Anime Hangouts Code Of Conduct](https://medium.com/anime-hangouts/anime-hangouts-code-of-conduct-f5ec9f070377).", inline=False)
+        em.add_field(name="Rule 3", value="Listen to and respect staff members and their instructions.", inline=False)
+        em.add_field(name="Rule 4", value="This is an English-speaking server, so please speak English to the best of your ability", inline=False)
+        em.add_field(name="Rule 5", value="No advertising of any kind, including in a server member’s DM.", inline=False)
+
+        await ctx.send(embed=em)
+
+
+    @commands.command()
+    @commands.is_owner()
     async def mail(self, ctx, members : Greedy[Member]=None, *, args=None):
       if members is None:
         await ctx.channel.send("You must provide a user!")

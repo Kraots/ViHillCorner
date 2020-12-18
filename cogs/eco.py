@@ -366,7 +366,7 @@ class EcoCommands(commands.Cog):
 	async def slots(self, ctx, amount = None):
 		await open_account(ctx.author)
 		if amount is None:
-			await ctx.send('Please enter the amount you want to withdraw.')
+			await ctx.send('Please enter the amount.')
 			return
 
 		bal = await update_bank(ctx.author)
