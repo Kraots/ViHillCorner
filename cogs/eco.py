@@ -383,16 +383,18 @@ class EcoCommands(commands.Cog):
 			await ctx.send('You must bet more than `300` coins.')
 			return
 
-		final = []
+		prefinal = []
 		for i in range(3):
 			a = random.choice(["❌", "🇴", "🅰️", "✨", "🔥", "<:tfBruh:784689708890324992>", "👑"])
 
-			final.append(a)
+			prefinal.append(a)
+
+			final = "\u2800┃\u2800".join(prefinal)
 
 			embed = discord.Embed(color=color.lightpink, title="Slots!", description=f"{final}")
 		msg = await ctx.send(embed=embed)
 
-		if final[0] == final[1] == final[2]:
+		if prefinal[0] == prefinal[1] == prefinal[2]:
 			await update_bank(ctx.author, 2.5*amount)
 			users = await get_bank_data()
 			wallet_amt = users[str(ctx.author.id)]['wallet']
@@ -400,7 +402,7 @@ class EcoCommands(commands.Cog):
 			await asyncio.sleep(0.2)
 			await msg.edit(embed=winembed)
 
-		elif final[0] == final[1] or final[0] == final[2] or final[2] == final[1]:
+		elif prefinal[0] == prefinal[1] or prefinal[0] == prefinal[2] or prefinal[2] == prefinal[1]:
 			await update_bank(ctx.author, 2*amount)
 			users = await get_bank_data()
 			wallet_amt = users[str(ctx.author.id)]['wallet']
@@ -681,7 +683,8 @@ class EcoCommands(commands.Cog):
 				await ctx.channel.send(msg)
 
 		elif isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid amount! Please deposit numbers only, and no commas!")
+#			await ctx.send("Invalid amount! Please use numbers only, and no commas!")
+			await ctx.send(error)
 
 	@deposit.error
 	async def dep_error(self, ctx, error):

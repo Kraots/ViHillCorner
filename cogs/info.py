@@ -6,7 +6,7 @@ class info(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        self.prefix = "!"
+        self.prefix = ";"
     async def cog_check(self, ctx):
         return ctx.prefix == self.prefix
 
@@ -32,6 +32,13 @@ class info(commands.Cog):
         rank = discord.Embed(title="How to check your rank", description="Send `^rank` in <#750160851822182486> to check your rank.", color=color.red)
 
         msg = await ctx.send(mention, embed=rank)
+        await msg.add_reaction('🗑️')
+
+    @commands.command()
+    async def spam(self, ctx, *, mention=None):
+        em = discord.Embed(color=color.red, title="Spam warning", description="Please do not spam the chat <:heartato:789581738124640256> <:cry_why:789581737873244160>")
+
+        msg = await ctx.send(embed=em)
         await msg.add_reaction('🗑️')
 
 

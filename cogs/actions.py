@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import utils.colors as color
 import os
+from discord import Member
+from discord.ext.commands import Greedy
 
 huggles = os.environ.get("HUGGLES")
 grouphug = os.environ.get("GROUPHUG")
@@ -35,7 +37,7 @@ class actions(commands.Cog):
 
     def __init__(self, client):
         self.client = client
-        self.prefix = "!"
+        self.prefix = ";"
     async def cog_check(self, ctx):
         return ctx.prefix == self.prefix
 
@@ -45,15 +47,23 @@ class actions(commands.Cog):
         await ctx.send('https://cdn.discordapp.com/attachments/745298904832278530/782729248623427614/video0-1_1.mp4')
 
     @commands.command(hidden=True)
-    async def huggles(self, ctx, *, mention=None):
+    async def huggles(self, ctx, members : Greedy[Member] = None):
+        version = discord.Embed(color=color.red)
+        version.set_image(url=huggles)
+        mention_list = []
 
+        if members == None:
+            msg = await ctx.send(embed=version)
 
-            version = discord.Embed(color=color.red)
-            version.set_image(url=huggles)
-
-
-            msg = await ctx.send(mention, embed=version)
-            await msg.add_reaction('<:hug:750751796317913218>')
+        else:
+            for member in members:
+                a = member.mention
+        
+                mention_list.append(a)
+                mentions = f" ".join(mention_list)
+            
+            msg = await ctx.send(mentions, embed=version)
+        await msg.add_reaction('<:hug:750751796317913218>')
 
     @commands.command(hidden=True)
     async def grouphug(self, ctx, *, mention=None):

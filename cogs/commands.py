@@ -35,20 +35,6 @@ class command(commands.Cog):
         em = discord.Embed(color=color.lightpink, title = " Here's the link to dev portal. ", description="https://discord.com/developers/applications")
         await ctx.send(embed=em)
 
-    @commands.command(help="Get a list of all actions")
-    async def actions(self, context):
-
-            version = discord.Embed(title="Here's the list of all actions", description="`!ily`\n`!huggle` \n`!grouphug`\n`!bearhug`\n`!nocry` \n`!chew` \n`!eat` \n`!spray` \n`!sip` \n`!hype` \n`!clap` \n`!cry` \n`!lol` \n`!rofl` \n`!kill` \n`!pat` \n`!nom` \n`!rub` \n`!hug` \n`!catpat` \n`!pillow` \n`!kiss`\n`!shrug`\n`!smug` ", color=color.lightpink)
-            version.set_footer(text=f'Requested by: {context.author}', icon_url=context.author.avatar_url)
-            await context.message.channel.send(embed=version)
-
-    @commands.command(help="Get a list of all snippets")
-    async def snippets(self, context):
-
-            version = discord.Embed(title="Here's the list of all snippets", description="`!fuyu`\n`!welcome`\n`!kraots`\n`!vihillcorner`\n`!s`\n`!thefourhorsemanofsus`\n`!creepy`\n`!nikki`\n`!mina`\n`!pandie`\n`!teis`\n`!galactus`\n`!le-pole-dancer`\n`!kewi`\n`!twilight`\n`!onii`\n`!v` ", color=color.lightpink)
-            version.set_footer(text=f'Requested by: {context.author}', icon_url=context.author.avatar_url)
-            await context.message.channel.send(embed=version)
-
     @commands.command()
     async def created(self, ctx, member: discord.Member=None):
         if member is None:
