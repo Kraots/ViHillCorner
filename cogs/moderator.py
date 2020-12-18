@@ -308,10 +308,10 @@ class Moderation(commands.Cog):
         unban = discord.Embed(description= f'{member.mention} has been muted for [{reason}]({ctx.message.jump_url}).' , color=color.red)
         
         await ctx.send(embed=unban)
-        reason = discord.Embed(description=f'**Reason:** [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
+        mute = discord.Embed(description=f'**Reason:** [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
         msg="You were muted in `Anime Hangouts`."
 
-        await member.send(msg, embed=reason)
+        await member.send(msg, embed=mute)
 
         log_channel = guild.get_channel(788377362739494943)
 
@@ -319,6 +319,7 @@ class Moderation(commands.Cog):
         em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
         em.add_field(name="Action", value=f"`Used the mute command`", inline=False)
         em.add_field(name="Member", value=f"`{member}`", inline=False)
+        em.add_field(name="Reason", value=f"[{reason}]({ctx.message.jump_url})", inline=False)
         em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
 
         await log_channel.send(embed=em)
@@ -346,6 +347,7 @@ class Moderation(commands.Cog):
             em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
             em.add_field(name="Action", value=f"`Used the massmute command`", inline=False)
             em.add_field(name="Member", value=f"`{member}`", inline=False)
+            em.add_field(name="Reason", value=f"[{reason}]({ctx.message.jump_url})")
             em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
 
             await log_channel.send(embed=em)
