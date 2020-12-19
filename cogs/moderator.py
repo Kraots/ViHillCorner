@@ -102,11 +102,15 @@ class Moderation(commands.Cog):
 			
 			else:
 				for id in kicked_members:
-					a = id
-					mem_list.append(a)
-					mem_list_final = " | ".join(str(id) for id in mem_list)
-					await id.send("You have been kicked from `Anime Hangouts!`")
-					await guild.kick(id, reason=kicked_reason)
+						a = id
+						mem_list.append(a)
+						mem_list_final = " | ".join(str(id) for id in mem_list)
+
+						try:
+							await id.send("You have been kicked from `Anime Hangouts!`")
+						except discord.UnboundLocalError:
+							pass
+						await guild.kick(id, reason=kicked_reason)
 
 		ban = discord.Embed(description=f"The user(s) have been kicked from the server.\n**Reason**: **[{kicked_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
 
@@ -202,7 +206,10 @@ class Moderation(commands.Cog):
 
 		try:
 			msg="Congrats! You have been unbanned from `Anime Hangouts`. Come back: https://discord.gg/mFm5GrQ"
-			await member.send(msg)
+			try:
+				await member.send(msg)
+			except discord.HTTPException:
+				pass
 			await guild2.kick(member)
 		
 		except discord.HTTPException:
@@ -246,7 +253,10 @@ class Moderation(commands.Cog):
 					a = id
 					mem_list.append(a)
 					mem_list_final = " | ".join(str(id) for id in mem_list)
-					await id.send(msg, embed=mute)
+					try:
+						await id.send(msg, embed=mute)
+					except discord.HTTPException:
+						pass
 					await id.add_roles(muted, reason=mute_reason)
 
 		ban = discord.Embed(description=f"The user(s) have been muted!\n**Reason**: **[{mute_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
@@ -290,7 +300,10 @@ class Moderation(commands.Cog):
 				a = id
 				mem_list.append(a)
 				mem_list_final = " | ".join(str(id) for id in mem_list)
-				await id.send(msg)
+				try:
+					await id.send(msg)
+				except discord.HTTPException:
+					pass
 				await id.remove_roles(muted, reason="Unmute")
 
 		ban = discord.Embed(description=f"The user(s) have been unmuted!" , color=discord.Color.red())
@@ -337,7 +350,10 @@ class Moderation(commands.Cog):
 				await member.add_roles(muted, reason=reason_content)
 				msg = ("You have been muted in `Anime Hangouts`")
 				em = discord.Embed(description=f"Time: `{time_phaserr(time)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=color.inviscolor)
-				await member.send(msg, embed = em)
+				try:
+					await member.send(msg, embed = em)
+				except discord.HTTPException:
+					pass
 
 
 				unban = discord.Embed(description= f'{member.mention} has been temporarily muted. \n\nTime: `{time_phaserr(time)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**' , color=color.red)
@@ -353,7 +369,10 @@ class Moderation(commands.Cog):
 
 				await asyncio.sleep(time)
 				await member.remove_roles(muted)
-				await member.send("You have been unmuted in `Anime Hangouts`.")
+				try:
+					await member.send("You have been unmuted in `Anime Hangouts`.")
+				except discord.HTTPException:
+					pass
 
 
 		# CLEAR  /  PURGE
