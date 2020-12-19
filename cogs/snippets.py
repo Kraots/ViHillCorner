@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import json
 import asyncio
-import utils.colors as color
 
 
 class Snippets(commands.Cog):
@@ -38,6 +37,10 @@ class Snippets(commands.Cog):
 				snippet_info = presnippet_info.attachments[0].url
 
 			except asyncio.TimeoutError:
+				return
+
+			except IndexError:
+				await ctx.send("That is not an image! Please send an image and nothing else!")
 				return
 
 			else:
