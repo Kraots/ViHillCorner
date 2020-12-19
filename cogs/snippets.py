@@ -1,203 +1,122 @@
 import discord
 from discord.ext import commands
-import utils.colors as color
-import os
-
-creeepy = os.environ.get('CREEPY')
-kraots1 = os.environ.get('KRAOTS1')
-kraots2 = os.environ.get('KRAOTS2')
-kraots3 = os.environ.get('KRAOTS3')
-kraotss = os.environ.get('KRAOTS4')
-welcome = os.environ.get('WELCOME')
-fuyu = os.environ.get('FUYU')
-vihillcorner = os.environ.get('VIHILLCORNER')
-s = os.environ.get('S')
-thefourhorsemanofsus = os.environ.get('THEFOURHORSEMANOFSUS')
-nikkki = os.environ.get('NIKKI')
-minaaa = os.environ.get('MINAA')
-pandie1 = os.environ.get('PANDIE1')
-pandie2 = os.environ.get('PANDIE2')
-pandie3 = os.environ.get('PANDIE3')
-pandie4 = os.environ.get('PANDIE4')
-teiss = os.environ.get('TEIS')
-galactus1 = os.environ.get('GALACTUS1')
-galactus2 = os.environ.get('GALACTUS2')
-lepoledancer = os.environ.get('LEPOLEDANCER')
-kewii = os.environ.get('KEWI')
-twilight = os.environ.get('TWILIGHT')
-onii = os.environ.get('ONII')
-vivian = os.environ.get("VIVIAN")
-
-class snippets(commands.Cog):
-
-    def __init__(self, client):
-        self.client = client
-        self.prefix = ";"
-    async def cog_check(self, ctx):
-        return ctx.prefix == self.prefix
-        
-    @commands.command()
-    async def V(self, ctx):
-
-        v = discord.Embed(color=color.red)
-        v.set_image(url=vivian)
-
-        msg = await ctx.send(embed=v)
-        await msg.add_reaction('🗑️')
-
-#    @commands.command(hidden=True)
-#    async def onii(self, ctx):
-
-#            creepy = discord.Embed(color=color.red)
-#            creepy.set_image(url=onii)
-
-#            msg = await ctx.send(embed=creepy)
-#            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def twilight(self, ctx):
-
-            creepy = discord.Embed(color=color.red)
-            creepy.set_image(url=twilight)
-
-            msg = await ctx.send(embed=creepy)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def kewi(self, ctx):
-
-            creepy = discord.Embed(color=color.red)
-            creepy.set_image(url=kewii)
-
-            msg = await ctx.send(embed=creepy)
-            await msg.add_reaction('🗑️')
+import json
+import asyncio
 
 
+class Tags(commands.Cog):
 
-    @commands.command(hidden=True)
-    async def creepy(self, ctx):
+	def __init__(self, client):
+		self.client = client
 
-            creepy = discord.Embed(color=color.red)
-            creepy.set_image(url=creeepy)
+	@commands.group(invoke_without_command=True, case_insensitive=True)
+	@commands.has_role("Staff")
+	async def snippet(self, ctx):
+		await ctx.send("Invalid usage!\nPlease use `!snippet create` or `!snippet delete`")
 
-            msg = await ctx.send(embed=creepy)
-            await msg.add_reaction('🗑️')
+	@snippet.command()
+	@commands.has_role("Staff")
+	async def create(self, ctx):
+		def check(m):
+			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+		await ctx.send("What do you want to name this snippet?")
+		try:
+			presnippet_name = await self.client.wait_for('message', timeout = 60, check=check)
+			snippet_name = presnippet_name.content.lower()
 
-    @commands.command(hidden=True, aliases=['carrots'])
-    async def kraots(self, ctx):
+		except asyncio.TimeoutError:
+			return
 
-            version = discord.Embed(color=color.red)
-            version.set_image(url=kraotss)
+		else:
+			await ctx.send("Please send the image of the snippet.")
+			try:
+				presnippet_info = await self.client.wait_for('message', timeout = 180, check=check)
+				snippet_info = presnippet_info.attachments[0].url
 
-            
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
+			except asyncio.TimeoutError:
+				return
 
+			else:
+				snippets = await get_snippets_data()
+				if str(snippet_name) in snippets:
+					await ctx.send("That snippet already exists!")
+				else:
+					snippets[str(snippet_name)] = {}
+					snippets[str(snippet_name)]["snippet_content"] = snippet_info
+					snippets[str(snippet_name)]["snippet_credits"] = ctx.author.id
+					with open("snippets.json", "w") as f:
+						json.dump(snippets, f)
 
-    @commands.command(hidden=True)
-    async def welcome(self, ctx):
+					await ctx.send("Tag Added!")
 
-            version = discord.Embed(color=color.red)
-            version.set_image(url=welcome)
+	@snippet.command(aliases=['remove'])
+	async def delete(self, ctx):
+		def check(m):
+			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
+		await ctx.send("What's the name of the snippet you wish to delete?")
+		try:
+			raw_get_snippet = await self.client.wait_for('message', timeout=60, check=check)
+			snippet_name = raw_get_snippet.content
 
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
+		except asyncio.TimeoutError:
+			return
 
-    @commands.command(hidden=True)
-    async def fuyu(self, ctx):
+		else:
+			try:
+				snippets = await get_snippets_data()
+				del snippets[str(snippet_name)]
+				with open ("snippets.json", "w") as f:
+					json.dump(snippets, f)
 
-            version = discord.Embed(color=color.red)
-            version.set_image(url=fuyu)
+				await ctx.send(f"{snippet_name} deleted succesfully!")
 
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def ViHillCorner(self, ctx):
-
-            version = discord.Embed(color=color.red)
-            version.set_image(url=vihillcorner)
-
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('😐')
-
-    @commands.command(hidden=True)
-    async def S(self, ctx):
-
-            version = discord.Embed(color=color.red)
-            version.set_image(url=s)
-
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def thefourhorsemanofsus(self, ctx):
-
-            version = discord.Embed(color=color.red)
-            version.set_image(url=thefourhorsemanofsus)
-
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
-
-#    @commands.command()
-#    async def nikki(self, ctx):
-
-#        nikki = discord.Embed(color=color.red)
-#        nikki.set_image(url=nikkki)
-
-#        msg = await ctx.send(embed=nikki)
-#        await msg.add_reaction('🗑️')
-
-    @commands.command()
-    async def mina(self, ctx):
-
-        mina = discord.Embed(color=color.red)
-        mina.set_image(url=kraots2)
-
-        msg = await ctx.send(embed=mina)
-        await msg.add_reaction('🗑️')
-
-    @commands.command()
-    async def pandie(self, ctx):
-
-        pandie = discord.Embed(color=color.red)
-        pandie.set_image(url=pandie4) 
+			except KeyError:
+				await ctx.send("That snippet does not exist!")
 
 
-        msg = await ctx.send(embed=pandie)
-        await msg.add_reaction('🗑️')
+	@commands.Cog.listener()
+	async def on_message(self, message : discord.Message):
+		if message.author.bot:
+			return
+		presnippet_name = message.content.lower()
+		snippet_name = "".join(presnippet_name.split(";", 1))
+		try:
+			await open_snippets(snippet_name)
+			snippets = await get_snippets_data()
+			snippet = snippets[str(snippet_name)]["snippet_content"]
+			get_credits_info = snippets[str(snippet_name)]["snippet_credits"]
+			credits_user = self.client.get_user(get_credits_info)
+			credits_avatar = credits_user.avatar_url
 
-    @commands.command()
-    async def teis(self, ctx):
+			if message.content.lower().startswith(f";{snippet_name}"):
+				em = discord.Embed(color=discord.Color.red())
+				em.set_image(url=snippet)
+				em.set_footer(text=f"Credits: {credits_user}", icon_url=credits_avatar)
+				await message.channel.send(embed=em)
 
-        teis = discord.Embed(color=color.red)
-        teis.set_image(url=teiss)
+		except KeyError:
+			return
 
-        msg = await ctx.send(embed=teis)
-        await msg.add_reaction('🗑️')
 
-    @commands.command()
-    async def galactus(self, ctx):
 
-        galactus = discord.Embed(color=color.red)
-        galactus.set_image(url=galactus2)
 
-        msg = await ctx.send(embed=galactus)
-        await msg.add_reaction('🗑️')
 
-    @commands.command(aliases=['le-pole-dancer'])
-    async def le_pole_dancer(self, ctx):
 
-        lepoledancerr = discord.Embed(color=color.red)
-        lepoledancerr.set_image(url=lepoledancer)
 
-        msg = await ctx.send(embed=lepoledancerr)
-        await msg.add_reaction('🗑️')        
+async def open_snippets(snippet_name):
+
+	snippets = await get_snippets_data()
+
+	if str(snippet_name) in snippets:
+		return False
+
+async def get_snippets_data():
+	with open("snippets.json", "r") as f:
+		snippet = json.load(f)
+
+	return snippet
+
 
 def setup (client):
-    client.add_cog(snippets(client))
+	client.add_cog(Tags(client))
