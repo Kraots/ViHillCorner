@@ -54,7 +54,7 @@ class Snippets(commands.Cog):
 					with open("snippets.json", "w") as f:
 						json.dump(snippets, f)
 
-					await ctx.send("Tag Added!")
+					await ctx.send("Snippet Added!")
 
 	@snippet.command(aliases=['remove'])
 	async def delete(self, ctx):
@@ -76,7 +76,7 @@ class Snippets(commands.Cog):
 				with open ("snippets.json", "w") as f:
 					json.dump(snippets, f)
 
-				await ctx.send(f"{snippet_name} deleted succesfully!")
+				await ctx.send(f"`{snippet_name}` deleted succesfully!")
 
 			except KeyError:
 				await ctx.send("That snippet does not exist!")
