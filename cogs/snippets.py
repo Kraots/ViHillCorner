@@ -191,7 +191,7 @@ class snippets(commands.Cog):
         await msg.add_reaction('🗑️')
 
     @commands.command(aliases=['le-pole-dancer'])
-    async def asdjnadjaksldkbnasdjhbsadjbasjkdbasjkdbfsjkajihfb(self, ctx):
+    async def le_pole_dancer(self, ctx):
 
         lepoledancerr = discord.Embed(color=color.red)
         lepoledancerr.set_image(url=lepoledancer)

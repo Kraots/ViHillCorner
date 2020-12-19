@@ -42,7 +42,7 @@ class actions(commands.Cog):
         return ctx.prefix == self.prefix
 
     @commands.command(hidden=True)
-    async def rape(self, ctx, *, mention=None,):
+    async def rape(self, ctx):
 
         await ctx.send('https://cdn.discordapp.com/attachments/745298904832278530/782729248623427614/video0-1_1.mp4')
 
@@ -66,33 +66,62 @@ class actions(commands.Cog):
         await msg.add_reaction('<:hug:750751796317913218>')
 
     @commands.command(hidden=True)
-    async def grouphug(self, ctx, *, mention=None):
+    async def grouphug(self, ctx, members : Greedy[Member] = None):
+        version = discord.Embed(color=color.red)
+        version.set_image(url=grouphug)
+        mention_list = []
 
-            version = discord.Embed(color=color.red)
-            version.set_image(url=grouphug)
+        if members == None:
+            msg = await ctx.send(embed=version)
 
-
-            msg = await ctx.send(mention, embed=version)
-            await msg.add_reaction('🗑️')
+        else:
+            for member in members:
+                a = member.mention
+        
+                mention_list.append(a)
+                mentions = f" ".join(mention_list)
+            
+            msg = await ctx.send(mentions, embed=version)
+        await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
-    async def eat(self, ctx, *, mention=None):
+    async def eat(self, ctx, members : Greedy[Member] = None):
 
             version = discord.Embed(color=color.red)
             version.set_image(url=eat)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
-    async def chew(self, ctx, *, mention=None):
+    async def chew(self, ctx, members : Greedy[Member] = None):
 
             version = discord.Embed(color=color.red)
             version.set_image(url=chew)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
@@ -100,7 +129,6 @@ class actions(commands.Cog):
 
             version = discord.Embed(color=color.red)
             version.set_image(url=sip)
-
 
             msg = await ctx.send(embed=version)
             await msg.add_reaction('🗑️')
@@ -111,7 +139,6 @@ class actions(commands.Cog):
             version = discord.Embed(color=color.red)
             version.set_image(url=clap)
 
-
             msg = await ctx.send(embed=version)
             await msg.add_reaction('🗑️')
 
@@ -120,7 +147,7 @@ class actions(commands.Cog):
 
             version = discord.Embed(color=color.red)
             version.set_image(url=cry)
-
+            mention_list = []
 
             msg = await ctx.send(embed=version)
             await msg.add_reaction('🗑️')
@@ -130,7 +157,7 @@ class actions(commands.Cog):
 
             version = discord.Embed(color=color.red)
             version.set_image(url=rofl)
-
+            mention_list = []
 
             msg = await ctx.send(embed=version)
             await msg.add_reaction('🗑️')
@@ -140,89 +167,162 @@ class actions(commands.Cog):
 
             version = discord.Embed(color=color.red)
             version.set_image(url=lol)
-
+            mention_list = []
 
             msg = await ctx.send(embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
-    async def kill(self, ctx, *, mention=None):
-
+    async def kill(self, ctx, members : Greedy[Member] = None):
+            
             version = discord.Embed(color=color.red)
             version.set_image(url=kill)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
-    async def pat(self, ctx, *, mention=None):
-
+    async def pat(self, ctx, members : Greedy[Member] = None):
             version = discord.Embed(color=color.red)
             version.set_image(url=pat)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('<:kanna_pat:750757139001245806>')
 
     @commands.command(hidden=True)
-    async def rub(self, ctx, *, mention=None):
-
+    async def rub(self, ctx, members : Greedy[Member] = None):
             version = discord.Embed(color=color.red)
             version.set_image(url=rub)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
-    async def nom(self, ctx, *, mention=None):
-
+    async def nom(self, ctx, members : Greedy[Member] = None):
             version = discord.Embed(color=color.red)
             version.set_image(url=nom)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
-    async def catpat(self, ctx, *, mention=None):
-
+    async def catpat(self, ctx, members : Greedy[Member] = None):
             version = discord.Embed(color=color.red)
             version.set_image(url=catpat)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
-    async def hug(self, ctx, *, mention=None):
-
+    async def hug(self, ctx, members : Greedy[Member] = None):
             version = discord.Embed(color=color.red)
             version.set_image(url=hug)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
-    async def pillow(self, ctx, *, mention=None):
-
+    async def pillow(self, ctx, members : Greedy[Member] = None):
             version = discord.Embed(color=color.red)
             version.set_image(url=pillow)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
-    async def spray(self, ctx, *, mention=None):
-
+    async def spray(self, ctx, members : Greedy[Member] = None):
             version = discord.Embed(color=color.red)
             version.set_image(url=spray)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
@@ -230,7 +330,7 @@ class actions(commands.Cog):
 
             version = discord.Embed(color=color.red)
             version.set_image(url=hype)
-
+            mention_list = []
 
             msg = await ctx.send(embed=version)
             await msg.add_reaction('🗑️')
@@ -238,44 +338,80 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.has_role('Staff')
-    async def specialkiss(self, ctx, *, mention=None):
-
+    async def specialkiss(self, ctx, members : Greedy[Member] = None):
             version = discord.Embed(color=color.red)
             version.set_image(url=specialkiss)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
 
     @commands.command(hidden=True)
-    async def kiss(self, ctx, *, mention=None):
-
+    async def kiss(self, ctx, members : Greedy[Member] = None):
             version = discord.Embed(color=color.red)
             version.set_image(url=kiss)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
-    async def ily(self, ctx, *, mention=None):
-
+    async def ily(self, ctx, members : Greedy[Member] = None):
             version = discord.Embed(color=color.red)
             version.set_image(url=ily)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
-    async def nocry(self, ctx, *, mention=None):
-
+    async def nocry(self, ctx, members : Greedy[Member] = None):
             version = discord.Embed(color=color.red)
             version.set_image(url=nocry)
+            mention_list = []
 
+            if members == None:
+                msg = await ctx.send(embed=version)
 
-            msg = await ctx.send(mention, embed=version)
+            else:
+                for member in members:
+                    a = member.mention
+            
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
@@ -283,7 +419,6 @@ class actions(commands.Cog):
 
             version = discord.Embed(color=color.red)
             version.set_image(url=shrug)
-
 
             msg = await ctx.send(embed=version)
             await msg.add_reaction('🗑️')
@@ -299,12 +434,22 @@ class actions(commands.Cog):
             await msg.add_reaction('🗑️')
 
     @commands.command(hidden=True)
-    async def bearhug(self, ctx, *, mention=None):
-
-            bearhug = discord.Embed(color=color.red)
+    async def bearhug(self, ctx, members : Greedy[Member] = None):
+            version = discord.Embed(color=color.red)
             bearhug.set_image(url=bearhugg)
+            mention_list = []
+
+            if members == None:
+                msg = await ctx.send(embed=version)
+
+            else:
+                for member in members:
+                    a = member.mention
             
-            msg = await ctx.send(mention, embed=bearhug)
+                    mention_list.append(a)
+                    mentions = f" ".join(mention_list)
+                
+                msg = await ctx.send(mentions, embed=version)
             await msg.add_reaction('🗑️')
 
     @commands.command()
