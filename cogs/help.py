@@ -22,7 +22,7 @@ class Help(commands.Cog):
 		helpEm.add_field(name="Economy", value="`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `ppsuck`", inline=False)
 		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `serverinfo`, `vote`", inline=False)
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
-			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `massmute`, `tempmute`, `unmute`, `massunmute`, `kick`, `masskick`, `ban`, `massban`, `unban`, `massunban`, `partnership`, `nsfw`, `slowmode`, `snippet`", inline=False)
+			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `kick`, `ban`, `unban`, `partnership`, `nsfw`, `slowmode`, `snippet`", inline=False)
 		
 		if ctx.author.id == 374622847672254466:
 			helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
@@ -287,20 +287,6 @@ class Help(commands.Cog):
 
 	@help.command()
 	@commands.has_role("Staff")
-	async def mute(self, ctx):
-		mute = discord.Embed(title="***Usage:***", description="```!mute <user> [reason]```", color=color.lightpink)
-		mute.add_field(name="***Info:***", value="• This command mutes the user permanently untill a moderator unmutes him.", inline=False)
-		await ctx.channel.send(embed=mute)
-
-	@help.command()
-	@commands.has_role("Staff")
-	async def massmute(self, ctx):
-		mute = discord.Embed(title="***Usage:***", description="```!massmute <user1> <user2> <user3> [reason]```", color=color.lightpink)
-		mute.add_field(name="***Info:***", value="• This command mutes the users permanently untill a moderator unmutes them.", inline=False)
-		await ctx.channel.send(embed=mute)
-
-	@help.command()
-	@commands.has_role("Staff")
 	async def tempmute(self, ctx):
 		tempmute = discord.Embed(title="***Usage:***", description="```!tempmute <user> <time>```", color=color.lightpink)
 		tempmute.add_field(name="***Example:***", value="!tempmute @BananaBoy69 1 s|m|h|d", inline=False)
@@ -310,58 +296,9 @@ class Help(commands.Cog):
 
 	@help.command()
 	@commands.has_role("Staff")
-	async def unmute(self, ctx):
-		unmute = discord.Embed(title="***Usage:***", description="```!unmute <user>```", color=color.lightpink)
-		unmute.add_field(name="***Info:***", value="• Unmutes the user", inline=False)
-		await ctx.channel.send(embed=unmute)
-
-	@help.command()
-	@commands.has_role("Staff")
-	async def massunmute(self, ctx):
-		unmute = discord.Embed(title="***Usage:***", description="```!massunmute <user1> <user2> <user3>```", color=color.lightpink)
-		unmute.add_field(name="***Info:***", value="• Unmutes the users.", inline=False)
-		await ctx.channel.send(embed=unmute)
-	
-	@help.command()
-	@commands.has_role('Staff')
-	async def kick(self, ctx):
-		kick = discord.Embed(title="***Usage:***", description="```!kick <user> [reason]```", color=color.lightpink)
-		kick.add_field(name="***Info:***", value="• Kicks an user from the server!", inline=False)
-		await ctx.send(embed=kick)
-
-	@help.command()
-	@commands.has_role('Staff')
-	async def masskick(self, ctx):
-		kick = discord.Embed(title="***Usage:***", description="```!masskick <user1> <user2> <user3> [reason]```", color=color.lightpink)
-		kick.add_field(name="***Info:***", value="• Kicks the users from the server!", inline=False)
-		await ctx.send(embed=kick)
-
-	@help.command()
-	@commands.has_role("Staff")
-	async def ban(self, ctx):
-		ban = discord.Embed(title="***Usage:***", description="```!ban <user>```", color=color.lightpink)
-		ban.add_field(name="***Info:***", value="• Bans a user.", inline=False)
-		await ctx.channel.send(embed=ban)
-
-	@help.command()
-	@commands.has_role("Staff")
-	async def massban(self, ctx):
-		ban = discord.Embed(title="***Usage:***", description="```!massban <user1> <user2> <user3>```", color=color.lightpink)
-		ban.add_field(name="***Info:***", value="• Bans the users.", inline=False)
-		await ctx.channel.send(embed=ban)
-
-	@help.command()
-	@commands.has_role("Staff")
 	async def unban(self, ctx):
-		unban = discord.Embed(title="***Usage:***", description="```!unban <user>```\n\nThis command only works in the ban appeal server, if the user is in that server ;)).", color=color.lightpink)
-		unban.add_field(name="***Info:***", value="• ", inline=False)
-		await ctx.channel.send(embed=unban)
-
-	@help.command()
-	@commands.has_role("Staff")
-	async def massunban(self, ctx):
-		unban = discord.Embed(title="***Usage:***", description="```!massunban <user1> <user2> <user3>```", color=color.lightpink)
-		unban.add_field(name="***Info:***", value="• This command only works in the ban appeal server, if the users are in that server ;)).", inline=False)
+		unban = discord.Embed(title="***Usage:***", description="```!unban <user>```", color=color.lightpink)
+		unban.add_field(name="***Info:***", value="• This command only works in the ban appeal server, if the user is in that server ;)).", inline=False)
 		await ctx.channel.send(embed=unban)
 
 	@help.command(aliases=['ps'])
