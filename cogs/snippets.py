@@ -2,12 +2,16 @@ import discord
 from discord.ext import commands
 import json
 import asyncio
+import utils.colors as color
 
 
-class Tags(commands.Cog):
+class Snippets(commands.Cog):
 
 	def __init__(self, client):
 		self.client = client
+		self.prefix = "!"
+	async def cog_check(self, ctx):
+		return ctx.prefix == self.prefix
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.has_role("Staff")
@@ -57,7 +61,7 @@ class Tags(commands.Cog):
 		await ctx.send("What's the name of the snippet you wish to delete?")
 		try:
 			raw_get_snippet = await self.client.wait_for('message', timeout=60, check=check)
-			snippet_name = raw_get_snippet.content
+			snippet_name = raw_get_snippet.content.lower()
 
 		except asyncio.TimeoutError:
 			return
@@ -90,10 +94,11 @@ class Tags(commands.Cog):
 			credits_avatar = credits_user.avatar_url
 
 			if message.content.lower().startswith(f";{snippet_name}"):
-				em = discord.Embed(color=discord.Color.red())
+				em = discord.Embed(color=color.red)
 				em.set_image(url=snippet)
 				em.set_footer(text=f"Credits: {credits_user}", icon_url=credits_avatar)
-				await message.channel.send(embed=em)
+				msg = await message.channel.send(embed=em)
+				await msg.add_reaction('🗑️')
 
 		except KeyError:
 			return
@@ -119,4 +124,4 @@ async def get_snippets_data():
 
 
 def setup (client):
-	client.add_cog(Tags(client))
+	client.add_cog(Snippets(client))
