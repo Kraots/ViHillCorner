@@ -70,40 +70,38 @@ class Moderation(commands.Cog):
 		await ctx.send(arg)
 	
 	# Kick
-	@commands.command(help=".kick [user] <reason>")
+	@commands.command()
 	@commands.has_role('Staff')
-	async def kick(self, ctx, member : discord.Member, *, reason="Toxicity & Insult"):
+	async def kick(self, ctx):
 		guild = self.client.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 		
+		def check(m):
+			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+
+		await ctx.send("What members do you wish to kick?")
 		try:
-				
-			msg = "You have been kicked from `Anime Hangouts`!"
-			await member.send(msg)
-			await guild.kick(member, reason=reason)
-		
-			kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=discord.Color.red())
-		
-			await ctx.channel.send(embed=kick)
+			before_members = await self.client.wait_for('message', timeout=180, check=check)
+			kicked_members = before_members.mentions
 
-		except discord.HTTPException:
-			await guild.kick(member, reason=reason)
+		except asyncio.TimeoutError:
+			return
 		
-			kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=discord.Color.red())
-		
-			await ctx.channel.send(embed=kick)
+		else:
+			await ctx.send("What's the reason for the kick?")
+			try:
+				before_reason = await self.client.wait_for('message', timeout=360, check=check)
+				kicked_reason = before_reason.content
+
+			except asyncio.TimeoutError:
+				return
+			
+			else:
+				for id in kicked_members:
+					await guild.kick(id, reason=kicked_reason)
 
 
-		em = discord.Embed(color=color.reds, title="___KICK___", timestamp = ctx.message.created_at)
-		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-		em.add_field(name="Action", value=f"`Used the kick command`", inline=False)
-		em.add_field(name="Member", value=f"`{member}`", inline=False)
-		em.add_field(name="Reason", value=f"`{reason}`", inline=False)
-		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
-	
-		await log_channel.send(embed=em)
-
-	# MASS KICK 
+	#	 MASS KICK 
 	@commands.command()
 	@commands.has_role('Staff')
 	async def masskick(self, ctx, members : Greedy[Member], *, reason="Toxicity & Insult"):
