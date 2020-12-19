@@ -82,14 +82,14 @@ class Moderation(commands.Cog):
             await member.send(msg)
             await guild.kick(member, reason=reason)
         
-            kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=color.red)
+            kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=discord.Color.red())
         
             await ctx.channel.send(embed=kick)
 
         except discord.HTTPException:
             await guild.kick(member, reason=reason)
         
-            kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=color.red)
+            kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=discord.Color.red())
         
             await ctx.channel.send(embed=kick)
 
@@ -116,14 +116,14 @@ class Moderation(commands.Cog):
                 reasonn = discord.Embed(description=f'`Reason:` [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
                 await member.send(msg, embed=reasonn)
                 await guild.kick(member, reason=reason)
-                kick = discord.Embed(description=f"`{member}` has been kicked for the reason: [{reason}]({ctx.message.jump_url})" , color=color.red)
+                kick = discord.Embed(description=f"`{member}` has been kicked for the reason: [{reason}]({ctx.message.jump_url})" , color=discord.Color.red())
             
                 await ctx.channel.send(embed=kick)
 
             except discord.HTTPException:
                 await guild.kick(member, reason=reason)
             
-                kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=color.red)
+                kick = discord.Embed(description=f"The user has been kicked for the reason: `{reason}`" , color=discord.Color.red())
             
                 await ctx.channel.send(embed=kick)
 
@@ -149,13 +149,13 @@ class Moderation(commands.Cog):
         try: 
             await member.send(msg, embed=reasonn)
             await guild.ban(discord.Object(id=member.id), reason=reason)
-            bann = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
+            bann = discord.Embed(description=f"`{member}` has been banned from the server." , color=discord.Color.red())
 
             await ctx.send(embed=bann)
 
         except discord.HTTPException:
             await guild.ban(discord.Object(id=member.id), reason=reason)
-            bann = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
+            bann = discord.Embed(description=f"`{member}` has been banned from the server." , color=discord.Color.red())
 
             await ctx.send(embed=bann)
 
@@ -186,14 +186,14 @@ class Moderation(commands.Cog):
             
                 await member.ban()
 
-                ban = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
+                ban = discord.Embed(description=f"`{member}` has been banned from the server." , color=discord.Color.red())
 
                 await ctx.channel.send(embed=ban)
 
             except discord.HTTPException:
                 await member.ban()
 
-                ban = discord.Embed(description=f"`{member}` has been banned from the server." , color=color.red)
+                ban = discord.Embed(description=f"`{member}` has been banned from the server." , color=discord.Color.red())
 
                 await ctx.channel.send(embed=ban)
 
@@ -224,7 +224,7 @@ class Moderation(commands.Cog):
         await guild.fetch_ban(member)
         await guild.unban(discord.Object(id=member.id))
         
-        unban = discord.Embed(description= f"`{member}` has been unbanned from the server" , color=color.red)
+        unban = discord.Embed(description= f"`{member}` has been unbanned from the server" , color=discord.Color.red())
 
         await ctx.send(embed=unban)
 
@@ -256,7 +256,7 @@ class Moderation(commands.Cog):
             
             await guild.unban(member)
             
-            unban = discord.Embed(description= "The user has been unbanned from the server" , color=color.red)
+            unban = discord.Embed(description= "The user has been unbanned from the server" , color=discord.Color.red())
 
             await ctx.send(embed=unban)
 
@@ -305,7 +305,7 @@ class Moderation(commands.Cog):
         guild = self.client.get_guild(750160850077089853)
         muted = guild.get_role(750465726069997658)
         await member.add_roles(muted)     
-        unban = discord.Embed(description= f'{member.mention} has been muted for [{reason}]({ctx.message.jump_url}).' , color=color.red)
+        unban = discord.Embed(description= f'{member.mention} has been muted for [{reason}]({ctx.message.jump_url}).' , color=discord.Color.red())
         
         await ctx.send(embed=unban)
         mute = discord.Embed(description=f'**Reason:** [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
@@ -333,7 +333,7 @@ class Moderation(commands.Cog):
         muted = guild.get_role(750465726069997658)
         for member in members:
             await member.add_roles(muted)     
-            unban = discord.Embed(description= f'{member.mention} has been muted for [{reason}]({ctx.message.jump_url}).' , color=color.red)
+            unban = discord.Embed(description= f'{member.mention} has been muted for [{reason}]({ctx.message.jump_url}).' , color=discord.Color.red())
             
             await ctx.send(embed=unban)
             reasonn = discord.Embed(description=f'**Reason:** [{reason}]({ctx.message.jump_url}).', color=color.inviscolor)
@@ -362,7 +362,7 @@ class Moderation(commands.Cog):
         guild = self.client.get_guild(750160850077089853)
         muted = guild.get_role(750465726069997658)
         await member.remove_roles(muted)     
-        unban = discord.Embed(description= f'{member.mention} has been unmuted.' , color=color.red)
+        unban = discord.Embed(description= f'{member.mention} has been unmuted.' , color=discord.Color.red())
         
         await ctx.send(embed=unban)
 
@@ -386,7 +386,7 @@ class Moderation(commands.Cog):
         muted = guild.get_role(750465726069997658)
         for member in members:
             await member.remove_roles(muted)     
-            unban = discord.Embed(description= f'{member.mention} has been unmuted.' , color=color.red)
+            unban = discord.Embed(description= f'{member.mention} has been unmuted.' , color=discord.Color.red())
             
             await ctx.send(embed=unban)
 
@@ -408,7 +408,7 @@ class Moderation(commands.Cog):
     async def partnership(self, ctx, *, arg):
         guild = self.client.get_guild(750160850077089853)
         await ctx.message.delete()
-        embed = discord.Embed(title="NEW PARTNERSHIP", description=f'{arg}', color=color.red)
+        embed = discord.Embed(title="NEW PARTNERSHIP", description=f'{arg}', color=discord.Color.red())
         embed.set_footer(text=f'Partnership by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
         await ctx.channel.send(embed=embed)

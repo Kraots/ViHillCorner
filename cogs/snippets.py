@@ -94,7 +94,7 @@ class Snippets(commands.Cog):
 			credits_avatar = credits_user.avatar_url
 
 			if message.content.lower().startswith(f";{snippet_name}"):
-				em = discord.Embed(color=color.red)
+				em = discord.Embed(color=discord.Color.red())
 				em.set_image(url=snippet)
 				em.set_footer(text=f"Credits: {credits_user}", icon_url=credits_avatar)
 				msg = await message.channel.send(embed=em)

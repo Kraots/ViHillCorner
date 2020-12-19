@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import utils.colors as color
 import os
 from discord import Member
 from discord.ext.commands import Greedy
@@ -48,7 +47,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def huggles(self, ctx, members : Greedy[Member] = None):
-        version = discord.Embed(color=color.red)
+        version = discord.Embed(color=discord.Color.red())
         version.set_image(url=huggles)
         mention_list = []
 
@@ -67,7 +66,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def grouphug(self, ctx, members : Greedy[Member] = None):
-        version = discord.Embed(color=color.red)
+        version = discord.Embed(color=discord.Color.red())
         version.set_image(url=grouphug)
         mention_list = []
 
@@ -87,7 +86,7 @@ class actions(commands.Cog):
     @commands.command(hidden=True)
     async def eat(self, ctx, members : Greedy[Member] = None):
 
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=eat)
             mention_list = []
 
@@ -107,7 +106,7 @@ class actions(commands.Cog):
     @commands.command(hidden=True)
     async def chew(self, ctx, members : Greedy[Member] = None):
 
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=chew)
             mention_list = []
 
@@ -127,7 +126,7 @@ class actions(commands.Cog):
     @commands.command(hidden=True)
     async def sip(self, ctx):
 
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=sip)
 
             msg = await ctx.send(embed=version)
@@ -136,7 +135,7 @@ class actions(commands.Cog):
     @commands.command(hidden=True)
     async def clap(self, ctx):
 
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=clap)
 
             msg = await ctx.send(embed=version)
@@ -145,7 +144,7 @@ class actions(commands.Cog):
     @commands.command(hidden=True)
     async def cry(self, ctx):
 
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=cry)
             mention_list = []
 
@@ -155,7 +154,7 @@ class actions(commands.Cog):
     @commands.command(hidden=True)
     async def rofl(self, ctx):
 
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=rofl)
             mention_list = []
 
@@ -165,7 +164,7 @@ class actions(commands.Cog):
     @commands.command(hidden=True)
     async def lol(self, ctx):
 
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=lol)
             mention_list = []
 
@@ -175,7 +174,7 @@ class actions(commands.Cog):
     @commands.command(hidden=True)
     async def kill(self, ctx, members : Greedy[Member] = None):
             
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=kill)
             mention_list = []
 
@@ -194,7 +193,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def pat(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=pat)
             mention_list = []
 
@@ -213,7 +212,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def rub(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=rub)
             mention_list = []
 
@@ -232,7 +231,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def nom(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=nom)
             mention_list = []
 
@@ -251,7 +250,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def catpat(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=catpat)
             mention_list = []
 
@@ -270,7 +269,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def hug(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=hug)
             mention_list = []
 
@@ -289,7 +288,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def pillow(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=pillow)
             mention_list = []
 
@@ -308,7 +307,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def spray(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=spray)
             mention_list = []
 
@@ -328,7 +327,7 @@ class actions(commands.Cog):
     @commands.command(hidden=True)
     async def hype(self, ctx):
 
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=hype)
             mention_list = []
 
@@ -339,7 +338,7 @@ class actions(commands.Cog):
     @commands.command(hidden=True)
     @commands.has_role('Staff')
     async def specialkiss(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=specialkiss)
             mention_list = []
 
@@ -359,7 +358,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def kiss(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=kiss)
             mention_list = []
 
@@ -378,7 +377,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def ily(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=ily)
             mention_list = []
 
@@ -397,7 +396,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def nocry(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=nocry)
             mention_list = []
 
@@ -417,7 +416,7 @@ class actions(commands.Cog):
     @commands.command(hidden=True)
     async def shrug(self, ctx):
 
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=shrug)
 
             msg = await ctx.send(embed=version)
@@ -426,7 +425,7 @@ class actions(commands.Cog):
     @commands.command(hidden=True)
     async def smug(self, ctx):
 
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             version.set_image(url=smug)
 
 
@@ -435,7 +434,7 @@ class actions(commands.Cog):
 
     @commands.command(hidden=True)
     async def bearhug(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=color.red)
+            version = discord.Embed(color=discord.Color.red())
             bearhug.set_image(url=bearhugg)
             mention_list = []
 
@@ -455,7 +454,7 @@ class actions(commands.Cog):
     @commands.command()
     async def moan(self, ctx):
         
-        moan = discord.Embed(color=color.red)
+        moan = discord.Embed(color=discord.Color.red())
         moan.set_image(url=moann)
 
         msg = await ctx.channel.send(embed=moan)

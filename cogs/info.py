@@ -17,7 +17,7 @@ class info(commands.Cog):
 
 	@commands.command()
 	async def sfw(self, ctx, members : Greedy[Member] = None):
-		sfw = discord.Embed(title="NSFW Warning", description="Please keep the chat appropiate and sfw.", color=color.red)
+		sfw = discord.Embed(title="NSFW Warning", description="Please keep the chat appropiate and sfw.", color=discord.Color.red())
 		mention_list = []
 
 		if members == None:
@@ -35,7 +35,7 @@ class info(commands.Cog):
 
 	@commands.command(aliases=['lvl'])
 	async def level(self, ctx, members : Greedy[Member] = None):
-		lvl = discord.Embed(title="How to lvl up", description="You can level up in this server by chatting in any channel. Spamming or `XP farming` would result in level reset. \n\nTo check your rank, send `^rank` in <#750160851822182486>.", color=color.red)
+		lvl = discord.Embed(title="How to lvl up", description="You can level up in this server by chatting in any channel. Spamming or `XP farming` would result in level reset. \n\nTo check your rank, send `^rank` in <#750160851822182486>.", color=discord.Color.red())
 		mention_list = []
 
 		if members == None:
@@ -53,7 +53,7 @@ class info(commands.Cog):
 
 	@commands.command()
 	async def rank(self, ctx, members : Greedy[Member] = None):
-		rank = discord.Embed(title="How to check your rank", description="Send `^rank` in <#750160851822182486> to check your rank.", color=color.red)
+		rank = discord.Embed(title="How to check your rank", description="Send `^rank` in <#750160851822182486> to check your rank.", color=discord.Color.red())
 		mention_list = []
 
 		if members == None:
@@ -71,7 +71,7 @@ class info(commands.Cog):
 
 	@commands.command()
 	async def spam(self, ctx, members : Greedy[Member] = None):
-		em = discord.Embed(color=color.red, title="Spam warning", description="Please do not spam the chat <:heartato:789581738124640256> <:cry_why:789581737873244160>")
+		em = discord.Embed(color=discord.Color.red(), title="Spam warning", description="Please do not spam the chat <:heartato:789581738124640256> <:cry_why:789581737873244160>")
 		mention_list = []
 
 		if members == None:
@@ -87,6 +87,24 @@ class info(commands.Cog):
 			msg = await ctx.send(mentions, embed=em)
 		await msg.add_reaction('🗑️')
 
+
+	@commands.command()
+	async def english(self, ctx, members : Greedy[Member] = None):
+		em = discord.Embed(color=discord.discord.Color.red()(), title="Warning", description="This is an English only server! Speaking any other languages will lead to a mute. <:satania_love:789809969049632768>")
+		mention_list = []
+
+		if members == None:
+			msg = await ctx.send(embed=em)
+
+		else:
+			for member in members:
+				a = member.mention
+		
+				mention_list.append(a)
+				mentions = f" ".join(mention_list)
+			
+			msg = await ctx.send(mentions, embed=em)
+		await msg.add_reaction('🗑️')
 
 
 
