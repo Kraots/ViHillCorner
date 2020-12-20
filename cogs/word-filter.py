@@ -28,7 +28,7 @@ class FilterCog(commands.Cog, name = "Filter"):
 		except:
 			words = words or []
 		for word in words:
-			if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})',message.content):
+			if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.content):
 				try:
 					await message.delete()
 				except:
