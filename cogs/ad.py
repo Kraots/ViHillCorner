@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from utils.helpers import time_phaser, BotChannels
+from utils.helpers import time_phaserr, BotChannels
 import utils.colors as color
 
 class AdvertisementCommand(commands.Cog):
@@ -34,7 +34,7 @@ class AdvertisementCommand(commands.Cog):
 
         elif isinstance(error, commands.CommandOnCooldown):
             await ctx.message.delete()
-            msg = f'Your already advertised today, please try again in **{time_phaser(error.retry_after)}**.'
+            msg = f'Your already advertised today, please try again in **{time_phaserr(error.retry_after)}**.'
             await ctx.channel.send(msg, delete_after=6)
         
         elif isinstance(error, commands.MissingRequiredArgument):

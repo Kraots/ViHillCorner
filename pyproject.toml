@@ -11,6 +11,7 @@ jishaku = "^1.19.2"
 flask = "^1.1.2"
 psutil = "^5.7.3"
 humanize = "^3.1.0"
+parsedatetime = "^2.6"
 
 [tool.poetry.dev-dependencies]
 
