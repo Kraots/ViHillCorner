@@ -83,10 +83,14 @@ class Moderation(commands.Cog):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
-		await ctx.send("What member(s) do you wish to kick?")
+		await ctx.send("What member(s) do you wish to kick? To cancel type `cancel`")
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
-			kicked_members = before_members.mentions
+			if before_members.content.lower() == "cancel":
+				await ctx.send("Canceled.")
+				return
+			else:
+				kicked_members = before_members.mentions
 
 		except asyncio.TimeoutError:
 			return
@@ -95,7 +99,11 @@ class Moderation(commands.Cog):
 			await ctx.send("What's the reason for the kick?")
 			try:
 				before_reason = await self.client.wait_for('message', timeout=360, check=check)
-				kicked_reason = before_reason.content
+				if before_reason.content.lower() == "cancel":
+					await ctx.send("Canceled.")
+					return
+				else:
+					kicked_reason = before_reason.content
 
 			except asyncio.TimeoutError:
 				return
@@ -144,10 +152,14 @@ class Moderation(commands.Cog):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
-		await ctx.send("What member(s) do you wish to ban?")
+		await ctx.send("What member(s) do you wish to ban? To cancel type `cancel`")
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
-			banned_members = before_members.mentions
+			if before_members.content.lower() == "cancel":
+				await ctx.send("Canceled.")
+				return
+			else:	
+				banned_members = before_members.mentions
 
 		except asyncio.TimeoutError:
 			return
@@ -156,7 +168,11 @@ class Moderation(commands.Cog):
 			await ctx.send("What's the reason for the ban?")
 			try:
 				before_reason = await self.client.wait_for('message', timeout=360, check=check)
-				banned_reason = before_reason.content
+				if before_reason.content.lower() == "cancel":
+					await ctx.send("Canceled.")
+					return
+				else:
+					banned_reason = before_reason.content
 
 			except asyncio.TimeoutError:
 				return
@@ -241,10 +257,14 @@ class Moderation(commands.Cog):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
-		await ctx.send("What member(s) do you wish to mute?")
+		await ctx.send("What member(s) do you wish to mute? To cancel type `cancel`")
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
-			muted_members = before_members.mentions
+			if before_members.content.lower() == "cancel":
+				await ctx.send("Canceled.")
+				return
+			else:
+				muted_members = before_members.mentions
 
 		except asyncio.TimeoutError:
 			return
@@ -253,7 +273,11 @@ class Moderation(commands.Cog):
 			await ctx.send("What's the reason for the mute?")
 			try:
 				before_reason = await self.client.wait_for('message', timeout=360, check=check)
-				mute_reason = before_reason.content
+				if before_reason.content.lower() == "cancel":
+					await ctx.send("Canceled.")
+					return
+				else:
+					mute_reason = before_reason.content
 
 			except asyncio.TimeoutError:
 				return
@@ -301,10 +325,14 @@ class Moderation(commands.Cog):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
-		await ctx.send("What member(s) do you wish to unmute?")
+		await ctx.send("What member(s) do you wish to unmute? To cancel type `cancel`")
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
-			unmuted_members = before_members.mentions
+			if before_members.content.lower() == "cancel":
+					await ctx.send("Canceled.")
+					return
+			else:
+				unmuted_members = before_members.mentions
 
 		except asyncio.TimeoutError:
 			return

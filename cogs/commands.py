@@ -43,7 +43,7 @@ class command(commands.Cog):
 			return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 		
 		embed = discord.Embed(color=color.lightpink)
-		embed.add_field(name='Create Date:', value=f"{user} **--->** {format_date(getattr(user, 'joined_at', None))}")
+		embed.add_field(name='Join Date:', value=f"{user} **--->** {format_date(getattr(user, 'joined_at', None))}")
 		await ctx.send(embed=embed)
 
 	@commands.command()
