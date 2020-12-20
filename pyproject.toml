@@ -12,6 +12,7 @@ flask = "^1.1.2"
 psutil = "^5.7.3"
 humanize = "^3.1.0"
 parsedatetime = "^2.6"
+wolframalpha = "^4.1.1"
 
 [tool.poetry.dev-dependencies]
 
