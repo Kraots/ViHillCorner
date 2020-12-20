@@ -36,5 +36,3 @@ class Ping(commands.Cog):
 
 def setup (client):
     client.add_cog(Ping(client))
-
-    
