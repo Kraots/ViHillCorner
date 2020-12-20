@@ -107,7 +107,7 @@ class Moderation(commands.Cog):
 						mem_list_final = " | ".join(str(id) for id in mem_list)
 
 						try:
-							await id.send("You have been kicked from `Anime Hangouts!`")
+							await id.send("You have been kicked from `ViHill Corner!`")
 						except discord.HTTPException:
 							pass
 						await guild.kick(id, reason=kicked_reason)
@@ -139,7 +139,7 @@ class Moderation(commands.Cog):
 		mem_list = []
 		reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/m3Zyaj5Vc4")
 		reasonn.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
-		msg="You have been banned from `Anime Hangouts`. If you think that this has been applied in error please submit a detailed appeal at the following link."
+		msg="You have been banned from `ViHill Corner`. If you think that this has been applied in error please submit a detailed appeal at the following link."
 		
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
@@ -217,7 +217,7 @@ class Moderation(commands.Cog):
 		await log_channel.send(embed=em)
 
 		try:
-			msg="Congrats! You have been unbanned from `Anime Hangouts`. Come back: https://discord.gg/mFm5GrQ"
+			msg="Congrats! You have been unbanned from `ViHill Corner`. Come back: https://discord.gg/mFm5GrQ"
 			try:
 				await member.send(msg)
 			except discord.HTTPException:
@@ -261,7 +261,7 @@ class Moderation(commands.Cog):
 			else:
 				for id in muted_members:
 					mute = discord.Embed(description=f'**Reason:** [{mute_reason}]({ctx.message.jump_url}).', color=color.inviscolor)
-					msg="You were muted in `Anime Hangouts`."
+					msg="You were muted in `ViHill Corner`."
 					a = id
 					mem_list.append(a)
 					mem_list_final = " | ".join(str(id) for id in mem_list)
@@ -311,7 +311,7 @@ class Moderation(commands.Cog):
 
 		else:
 			for id in unmuted_members:
-				msg="You were unmuted in `Anime Hangouts`."
+				msg="You were unmuted in `ViHill Corner`."
 				a = id
 				mem_list.append(a)
 				mem_list_final = " | ".join(str(id) for id in mem_list)
@@ -366,7 +366,7 @@ class Moderation(commands.Cog):
 			else:
 				muted = guild.get_role(750465726069997658)
 				await member.add_roles(muted, reason=reason_content)
-				msg = ("You have been muted in `Anime Hangouts`")
+				msg = ("You have been muted in `ViHill Corner`")
 				em = discord.Embed(description=f"Time: `{time_phaserr(time)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=color.inviscolor)
 				try:
 					await member.send(msg, embed = em)
@@ -388,7 +388,7 @@ class Moderation(commands.Cog):
 				await asyncio.sleep(time)
 				await member.remove_roles(muted)
 				try:
-					await member.send("You have been unmuted in `Anime Hangouts`.")
+					await member.send("You have been unmuted in `ViHill Corner`.")
 				except discord.HTTPException:
 					pass
 

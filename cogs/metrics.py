@@ -4,7 +4,6 @@ import psutil
 import time
 from utils.helpers import time_phaserr
 import utils.colors as color
-from utils.time import human_timedelta
 up = time.time()
 
 class Metrics(commands.Cog):

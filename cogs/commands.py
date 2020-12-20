@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands
 import psutil
-import os, datetime
+import os
 import utils.colors as color
-from utils import formats, time
+from utils import time
 from typing import Union
 
 class command(commands.Cog):
@@ -63,7 +63,7 @@ class command(commands.Cog):
 	@commands.command(help="Get a list of all snippets", aliases=["inv", "invite"])
 	async def _invite(self, context):
 
-			version = discord.Embed(title="Here's your invite", description="[Anime Hangouts](https://discord.gg/Uf2kA8q)", color=color.lightpink)
+			version = discord.Embed(title="Here's your invite", description="[ViHill Corner](https://discord.gg/Uf2kA8q)", color=color.lightpink)
 			version.set_footer(text=f"Requested by: {context.author}", icon_url=context.author.avatar_url)
 
 			await context.message.channel.send(embed=version)
@@ -99,7 +99,7 @@ class command(commands.Cog):
 	@commands.command()
 	async def serverad(self, ctx):
 		await ctx.message.delete()
-		ad = discord.Embed(color=color.lightpink, title="Here's the ad to the server:", description="**__Anime Hangouts__**\nAnime Hangouts is mainly for anime & talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\n\nhttps://discord.gg/Uf2kA8q")
+		ad = discord.Embed(color=color.lightpink, title="Here's the ad to the server:", description="**__ViHill Corner__**\nViHill Corner is mainly for talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\n\nhttps://discord.gg/Uf2kA8q")
 		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
 		await ctx.channel.send(embed=ad)
@@ -107,7 +107,7 @@ class command(commands.Cog):
 	@commands.command(aliases=["ra"])
 	async def rawad(self, ctx):
 		await ctx.message.delete()
-		ad = discord.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```**__Anime Hangouts__**\nAnime Hangouts is mainly for anime & talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\n\nhttps://discord.gg/Uf2kA8q```")
+		ad = discord.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```**__ViHill Corner__**\nViHill Corner is mainly for talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\n\nhttps://discord.gg/Uf2kA8q```")
 		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
 		await ctx.channel.send(embed=ad)

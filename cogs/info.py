@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import utils.colors as color
 from discord import Member
 from discord.ext.commands import Greedy
 

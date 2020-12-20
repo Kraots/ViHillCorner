@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import utils.colors as color
-from utils import formats, time
+from utils import time
 
 class ServerInfo(commands.Cog):
 
@@ -54,7 +54,7 @@ class ServerInfo(commands.Cog):
 				return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
 			em = discord.Embed(color=color.lightpink)
-			em.add_field(name='Name', value=server.name)
+			em.add_field(name='Name | ID', value=f"{server.name}  |  {server.id}")
 			em.add_field(name='Owner', value=server.owner, inline=False)
 			em.add_field(name='Members', value=server.member_count)
 			em.add_field(name='Currently Online', value=online)

@@ -34,7 +34,7 @@ class on_join(commands.Cog):
 		if member.guild == AHguild:
 			welcome = discord.Embed(description="\n\n***Go get a color from*** <#779388444304211991>\n***Go read the rules at*** <#750160850303582236>\n***Don't forget to introduce yourself by typing `!intro` in a bots channel!***\n***Go vote the server by clicking the link:*** **[Click Here](https://top.gg/servers/750160850077089853/vote)**\n\nEnjoy your stay\n\n", color=color.pastel)
 			welcome.set_thumbnail(url=member.avatar_url)
-			msg = f'Hey {member.mention}, welcome to **Anime Hangouts!** \nYou are our **{member_count}** member.\n\n\n‎'
+			msg = f'Hey {member.mention}, welcome to **ViHill Corner!** \nYou are our **{member_count}** member.\n\n\n‎'
 			await welcomechannel.send(msg, embed=welcome)
 
 
@@ -126,7 +126,7 @@ class on_join(commands.Cog):
 			
 			introchannel = AHguild.get_channel(750160850593251449)
 			
-			await member.send("Welcome to `Anime Hangouts`, would you like to introduce yourself?")
+			await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself?")
 
 			channel = member.dm_channel
 			

@@ -336,7 +336,7 @@ class Help(commands.Cog):
 	@help.command()
 	async def membercount(self, ctx):
 		membercount = discord.Embed(title="***Usage:***", description="```!membercount```", color=color.lightpink)
-		membercount.add_field(name="***Info:***", value="• See how many members Anime Hangouts has (**bots are not included**).", inline=False)
+		membercount.add_field(name="***Info:***", value="• See how many members ViHill Corner has (**bots are not included**).", inline=False)
 		await ctx.channel.send(embed=membercount)
 
 	@help.command()
