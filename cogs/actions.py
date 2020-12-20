@@ -34,435 +34,456 @@ moann = os.environ.get("MOAN")
 
 class actions(commands.Cog):
 
-    def __init__(self, client):
-        self.client = client
-        self.prefix = ";"
-    async def cog_check(self, ctx):
-        return ctx.prefix == self.prefix
-
-    @commands.command(hidden=True)
-    async def rape(self, ctx):
-
-        await ctx.send('https://cdn.discordapp.com/attachments/745298904832278530/782729248623427614/video0-1_1.mp4')
-
-    @commands.command(hidden=True)
-    async def huggles(self, ctx, members : Greedy[Member] = None):
-        version = discord.Embed(color=discord.Color.red())
-        version.set_image(url=huggles)
-        mention_list = []
-
-        if members == None:
-            msg = await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-        
-                mention_list.append(a)
-                mentions = f" ".join(mention_list)
-            
-            msg = await ctx.send(mentions, embed=version)
-        await msg.add_reaction('<:hug:750751796317913218>')
-
-    @commands.command(hidden=True)
-    async def grouphug(self, ctx, members : Greedy[Member] = None):
-        version = discord.Embed(color=discord.Color.red())
-        version.set_image(url=grouphug)
-        mention_list = []
-
-        if members == None:
-            msg = await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-        
-                mention_list.append(a)
-                mentions = f" ".join(mention_list)
-            
-            msg = await ctx.send(mentions, embed=version)
-        await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def eat(self, ctx, members : Greedy[Member] = None):
-
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=eat)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def chew(self, ctx, members : Greedy[Member] = None):
-
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=chew)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def sip(self, ctx):
-
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=sip)
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def clap(self, ctx):
-
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=clap)
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def cry(self, ctx):
-
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=cry)
-            mention_list = []
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def rofl(self, ctx):
-
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=rofl)
-            mention_list = []
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def lol(self, ctx):
-
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=lol)
-            mention_list = []
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def kill(self, ctx, members : Greedy[Member] = None):
-            
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=kill)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def pat(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=pat)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('<:kanna_pat:750757139001245806>')
-
-    @commands.command(hidden=True)
-    async def rub(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=rub)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def nom(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=nom)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def catpat(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=catpat)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def hug(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=hug)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def pillow(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=pillow)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def spray(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=spray)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def hype(self, ctx):
-
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=hype)
-            mention_list = []
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
-
-
-    @commands.command(hidden=True)
-    @commands.has_role('Staff')
-    async def specialkiss(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=specialkiss)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-
-    @commands.command(hidden=True)
-    async def kiss(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=kiss)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def ily(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=ily)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def nocry(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=nocry)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def shrug(self, ctx):
-
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=shrug)
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def smug(self, ctx):
-
-            version = discord.Embed(color=discord.Color.red())
-            version.set_image(url=smug)
-
-
-            msg = await ctx.send(embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command(hidden=True)
-    async def bearhug(self, ctx, members : Greedy[Member] = None):
-            version = discord.Embed(color=discord.Color.red())
-            bearhug.set_image(url=bearhugg)
-            mention_list = []
-
-            if members == None:
-                msg = await ctx.send(embed=version)
-
-            else:
-                for member in members:
-                    a = member.mention
-            
-                    mention_list.append(a)
-                    mentions = f" ".join(mention_list)
-                
-                msg = await ctx.send(mentions, embed=version)
-            await msg.add_reaction('🗑️')
-
-    @commands.command()
-    async def moan(self, ctx):
-        
-        moan = discord.Embed(color=discord.Color.red())
-        moan.set_image(url=moann)
-
-        msg = await ctx.channel.send(embed=moan)
-        await msg.add_reaction('🗑️')
+	def __init__(self, client):
+		self.client = client
+		self.prefix = ";"
+	async def cog_check(self, ctx):
+		return ctx.prefix == self.prefix
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def rape(self, ctx):
+
+		await ctx.send('https://cdn.discordapp.com/attachments/745298904832278530/782729248623427614/video0-1_1.mp4')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def huggles(self, ctx, members : Greedy[Member] = None):
+		version = discord.Embed(color=discord.Color.red())
+		version.set_image(url=huggles)
+		mention_list = []
+
+		if members == None:
+			msg = await ctx.send(embed=version)
+
+		else:
+			for member in members:
+				a = member.mention
+		
+				mention_list.append(a)
+				mentions = f" ".join(mention_list)
+			
+			msg = await ctx.send(mentions, embed=version)
+		await msg.add_reaction('<:hug:750751796317913218>')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def grouphug(self, ctx, members : Greedy[Member] = None):
+		version = discord.Embed(color=discord.Color.red())
+		version.set_image(url=grouphug)
+		mention_list = []
+
+		if members == None:
+			msg = await ctx.send(embed=version)
+
+		else:
+			for member in members:
+				a = member.mention
+		
+				mention_list.append(a)
+				mentions = f" ".join(mention_list)
+			
+			msg = await ctx.send(mentions, embed=version)
+		await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def eat(self, ctx, members : Greedy[Member] = None):
+
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=eat)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def chew(self, ctx, members : Greedy[Member] = None):
+
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=chew)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def sip(self, ctx):
+
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=sip)
+
+			msg = await ctx.send(embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def clap(self, ctx):
+
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=clap)
+
+			msg = await ctx.send(embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def cry(self, ctx):
+
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=cry)
+
+			msg = await ctx.send(embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def rofl(self, ctx):
+
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=rofl)
+
+			msg = await ctx.send(embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def lol(self, ctx):
+
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=lol)
+
+			msg = await ctx.send(embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def kill(self, ctx, members : Greedy[Member] = None):
+			
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=kill)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def pat(self, ctx, members : Greedy[Member] = None):
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=pat)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('<:kanna_pat:750757139001245806>')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def rub(self, ctx, members : Greedy[Member] = None):
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=rub)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def nom(self, ctx, members : Greedy[Member] = None):
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=nom)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def catpat(self, ctx, members : Greedy[Member] = None):
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=catpat)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def hug(self, ctx, members : Greedy[Member] = None):
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=hug)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def pillow(self, ctx, members : Greedy[Member] = None):
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=pillow)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def spray(self, ctx, members : Greedy[Member] = None):
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=spray)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def hype(self, ctx):
+
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=hype)
+
+			msg = await ctx.send(embed=version)
+			await msg.add_reaction('🗑️')
+
+
+	@commands.command(hidden=True)
+	@commands.has_role('Staff')
+	async def specialkiss(self, ctx, members : Greedy[Member] = None):
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=specialkiss)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def kiss(self, ctx, members : Greedy[Member] = None):
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=kiss)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def ily(self, ctx, members : Greedy[Member] = None):
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=ily)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def nocry(self, ctx, members : Greedy[Member] = None):
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=nocry)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def shrug(self, ctx):
+
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=shrug)
+
+			msg = await ctx.send(embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def smug(self, ctx):
+
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=smug)
+
+
+			msg = await ctx.send(embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command(hidden=True)
+	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
+	async def bearhug(self, ctx, members : Greedy[Member] = None):
+			version = discord.Embed(color=discord.Color.red())
+			version.set_image(url=bearhugg)
+			mention_list = []
+
+			if members == None:
+				msg = await ctx.send(embed=version)
+
+			else:
+				for member in members:
+					a = member.mention
+			
+					mention_list.append(a)
+					mentions = f" ".join(mention_list)
+				
+				msg = await ctx.send(mentions, embed=version)
+			await msg.add_reaction('🗑️')
+
+	@commands.command()
+	async def moan(self, ctx):
+		
+		moan = discord.Embed(color=discord.Color.red())
+		moan.set_image(url=moann)
+
+		msg = await ctx.channel.send(embed=moan)
+		await msg.add_reaction('🗑️')
 
 
 
 
 def setup (client):
-    client.add_cog(actions(client))
+	client.add_cog(actions(client))
 
