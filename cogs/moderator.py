@@ -108,7 +108,7 @@ class Moderation(commands.Cog):
 
 						try:
 							await id.send("You have been kicked from `Anime Hangouts!`")
-						except discord.UnboundLocalError:
+						except discord.HTTPException:
 							pass
 						await guild.kick(id, reason=kicked_reason)
 
@@ -119,7 +119,10 @@ class Moderation(commands.Cog):
 		em = discord.Embed(color=color.reds, title="___KICK___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
 		em.add_field(name="Action", value=f"`Used the kick command.`", inline=False)	
-		em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)	
+		try:
+			em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)
+		except UnboundLocalError:
+			em.add_field(name="Member(s)", value="`Invalid Users!`", inline=False)
 		em.add_field(name="Reason", value=f"**[{kicked_reason}]({ctx.message.jump_url})**", inline=False)	
 		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)	
 
@@ -163,7 +166,10 @@ class Moderation(commands.Cog):
 					a = id
 					mem_list.append(a)
 					mem_list_final = " | ".join(str(id) for id in mem_list)
-					await id.send(msg, embed=reasonn)
+					try:
+						await id.send(msg, embed=reasonn)
+					except discord.HTTPException:
+						pass
 					await guild.ban(id, reason=banned_reason)
 
 		ban = discord.Embed(description=f"The user(s) have been banned from the server.\n**Reason**: **[{banned_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
@@ -173,7 +179,10 @@ class Moderation(commands.Cog):
 		em = discord.Embed(color=color.reds, title="___BAN___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
 		em.add_field(name="Action", value=f"`Used the ban command.`", inline=False)	
-		em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)	
+		try:
+			em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)	
+		except UnboundLocalError:
+			em.add_field(name="Member(s)", value="`Invalid Users!`", inline=False)
 		em.add_field(name="Reason", value=f"**[{banned_reason}]({ctx.message.jump_url})**", inline=False)	
 		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
 
@@ -199,7 +208,10 @@ class Moderation(commands.Cog):
 		em = discord.Embed(color=color.reds, title="___UNBAN___", timestamp = ctx.message.created_at)
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
 		em.add_field(name="Action", value=f"`Used the unban command`", inline=False)
-		em.add_field(name="Member", value=f"`{member}`", inline=False)
+		try:
+			em.add_field(name="Member", value=f"`{member}`", inline=False)
+		except UnboundLocalError:
+			em.add_field(name="Member(s)", value="`Invalid Users!`", inline=False)
 		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
 
 		await log_channel.send(embed=em)
@@ -266,7 +278,10 @@ class Moderation(commands.Cog):
 		em = discord.Embed(color=color.reds, title="___MUTE___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
 		em.add_field(name="Action", value=f"`Used the mute command.`", inline=False)	
-		em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)	
+		try:
+			em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)	
+		except UnboundLocalError:
+			em.add_field(name="Member(s)", value="`Invalid Users!`", inline=False)		
 		em.add_field(name="Reason", value=f"**[{mute_reason}]({ctx.message.jump_url})**", inline=False)	
 		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
 
@@ -313,7 +328,10 @@ class Moderation(commands.Cog):
 		em = discord.Embed(color=color.reds, title="___UNMUTE___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
 		em.add_field(name="Action", value=f"`Used the unmute command.`", inline=False)	
-		em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)	
+		try:
+			em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)	
+		except UnboundLocalError:
+			em.add_field(name="Member(s)", value="`Invalid Users!`", inline=False)		
 		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
 
 		await log_channel.send(embed=em)
@@ -416,6 +434,30 @@ class Moderation(commands.Cog):
 		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
 
 		await log_channel.send(embed=em)
+
+
+			# ERROR HANDLERS
+
+#	@kick.error
+#	async def kick_error(self, ctx, error):
+#		if isinstance(error, commands.errors.CommandInvokeError):
+#			await ctx.send("Invalid User!")
+	
+#	@ban.error
+#	async def ban_error(self, ctx, error):
+#		if isinstance(error, commands.errors.CommandInvokeError):
+#			await ctx.send("Invalid User!")
+	
+	@mute.error
+	async def mute_error(self, ctx, error):
+		if isinstance(error, commands.errors.CommandInvokeError):
+			await ctx.send("Invalid User!")
+
+	@unmute.error
+	async def unmute_error(self, ctx, error):
+		if isinstance(error, commands.errors.CommandInvokeError):
+			await ctx.send("Invalid User!")
+
 
 def setup (client):
 	client.add_cog(Moderation(client))
