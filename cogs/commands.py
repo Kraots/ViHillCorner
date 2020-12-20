@@ -33,20 +33,6 @@ class command(commands.Cog):
 		await ctx.send(embed=em)
 
 	@commands.command()
-	async def created(self, ctx, user: Union[discord.Member, discord.User]=None):
-		if user is None:
-			user = ctx.author
-
-		def format_date(dt):
-			if dt is None:
-				return 'N/A'
-			return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
-		
-		embed = discord.Embed(color=color.lightpink)
-		embed.add_field(name='Create Date:', value=f"{user} {format_date(getattr(user, 'joined_at', None))}")
-		await ctx.send(embed=embed)
-
-	@commands.command()
 	async def joined(self, ctx, user: Union[discord.Member, discord.User]=None):
 		if user is None:
 			user = ctx.author
@@ -57,7 +43,21 @@ class command(commands.Cog):
 			return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 		
 		embed = discord.Embed(color=color.lightpink)
-		embed.add_field(name='Create Date:', value=f"{user} {format_date(user.created_at)}")
+		embed.add_field(name='Create Date:', value=f"{user} **--->** {format_date(getattr(user, 'joined_at', None))}")
+		await ctx.send(embed=embed)
+
+	@commands.command()
+	async def created(self, ctx, user: Union[discord.Member, discord.User]=None):
+		if user is None:
+			user = ctx.author
+
+		def format_date(dt):
+			if dt is None:
+				return 'N/A'
+			return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
+		
+		embed = discord.Embed(color=color.lightpink)
+		embed.add_field(name='Create Date:', value=f"{user} **--->** {format_date(user.created_at)}")
 		await ctx.send(embed=embed)
 
 	@commands.command(help="Get a list of all snippets", aliases=["inv", "invite"])
