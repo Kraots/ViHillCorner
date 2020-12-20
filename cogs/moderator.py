@@ -118,9 +118,9 @@ class Moderation(commands.Cog):
 							await id.send("You have been kicked from `ViHill Corner!`")
 						except discord.HTTPException:
 							pass
-						await guild.kick(id, reason=kicked_reason)
+						await guild.kick(id, reason=f"{ctx.author} ---> {kicked_reason}")
 
-		ban = discord.Embed(description=f"The user(s) have been kicked from the server.\n**Reason**: **[{kicked_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
+		ban = discord.Embed(description=f"The user(s) have been kicked from the server.\n**Reason:** **[{kicked_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
 
 		await ctx.channel.send(embed=ban)
 
@@ -186,9 +186,9 @@ class Moderation(commands.Cog):
 						await id.send(msg, embed=reasonn)
 					except discord.HTTPException:
 						pass
-					await guild.ban(id, reason=banned_reason)
+					await guild.ban(id, reason=f"{ctx.author} --->{banned_reason}")
 
-		ban = discord.Embed(description=f"The user(s) have been banned from the server.\n**Reason**: **[{banned_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
+		ban = discord.Embed(description=f"The user(s) have been banned from the server.\n**Reason:** **[{banned_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
 
 		await ctx.channel.send(embed=ban)
 
@@ -284,7 +284,7 @@ class Moderation(commands.Cog):
 			
 			else:
 				for id in muted_members:
-					mute = discord.Embed(description=f'**Reason:** [{mute_reason}]({ctx.message.jump_url}).', color=color.inviscolor)
+					mute = discord.Embed(description=f'**Reason:** **[{mute_reason}]({ctx.message.jump_url}).**', color=color.inviscolor)
 					msg="You were muted in `ViHill Corner`."
 					a = id
 					mem_list.append(a)
@@ -293,9 +293,9 @@ class Moderation(commands.Cog):
 						await id.send(msg, embed=mute)
 					except discord.HTTPException:
 						pass
-					await id.add_roles(muted, reason=mute_reason)
+					await id.add_roles(muted, reason=f"{ctx.author} ---> {mute_reason}")
 
-		ban = discord.Embed(description=f"The user(s) have been muted!\n**Reason**: **[{mute_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
+		ban = discord.Embed(description=f"The user(s) have been muted!\n**Reason:** **[{mute_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
 
 		await ctx.channel.send(embed=ban)
 
@@ -347,7 +347,7 @@ class Moderation(commands.Cog):
 					await id.send(msg)
 				except discord.HTTPException:
 					pass
-				await id.remove_roles(muted, reason="Unmute")
+				await id.remove_roles(muted, reason="{} ---> Unmute".format(ctx.author))
 
 		ban = discord.Embed(description=f"The user(s) have been unmuted!" , color=discord.Color.red())
 
@@ -393,7 +393,7 @@ class Moderation(commands.Cog):
 				return
 			else:
 				muted = guild.get_role(750465726069997658)
-				await member.add_roles(muted, reason=reason_content)
+				await member.add_roles(muted, reason=f"{ctx.author} ---> {reason_content}")
 				msg = ("You have been muted in `ViHill Corner`")
 				em = discord.Embed(description=f"Time: `{time_phaserr(time)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=color.inviscolor)
 				try:
