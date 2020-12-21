@@ -137,22 +137,31 @@ class FilterCog(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message_edit(self,before,after):
-		new_nick = ''.join([choice(string.ascii_lowercase + string.digits) for _ in range(7)])
-		new_nick_again = ''.join([choice(string.ascii_lowercase + string.digits) for _ in range(7)])
+		guild = self.client.get_guild(750160850077089853)
+		muted = guild.get_role(750465726069997658)
+		new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
+		new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
 		words = None
 		zalgos = None
 		try:
 			words = bad_words
 			zalgos = zalgo_vars
-			not_english = alphabet_list
 		except	:
 			words = words or []
 			zalgos = zalgos or []
-			not_english = not_english or []
 		for word in words:
 			if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.content):
 				try:
 					await after.delete()
+					await after.author.add_roles(muted, reason="Bad Words")
+					msg1 = "You have been muted in `ViHill Corner`."
+					em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+					await after.author.send(msg1, embed=em1)
+					msg2 = f"**{after.author}** has been muted."
+					em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+					await after.channel.send(msg2, embed=em2)
+					await asyncio.sleep(720)
+					await after.author.remove_roles(muted)
 				except:
 					pass
 				
@@ -160,14 +169,14 @@ class FilterCog(commands.Cog):
 				if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.author.nick):
 					try:
 						await after.author.edit(nick=new_nick)
-						await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+						await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
 					except:
 						pass
 
 				elif re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.author.name):
 					try:
 						await after.author.edit(nick=new_nick)
-						await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+						await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 					except:
 						pass
 			except:
@@ -191,6 +200,7 @@ class FilterCog(commands.Cog):
 				if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', after.content):
 					try:
 						await after.delete()
+						await after.author.send("Zalgo not allowed.")
 					except:
 						pass
 			except:
