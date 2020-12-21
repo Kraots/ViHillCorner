@@ -67,8 +67,8 @@ class FilterCog(commands.Cog):
 	async def on_message(self,message):
 		guild = self.client.get_guild(750160850077089853)
 		muted = guild.get_role(750465726069997658)
-		new_nick = ''.join([choice(string.ascii_lowercase + string.digits) for _ in range(7)])
-		new_nick_again = ''.join([choice(string.ascii_lowercase + string.digits) for _ in range(7)])
+		new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
+		new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
 		words = None
 		zalgos = None
 		try:
