@@ -23,7 +23,29 @@ class ImagesChannel(commands.Cog):
 				allow_this = message.attachments[0].url
 			except IndexError:
 				await message.delete()
-				await message.author.send("You can only send videos / images in this channel.")
+				await message.author.send("You cannot send text in this channel.")
+			if message.content == allow_this:
+				return
+			else:
+				return
+
+		elif message.channel.id == 750160852006469810:
+			try:
+				allow_this = message.attachments[0].url
+			except IndexError:
+				await message.delete()
+				await message.author.send("You cannot send text in this channel.")
+			if message.content == allow_this:
+				return
+			else:
+				return
+
+		elif message.channel.id == 750160852006469806:
+			try:
+				allow_this = message.attachments[0].url
+			except IndexError:
+				await message.delete()
+				await message.author.send("You cannot send text in this channel.")
 			if message.content == allow_this:
 				return
 			else:
