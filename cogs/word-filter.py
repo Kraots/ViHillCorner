@@ -61,7 +61,6 @@ class FilterCog(commands.Cog):
 
 	def __init__(self, client):
 		self.client = client
-		self.channel = 745390366802575391
 
 	@commands.Cog.listener()
 	async def on_message(self,message):
