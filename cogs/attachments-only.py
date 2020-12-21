@@ -51,6 +51,17 @@ class ImagesChannel(commands.Cog):
 			else:
 				return
 
+		elif message.channel.id == 790309648213213205:
+			try:
+				allow_this = message.attachments[0].url
+			except IndexError:
+				await message.delete()
+				await message.author.send("You cannot send text in this channel.")
+			if message.content == allow_this:
+				return
+			else:
+				return
+
 		else:
 			return
 
