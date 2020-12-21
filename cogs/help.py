@@ -18,16 +18,29 @@ class Help(commands.Cog):
 		helpEm = discord.Embed(description="", color=color.lightpink)
 		helpEm.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 		helpEm.set_thumbnail(url=self.client.user.avatar_url)
-		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `ad`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`, `define`, `search`, `calculator`")
+		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`, `define`, `search`, `calculator`")
 		helpEm.add_field(name="Economy", value="`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `ppsuck`", inline=False)
 		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `spam`, `english`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `serverinfo`, `vote`", inline=False)
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
-			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `kick`, `ban`, `unban`, `partnership`, `nsfw`, `slowmode`, `snippet`", inline=False)
+			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `kick`, `ban`, `opban`, `unban`, `opunban`, `nsfw`, `slowmode`, `snippet`", inline=False)
 		
 		if ctx.author.id == 374622847672254466:
 			helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
 
 		await ctx.message.channel.send(embed=helpEm)
+
+	@help.command()
+	async def opban(self, ctx):
+		em = discord.Embed(color=color.lightpink, title="**Usage:**", description="```!opban <user>```")
+		em.add_field(name="***Info:***", value="• Bans a user that is **not** in the server.")
+		await ctx.send(embed=em)
+
+
+	@help.command()
+	async def opunban(self, ctx):
+		em = discord.Embed(color=color.lightpink, title="**Usage:**", description="```!opunban <user>```")
+		em.add_field(name="***Info:***", value="• Unbans a user that is **not** in the ban appeal server or the server itself.")
+		await ctx.send(embed=em)
 
 	@help.command()
 	async def search(self, ctx):
@@ -229,12 +242,6 @@ class Help(commands.Cog):
 		invite.add_field(name="***Aliases:***", value="• inv", inline=False)
 		invite.add_field(name="***Info:***", value="• Get the invite to the server.", inline=False)
 		await ctx.channel.send(embed=invite)
-
-	@help.command()
-	async def ad(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```!ad <your ad>```", color=color.lightpink)
-		embed.add_field(name="***Info:***", value="• Advertise your server in the advertisement channel ;3", inline=False)
-		await ctx.channel.send(embed=embed)
 
 	@help.command()
 	async def serverad(self, ctx):

@@ -4,6 +4,8 @@ import asyncio
 import utils.colors as color
 import re
 from utils.helpers import time_phaserr
+from discord import Member
+from discord.ext.commands import Greedy
 
 time_regex = re.compile("(?:(\d{1,5})(h|s|m|d))+?")
 time_dict = {"h":3600, "s":1, "m":60, "d":86400}
@@ -135,6 +137,28 @@ class Moderation(commands.Cog):
 		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)	
 
 		await log_channel.send(embed=em)
+
+
+			# OP BAN
+
+	@commands.command()
+	async def opban(self, ctx, member: int):
+		guild = self.client.get_guild(750160850077089853)
+		get_member = await self.client.fetch_user(member)
+		await guild.ban(get_member)
+		em = discord.Embed(color=discord.Color.red(), description=f"`{get_member}` was banned succesfully.")
+		await ctx.send(embed=em)
+
+
+		# OP UNBAN
+
+	@commands.command()
+	async def opunban(self, ctx, member: int):
+		guild = self.client.get_guild(750160850077089853)
+		get_member = await self.client.fetch_user(member)
+		await guild.unban(get_member)
+		em = discord.Embed(color=discord.Color.red(), description=f"`{get_member}` was unbanned succesfully.")
+		await ctx.send(embed=em)
 
 
 			# BAN
@@ -441,40 +465,7 @@ class Moderation(commands.Cog):
 			await log_channel.send(embed=em)
 
 
-		# PARTNERSHIP
-
-	@commands.command(aliases=["ps"])
-	@commands.has_role('Staff')
-	async def partnership(self, ctx, *, arg):
-		guild = self.client.get_guild(750160850077089853)
-		await ctx.message.delete()
-		embed = discord.Embed(title="NEW PARTNERSHIP", description=f'{arg}', color=discord.Color.red())
-		embed.set_footer(text=f'Partnership by: {ctx.author}', icon_url=ctx.author.avatar_url)
-
-		await ctx.channel.send(embed=embed)
-
-
-		log_channel = guild.get_channel(788377362739494943)
-
-		em = discord.Embed(color=color.reds, title="___PARTNERSHIP___", timestamp = ctx.message.created_at)
-		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-		em.add_field(name="Action", value=f"`Used the partnership command`", inline=False)
-		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
-
-		await log_channel.send(embed=em)
-
-
 			# ERROR HANDLERS
-
-#	@kick.error
-#	async def kick_error(self, ctx, error):
-#		if isinstance(error, commands.errors.CommandInvokeError):
-#			await ctx.send("Invalid User!")
-	
-#	@ban.error
-#	async def ban_error(self, ctx, error):
-#		if isinstance(error, commands.errors.CommandInvokeError):
-#			await ctx.send("Invalid User!")
 	
 	@mute.error
 	async def mute_error(self, ctx, error):
