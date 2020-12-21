@@ -12,7 +12,7 @@ token = os.environ.get('DISCORD_BOT_SECRET')
 intents = discord.Intents.all()
 
 # CLIENT
-client = commands.Bot(command_prefix=('!', ';;', ';'), case_insensitive=True, intents=intents, allowed_mentions=discord.AllowedMentions(roles=True, users=True, everyone=False))
+client = commands.Bot(command_prefix=('!', ';;'), case_insensitive=True, intents=intents, allowed_mentions=discord.AllowedMentions(roles=True, users=True, everyone=False))
 client.remove_command("help")
 client.load_extension("jishaku")
 

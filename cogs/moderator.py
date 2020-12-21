@@ -4,8 +4,6 @@ import asyncio
 import utils.colors as color
 import re
 from utils.helpers import time_phaserr
-from discord import Member
-from discord.ext.commands import Greedy
 
 time_regex = re.compile("(?:(\d{1,5})(h|s|m|d))+?")
 time_dict = {"h":3600, "s":1, "m":60, "d":86400}
