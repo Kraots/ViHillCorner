@@ -65,6 +65,8 @@ class FilterCog(commands.Cog):
 	@commands.Cog.listener()
 	async def on_message(self,message):
 		guild = self.client.get_guild(750160850077089853)
+		staff = guild.get_role(754676705741766757)
+		mod = guild.get_role(750162714407600228)
 		muted = guild.get_role(750465726069997658)
 		new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
 		new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
@@ -80,15 +82,30 @@ class FilterCog(commands.Cog):
 			if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.content):
 				try:
 					await message.delete()
-					await message.author.add_roles(muted, reason="Bad Words")
-					msg1 = "You have been muted in `ViHill Corner`."
-					em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
-					await message.author.send(msg1, embed=em1)
-					msg2 = f"**{message.author}** has been muted."
-					em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
-					await message.channel.send(msg2, embed=em2)
-					await asyncio.sleep(720)
-					await message.author.remove_roles(muted)
+					if "Staff" in [role.name for role in message.author.roles]:
+						await message.author.add_roles(muted, reason="Bad Words")
+						await message.author.remove_roles(staff, mod)
+						msg1 = "You have been muted in `ViHill Corner`."
+						em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
+						await message.author.send(msg1, embed=em1)
+						msg2 = f"**{message.author}** has been muted."
+						em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
+						await message.channel.send(msg2, embed=em2)
+						await asyncio.sleep(720)
+						await message.author.remove_roles(muted)
+						await message.author.add_roles(staff, muted)
+					
+					else:
+						await message.author.add_roles(muted, reason="Bad Words")
+						msg1 = "You have been muted in `ViHill Corner`."
+						em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
+						await message.author.send(msg1, embed=em1)
+						msg2 = f"**{message.author}** has been muted."
+						em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
+						await message.channel.send(msg2, embed=em2)
+						await asyncio.sleep(720)
+						await message.author.remove_roles(muted)
+
 				except:
 					pass
 				
@@ -137,6 +154,8 @@ class FilterCog(commands.Cog):
 	@commands.Cog.listener()
 	async def on_message_edit(self,before,after):
 		guild = self.client.get_guild(750160850077089853)
+		staff = guild.get_role(754676705741766757)
+		mod = guild.get_role(750162714407600228)
 		muted = guild.get_role(750465726069997658)
 		new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
 		new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
@@ -152,15 +171,30 @@ class FilterCog(commands.Cog):
 			if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.content):
 				try:
 					await after.delete()
-					await after.author.add_roles(muted, reason="Bad Words")
-					msg1 = "You have been muted in `ViHill Corner`."
-					em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-					await after.author.send(msg1, embed=em1)
-					msg2 = f"**{after.author}** has been muted."
-					em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-					await after.channel.send(msg2, embed=em2)
-					await asyncio.sleep(720)
-					await after.author.remove_roles(muted)
+					if "Staff" in [role.name for role in after.author.roles]:
+						await after.author.add_roles(muted, reason="Bad Words")
+						await after.author.remove_roles(staff, mod)
+						msg1 = "You have been muted in `ViHill Corner`."
+						em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+						await after.author.send(msg1, embed=em1)
+						msg2 = f"**{after.author}** has been muted."
+						em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+						await after.channel.send(msg2, embed=em2)
+						await asyncio.sleep(720)
+						await after.author.remove_roles(muted)
+						await after.author.add_roles(staff, muted)
+					
+					else:
+						await after.author.add_roles(muted, reason="Bad Words")
+						msg1 = "You have been muted in `ViHill Corner`."
+						em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+						await after.author.send(msg1, embed=em1)
+						msg2 = f"**{after.author}** has been muted."
+						em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+						await after.channel.send(msg2, embed=em2)
+						await asyncio.sleep(720)
+						await after.author.remove_roles(muted)
+
 				except:
 					pass
 				
@@ -204,7 +238,6 @@ class FilterCog(commands.Cog):
 						pass
 			except:
 				pass
-
 
 def setup (client):
 	client.add_cog(FilterCog(client))
