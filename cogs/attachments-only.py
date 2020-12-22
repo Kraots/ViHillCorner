@@ -14,6 +14,8 @@ class ImagesChannel(commands.Cog):
 			except IndexError:
 				await message.delete()
 				await message.author.send("You can only send images / videos in this channel.")
+			except UnboundLocalError:
+				pass
 			if message.content == allow_this:
 				return
 			else:
@@ -24,6 +26,8 @@ class ImagesChannel(commands.Cog):
 			except IndexError:
 				await message.delete()
 				await message.author.send("You cannot send text in this channel.")
+			except UnboundLocalError:
+				pass
 			if message.content == allow_this:
 				return
 			else:
@@ -35,6 +39,8 @@ class ImagesChannel(commands.Cog):
 			except IndexError:
 				await message.delete()
 				await message.author.send("You cannot send text in this channel.")
+			except UnboundLocalError:
+				pass
 			if message.content == allow_this:
 				return
 			else:
@@ -46,6 +52,8 @@ class ImagesChannel(commands.Cog):
 			except IndexError:
 				await message.delete()
 				await message.author.send("You cannot send text in this channel.")
+			except UnboundLocalError:
+				pass
 			if message.content == allow_this:
 				return
 			else:
@@ -57,6 +65,8 @@ class ImagesChannel(commands.Cog):
 			except IndexError:
 				await message.delete()
 				await message.author.send("You cannot send text in this channel.")
+			except UnboundLocalError:
+				pass
 			if message.content == allow_this:
 				return
 			else:

@@ -3,8 +3,6 @@ import discord
 from discord.ext import commands
 import os
 import keep_alive
-import random
-import asyncio
 
 
 token = os.environ.get('DISCORD_BOT_SECRET')

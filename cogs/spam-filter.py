@@ -3,7 +3,7 @@ from discord.ext import commands
 import json
 import asyncio
 
-class SpamFilter(commands.Cog):
+class RepeatedTextFilter(commands.Cog):
 
 	def __init__(self, client):
 		self.client = client
@@ -14,7 +14,7 @@ class SpamFilter(commands.Cog):
 			return
 		
 		user = message.author
-		users = await get_warns_data()
+		users = await get_repeated_text_warns_data()
 
 		guild = self.client.get_guild(750160850077089853)
 		muted = guild.get_role(750465726069997658)
@@ -26,7 +26,7 @@ class SpamFilter(commands.Cog):
 				users[str(user.id)] = {}
 				users[str(user.id)]["warns"] = 0
 				users[str(user.id)]["sentence"] = message.content.lower()
-				with open("spam-filter.json", "w") as f:
+				with open("repeated-text-filter.json", "w") as f:
 					json.dump(users, f)
 				return
 
@@ -36,12 +36,12 @@ class SpamFilter(commands.Cog):
 					await message.delete()
 					users[str(user.id)]["warns"] += 1
 
-					with open("spam-filter.json", "w") as f:
+					with open("repeated-text-filter.json", "w") as f:
 						json.dump(users, f)
 				
 				else:
 					del users[str(user.id)]
-					with open("spam-filter.json", "w") as f:
+					with open("repeated-text-filter.json", "w") as f:
 						json.dump(users, f)
 					return
 
@@ -51,6 +51,11 @@ class SpamFilter(commands.Cog):
 			total_warns = users[str(user.id)]["warns"]
 
 			if total_warns > 1:
+
+				del users[str(user.id)]
+				with open("repeated-text-filter.json", "w") as f:
+					json.dump(users, f)
+
 				if "Staff" in [role.name for role in message.author.roles]:
 					await user.remove_roles(staff, mod)
 					await user.add_roles(muted)
@@ -76,10 +81,6 @@ class SpamFilter(commands.Cog):
 					await asyncio.sleep(720)
 					await user.remove_roles(muted)
 					await user.send("You have been unmuted.")
-
-				del users[str(user.id)]
-				with open("spam-filter.json", "w") as f:
-					json.dump(users, f)
 		
 			else:
 				return
@@ -88,13 +89,99 @@ class SpamFilter(commands.Cog):
 
 
 
+class SpamFilter(commands.Cog):
 
-async def get_warns_data():
-	with open("spam-filter.json", "r") as f:
+	def __init__(self, client):
+		self.client = client
+	
+	@commands.Cog.listener()
+	async def on_message(self, message: discord.Message):
+		if message.author.bot :
+			return
+		
+		user = message.author
+		users = await get_spam_warns_data()
+
+		guild = self.client.get_guild(750160850077089853)
+		muted = guild.get_role(750465726069997658)
+		staff = guild.get_role(754676705741766757)
+		mod = guild.get_role(750162714407600228)
+
+		if message.guild:
+			if message.channel.id == 750160852006469807:
+				return
+			
+			else:
+				if not str(user.id) in users:
+					users[str(user.id)] = {}
+					users[str(user.id)]["warns"] = 0
+					with open("spam-warns.json", "w") as f:
+						json.dump(users, f)
+					return
+
+				else:
+						users[str(user.id)]["warns"] += 1
+
+						with open("spam-warns.json", "w") as f:
+							json.dump(users, f)
+
+
+				total_warns = users[str(user.id)]["warns"]
+
+				if total_warns > 2:
+					await message.delete()
+				
+				if total_warns > 4:
+
+					del users[str(user.id)]
+					with open("spam-warns.json", "w") as f:
+						json.dump(users, f)
+
+					if "Staff" in [role.name for role in message.author.roles]:
+						await user.remove_roles(staff, mod)
+						await user.add_roles(muted)
+						msg1 = "You have been muted in `ViHill Corner`."
+						em1 = discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")
+						await user.send(msg1, embed=em1)
+						msg2 = f"**{user}** has been muted."
+						em2= discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")
+						await message.channel.send(msg2, embed=em2)
+						await asyncio.sleep(720)
+						await user.remove_roles(muted)
+						await user.add_roles(staff, mod)
+						await user.send("You have been unmuted.")
+
+					else:
+						await user.add_roles(muted)
+						msg1 = "You have been muted in `ViHill Corner`."
+						em1 = discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")
+						await user.send(msg1, embed=em1)
+						msg2 = f"**{user}** has been muted."
+						em2= discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")
+						await message.channel.send(msg2, embed=em2)
+						await asyncio.sleep(720)
+						await user.remove_roles(muted)
+						await user.send("You have been unmuted.")
+			
+				else:
+					return
+
+
+
+
+async def get_repeated_text_warns_data():
+	with open("repeated-text-filter.json", "r") as f:
 		users = json.load(f)
 
 	return users
 
+async def get_spam_warns_data():
+	with open("spam-warns.json", "r") as f:
+		users = json.load(f)
+	
+	return users
+
 
 def setup (client):
+	client.add_cog(RepeatedTextFilter(client))
 	client.add_cog(SpamFilter(client))
