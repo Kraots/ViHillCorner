@@ -4,6 +4,7 @@ from discord.ext import commands
 from secrets import choice
 import string
 import asyncio
+import json
 
 bad_words = [
 				"nigga",
@@ -65,179 +66,250 @@ class FilterCog(commands.Cog):
 	@commands.Cog.listener()
 	async def on_message(self,message):
 		guild = self.client.get_guild(750160850077089853)
-		staff = guild.get_role(754676705741766757)
-		mod = guild.get_role(750162714407600228)
-		muted = guild.get_role(750465726069997658)
-		new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
-		new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
-		words = None
-		zalgos = None
-		try:
-			words = bad_words
-			zalgos = zalgo_vars
-		except	:
-			words = words or []
-			zalgos = zalgos or []
-		for word in words:
-			if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.content):
-				try:
-					await message.delete()
-					if "Staff" in [role.name for role in message.author.roles]:
-						await message.author.add_roles(muted, reason="Bad Words")
-						await message.author.remove_roles(staff, mod)
-						msg1 = "You have been muted in `ViHill Corner`."
-						em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
-						await message.author.send(msg1, embed=em1)
-						msg2 = f"**{message.author}** has been muted."
-						em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
-						await message.channel.send(msg2, embed=em2)
-						await asyncio.sleep(720)
-						await message.author.remove_roles(muted)
-						await message.author.add_roles(staff, muted)
-					
-					else:
-						await message.author.add_roles(muted, reason="Bad Words")
-						msg1 = "You have been muted in `ViHill Corner`."
-						em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
-						await message.author.send(msg1, embed=em1)
-						msg2 = f"**{message.author}** has been muted."
-						em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
-						await message.channel.send(msg2, embed=em2)
-						await asyncio.sleep(720)
-						await message.author.remove_roles(muted)
-
-				except:
-					pass
-				
+		if message.guild:
+			staff = guild.get_role(754676705741766757)
+			mod = guild.get_role(750162714407600228)
+			muted = guild.get_role(750465726069997658)
+			user = message.author
+			new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
+			new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
+			words = None
+			zalgos = None
 			try:
-				if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.author.nick):
-					try:
-						await message.author.edit(nick=new_nick)
-						await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
-					except:
-						pass
-
-				elif re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.author.name):
-					try:
-						await message.author.edit(nick=new_nick)
-						await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-					except:
-						pass
-			except:
-				pass
-		for zalgo in zalgos:
-			try:
-				if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', message.author.nick):
-					try:
-						await message.author.edit(nick=new_nick_again)
-						await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-					except:
-						pass
-
-				elif re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', message.author.name):
-					try:
-						await message.author.edit(nick=new_nick_again)
-						await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-					except:
-						pass
-					
-				if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', message.content):
+				words = bad_words
+				zalgos = zalgo_vars
+			except	:
+				words = words or []
+				zalgos = zalgos or []
+			for word in words:
+				if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.content):
 					try:
 						await message.delete()
-						await message.author.send("Zalgo not allowed.")
+
+						users = await get_warns_data()
+						
+						if str(user.id) in users:
+							users[str(user.id)]["warns"] += 1
+
+							with open("words-warns.json", "w") as f:
+								json.dump(users, f)
+
+						else:
+							users[str(user.id)] = {}
+							users[str(user.id)]["warns"] = 0
+							with open("words-warns.json", "w") as f:
+								json.dump(users, f)
+
+						total_warns = users[str(user.id)]["warns"]
+
+
+						if total_warns > 1:
+							del users[str(user.id)]
+							with open("words-warns.json", "w") as f:
+								json.dump(users, f)
+
+							if "Staff" in [role.name for role in message.author.roles]:
+								await message.author.add_roles(muted, reason="Bad Words")
+								await message.author.remove_roles(staff, mod)
+								msg1 = "You have been muted in `ViHill Corner`."
+								em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
+								await message.author.send(msg1, embed=em1)
+								msg2 = f"**{message.author}** has been muted."
+								em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
+								await message.channel.send(msg2, embed=em2)
+								await asyncio.sleep(720)
+								await message.author.remove_roles(muted)
+								await message.author.add_roles(staff, muted)
+								await message.author.send("You have been unmuted in `ViHill Corner`")
+							
+							else:
+								await message.author.add_roles(muted, reason="Bad Words")
+								msg1 = "You have been muted in `ViHill Corner`."
+								em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
+								await message.author.send(msg1, embed=em1)
+								msg2 = f"**{message.author}** has been muted."
+								em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
+								await message.channel.send(msg2, embed=em2)
+								await asyncio.sleep(720)
+								await message.author.remove_roles(muted)
+								await message.author.send("You have been unmuted in `ViHill Corner`")
+
+						else:
+							return
 					except:
 						pass
-			except:
-				pass
+					
+				try:
+					if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.author.nick):
+						try:
+							await message.author.edit(nick=new_nick)
+							await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
+						except:
+							pass
+
+					elif re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.author.name):
+						try:
+							await message.author.edit(nick=new_nick)
+							await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+						except:
+							pass
+				except:
+					pass
+			for zalgo in zalgos:
+				try:
+					if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', message.author.nick):
+						try:
+							await message.author.edit(nick=new_nick_again)
+							await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+						except:
+							pass
+
+					elif re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', message.author.name):
+						try:
+							await message.author.edit(nick=new_nick_again)
+							await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+						except:
+							pass
+						
+					if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', message.content):
+						try:
+							await message.delete()
+							await message.author.send("Zalgo not allowed.")
+						except:
+							pass
+				except:
+					pass
 			
 
 	@commands.Cog.listener()
 	async def on_message_edit(self,before,after):
 		guild = self.client.get_guild(750160850077089853)
 		staff = guild.get_role(754676705741766757)
-		mod = guild.get_role(750162714407600228)
-		muted = guild.get_role(750465726069997658)
-		new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
-		new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
-		words = None
-		zalgos = None
-		try:
-			words = bad_words
-			zalgos = zalgo_vars
-		except	:
-			words = words or []
-			zalgos = zalgos or []
-		for word in words:
-			if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.content):
-				try:
-					await after.delete()
-					if "Staff" in [role.name for role in after.author.roles]:
-						await after.author.add_roles(muted, reason="Bad Words")
-						await after.author.remove_roles(staff, mod)
-						msg1 = "You have been muted in `ViHill Corner`."
-						em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-						await after.author.send(msg1, embed=em1)
-						msg2 = f"**{after.author}** has been muted."
-						em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-						await after.channel.send(msg2, embed=em2)
-						await asyncio.sleep(720)
-						await after.author.remove_roles(muted)
-						await after.author.add_roles(staff, muted)
-					
-					else:
-						await after.author.add_roles(muted, reason="Bad Words")
-						msg1 = "You have been muted in `ViHill Corner`."
-						em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-						await after.author.send(msg1, embed=em1)
-						msg2 = f"**{after.author}** has been muted."
-						em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-						await after.channel.send(msg2, embed=em2)
-						await asyncio.sleep(720)
-						await after.author.remove_roles(muted)
-
-				except:
-					pass
-				
+		if after.guild:
+			mod = guild.get_role(750162714407600228)
+			muted = guild.get_role(750465726069997658)
+			user = after.author
+			new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
+			new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
+			words = None
+			zalgos = None
 			try:
-				if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.author.nick):
-					try:
-						await after.author.edit(nick=new_nick)
-						await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
-					except:
-						pass
-
-				elif re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.author.name):
-					try:
-						await after.author.edit(nick=new_nick)
-						await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-					except:
-						pass
-			except:
-				pass
-		for zalgo in zalgos:
-			try:
-				if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', after.author.nick):
-					try:
-						await after.author.edit(nick=new_nick_again)
-						await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-					except:
-						pass
-
-				elif re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', after.author.name):
-					try:
-						await after.author.edit(nick=new_nick_again)
-						await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-					except:
-						pass
-					
-				if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', after.content):
+				words = bad_words
+				zalgos = zalgo_vars
+			except	:
+				words = words or []
+				zalgos = zalgos or []
+			for word in words:
+				if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.content):
 					try:
 						await after.delete()
-						await after.author.send("Zalgo not allowed.")
+
+						users = await get_warns_data()
+						
+						if str(user.id) in users:
+							users[str(user.id)]["warns"] += 1
+
+							with open("words-warns.json", "w") as f:
+								json.dump(users, f)
+
+						else:
+							users[str(user.id)] = {}
+							users[str(user.id)]["warns"] = 0
+							with open("words-warns.json", "w") as f:
+								json.dump(users, f)
+
+						total_warns = users[str(user.id)]["warns"]
+
+
+						if total_warns > 2:
+							del users[str(user.id)]
+							with open("words-warns.json", "w") as f:
+								json.dump(users, f)
+
+							
+							if "Staff" in [role.name for role in after.author.roles]:
+								
+								await after.author.add_roles(muted, reason="Bad Words")
+								await after.author.remove_roles(staff, mod)
+								msg1 = "You have been muted in `ViHill Corner`."
+								em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+								await after.author.send(msg1, embed=em1)
+								msg2 = f"**{after.author}** has been muted."
+								em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+								await after.channel.send(msg2, embed=em2)
+								await asyncio.sleep(720)
+								await after.author.remove_roles(muted)
+								await after.author.add_roles(staff, muted)
+								await after.author.send("You have been unmuted in `ViHill Corner`")
+							
+							else:
+								print("started punishment for normal member")
+								await after.author.add_roles(muted, reason="Bad Words")
+								msg1 = "You have been muted in `ViHill Corner`."
+								em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+								await after.author.send(msg1, embed=em1)
+								msg2 = f"**{after.author}** has been muted."
+								em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+								await after.channel.send(msg2, embed=em2)
+								await asyncio.sleep(720)
+								await after.author.remove_roles(muted)
+								await after.author.send("You have been unmuted in `ViHill Corner`")
+
+						else:
+							return
 					except:
 						pass
-			except:
-				pass
+					
+				try:
+					if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.author.nick):
+						try:
+							await after.author.edit(nick=new_nick)
+							await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
+						except:
+							pass
+
+					elif re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.author.name):
+						try:
+							await after.author.edit(nick=new_nick)
+							await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+						except:
+							pass
+				except:
+					pass
+			for zalgo in zalgos:
+				try:
+					if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', after.author.nick):
+						try:
+							await after.author.edit(nick=new_nick_again)
+							await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+						except:
+							pass
+
+					elif re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', after.author.name):
+						try:
+							await after.author.edit(nick=new_nick_again)
+							await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+						except:
+							pass
+						
+					if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', after.content):
+						try:
+							await after.delete()
+							await after.author.send("Zalgo not allowed.")
+						except:
+							pass
+				except:
+					pass
+
+
+
+
+async def get_warns_data():
+	with open("words-warns.json", "r") as f:
+		users = json.load(f)
+
+	return users
+
 
 def setup (client):
 	client.add_cog(FilterCog(client))
