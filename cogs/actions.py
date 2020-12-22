@@ -42,12 +42,6 @@ class actions(commands.Cog):
 
 	@commands.command(hidden=True)
 	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
-	async def rape(self, ctx):
-
-		await ctx.send('https://cdn.discordapp.com/attachments/745298904832278530/782729248623427614/video0-1_1.mp4')
-
-	@commands.command(hidden=True)
-	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
 	async def huggles(self, ctx, members : Greedy[Member] = None):
 		version = discord.Embed(color=discord.Color.red())
 		version.set_image(url=huggles)

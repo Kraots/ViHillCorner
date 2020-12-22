@@ -12,6 +12,7 @@ class NameFilter(commands.Cog):
 	async def on_message(self, message : discord.Message):
 		if message.author.bot:
 			return
+
 		new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
 		user_name = message.author.name
 		user_nickname = message.author.nick
