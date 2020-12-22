@@ -8,6 +8,7 @@ class WarnsRemove(commands.Cog):
 		self.clear_caps_warns.start()
 		self.clear_words_warns.start()
 		self.clear_spam_warns.start()
+		self.clear_repeated_text_warns.start()
 
 	@tasks.loop(seconds=45)
 	async def clear_caps_warns(self):
@@ -33,7 +34,13 @@ class WarnsRemove(commands.Cog):
 		with open("spam-warns.json", "w") as f:
 			json.dump(users, f)
 
+	@tasks.loop(seconds = 60)
+	async def clear_repeated_text_warns(self):
+		users = await get_repeated_text_warns_data()
+		users.clear()
 
+		with open("repeated-text-filter.json", "w") as f:
+			json.dump(users, f)
 
 
 async def get_caps_warns_data():
@@ -52,6 +59,12 @@ async def get_spam_warns_data():
 	with open("spam-warns.json", "r") as f:
 		users = json.load(f)
 	
+	return users
+
+async def get_repeated_text_warns_data():
+	with open("repeated-text-filter.json", "r") as f:
+		users = json.load(f)
+
 	return users
 
 def setup(client):
