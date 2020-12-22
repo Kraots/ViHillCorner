@@ -26,24 +26,7 @@ for filename in os.listdir('./outsidereloadcogs'):
   if filename.endswith('.py'):
     client.load_extension(f'outsidereloadcogs.{filename[:-3]}')
 
-# LOOP TASK
-async def ch_pr():
-    await client.wait_until_ready()
-
-    status_list = ["carrots", "ur mom", "you", "anime", "over the members"]
-
-    while not client.is_closed():
-
-        status = random.choice(status_list)
-
-        activity = discord.Activity(type=discord.ActivityType.watching, name=status)
-
-        await client.change_presence(status=discord.Status.dnd, activity=activity)
-
-        await asyncio.sleep(60)
-
 
 # RUN
-client.loop.create_task(ch_pr())
 keep_alive.keep_alive()
 client.run(token)
