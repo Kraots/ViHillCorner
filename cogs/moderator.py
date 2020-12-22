@@ -436,12 +436,14 @@ class Moderation(commands.Cog):
 				await log_channel.send(embed=log)
 
 				await asyncio.sleep(time)
-				await member.remove_roles(muted)
-				try:
-					await member.send("You have been unmuted in `ViHill Corner`.")
-				except discord.HTTPException:
+				if muted in member.roles:
+					await member.remove_roles(muted)
+					try:
+						await member.send("You have been unmuted in `ViHill Corner`.")
+					except discord.HTTPException:
+						pass
+				else:
 					pass
-
 
 		# CLEAR  /  PURGE
 

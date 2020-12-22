@@ -66,9 +66,12 @@ class RepeatedTextFilter(commands.Cog):
 					em2= discord.Embed(description=f"**Reason:** [Repeated text]({message.jump_url})")
 					await message.channel.send(msg2, embed=em2)
 					await asyncio.sleep(720)
-					await user.remove_roles(muted)
-					await user.add_roles(staff, mod)
-					await user.send("You have been unmuted.")
+					if muted in user.roles:
+						await user.remove_roles(muted)
+						await user.add_roles(staff, mod)
+						await user.send("You have been unmuted.")
+					else:
+						pass
 
 				else:
 					await user.add_roles(muted)
@@ -79,9 +82,11 @@ class RepeatedTextFilter(commands.Cog):
 					em2= discord.Embed(description=f"**Reason:** [Repeated text]({message.jump_url})")
 					await message.channel.send(msg2, embed=em2)
 					await asyncio.sleep(720)
-					await user.remove_roles(muted)
-					await user.send("You have been unmuted.")
-		
+					if muted in user.roles:
+						await user.remove_roles(muted)
+						await user.send("You have been unmuted.")
+					else:
+						pass	
 			else:
 				return
 
@@ -147,10 +152,13 @@ class SpamFilter(commands.Cog):
 						em2= discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")
 						await message.channel.send(msg2, embed=em2)
 						await asyncio.sleep(720)
-						await user.remove_roles(muted)
-						await user.add_roles(staff, mod)
-						await user.send("You have been unmuted.")
-
+						if muted in user.roles:
+							await user.remove_roles(muted)
+							await user.add_roles(staff, mod)
+							await user.send("You have been unmuted.")
+						else:
+							pass
+							
 					else:
 						await user.add_roles(muted)
 						msg1 = "You have been muted in `ViHill Corner`."
@@ -160,9 +168,11 @@ class SpamFilter(commands.Cog):
 						em2= discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")
 						await message.channel.send(msg2, embed=em2)
 						await asyncio.sleep(720)
-						await user.remove_roles(muted)
-						await user.send("You have been unmuted.")
-			
+						if muted in user.roles:
+							await user.remove_roles(muted)
+							await user.send("You have been unmuted.")
+						else:
+							pass
 				else:
 					return
 

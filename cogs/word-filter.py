@@ -118,10 +118,13 @@ class FilterCog(commands.Cog):
 								em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
 								await message.channel.send(msg2, embed=em2)
 								await asyncio.sleep(720)
-								await message.author.remove_roles(muted)
-								await message.author.add_roles(staff, muted)
-								await message.author.send("You have been unmuted in `ViHill Corner`")
-							
+								if muted in user.roles:
+									await message.author.remove_roles(muted)
+									await message.author.add_roles(staff, muted)
+									await message.author.send("You have been unmuted in `ViHill Corner`")
+								else:
+									pass
+
 							else:
 								await message.author.add_roles(muted, reason="Bad Words")
 								msg1 = "You have been muted in `ViHill Corner`."
@@ -131,9 +134,11 @@ class FilterCog(commands.Cog):
 								em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
 								await message.channel.send(msg2, embed=em2)
 								await asyncio.sleep(720)
-								await message.author.remove_roles(muted)
-								await message.author.send("You have been unmuted in `ViHill Corner`")
-
+								if muted in user.roles:
+									await message.author.remove_roles(muted)
+									await message.author.send("You have been unmuted in `ViHill Corner`")
+								else:
+									pass
 						else:
 							return
 					except:
@@ -238,9 +243,12 @@ class FilterCog(commands.Cog):
 								em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
 								await after.channel.send(msg2, embed=em2)
 								await asyncio.sleep(720)
-								await after.author.remove_roles(muted)
-								await after.author.add_roles(staff, muted)
-								await after.author.send("You have been unmuted in `ViHill Corner`")
+								if muted in user.roles:
+									await after.author.remove_roles(muted)
+									await after.author.add_roles(staff, muted)
+									await after.author.send("You have been unmuted in `ViHill Corner`")
+								else:
+									pass
 							
 							else:
 								print("started punishment for normal member")
@@ -252,9 +260,11 @@ class FilterCog(commands.Cog):
 								em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
 								await after.channel.send(msg2, embed=em2)
 								await asyncio.sleep(720)
-								await after.author.remove_roles(muted)
-								await after.author.send("You have been unmuted in `ViHill Corner`")
-
+								if muted in user.roles:
+									await after.author.remove_roles(muted)
+									await after.author.send("You have been unmuted in `ViHill Corner`")
+								else:
+									pass
 						else:
 							return
 					except:
