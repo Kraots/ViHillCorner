@@ -1,71 +1,111 @@
 import discord
 from discord.ext import commands
 import os
+import utils.colors as color
 
 class All(commands.Cog):
-  def __init__(self, client):
-    self.client = client
-    self.prefix = ";;"
-  async def cog_check(self, ctx):
-    return ctx.prefix == self.prefix
+	def __init__(self, client):
+		self.client = client
+		self.prefix = ";;"
+	async def cog_check(self, ctx):
+		return ctx.prefix == self.prefix
+
+	@commands.group(invoke_without_command=True, case_insensitive=True)
+	@commands.is_owner()
+	async def load(self, ctx, extension):
+			self.client.load_extension(extension)
+			await ctx.send(f":inbox_tray: `{extension}`")
+
+	@commands.group(invoke_without_command=True, case_insensitive=True)
+	@commands.is_owner()
+	async def reload(self, ctx, extension):
+			self.client.unload_extension(extension)
+			self.client.load_extension(extension)
+			await ctx.send(f":repeat: `{extension}`")
+
+	@commands.group(invoke_without_command=True, case_insensitive=True)
+	@commands.is_owner()
+	async def unload(self, ctx, extension):
+			self.client.unload_extension(extension)
+			await ctx.send(f":outbox_tray: `{extension}`")
 
 
-  @commands.command(aliases=["reload-all"])
-  @commands.is_owner()
-  async def reloadall(self, ctx):
+
+	@reload.command(aliases=["all"])
+	@commands.is_owner()
+	async def reload_all(self, ctx):
+		cogs_list = []
+		em = discord.Embed(color=color.inviscolor, title="Reloaded the next cogs:")
+
+		for filename in os.listdir('./cogs'):
+			if filename.endswith('.py'):
+				try:
+					self.client.unload_extension(f'cogs.{filename[:-3]}')
+					self.client.load_extension(f'cogs.{filename[:-3]}')
+					a = f":repeat: `cogs.{filename[:-3]}`\n"
+					cogs_list.append(a)
+
+					final_Cogs = "".join(cogs_list)
+				except:
+					b = f"❌ `cogs.{filename[:-3]}`\n"
+					cogs_list.append(b)
+
+					final_Cogs = "".join(cogs_list)
+
+		em.description = final_Cogs
+		em.set_footer(text="If the cog has an ❌, then it means it failed to load, or was never loaded.")
+		await ctx.channel.send(embed=em)
 
 
-    for filename in os.listdir('./cogs'):
-      if filename.endswith('.py'):
-        self.client.unload_extension(f'cogs.{filename[:-3]}')
-    
-    for filename in os.listdir('./cogs'):
-      if filename.endswith('.py'):
-        self.client.load_extension(f'cogs.{filename[:-3]}')
+	@load.command(aliases=["all"])
+	@commands.is_owner()
+	async def load_all(self, ctx):
+		cogs_list = []
+		em = discord.Embed(color=color.inviscolor, title="Loaded the next cogs:")
 
-    await ctx.channel.send("All cogs have been reloaded!")
+		for filename in os.listdir('./cogs'):
+			if filename.endswith('.py'):
+				try:
+					self.client.load_extension(f'cogs.{filename[:-3]}')
+					a = f":inbox_tray: `cogs.{filename[:-3]}`\n"
+					cogs_list.append(a)
 
+					final_Cogs = "".join(cogs_list)
+				except:
+					b = f"❌ `cogs.{filename[:-3]}`\n"
+					cogs_list.append(b)
 
-  @commands.command(aliases=["load-all"])
-  @commands.is_owner()
-  async def loadall(self, ctx):
+					final_Cogs = "".join(cogs_list)
 
-    for filename in os.listdir('./cogs'):
-      if filename.endswith('.py'):
-        self.client.load_extension(f'cogs.{filename[:-3]}')
+		em.description = final_Cogs
+		em.set_footer(text="If the cog has an ❌, then it means it failed to load, or was already loaded.")
+		await ctx.channel.send(embed=em)
 
-    await ctx.channel.send("All cogs have been loaded!")
+	@unload.command(aliases=["all"])
+	@commands.is_owner()
+	async def unload_all(self, ctx):
+		cogs_list = []
+		em = discord.Embed(color=color.inviscolor, title="Unloaded the next cogs:")
 
-  @commands.command(aliases=["unload-all"])
-  @commands.is_owner()
-  async def unloadall(self, ctx):
-  
-    for filename in os.listdir('./cogs'):
-      if filename.endswith('.py'):
-        self.client.unload_extension(f'cogs.{filename[:-3]}')
+		for filename in os.listdir('./cogs'):
+			if filename.endswith('.py'):
+				try:
+					self.client.unload_extension(f'cogs.{filename[:-3]}')
+					a = f":outbox_tray: `cogs.{filename[:-3]}`\n"
+					cogs_list.append(a)
 
-    await ctx.channel.send("All cogs have been unloaded!")
+					final_Cogs = "".join(cogs_list)
+				except:
+					b = f"❌ `cogs.{filename[:-3]}`\n"
+					cogs_list.append(b)
 
-  @commands.command()
-  @commands.is_owner()
-  async def load(self, ctx, extension):
-        self.client.load_extension(extension)
-        await ctx.send(f":inbox_tray: `{extension}`")
+					final_Cogs = "".join(cogs_list)
 
-  @commands.command()
-  @commands.is_owner()
-  async def reload(self, ctx, extension):
-        self.client.unload_extension(extension)
-        self.client.load_extension(extension)
-        await ctx.send(f":repeat: `{extension}`")
-
-  @commands.command()
-  @commands.is_owner()
-  async def unload(self, ctx, extension):
-        self.client.unload_extension(extension)
-        await ctx.send(f":outbox_tray: `{extension}`")
+		em.description = final_Cogs
+		em.set_footer(text="If the cog has an ❌, then it means it failed to unload, or was never loaded.")
+		await ctx.channel.send(embed=em)
 
 
 
 def setup (client):
-    client.add_cog(All(client))
+	client.add_cog(All(client))

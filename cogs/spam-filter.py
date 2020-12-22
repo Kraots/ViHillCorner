@@ -33,7 +33,6 @@ class RepeatedTextFilter(commands.Cog):
 			else:
 				the_message = users[str(user.id)]["sentence"]
 				if message.content.lower() == the_message:
-					await message.delete()
 					users[str(user.id)]["warns"] += 1
 
 					with open("repeated-text-filter.json", "w") as f:
@@ -50,7 +49,10 @@ class RepeatedTextFilter(commands.Cog):
 
 			total_warns = users[str(user.id)]["warns"]
 
-			if total_warns > 1:
+			if total_warns > 0:
+				await message.delete()
+
+			if total_warns > 2:
 
 				del users[str(user.id)]
 				with open("repeated-text-filter.json", "w") as f:
