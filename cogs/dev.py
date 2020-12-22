@@ -159,7 +159,7 @@ class developer(commands.Cog):
 	@commands.is_owner()
 	async def start(self, ctx):
 		self.ch_pr.start()
-		await ctx.send("Started", delete_after=7)
+		await ctx.send("Started!", delete_after=7)
 		await asyncio.sleep(7.5)
 		await ctx.message.delete()
 
@@ -169,7 +169,7 @@ class developer(commands.Cog):
 	@commands.is_owner()
 	async def stop(self, ctx):
 		self.ch_pr.cancel()
-		await ctx.send("Stopped", delete_after=7)
+		await ctx.send("Stopped!", delete_after=7)
 		await asyncio.sleep(7.5)
 		await ctx.message.delete()
 
