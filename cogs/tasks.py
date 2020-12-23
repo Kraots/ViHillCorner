@@ -34,7 +34,7 @@ class WarnsRemove(commands.Cog):
 		with open("spam-warns.json", "w") as f:
 			json.dump(users, f)
 
-	@tasks.loop(seconds = 60)
+	@tasks.loop(seconds = 360)
 	async def clear_repeated_text_warns(self):
 		users = await get_repeated_text_warns_data()
 		users.clear()

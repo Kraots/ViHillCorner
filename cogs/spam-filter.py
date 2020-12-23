@@ -59,7 +59,7 @@ class RepeatedTextFilter(commands.Cog):
 
 			total_warns = users[str(user.id)]["warns"]
 
-			if total_warns > 0:
+			if total_warns > 1:
 				await message.delete()
 
 			if total_warns > 2:
