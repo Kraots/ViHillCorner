@@ -100,7 +100,7 @@ class CustomRoles(commands.Cog):
 		def check(message):
 			return message.author.id == usercheck and message.channel.id == channel.id
 
-		await ctx.send("Are you sure you want to delete your custom role? `yes / no`")
+		await ctx.send("Are you sure you want to delete your custom role? `yes` | `no`")
 
 		try:
 
