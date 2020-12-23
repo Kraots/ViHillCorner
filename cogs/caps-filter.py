@@ -58,7 +58,7 @@ class CapsFilter(commands.Cog):
 							msg2 = f"**{user}** has been muted."
 							em2 = discord.Embed(description=f"**Reason:** [Caps]({message.jump_url})")
 							await message.channel.send(msg2, embed=em2)
-							await asyncio.sleep(720)
+							await asyncio.sleep(840)
 							if muted in user.roles:
 								await user.remove_roles(muted)
 								await user.add_roles(staff, mod)
@@ -74,7 +74,7 @@ class CapsFilter(commands.Cog):
 							msg2 = f"**{user}** has been muted."
 							em2 = discord.Embed(description=f"**Reason:** [Caps]({message.jump_url})")
 							await message.channel.send(msg2, embed=em2)
-							await asyncio.sleep(720)
+							await asyncio.sleep(840)
 							if muted in user.roles:
 								await user.remove_roles(muted)
 								await user.send("You have been unmuted in `ViHill Corner`.")
