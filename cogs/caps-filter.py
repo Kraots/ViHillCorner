@@ -111,4 +111,4 @@ async def get_warns_data():
 
 
 def setup(client):
-	client.add_cog(CapsFilter(client))
+	client.remove_cog(CapsFilter(client))

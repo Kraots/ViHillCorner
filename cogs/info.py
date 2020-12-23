@@ -153,7 +153,7 @@ class info(commands.Cog):
 	@commands.command(aliases=['attachments', 'videos', 'links', 'files'])
 	@commands.has_any_role('Mod', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
 	async def images(self, ctx, members : Greedy[Member] = None):
-		em = discord.Embed(color=discord.Color.red(), title="Why i can't send images?", description="To send images/videos in all channels, you must be level 69, until then please use the images/videos channels.  Send `^rank` in <#750160851822182486> to check your rank.")
+		em = discord.Embed(color=discord.Color.red(), title="Why i can't send images?", description="To send images/videos in all channels, you must be level 40, until then please use the images/videos channels.  Send `^rank` in <#750160851822182486> to check your rank.")
 		mention_list = []
 
 		if members == None:

@@ -22,6 +22,16 @@ class RepeatedTextFilter(commands.Cog):
 		mod = guild.get_role(750162714407600228)
 
 		if message.guild:
+			if message.channel.id == 750160852006469807:
+				return
+			elif message.channel.id == 750160851822182486:
+				return
+			elif message.channel.id == 750160851822182487:
+				return
+			elif message.channel.id == 780374324598145055:
+				return
+
+
 			if not str(user.id) in users:
 				users[str(user.id)] = {}
 				users[str(user.id)]["warns"] = 0
@@ -116,6 +126,12 @@ class SpamFilter(commands.Cog):
 
 		if message.guild:
 			if message.channel.id == 750160852006469807:
+				return
+			elif message.channel.id == 750160851822182486:
+				return
+			elif message.channel.id == 750160851822182487:
+				return
+			elif message.channel.id == 780374324598145055:
 				return
 			
 			else:
