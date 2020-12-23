@@ -7,6 +7,9 @@ class MarryCommands(commands.Cog):
 	
 	def __init__(self, client):
 		self.client = client
+		self.prefix = "!"
+	async def cog_check(self, ctx):
+		return ctx.prefix == self.prefix
 
 	@commands.command()
 	async def marry(self, ctx, member : discord.Member = None):
