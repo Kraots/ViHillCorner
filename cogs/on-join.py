@@ -132,7 +132,7 @@ class on_join(commands.Cog):
 			
 			introchannel = AHguild.get_channel(750160850593251449)
 			
-			await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself?")
+			await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself to us? `yes` | `no`")
 
 			channel = member.dm_channel
 			

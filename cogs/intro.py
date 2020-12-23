@@ -64,7 +64,7 @@ class Intros(commands.Cog):
 
 		
 		if str(user.id) in users:
-			await ctx.send("You already have intro set, would you like to edit your intro?")
+			await ctx.send("You already have intro set, would you like to edit your intro? `yes` | `no`")
 			
 			try:
 				await self.client.wait_for('message'.lower(), timeout= 15, check=alreadyhas)

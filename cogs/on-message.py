@@ -62,60 +62,62 @@ class on_message(commands.Cog):
 		if message.author.bot:
 			return
 
-		if message.channel.id == 750160850593251449:
-			await message.add_reaction("<:hug:750751796317913218>")
-			await message.add_reaction("<:bloblove:758378159015723049>")
-			await message.add_reaction("<:LoveHeart:777868133087707157>")
+		if message.guild:
+			if message.channel.id == 750160850593251449:
+				await message.add_reaction("<:hug:750751796317913218>")
+				await message.add_reaction("<:bloblove:758378159015723049>")
+				await message.add_reaction("<:LoveHeart:777868133087707157>")
 
-		if message.guild is None and not message.author.bot:
-			em = discord.Embed(title=f'{message.author}:', description=f'{message.content}', color=color.inviscolor, timestamp=message.created_at)
-			em.set_footer(text=f'User ID: {message.author.id}')
+			if message.guild is None and not message.author.bot:
+				em = discord.Embed(title=f'{message.author}:', description=f'{message.content}', color=color.inviscolor, timestamp=message.created_at)
+				em.set_footer(text=f'User ID: {message.author.id}')
 
-			if message.author is kraots:
+				if message.author is kraots:
+					return
+
+				else:                        
+					await kraots.send(embed=em)
+
+			if message.author.id == kraots.id:
 				return
 
-			else:                        
-				await kraots.send(embed=em)
-
-		if message.author.id == kraots.id:
-			return
-
-		else:
-			user_name = message.author.name
-			user_nickname = message.author.nick
-			new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
-
-			if str(user_name).lower() == "kraots":
-				await message.author.edit(nick=new_nick)
-				await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
-
-			elif str(user_nickname).lower() == "kraots":
-				await message.author.edit(nick=new_nick)
-				await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
-
-			elif str(user_name).lower() == "vihill corner":
-				await message.author.edit(nick=new_nick)
-				await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
-			
-			elif str(user_nickname).lower() == "vihill corner":
-				await message.author.edit(nick=new_nick)
-				await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
-
-			elif str(user_name).lower() == "vihillcorner":
-				await message.author.edit(nick=new_nick)
-				await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
-			
-			elif str(user_nickname).lower() == "vihillcorner":
-				await message.author.edit(nick=new_nick)
-				await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
-			
-			elif any(x == str(user_nickname)[:1] for x in invalid_names_list):
-				await message.author.edit(nick=new_nick)
-				await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
-
 			else:
-				pass
+				user_name = message.author.name
+				user_nickname = message.author.nick
+				new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
 
+				if str(user_name).lower() == "kraots":
+					await message.author.edit(nick=new_nick)
+					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
+
+				elif str(user_nickname).lower() == "kraots":
+					await message.author.edit(nick=new_nick)
+					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
+
+				elif str(user_name).lower() == "vihill corner":
+					await message.author.edit(nick=new_nick)
+					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
+				
+				elif str(user_nickname).lower() == "vihill corner":
+					await message.author.edit(nick=new_nick)
+					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
+
+				elif str(user_name).lower() == "vihillcorner":
+					await message.author.edit(nick=new_nick)
+					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
+				
+				elif str(user_nickname).lower() == "vihillcorner":
+					await message.author.edit(nick=new_nick)
+					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
+				
+				elif any(x == str(user_nickname)[:1] for x in invalid_names_list):
+					await message.author.edit(nick=new_nick)
+					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n**❥察爱\n! Champa\nKraots\nViHill Corner")
+
+				else:
+					pass
+		else:
+			return
 
 
 
