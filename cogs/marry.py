@@ -2,6 +2,10 @@ import discord
 from discord.ext import commands
 import json
 import asyncio
+import datetime
+from datetime import date
+import utils.colors as color
+from utils import time
 
 class MarryCommands(commands.Cog):
 	
@@ -57,12 +61,16 @@ class MarryCommands(commands.Cog):
 					response = rresponse.content.lower()
 
 					if response == "yes":
+						
+						married_since_save_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M")
 
 						users[str(ctx.author.id)] = {}
 						users[str(ctx.author.id)]["married_to"] = member.id
+						users[str(ctx.author.id)]["marry_date"] = married_since_save_time
 
 						users[str(member.id)] = {}
 						users[str(member.id)]["married_to"] = ctx.author.id
+						users[str(member.id)]["marry_date"] = married_since_save_time
 
 						with open("marry-data.json", "w") as f:
 							json.dump(users, f)
@@ -129,15 +137,30 @@ class MarryCommands(commands.Cog):
 
 		try:
 			user_married_to = users[str(user.id)]["married_to"]
-		except KeyError:
-			await ctx.send("You are not married to anyone.\nType `!marry <user>` to marry to someone!")
-			return
+			user_married_to_sincee = users[str(user.id)]["marry_date"]
+			user_married_to_since = datetime.datetime.strptime(user_married_to_sincee, "%Y-%m-%d %H:%M")
 		
+		except KeyError:
+			if user == ctx.author:
+				await ctx.send("You are not married to anyone.\nType `!marry <user>` to marry to someone!")
+				return
+
+			else:
+				await ctx.send("`{}` is not married to anyone.".format(user.display_name))
+				return
+
 		else:
 			the_married_to_user = self.client.get_user(user_married_to)
 
 			if member == ctx.author:
-				await ctx.send("You are married to `{}` :tada: :tada: ".format(the_married_to_user.display_name))
+				def format_date(dt):
+					if dt is None:
+						return 'N/A'
+					return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
+
+				em = discord.Embed(color=color.lightpink, title="You are married to `{}` :tada: :tada:".format(the_married_to_user.display_name), description="_ _ \nYou have been married to `{}` since `{}`".format(the_married_to_user.display_name, format_date(user_married_to_since)))
+				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
+				await ctx.send(embed=em)
 			else:
 				await ctx.send("`{}` is married to `{}` :tada: :tada: ".format(member.display_name, the_married_to_user.display_name))
 
