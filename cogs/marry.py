@@ -162,7 +162,14 @@ class MarryCommands(commands.Cog):
 				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
 				await ctx.send(embed=em)
 			else:
-				await ctx.send("`{}` is married to `{}` :tada: :tada: ".format(member.display_name, the_married_to_user.display_name))
+				def format_date(dt):
+					if dt is None:
+						return 'N/A'
+					return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
+
+				em = discord.Embed(color=color.lightpink, title="`{}` is married to `{}` :tada: :tada:".format(user.display_name, the_married_to_user.display_name), description="_ _ \n`{}` has been married to `{}` since `{}`".format(user.display_name, the_married_to_user.display_name, format_date(user_married_to_since)))
+				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
+				await ctx.send(embed=em)
 
 
 async def get_marry_data():
