@@ -59,24 +59,25 @@ class on_message(commands.Cog):
 	async def on_message(self, message: discord.Message):
 		kraots = self.client.get_user(374622847672254466)
 
+		if message.channel.id == 750160850593251449:
+			await message.add_reaction("<:hug:750751796317913218>")
+			await message.add_reaction("<:bloblove:758378159015723049>")
+			await message.add_reaction("<:LoveHeart:777868133087707157>")
+
 		if message.author.bot:
 			return
 
+		if message.guild is None and not message.author.bot:
+			em = discord.Embed(title=f'{message.author}:', description=f'{message.content}', color=color.inviscolor, timestamp=message.created_at)
+			em.set_footer(text=f'User ID: {message.author.id}')
+
+			if message.author is kraots:
+				return
+
+			else:                        
+				await kraots.send(embed=em)
+
 		if message.guild:
-			if message.channel.id == 750160850593251449:
-				await message.add_reaction("<:hug:750751796317913218>")
-				await message.add_reaction("<:bloblove:758378159015723049>")
-				await message.add_reaction("<:LoveHeart:777868133087707157>")
-
-			if message.guild is None and not message.author.bot:
-				em = discord.Embed(title=f'{message.author}:', description=f'{message.content}', color=color.inviscolor, timestamp=message.created_at)
-				em.set_footer(text=f'User ID: {message.author.id}')
-
-				if message.author is kraots:
-					return
-
-				else:                        
-					await kraots.send(embed=em)
 
 			if message.author.id == kraots.id:
 				return
