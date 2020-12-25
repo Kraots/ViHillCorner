@@ -25,16 +25,16 @@ class Help(commands.Cog):
 			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `kick`, `ban`, `opban`, `unban`, `opunban`, `nsfw`, `slowmode`, `snippet`", inline=False)
 		
 		if ctx.author.id == 374622847672254466:
-			helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload-all`, `unload-all`, `load-all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
+			helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload all`, `unload all`, `load all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
 
 		await ctx.message.channel.send(embed=helpEm)
 
 
 	@help.command(aliases=['ss'])
 	async def scrs(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!scrs <domain>```", inline=False)
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!scrs <domain>```")
 		em.add_field(name="***Aliases:***", value="• ss", inline=False)
-		em.add_field(name="***Info:***", value="• Take a scren shot of a domain.")
+		em.add_field(name="***Info:***", value="• Take a scren shot of a domain.\n• It will **not** work if the site you try to screen shot has captcha verification.", inline=False)
 		await ctx.send(embed=em)
 
 	@help.command()
