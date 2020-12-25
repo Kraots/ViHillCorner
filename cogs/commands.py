@@ -6,6 +6,8 @@ import utils.colors as color
 from utils import time
 from typing import Union
 
+nono_list = ["pornhub.com", "hentaiheaven.com", "nhentai.net", "hanime.tv", "xvideos.com", "hentai.com", "hentai.net"]
+
 class command(commands.Cog):
 
 	def __init__(self, client):
@@ -14,7 +16,20 @@ class command(commands.Cog):
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
-	
+
+	@commands.command(aliases=["ss"])
+	async def scrs(self, ctx, site):
+		if str(site) in nono_list:
+			await ctx.send("( ͡° ͜ʖ ͡°)")
+			return
+		
+		else:
+			site_url = "http://image.thum.io/get/width/1080/crop/1920/http://{}".format(site)
+			em = discord.Embed(color=color.lightpink, title="Here's your screen shot of `{}`".format(site))
+			em.set_image(url=site_url)
+			em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.avatar_url)
+			await ctx.send(embed=em)
+
 	@commands.command()
 	async def vote(self, ctx):
 		em = discord.Embed(title="Click Here", url="https://top.gg/servers/750160850077089853/vote", color=color.lightpink)
