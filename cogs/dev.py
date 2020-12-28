@@ -21,18 +21,6 @@ class developer(commands.Cog):
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 
-	@commands.command()
-	async def test(self, ctx):
-		listing = []
-		for x in ctx.author.roles:
-			a = x.id
-			listing.append(a)
-		my_roles = set(listing)
-		myvar = 759475712867565629
-		if any(x == myvar for x in  my_roles):
-			my_roles.remove(myvar)
-		await ctx.send(my_roles)
-
 	@tasks.loop(seconds = 125)
 	async def ch_pr(self):
 		await self.client.wait_until_ready()
