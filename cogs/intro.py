@@ -67,7 +67,10 @@ class Intros(commands.Cog):
 			await ctx.send("You already have intro set, would you like to edit your intro? `yes` | `no`")
 			
 			try:
-				await self.client.wait_for('message'.lower(), timeout= 15, check=alreadyhas)
+				ahem = await self.client.wait_for('message'.lower(), timeout= 15, check=alreadyhas)
+				if ahem.content.lower() == "no":
+					await ctx.send("Canceled.")
+					return
 
 			except asyncio.TimeoutError:
 				return

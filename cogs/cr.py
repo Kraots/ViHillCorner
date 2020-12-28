@@ -24,6 +24,7 @@ class CustomRoles(commands.Cog):
 
 
 	@cr.command()
+	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
 	async def create(self, ctx):
 		guild = self.client.get_guild(750160850077089853)
 		user = ctx.author
@@ -47,6 +48,10 @@ class CustomRoles(commands.Cog):
 				crname = await self.client.wait_for('message', timeout=50, check=check)
 				if crname.content.lower() in nono_list:
 					await ctx.send("You tried, but no, lol!")
+					return
+
+				elif crname.content.lower() == "cancel":
+					await ctx.send("Canceled.")
 					return
 
 			except asyncio.TimeoutError:
@@ -89,6 +94,7 @@ class CustomRoles(commands.Cog):
 
 
 	@cr.command()
+	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
 	async def delete(self, ctx):
 		user = ctx.author
 		users = await get_role_data()
