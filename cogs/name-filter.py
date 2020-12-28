@@ -21,6 +21,7 @@ class NameFilter(commands.Cog):
 
 			if user_nickname:
 				return
+			
 			else:
 				if "a" in str(user_name).lower():
 					return
