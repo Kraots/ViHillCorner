@@ -20,11 +20,15 @@ class MarryCommands(commands.Cog):
 		if member == None:
 			await ctx.send("You must specifiy the user u want to marry.")
 			return
-		
+
 		elif member == ctx.author:
 			await ctx.send("You cannot marry yourself.")
 			return
 		
+		elif member.id == 374622847672254466:
+			await ctx.send("This user is not interested in marriage or any of that stuff.")
+			return
+
 		else:
 			users = await get_marry_data()
 
