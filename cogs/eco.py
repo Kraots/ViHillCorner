@@ -682,9 +682,8 @@ class EcoCommands(commands.Cog):
 				msg = f'You can bet your money in the slots machine in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
 
-		elif isinstance(error, commands.errors.CommandInvokeError):
-#			await ctx.send("Invalid amount! Please use numbers only, and no commas!")
-			await ctx.send(error)
+		elif isinstance(error, commands.errors.MissingRequiredArgument):
+				ctx.command.reset_cooldown(ctx)
 
 	@deposit.error
 	async def dep_error(self, ctx, error):
