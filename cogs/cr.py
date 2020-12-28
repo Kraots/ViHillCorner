@@ -154,7 +154,24 @@ class CustomRoles(commands.Cog):
 
 
 
+	@commands.Cog.listener()
+	async def on_member_remove(self, member):
+		user = member
+		guild = self.client.get_guild(750160850077089853)
 
+		await open_role(user)
+
+		users = await get_role_data()
+
+		if str(user.id) in users:
+			get_role = users[str(user.id)]["CustomRoleName"]
+			crname = discord.utils.get(guild.roles, name=get_role)
+			await crname.delete()
+			del users[str(user.id)]
+
+		with open("customroles.json", "w") as f:
+			json.dump(users, f)
+			
 
 
 
