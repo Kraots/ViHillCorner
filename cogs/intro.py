@@ -4,13 +4,6 @@ import asyncio
 import json
 from utils.helpers import BotChannels, time_phaserr
 
-positive_messages=["yes",
-				   "sure",
-				   "yeah why not",
-				   "yeah",
-				   "sure why not"
-				   ]
-
 status_pos=[
 			"taken",
 			"single",
@@ -57,7 +50,7 @@ class Intros(commands.Cog):
 				return False
 
 		def alreadyhas(message):
-			return message.content.lower() in positive_messages and message.author.id == usercheck and message.channel.id == channel.id
+			return message.author.id == usercheck and message.channel.id == channel.id
 
 		def status_reply(message):
 			return message.content.lower() in status_pos and message.author.id == usercheck and message.channel.id == channel.id
@@ -67,98 +60,100 @@ class Intros(commands.Cog):
 			await ctx.send("You already have intro set, would you like to edit your intro? `yes` | `no`")
 			
 			try:
-				ahem = await self.client.wait_for('message'.lower(), timeout= 15, check=alreadyhas)
+				ahem = await self.client.wait_for('message', timeout= 15, check=alreadyhas)
 				if ahem.content.lower() == "no":
 					await ctx.send("Canceled.")
+					ctx.command.reset_cooldown(ctx)
 					return
 
 			except asyncio.TimeoutError:
 				return
 
 			else:
+				if ahem.content.lower() == "yes":
 
 
-				await channel.send("What's your name? {}".format(ctx.author.mention))
+					await channel.send("What's your name? {}".format(ctx.author.mention))
 
-				try:
-					name = await self.client.wait_for('message', timeout= 180, check=check)
-
-				except asyncio.TimeoutError:
-					return
-
-				else:
-					await channel.send("Where are you from? {}".format(ctx.author.mention))
-					
 					try:
-						location = await self.client.wait_for('message', timeout= 180, check=check)
+						name = await self.client.wait_for('message', timeout= 180, check=check)
 
 					except asyncio.TimeoutError:
 						return
 
 					else:
-						await channel.send("How old are you? {}".format(ctx.author.mention))
-
+						await channel.send("Where are you from? {}".format(ctx.author.mention))
+						
 						try:
-							age = await self.client.wait_for('message', timeout= 180, check=checkk)
-							agenumber = int(age.content)
-
-							if agenumber > 44:
-								return
-							elif agenumber < 10:
-								return
+							location = await self.client.wait_for('message', timeout= 180, check=check)
 
 						except asyncio.TimeoutError:
 							return
 
 						else:
-							await channel.send("What's your gender? {}".format(ctx.author.mention))
-							
+							await channel.send("How old are you? {}".format(ctx.author.mention))
+
 							try:
-								gender = await self.client.wait_for('message', timeout= 180, check=check) 
+								age = await self.client.wait_for('message', timeout= 180, check=checkk)
+								agenumber = int(age.content)
+
+								if agenumber > 44:
+									return
+								elif agenumber < 10:
+									return
 
 							except asyncio.TimeoutError:
 								return
 
 							else:
-								await channel.send("Relationship status? `single` | `taken` | `complicated` {}".format(ctx.author.mention))
+								await channel.send("What's your gender? {}".format(ctx.author.mention))
 								
 								try:
-									prestatuss = await self.client.wait_for('message', timeout= 180, check=status_reply)
-									status = prestatuss.content
-									
+									gender = await self.client.wait_for('message', timeout= 180, check=check) 
+
 								except asyncio.TimeoutError:
 									return
 
 								else:
-									await channel.send("What are u interested to? {}".format(ctx.author.mention))
-
+									await channel.send("Relationship status? `single` | `taken` | `complicated` {}".format(ctx.author.mention))
+									
 									try:
-										interests = await self.client.wait_for('message', timeout= 360, check=check)
-
+										prestatuss = await self.client.wait_for('message', timeout= 180, check=status_reply)
+										status = prestatuss.content
+										
 									except asyncio.TimeoutError:
 										return
 
 									else:
-										em = discord.Embed(color=ctx.author.color)
-										em = discord.Embed(color=ctx.author.color)
-										em.set_author(name=ctx.author, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
-										em.set_thumbnail(url=ctx.author.avatar_url)
-										em.add_field(name="Name", value=name.content, inline=True)
-										em.add_field(name="Location", value=location.content, inline=True)
-										em.add_field(name="Age", value=agenumber, inline=True)
-										em.add_field(name="Gender", value=gender.content, inline=False)
-										em.add_field(name="Relationship Status", value=status, inline=True)
-										em.add_field(name="Interests", value=interests.content, inline=False)
-										await introchannel.send(embed=em)
-										await ctx.channel.send("Intro edited successfully.")
+										await channel.send("What are u interested to? {}".format(ctx.author.mention))
 
-										await update_intro(ctx.author, name.content, "name")
-										await update_intro(ctx.author, location.content, "location")
-										await update_intro(ctx.author, agenumber, "age")
-										await update_intro(ctx.author, gender.content, "gender")
-										await update_intro(ctx.author, status, "status")
-										await update_intro(ctx.author, interests.content, "interests")
-										return
+										try:
+											interests = await self.client.wait_for('message', timeout= 360, check=check)
+
+										except asyncio.TimeoutError:
+											return
+
+										else:
+											em = discord.Embed(color=ctx.author.color)
+											em = discord.Embed(color=ctx.author.color)
+											em.set_author(name=ctx.author, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
+											em.set_thumbnail(url=ctx.author.avatar_url)
+											em.add_field(name="Name", value=name.content, inline=True)
+											em.add_field(name="Location", value=location.content, inline=True)
+											em.add_field(name="Age", value=agenumber, inline=True)
+											em.add_field(name="Gender", value=gender.content, inline=False)
+											em.add_field(name="Relationship Status", value=status, inline=True)
+											em.add_field(name="Interests", value=interests.content, inline=False)
+											await introchannel.send(embed=em)
+											await ctx.channel.send("Intro edited successfully.")
+
+											await update_intro(ctx.author, name.content, "name")
+											await update_intro(ctx.author, location.content, "location")
+											await update_intro(ctx.author, agenumber, "age")
+											await update_intro(ctx.author, gender.content, "gender")
+											await update_intro(ctx.author, status, "status")
+											await update_intro(ctx.author, interests.content, "interests")
+											return
 
 		else:
 			
@@ -320,6 +315,7 @@ class Intros(commands.Cog):
 	@intro.error
 	async def intro_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
+			ctx.command.reset_cooldown(ctx)
 			return
 
 		elif isinstance(error, commands.CommandOnCooldown):
