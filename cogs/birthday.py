@@ -40,8 +40,8 @@ class Birthdays(commands.Cog):
 		users[str(user.id)] = {}
 		users[str(user.id)]['birthdaydate'] = args
 
-		with open("birthdaylist.json", "w") as f:
-			json.dump(users, f)
+		with open("birthdaylist.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
 
 		await ctx.message.delete()
 		await ctx.send(f"Birthday set to `{args}` {user.mention}")
@@ -56,8 +56,8 @@ class Birthdays(commands.Cog):
 
 		del users[str(ctx.author.id)]
 
-		with open("birthdaylist.json", "w") as f:
-			json.dump(users, f)
+		with open("birthdaylist.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
 
 		await ctx.send("Succesfully deleted your birthday from the list! {}".format(ctx.author.mention))
 

@@ -91,22 +91,22 @@ class FilterCog(commands.Cog):
 						if str(user.id) in users:
 							users[str(user.id)]["warns"] += 1
 
-							with open("words-warns.json", "w") as f:
-								json.dump(users, f)
+							with open("words-warns.json", "w", encoding="utf-8") as f:
+								json.dump(users, f, ensure_ascii = False, indent = 4)
 
 						else:
 							users[str(user.id)] = {}
 							users[str(user.id)]["warns"] = 0
-							with open("words-warns.json", "w") as f:
-								json.dump(users, f)
+							with open("words-warns.json", "w", encoding="utf-8") as f:
+								json.dump(users, f, ensure_ascii = False, indent = 4)
 
 						total_warns = users[str(user.id)]["warns"]
 
 
 						if total_warns > 1:
 							del users[str(user.id)]
-							with open("words-warns.json", "w") as f:
-								json.dump(users, f)
+							with open("words-warns.json", "w", encoding="utf-8") as f:
+								json.dump(users, f, ensure_ascii = False, indent = 4)
 
 							if "Staff" in [role.name for role in message.author.roles]:
 								await message.author.add_roles(muted, reason="Bad Words")
@@ -214,22 +214,22 @@ class FilterCog(commands.Cog):
 						if str(user.id) in users:
 							users[str(user.id)]["warns"] += 1
 
-							with open("words-warns.json", "w") as f:
-								json.dump(users, f)
+							with open("words-warns.json", "w", encoding="utf-8") as f:
+								json.dump(users, f, ensure_ascii = False, indent = 4)
 
 						else:
 							users[str(user.id)] = {}
 							users[str(user.id)]["warns"] = 0
-							with open("words-warns.json", "w") as f:
-								json.dump(users, f)
+							with open("words-warns.json", "w", encoding="utf-8") as f:
+								json.dump(users, f, ensure_ascii = False, indent = 4)
 
 						total_warns = users[str(user.id)]["warns"]
 
 
 						if total_warns > 2:
 							del users[str(user.id)]
-							with open("words-warns.json", "w") as f:
-								json.dump(users, f)
+							with open("words-warns.json", "w", encoding="utf-8") as f:
+								json.dump(users, f, ensure_ascii = False, indent = 4)
 
 							
 							if "Staff" in [role.name for role in after.author.roles]:

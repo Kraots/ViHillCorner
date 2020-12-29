@@ -38,16 +38,16 @@ class CapsFilter(commands.Cog):
 
 					users[str(user.id)]["warns"] += 1
 
-					with open("caps-warns.json", "w") as f:
-						json.dump(users, f)
+					with open("caps-warns.json", "w", encoding="utf-8") as f:
+						json.dump(users, f, ensure_ascii = False, indent = 4)
 					
 					total_warns = users[str(user.id)]["warns"]
 
 					if total_warns > 1:
 
 						del users[str(user.id)]
-						with open("caps-warns.json", "w") as f:
-							json.dump(users, f)
+						with open("caps-warns.json", "w", encoding="utf-8") as f:
+							json.dump(users, f, ensure_ascii = False, indent = 4)
 
 						if "Staff" in [role.name for role in user.roles]:
 							await user.remove_roles(staff, mod)
@@ -97,8 +97,8 @@ async def open_warns(user):
 		users[str(user.id)] = {}
 		users[str(user.id)]['warns'] = 0
 
-	with open("caps-warns.json", "w") as f:
-		json.dump(users, f)
+	with open("caps-warns.json", "w", encoding="utf-8") as f:
+		json.dump(users, f, ensure_ascii = False, indent = 4)
 	
 	return True
 

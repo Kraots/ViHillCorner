@@ -76,8 +76,8 @@ class MarryCommands(commands.Cog):
 						users[str(member.id)]["married_to"] = ctx.author.id
 						users[str(member.id)]["marry_date"] = married_since_save_time
 
-						with open("marry-data.json", "w") as f:
-							json.dump(users, f)
+						with open("marry-data.json", "w", encoding="utf-8") as f:
+							json.dump(users, f, ensure_ascii = False, indent = 4)
 
 						await ctx.send("`{}` married `{}`!!! :tada: :tada:".format(ctx.author.display_name, member.display_name))
 
@@ -117,8 +117,8 @@ class MarryCommands(commands.Cog):
 					del users[str(user.id)]
 					del users[str(the_married_to_user.id)]
 
-					with open("marry-data.json", "w") as f:
-						json.dump(users, f)
+					with open("marry-data.json", "w", encoding="utf-8") as f:
+							json.dump(users, f, ensure_ascii = False, indent = 4)
 					
 					await ctx.send("You divorced `{}`. :cry:".format(the_married_to_user.display_name))
 

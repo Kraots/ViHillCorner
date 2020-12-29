@@ -239,8 +239,8 @@ class Intros(commands.Cog):
 									users[str(user.id)]["status"] = status
 									users[str(user.id)]["interests"] = interests.content
 
-									with open("intros.json", "w") as f:
-										json.dump(users, f)
+									with open("intros.json", "w", encoding="utf-8") as f:
+										json.dump(users, f, ensure_ascii = False, indent = 4)
 
 									return
 
@@ -354,8 +354,8 @@ async def update_intro(user, change, mode):
 	users[str(user.id)][mode] = change
 
 	
-	with open("intros.json", "w") as f:
-		json.dump(users, f)
+	with open("intros.json", "w", encoding="utf-8") as f:
+		json.dump(users, f, ensure_ascii = False, indent = 4)
 
 	introstotal = [users[str(user.id)]["name"], users[str(user.id)]["location"], users[str(user.id)]["age"], users[str(user.id)]["gender"], users[str(user.id)]["interests"]]
 	return introstotal

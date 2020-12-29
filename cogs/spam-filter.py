@@ -40,8 +40,8 @@ class RepeatedTextFilter(commands.Cog):
 					users[str(user.id)] = {}
 					users[str(user.id)]["warns"] = 0
 					users[str(user.id)]["sentence"] = message.content.lower()
-					with open("repeated-text-filter.json", "w") as f:
-						json.dump(users, f)
+					with open("repeated-text-filter.json", "w", encoding="utf-8") as f:
+						json.dump(users, f, ensure_ascii = False, indent = 4)
 					return
 
 				else:
@@ -49,13 +49,13 @@ class RepeatedTextFilter(commands.Cog):
 					if message.content.lower() == the_message:
 						users[str(user.id)]["warns"] += 1
 
-						with open("repeated-text-filter.json", "w") as f:
-							json.dump(users, f)
+						with open("repeated-text-filter.json", "w", encoding="utf-8") as f:
+							json.dump(users, f, ensure_ascii = False, indent = 4)
 					
 					else:
 						del users[str(user.id)]
-						with open("repeated-text-filter.json", "w") as f:
-							json.dump(users, f)
+						with open("repeated-text-filter.json", "w", encoding="utf-8") as f:
+							json.dump(users, f, ensure_ascii = False, indent = 4)
 						return
 
 						
@@ -69,8 +69,8 @@ class RepeatedTextFilter(commands.Cog):
 				if total_warns > 2:
 
 					del users[str(user.id)]
-					with open("repeated-text-filter.json", "w") as f:
-						json.dump(users, f)
+					with open("repeated-text-filter.json", "w", encoding="utf-8") as f:
+						json.dump(users, f, ensure_ascii = False, indent = 4)
 
 					if "Staff" in [role.name for role in message.author.roles]:
 						await user.remove_roles(staff, mod)
@@ -145,15 +145,15 @@ class SpamFilter(commands.Cog):
 					if not str(user.id) in users:
 						users[str(user.id)] = {}
 						users[str(user.id)]["warns"] = 0
-						with open("spam-warns.json", "w") as f:
-							json.dump(users, f)
+						with open("spam-warns.json", "w", encoding="utf-8") as f:
+							json.dump(users, f, ensure_ascii = False, indent = 4)
 						return
 
 					else:
 							users[str(user.id)]["warns"] += 1
 
-							with open("spam-warns.json", "w") as f:
-								json.dump(users, f)
+							with open("spam-warns.json", "w", encoding="utf-8") as f:
+								json.dump(users, f, ensure_ascii = False, indent = 4)
 
 
 					total_warns = users[str(user.id)]["warns"]
@@ -164,8 +164,8 @@ class SpamFilter(commands.Cog):
 					if total_warns > 4:
 
 						del users[str(user.id)]
-						with open("spam-warns.json", "w") as f:
-							json.dump(users, f)
+						with open("spam-warns.json", "w", encoding="utf-8") as f:
+							json.dump(users, f, ensure_ascii = False, indent = 4)
 
 						if "Staff" in [role.name for role in message.author.roles]:
 							await user.remove_roles(staff, mod)

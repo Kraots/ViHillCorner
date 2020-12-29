@@ -51,8 +51,8 @@ class Snippets(commands.Cog):
 					snippets[str(snippet_name)] = {}
 					snippets[str(snippet_name)]["snippet_content"] = snippet_info
 					snippets[str(snippet_name)]["snippet_credits"] = ctx.author.id
-					with open("snippets.json", "w") as f:
-						json.dump(snippets, f)
+					with open("snippets.json", "w", encoding="utf-8") as f:
+						json.dump(snippets, f, ensure_ascii = False, indent = 4)
 
 					await ctx.send("Snippet Added!")
 
@@ -73,8 +73,8 @@ class Snippets(commands.Cog):
 			try:
 				snippets = await get_snippets_data()
 				del snippets[str(snippet_name)]
-				with open ("snippets.json", "w") as f:
-					json.dump(snippets, f)
+				with open ("snippets.json", "w", encoding="utf-8") as f:
+					json.dump(snippets, f, ensure_ascii = False, indent = 4)
 
 				await ctx.send(f"`{snippet_name}` deleted succesfully!")
 

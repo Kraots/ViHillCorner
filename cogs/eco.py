@@ -137,8 +137,8 @@ class EcoCommands(commands.Cog):
 		users[str(user.id)]['bank'] = amount
 
 
-		with open("mainbank.json", "w") as f:
-			json.dump(users, f)
+		with open("mainbank.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
 
 		await ctx.send("Balance successfully set to `{:,}` coins in the bank for `{}`!".format(amount, member.name))
 		
@@ -163,8 +163,8 @@ class EcoCommands(commands.Cog):
 		users[str(user.id)]['wallet'] = 0
 
 
-		with open("mainbank.json", "w") as f:
-			json.dump(users, f)
+		with open("mainbank.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
 
 		await ctx.send(f"Reseted balance for `{member.name}`.")
 		
@@ -193,8 +193,8 @@ class EcoCommands(commands.Cog):
 		users[str(user.id)]['wallet'] = amount
 
 
-		with open("mainbank.json", "w") as f:
-			json.dump(users, f)
+		with open("mainbank.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
 
 		await ctx.send("Balance successfully set to `{:,}` coins in the wallet for `{}`!".format(amount, member.name))
 		
@@ -442,8 +442,8 @@ class EcoCommands(commands.Cog):
 		users[str(user.id)]['wallet'] += earnings
 
 
-		with open("mainbank.json", "w") as f:
-			json.dump(users, f)
+		with open("mainbank.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
 
 		
 
@@ -461,8 +461,8 @@ class EcoCommands(commands.Cog):
 
 		users[str(user.id)]["bank"] += 5000
 
-		with open("mainbank.json", "w") as f:
-			json.dump(users, f)
+		with open("mainbank.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
 
 
 
@@ -485,36 +485,36 @@ class EcoCommands(commands.Cog):
 		if aaaa == 2:
 			users[str(user.id)]["wallet"] += earnings
 			await ctx.send("<:weird:773538796087803934> you commited a bigger crime and got `{:,}` coins.".format(earnings))
-			with open("mainbank.json", "w") as f:
-				json.dump(users, f)
+			with open("mainbank.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 			return
 
 		if aaaa == 4:
 			users[str(user.id)]["wallet"] += earningss
 			await ctx.send("<:weird:773538796087803934> you commited a smaller crime and got `{:,}` coins.".format(earningss))
-			with open("mainbank.json", "w") as f:
-				json.dump(users, f)
+			with open("mainbank.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 			return
 
 		if aaaa == 6:
 			users[str(user.id)]["wallet"] += earningsss
 			await ctx.send("<:weird:773538796087803934> you commited a medium crime and got `{:,}` coins.".format(earningsss))
-			with open("mainbank.json", "w") as f:
-				json.dump(users, f)
+			with open("mainbank.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 			return
 
 		if aaaa == 7:
 			users[str(user.id)]["wallet"] += earningssss
 			await ctx.send("<:weird:773538796087803934> you commited a large crime and got `{:,}` coins.".format(earningssss))
-			with open("mainbank.json", "w") as f:
-				json.dump(users, f)
+			with open("mainbank.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 			return
 
 		else:
 			users[str(user.id)]["wallet"] -= losts
 			await ctx.send("You lost `{:,}` coins from your wallet.".format(losts))
-			with open("mainbank.json", "w") as f:
-				json.dump(users, f)
+			with open("mainbank.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 			return
 
 				# GUESS THE NUMBER
@@ -556,14 +556,14 @@ class EcoCommands(commands.Cog):
 			else:
 				users[str(user.id)]["wallet"] += win_amt
 				await ctx.send(f'You guessed it! Good job! You got `{win_amt}` coins. The number was {number}.')
-				with open("mainbank.json", "w") as f:
-					json.dump(users, f)
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
 				return
 		else:
 			users[str(user.id)]["wallet"] -= lost_amt
 			await ctx.send(f"You didn't get it and lost `{lost_amt}` coins. The number was `{number}`.")
-			with open("mainbank.json", "w") as f:
-				json.dump(users, f)
+			with open("mainbank.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 			return
 
 
@@ -590,43 +590,43 @@ class EcoCommands(commands.Cog):
 		if aaaa == 1:
 			users[str(user.id)]["wallet"] += earnings
 			await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earnings))
-			with open("mainbank.json", "w") as f:
-				json.dump(users, f)
+			with open("mainbank.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 			return
 
 		elif aaaa == 4:
 			users[str(user.id)]["wallet"] += earningss
 			await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earningss))
-			with open("mainbank.json", "w") as f:
-				json.dump(users, f)
+			with open("mainbank.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 			return
 
 		elif aaaa == 6:
 			users[str(user.id)]["wallet"] += earningsss
 			await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earningsss))
-			with open("mainbank.json", "w") as f:
-				json.dump(users, f)
+			with open("mainbank.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 			return
 
 		elif aaaa == 7:
 			users[str(user.id)]["wallet"] += earningssss
 			await ctx.send(":smirk: you sucked {}'s pp dry and swallowed his white stuff got `{:,}` coins.".format(kraots.name, earningssss))
-			with open("mainbank.json", "w") as f:
-				json.dump(users, f)
+			with open("mainbank.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 			return
 
 		elif bbbb == 1:
 			users[str(user.id)]["wallet"] += earningssssss
 			await ctx.send(":smirk: :smirk: :yum: :yum: you not only sucked {}'s pp dry and swallowed his white stuff, but he also filled every hole untill his white stuff is dripping out of every hole and u got `{:,}` coins.".format(kraots.name, earningssssss))
-			with open("mainbank.json", "w") as f:
-				json.dump(users, f)
+			with open("mainbank.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 			return
 
 		else:
 			users[str(user.id)]["wallet"] -= losts
 			await ctx.send("You did a fucking bad job at sucking and lost `{:,}` coins from your wallet.".format(losts))
-			with open("mainbank.json", "w") as f:
-				json.dump(users, f)
+			with open("mainbank.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 			return
 
 
@@ -717,8 +717,8 @@ class EcoCommands(commands.Cog):
 		if str(user.id) in users:
 			del users[str(user.id)]
 
-		with open("mainbank.json", "w") as f:
-			json.dump(users, f)
+		with open("mainbank.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
 			
 
 
@@ -737,8 +737,8 @@ async def open_account(user):
 		users[str(user.id)]['wallet'] = 0
 		users[str(user.id)]['bank'] = 1000
 
-	with open("mainbank.json", "w") as f:
-		json.dump(users, f)
+	with open("mainbank.json", "w", encoding="utf-8") as f:
+		json.dump(users, f, ensure_ascii = False, indent = 4)
 
 	return True
 
@@ -752,8 +752,8 @@ async def update_bank(user, change = 0, mode = "wallet"):
 	users = await get_bank_data()
 	users[str(user.id)][mode] += change
 	
-	with open("mainbank.json", "w") as f:
-		json.dump(users, f)
+	with open("mainbank.json", "w", encoding="utf-8") as f:
+		json.dump(users, f, ensure_ascii = False, indent = 4)
 
 	bal = [users[str(user.id)]["wallet"], users[str(user.id)]["bank"]]
 	return bal

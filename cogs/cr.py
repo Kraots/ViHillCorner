@@ -50,6 +50,10 @@ class CustomRoles(commands.Cog):
 					await ctx.send("You tried, but no, lol!")
 					return
 
+				elif len(crname.content.lower()) >= 20:
+					await ctx.send("The name of the custom role cannot be longer than `20` characters.")
+					return
+
 				elif crname.content.lower() == "cancel":
 					await ctx.send("Canceled.")
 					return
@@ -80,8 +84,8 @@ class CustomRoles(commands.Cog):
 					users[str(user.id)] = {}
 					users[str(user.id)]["CustomRoleName"] = crname.content
 
-					with open("customroles.json", "w") as f:
-						json.dump(users, f)
+					with open("customroles.json", "w", encoding="utf-8") as f:
+						json.dump(users, f, ensure_ascii = False, indent = 4)
 
 					positions = {
 						newcr: 65
@@ -124,8 +128,8 @@ class CustomRoles(commands.Cog):
 
 				del users[str(user.id)]
 
-				with open("customroles.json", "w") as f:
-					json.dump(users, f)
+				with open("customroles.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
 
 				await ctx.send("Succesfully deleted your custom role!")
 
@@ -175,8 +179,8 @@ class CustomRoles(commands.Cog):
 			await crname.delete()
 			del users[str(user.id)]
 
-		with open("customroles.json", "w") as f:
-			json.dump(users, f)
+		with open("customroles.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
 			
 
 
@@ -210,8 +214,8 @@ async def update_role(user, change, mode):
 	users[str(user.id)][mode] = change
 	users[str(user.id)][mode] = change
 	
-	with open("customroles.json", "w") as f:
-		json.dump(users, f)
+	with open("customroles.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
 
 	finalthing = [users[str(user.id)]["CustomRole"], users[str(user.id)]["CustomRoleColor"]]
 	return finalthing
