@@ -145,7 +145,7 @@ class Intros(commands.Cog):
 											em.add_field(name="Relationship Status", value=status, inline=True)
 											em.add_field(name="Interests", value=interests.content, inline=False)
 											await introchannel.send(embed=em)
-											await ctx.channel.send("Intro edited successfully.")
+											await ctx.channel.send("Intro edited successfully. You can see in <#750160850593251449>")
 
 											await update_intro(ctx.author, name.content, "name")
 											await update_intro(ctx.author, location.content, "location")
@@ -229,7 +229,7 @@ class Intros(commands.Cog):
 									em.add_field(name="Relationship Status", value=status, inline=True)
 									em.add_field(name="Interests", value=interests.content, inline=False)
 									await introchannel.send(embed=em)
-									await ctx.channel.send("Intro added successfully.")
+									await ctx.channel.send("Intro added successfully. You can see in <#750160850593251449>")
 
 									users[str(user.id)] = {}
 									users[str(user.id)]["name"] = name.content
