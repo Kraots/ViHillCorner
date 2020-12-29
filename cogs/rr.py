@@ -45,44 +45,52 @@ class ReactionRoles(commands.Cog):
 		msg3_emojis = {'\U00000031\U0000fe0f\U000020e3': 788112413261168660
 						}
 
-		member_roles = []
-		for x in member.roles:
-			if not x.id in all_colors:
-				member_roles.append(x.id)
+		try:
+			member_roles = []
+			for x in member.roles:
+				if not x.id in all_colors:
+					member_roles.append(x.id)
 
-		member_roles = set(member_roles)
+			member_roles = set(member_roles)
 
-		Roles = []
-		for id in member_roles:
-			role = guild.get_role(id)
-			Roles.append(role)
-				# COLORS
+			Roles = []
+			for id in member_roles:
+				role = guild.get_role(id)
+				Roles.append(role)
+
+		except:
+			pass
+				
+
+				# COLOR
+		try:
+			if message_id == COLORSMSG1:
+				the_emoji = payload.emoji.name
+				role = msg1_emojis[the_emoji]
+				final_role = guild.get_role(role)
+				Roles.append(final_role)
+				await member.edit(roles=Roles)
+				return
 
 
-		if message_id == COLORSMSG1:
-			the_emoji = payload.emoji.name
-			role = msg1_emojis[the_emoji]
-			final_role = guild.get_role(role)
-			Roles.append(final_role)
-			await member.edit(roles=Roles)
-			return
+			if message_id == COLORSMSG2:
+				the_emoji = payload.emoji.name
+				role = msg2_emojis[the_emoji]
+				final_role = guild.get_role(role)
+				Roles.append(final_role)
+				await member.edit(roles=Roles)
+				return
 
-
-		if message_id == COLORSMSG2:
-			the_emoji = payload.emoji.name
-			role = msg2_emojis[the_emoji]
-			final_role = guild.get_role(role)
-			Roles.append(final_role)
-			await member.edit(roles=Roles)
-			return
-
-		if message_id == COLORSMSG3:
-			the_emoji = payload.emoji.name
-			role = msg3_emojis[the_emoji]
-			final_role = guild.get_role(role)
-			Roles.append(final_role)
-			await member.edit(roles=Roles)
-			return
+			if message_id == COLORSMSG3:
+				the_emoji = payload.emoji.name
+				role = msg3_emojis[the_emoji]
+				final_role = guild.get_role(role)
+				Roles.append(final_role)
+				await member.edit(roles=Roles)
+				return
+		
+		except:
+			pass
 
 
 
