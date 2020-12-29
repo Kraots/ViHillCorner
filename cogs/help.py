@@ -32,120 +32,120 @@ class Help(commands.Cog):
 
 	@help.command(aliases=['ss'])
 	async def scrs(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!scrs <domain>```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!scrs <domain>```")
 		em.add_field(name="***Aliases:***", value="• ss", inline=False)
 		em.add_field(name="***Info:***", value="• Take a scren shot of a domain.\n• It will **not** work if the site you try to screen shot has captcha verification.", inline=False)
 		await ctx.send(embed=em)
 
 	@help.command()
 	async def marry(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!marry <user>```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!marry <user>```")
 		em.add_field(name="***Info:***", value="• Marry to someone <:SheepLove:787370467438362694>")
 		await ctx.send(embed=em)
 
 	@help.command()
 	async def divorce(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!divorce```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!divorce```")
 		em.add_field(name="***Info:***", value="• Divorce with the person you are married to. :cry:")
 		await ctx.send(embed=em)
 
 	@help.command()
 	async def marriedwho(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!marriedwho <user>```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!marriedwho <user>```")
 		em.add_field(name="***Info:***", value="• See who the user is married to.")
 		await ctx.send(embed=em)
 
 	@help.command()
 	async def opban(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="**Usage:**", description="```!opban <user>```")
+		em = discord.Embed(color=color.lightpink, title="**Usage:**", description="```\n!opban <user>```")
 		em.add_field(name="***Info:***", value="• Bans a user that is **not** in the server.")
 		await ctx.send(embed=em)
 
 
 	@help.command()
 	async def opunban(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="**Usage:**", description="```!opunban <user>```")
+		em = discord.Embed(color=color.lightpink, title="**Usage:**", description="```\n!opunban <user>```")
 		em.add_field(name="***Info:***", value="• Unbans a user that is **not** in the ban appeal server or the server itself.")
 		await ctx.send(embed=em)
 
 	@help.command()
 	async def search(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!define <query>```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!define <query>```")
 		em.add_field(name="***Info:***", value="• Search for a query.")
 		await ctx.send(embed=em)
 
 	@help.command()
 	async def define(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!define <word>```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!define <word>```")
 		em.add_field(name="***Info:***", value="• Search the definition of a word.")
 		await ctx.send(embed=em)
 
 	@help.command()
 	async def snippet(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!snippet create | delete```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!snippet create | delete```")
 		em.add_field(name="***Info:***", value="• Create or delete a snippet.", inline=False)
 		await ctx.send(embed=em)
 
 	@help.command()
 	async def vampify(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!vampify <text>```")
+		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!vampify <text>```")
 		embed.add_field(name="***Info:***", value="• Vampify your text!")
 		await ctx.send(embed=embed)
 
 	@help.command()
 	async def clapify(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!clapify <text>```")
+		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!clapify <text>```")
 		embed.add_field(name="***Info:***", value="• Clapify your text!")
 		await ctx.send(embed=embed)
 
 	@help.command()
 	async def cr(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!cr create | delete```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!cr create | delete```")
 		em.add_field(name="***Info:***", value="• Create your custom role or delete it if you have one already.", inline=False)
 		em.add_field(name="***Requirements:***", value="• Level 40 +", inline=False)
 		await ctx.send(embed=em)
 
 	@help.command()
 	async def reclist(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!reclist [user] | set <text> | add <text> | delete```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!reclist [user] | set <text> | add <text> | delete```")
 		em.add_field(name="***Info:***", value="• Check your/someone else's reclist\n• Set your reclist\n• Add recs to ur reclist\n• Delete your reclist!\n• Reclist stands for recommendations list, please recommend anime only!")
 		await ctx.send(embed=em)
 
 	@help.command()
 	async def ppsuck(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!ppsuck```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!ppsuck```")
 		em.add_field(name="***Info:***", value="• Suck pp for some quick money.")
 		await ctx.send(embed=em)
 
 	@help.command()
 	async def intro(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!intro | delete```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!intro | delete```")
 		em.add_field(name="***Info:***", value="• Set your intro | Delete your intro")
 		await ctx.send(embed=em)
 
 	@help.command(aliases=['wi'])
 	async def whois(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!whois [user]```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!whois [user]```")
 		em.add_field(name="***Aliases:***", value="• wi", inline=False)
 		em.add_field(name="***Info:***", value="• Check someone's intro!", inline=False)
 		await ctx.send(embed=em)
 
 	@help.command(aliases=['b-day', 'bday'])
 	async def birthday(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!birthday [user] | set [birthday] | remove```")
+		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!birthday [user] | set [birthday] | remove```")
 		embed.add_field(name="***Aliases:***", value="• b-day\n• bday", inline=False)
 		embed.add_field(name="***Info:***", value="• See when's someone's birthday | Set your birthday | Remove your birthday")
 		await ctx.send(embed=embed)
 
 	@help.command()
 	async def crime(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!crime```")
+		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!crime```")
 		embed.add_field(name="***Info:***", value="• Commit crimes that range between `small-medium-big`, and depending on which one you get, the more money you get, but be careful! You can lose the money as well.")
 		await ctx.send(embed=embed)
 
 	@help.command(aliases=['guess'])
 	async def gtn(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!guess```")
+		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!guess```")
 		embed.add_field(name="***Aliases:***", value="• gtn", inline=False)
 		embed.add_field(name="***Info:***", value="• Play guess the number and if you win you'll get some money as prize, but if you lose it then some money will be taken from your wallet.", inline=False)
 		await ctx.send(embed=embed)
@@ -153,7 +153,7 @@ class Help(commands.Cog):
 
 	@help.command()
 	async def work(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!work```")
+		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!work```")
 		embed.add_field(name="***Info:***", value="• Work and get `5000` coins each hour!")
 		await ctx.send(embed=embed)
 
@@ -201,139 +201,139 @@ class Help(commands.Cog):
 
 	@help.command()
 	async def ee(self, ctx):
-		ee = discord.Embed(title="***Usage:***", description="```!ee <emote>```", color=color.lightpink)
+		ee = discord.Embed(title="***Usage:***", description="```\n!ee <emote>```", color=color.lightpink)
 		ee.add_field(name="***Info:***", value="• Enlarges the chosen emote.")
 		await ctx.message.channel.send(embed=ee)
 
 	@help.command()
 	async def nick(self, ctx):
-		nick = discord.Embed(title="***Usage:***", description="```!nick <newnickname> | remove```", color=color.lightpink)
+		nick = discord.Embed(title="***Usage:***", description="```\n!nick <newnickname> | remove```", color=color.lightpink)
 		nick.add_field(name="***Info:***", value="• Change your nickname | Remove your nickname", inline=False)
 		nick.add_field(name="***Requirements:***", value="• Level 3 +", inline=False)
 		await ctx.message.channel.send(embed=nick)
 
 	@help.command()
 	async def snippets(self, ctx):
-		snippets = discord.Embed(title="***Usage:***", description="```!snippets```", color=color.lightpink)
+		snippets = discord.Embed(title="***Usage:***", description="```\n!snippets```", color=color.lightpink)
 		snippets.add_field(name="***Info:***", value="• See the list of all existing snippets.")
 		await ctx.message.channel.send(embed=snippets)
 
 	@help.command()
 	async def profile(self, ctx):
-		profile = discord.Embed(title="***Usage:***", description="```!profile [user]```", color=color.lightpink)
+		profile = discord.Embed(title="***Usage:***", description="```\n!profile [user]```", color=color.lightpink)
 		profile.add_field(name="***Info:***", value="• Get a user's profile info.")
 		await ctx.channel.send(embed=profile)
 
 	@help.command()
 	async def created(self, ctx):
-		created = discord.Embed(title="***Usage:***", description="```!created [user]```", color=color.lightpink)
+		created = discord.Embed(title="***Usage:***", description="```\n!created [user]```", color=color.lightpink)
 		created.add_field(name="***Info:***", value="• See when a user joined discord / created their account.")
 		await ctx.channel.send(embed=created)
 
 	@help.command()
 	async def joined(self, ctx):
-		joined = discord.Embed(title="***Usage:***", description="```!joined [user]```", color=color.lightpink)
+		joined = discord.Embed(title="***Usage:***", description="```\n!joined [user]```", color=color.lightpink)
 		joined.add_field(name="***Info:***", value="• See when a user joined the server.")
 		await ctx.channel.send(embed=joined)
 
 	@help.command(aliases=["avatar"])
 	async def av(self, ctx):
-		av = discord.Embed(title="***Usage:***", description="```!avatar [user]```", color=color.lightpink)
+		av = discord.Embed(title="***Usage:***", description="```\n!avatar [user]```", color=color.lightpink)
 		av.add_field(name="***Aliases:***", value="• av", inline=False)
 		av.add_field(name="***Info:***", value="• See user's avatar.", inline=False)
 		await ctx.channel.send(embed=av)
 
 	@help.command(aliases=["server", "si", "sinfo"])
 	async def serverinfo(self, ctx):
-		serverinfo = discord.Embed(title="***Usage:***", description="```!serverinfo```", color=color.lightpink)
+		serverinfo = discord.Embed(title="***Usage:***", description="```\n!serverinfo```", color=color.lightpink)
 		serverinfo.add_field(name="***Aliases:***", value="• server \n• sinfo \n• si", inline=False)
 		serverinfo.add_field(name="***Info:***", value="• Get some info about the server.", inline=False)
 		await ctx.channel.send(embed=serverinfo)
 
 	@help.command()
 	async def actions(self, ctx):
-		actions = discord.Embed(title="***Usage:***", description="```!actions```", color=color.lightpink)
+		actions = discord.Embed(title="***Usage:***", description="```\n!actions```", color=color.lightpink)
 		actions.add_field(name="***Info:***", value="• See a list of all existing actions.")
 		await ctx.channel.send(embed=actions)
 
 	@help.command()
 	async def waifu(self, ctx):
-		waifu = discord.Embed(title="***Usage:***", description="```!waifu```", color=color.lightpink)
+		waifu = discord.Embed(title="***Usage:***", description="```\n!waifu```", color=color.lightpink)
 		waifu.add_field(name="***Info:***", value="• Get a random waifu pic.")
 		await ctx.channel.send(embed=waifu)
 
 	@help.command(aliases=["inv"])
 	async def invite(self, ctx):
-		invite = discord.Embed(title="***Usage:***", description="```!invite```", color=color.lightpink)
+		invite = discord.Embed(title="***Usage:***", description="```\n!invite```", color=color.lightpink)
 		invite.add_field(name="***Aliases:***", value="• inv", inline=False)
 		invite.add_field(name="***Info:***", value="• Get the invite to the server.", inline=False)
 		await ctx.channel.send(embed=invite)
 
 	@help.command()
 	async def serverad(self, ctx):
-		ad = discord.Embed(title="***Usage:***", description="```!serverad```", color=color.lightpink)
+		ad = discord.Embed(title="***Usage:***", description="```\n!serverad```", color=color.lightpink)
 		ad.add_field(name="***Info:***", value="• Get the server's advertising text.", inline=False)
 		await ctx.channel.send(embed=ad)
 
 	@help.command()
 	async def rawad(self, ctx):
-		rawad = discord.Embed(title="***Usage:***", description="```!rawad```", color=color.lightpink)
+		rawad = discord.Embed(title="***Usage:***", description="```\n!rawad```", color=color.lightpink)
 		rawad.add_field(name="***Info:***", value="• Get the server's advertising text in raw format.", inline=False)
 		await ctx.channel.send(embed=rawad)
 
 	@help.command(aliases=["untill-partner"])
 	async  def up(self, ctx):
-		up = discord.Embed(title="***Usage:***", description="```!untill-partner```", color=color.lightpink)
+		up = discord.Embed(title="***Usage:***", description="```\n!untill-partner```", color=color.lightpink)
 		up.add_field(name="***Info:***", value="• See how many members the server needs untill it's eligible for applying for the discord partnership program.", inline=False)
 		await ctx.channel.send(embed=up)
 
 	@help.command()
 	async def level(self, ctx):
-		level = discord.Embed(title="***Usage:***", description="```!level [user]```", color=color.lightpink)
+		level = discord.Embed(title="***Usage:***", description="```\n!level [user]```", color=color.lightpink)
 		level.add_field(name="***Info:***", value="• See how to check your current level.", inline=False)
 		await ctx.channel.send(embed=level)
 
 	@help.command()
 	async def rank(self, ctx):
-		level = discord.Embed(title="***Usage:***", description="```!rank [user]```", color=color.lightpink)
+		level = discord.Embed(title="***Usage:***", description="```\n!rank [user]```", color=color.lightpink)
 		level.add_field(name="***Info:***", value="• See how to check your current rank.", inline=False)
 		await ctx.channel.send(embed=level)
 
 	@help.command()
 	async def sfw(self, ctx):
-		sfw = discord.Embed(title="***Usage:***", description="```!sfw <user>```", color=color.lightpink)
+		sfw = discord.Embed(title="***Usage:***", description="```\n!sfw <user>```", color=color.lightpink)
 		sfw.add_field(name="***Info:***", value="• Warn a user to keep the chat appropriate and sfw.", inline=False)
 		await ctx.channel.send(embed=sfw)
 
 	@help.command()
 	async def botinfo(self, ctx):
-		botinfo = discord.Embed(title="***Usage:***", description="```!botinfo```", color=color.lightpink)
+		botinfo = discord.Embed(title="***Usage:***", description="```\n!botinfo```", color=color.lightpink)
 		botinfo.add_field(name="***Info:***", value="• See info about <@!751724369683677275>.", inline=False)
 		await ctx.channel.send(embed=botinfo)
 
 	@help.command()
 	async def uptime(self, ctx):
-		uptime = discord.Embed(title="***Usage:***", description="```!uptime```", color=color.lightpink)
+		uptime = discord.Embed(title="***Usage:***", description="```\n!uptime```", color=color.lightpink)
 		uptime.add_field(name="***Info:***", value="• Check the bot's uptime.", inline=False)
 		await ctx.channel.send(embed=uptime)
 
 	@help.command()
 	async def ping(self, ctx):
-		ping = discord.Embed(title="***Usage:***", description="```!ping```", color=color.lightpink)
+		ping = discord.Embed(title="***Usage:***", description="```\n!ping```", color=color.lightpink)
 		ping.add_field(name="***Info:***", value="• Check the bot's ping.", inline=False)
 		await ctx.channel.send(embed=ping)
 
 	@help.command()
 	@commands.has_role("Staff")
 	async def clear(self, ctx):
-		clear = discord.Embed(title="***Usage:***", description="```!clear <amount>```", color=color.lightpink)
+		clear = discord.Embed(title="***Usage:***", description="```\n!clear <amount>```", color=color.lightpink)
 		clear.add_field(name="***Info:***", value="• Clear's the chat of the amount of messages given..", inline=False)
 		await ctx.channel.send(embed=clear)
 
 	@help.command()
 	@commands.has_role("Staff")
 	async def tempmute(self, ctx):
-		tempmute = discord.Embed(title="***Usage:***", description="```!tempmute <user> <time>```", color=color.lightpink)
+		tempmute = discord.Embed(title="***Usage:***", description="```\n!tempmute <user> <time>```", color=color.lightpink)
 		tempmute.add_field(name="***Example:***", value="!tempmute @BananaBoy69 1 s|m|h|d", inline=False)
 		tempmute.add_field(name="***Info:***", value="• s - second\n• m - minute\n• h - hour\n• d - day\n\n• Tempmutes a user with the  given time.", inline=False)
 		tempmute.add_field(name="***Warning:***", value="**DO NOT GO ABOVE 12H**", inline=False)
@@ -342,51 +342,51 @@ class Help(commands.Cog):
 	@help.command()
 	@commands.has_role("Staff")
 	async def unban(self, ctx):
-		unban = discord.Embed(title="***Usage:***", description="```!unban <user>```", color=color.lightpink)
+		unban = discord.Embed(title="***Usage:***", description="```\n!unban <user>```", color=color.lightpink)
 		unban.add_field(name="***Info:***", value="• This command only works in the ban appeal server, if the user is in that server ;)).", inline=False)
 		await ctx.channel.send(embed=unban)
 
 	@help.command(aliases=['ps'])
 	@commands.has_role("Staff")
 	async def partnership(self, ctx):
-		partnership = discord.Embed(title="***Usage:***", description="```!partnership <ad>```", color=color.lightpink)
+		partnership = discord.Embed(title="***Usage:***", description="```\n!partnership <ad>```", color=color.lightpink)
 		partnership.add_field(name="***Aliases:***", value="• ps", inline=False)
 		partnership.add_field(name="***Info:***", value="• ad - the ad of the server that the partnership is made with.\n\n**USE IT ONLY IN <#750160851822182480>**", inline=False)
 		await ctx.channel.send(embed=partnership)
 
 	@help.command()
 	async def suggest(self, ctx):
-		suggest = discord.Embed(title="***Usage:***", description="```!suggest <suggestion>```", color=color.lightpink)
+		suggest = discord.Embed(title="***Usage:***", description="```\n!suggest <suggestion>```", color=color.lightpink)
 		suggest.add_field(name="***Info:***", value="• Make a suggestion in <#750160850593251454>\n• There is 1 minute cooldown between each suggestion per user.", inline=False)
 		await ctx.channel.send(embed=suggest)
 
 	@help.command()
 	async def spotify(self, ctx):
-		spotify = discord.Embed(title="***Usage:***", description="```!spotify [user]```", color=color.lightpink)
+		spotify = discord.Embed(title="***Usage:***", description="```\n!spotify [user]```", color=color.lightpink)
 		spotify.add_field(name="***Info:***", value="• Show's what song you're listening to, the artist & the album.\n• You gotta have spotify as activity and no other custom activity in order for this command to work.", inline=False)
 		await ctx.channel.send(embed=spotify)
 
 	@help.command()
 	async def membercount(self, ctx):
-		membercount = discord.Embed(title="***Usage:***", description="```!membercount```", color=color.lightpink)
+		membercount = discord.Embed(title="***Usage:***", description="```\n!membercount```", color=color.lightpink)
 		membercount.add_field(name="***Info:***", value="• See how many members ViHill Corner has (**bots are not included**).", inline=False)
 		await ctx.channel.send(embed=membercount)
 
 	@help.command()
 	async def meme(self, ctx):
-		meme = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!meme```")
+		meme = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!meme```")
 		meme.add_field(name="***Info:***", value="• Sends a random meme! ;3", inline=False)
 		await ctx.channel.send(embed=meme)
 
 	@help.command()
 	async def cat(self, ctx):
-		cat = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!cat```")
+		cat = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!cat```")
 		cat.add_field(name="***Info:***", value="• Sends a random cat pic! ;3", inline=False)
 		await ctx.channel.send(embed=cat)
 
 	@help.command()
 	async def dog(self, ctx):
-		dog = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!dog``")
+		dog = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!dog``")
 		dog.add_field(name="***Info:***", value="• Sends a random dog pic! ;3", inline=False)
 		await ctx.channel.send(embed=dog)
 
@@ -421,7 +421,7 @@ class Help(commands.Cog):
 	@help.command()
 	@commands.has_role('Staff')
 	async def slowmode(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```!slowmode <time>```")
+		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!slowmode <time>```")
 		embed.add_field(name="***Info:***", value="• Change the slowmode of the current channel.", inline=False)
 		await ctx.channel.send(embed=embed)
 
@@ -434,51 +434,51 @@ class Help(commands.Cog):
 	@help.command(aliases=['balance'])
 	async def bal(self, ctx):
 		if ctx.author.id == 374622847672254466:
-			embedd = discord.Embed(title="***Usage:***", description="```!bal add-wallet [amount] [user] | add-bank [amount] [user] | set-wallet [amount][user] | set-bank [amount] [user] | reset [user]```", color=color.lightpink)
+			embedd = discord.Embed(title="***Usage:***", description="```\n!bal add-wallet [amount] [user] | add-bank [amount] [user] | set-wallet [amount][user] | set-bank [amount] [user] | reset [user]```", color=color.lightpink)
 			embedd.add_field(name="***Info:***", value="• Add money to an user's bank or wallet.\n• Set user's bank or wallet coin amount.\n• Reset the user's ballance back to 0.", inline=False)
 			await ctx.send(embed=embedd)
 
 		else:
-			embed = discord.Embed(title="***Usage:***", description="```!bal [user]```", color=color.lightpink)
+			embed = discord.Embed(title="***Usage:***", description="```\n!bal [user]```", color=color.lightpink)
 			embed.add_field(name="***Info:***", value="• Check your or another user's balance!", inline=False)
 			await ctx.send(embed=embed)
 
 	@help.command(aliases=['deposit'])
 	async def dep(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```!deposit [amount]```", color=color.lightpink)
+		embed = discord.Embed(title="***Usage:***", description="```\n!deposit [amount]```", color=color.lightpink)
 		embed.add_field(name="***Aliases:***", value="• dep", inline=False)
 		embed.add_field(name="***Info:***", value="• Deposit the amount of money into your bank.", inline=False)
 		await ctx.send(embed=embed)
 
 	@help.command(aliases=['withdraw', "with"])
 	async def _with(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```!withdraw [amount]```", color=color.lightpink)
+		embed = discord.Embed(title="***Usage:***", description="```\n!withdraw [amount]```", color=color.lightpink)
 		embed.add_field(name="***Aliases:***", value="• with", inline=False)
 		embed.add_field(name="***Info:***", value="• Withdraw the amount of money from your bank.", inline=False)
 		await ctx.send(embed=embed)
 
 	@help.command()
 	async def beg(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```!beg```", color=color.lightpink)
+		embed = discord.Embed(title="***Usage:***", description="```\n!beg```", color=color.lightpink)
 		embed.add_field(name="***Info:***", value="• Beg for some money, peasant.", inline=False)
 		await ctx.send(embed=embed)
 
 	@help.command()
 	async def steal(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```!steal [user]```")
+		embed = discord.Embed(title="***Usage:***", description="```\n!steal [user]```")
 		embed.add_field(name="***Aliases:***", value="• rob", inline=False)
 		embed.add_field(name="***Info:***", value="• Steal some money from someone's wallet.", inline=False)
 		await ctx.send(embed=embed)
 
 	@help.command()
 	async def slots(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```!slots [amount]```", color=color.lightpink)
+		embed = discord.Embed(title="***Usage:***", description="```\n!slots [amount]```", color=color.lightpink)
 		embed.add_field(name="***Info:***", value="• Bet your money in the slots machine!", inline=False)
 		await ctx.send(embed=embed)
 
 	@help.command()
 	async def give(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```!give [user] [amount]```", color=color.lightpink)
+		embed = discord.Embed(title="***Usage:***", description="```\n!give [user] [amount]```", color=color.lightpink)
 		embed.add_field(name="***Info:***", value="• Be a kind person and give some of your money from ur bank to someone else's!", inline=False)
 		await ctx.send(embed=embed)
 
