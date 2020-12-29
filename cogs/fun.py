@@ -20,17 +20,29 @@ class Fun(commands.Cog):
 		randomcolour = randint(0, 0xffffff)
 
 		if member is None:
-			embed1 = discord.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
+			if ctx.author.id == 374622847672254466:
+				embed1 = discord.Embed(title='Gay rating machine', description=f'You are 0% gay :gay_pride_flag:', color=randomcolour)
+
+			else:
+				embed1 = discord.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
-			embed1 = discord.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
+			if ctx.author.id == 374622847672254466:
+				embed1 = discord.Embed(title='Gay rating machine', description=f'You are 0% gay :gay_pride_flag:', color=randomcolour)
 
+			else:
+				embed1 = discord.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
+			
 			await ctx.send(embed=embed1)
 
 		else:
-			embed2 = discord.Embed(title='Gay rating machine', description=f'{member.name} is {gayrate}% gay :gay_pride_flag:', color=randomcolour)
+			if member.id == 374622847672254466:
+				embed2 = discord.Embed(title='Gay rating machine', description=f'{member.name} is 0% gay :gay_pride_flag:', color=randomcolour)
+			
+			else:
+				embed2 = discord.Embed(title='Gay rating machine', description=f'{member.name} is {gayrate}% gay :gay_pride_flag:', color=randomcolour)
 			await ctx.send(embed=embed2)
 
 	@commands.command()
@@ -39,17 +51,26 @@ class Fun(commands.Cog):
 		randomcolour = randint(0, 0xffffff)
 
 		if member is None:
-			embed1 = discord.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
+			if ctx.author.id == 374622847672254466:
+				embed1 = discord.Embed(title='Simp rating machine', description=f'You are 0% simp ', color=randomcolour)
+			else:
+				embed1 = discord.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
-			embed1 = discord.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
-
+			if ctx.author.id == 374622847672254466:
+				embed1 = discord.Embed(title='Simp rating machine', description=f'You are 0% simp ', color=randomcolour)
+			else:
+				embed1 = discord.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
+			
 			await ctx.send(embed=embed1)
 
 		else:
-			embed2 = discord.Embed(title='Simp rating machine', description=f'{member.name} is {simprate}% simp ', color=randomcolour)
+			if member.id == 374622847672254466:
+				embed2 = discord.Embed(title='Simp rating machine', description=f'{member.name} is 0% simp ', color=randomcolour)
+			else:
+				embed2 = discord.Embed(title='Simp rating machine', description=f'{member.name} is {simprate}% simp ', color=randomcolour)
 			await ctx.send(embed=embed2)
 
 	@commands.command()
@@ -58,17 +79,27 @@ class Fun(commands.Cog):
 		randomcolour = randint(0, 0xffffff)
 
 		if member is None:
-			embed1 = discord.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
+			if ctx.author.id == 374622847672254466:
+				embed1 = discord.Embed(title='Straight rating machine', description=f'You are 100% straight ', color=randomcolour)
+			else:
+				embed1 = discord.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
-			embed1 = discord.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
-
+			if ctx.author.id == 374622847672254466:
+				embed1 = discord.Embed(title='Straight rating machine', description=f'You are 100% straight ', color=randomcolour)
+			else:
+				embed1 = discord.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
+			
 			await ctx.send(embed=embed1)
 
 		else:
-			embed2 = discord.Embed(title='Straight rating machine', description=f'{member.name} is {simprate}% straight ', color=randomcolour)
+			if member.id == 374622847672254466:
+				embed2 = discord.Embed(title='Straight rating machine', description=f'{member.name} is 100% straight ', color=randomcolour)
+			else:
+				embed2 = discord.Embed(title='Straight rating machine', description=f'{member.name} is {simprate}% straight ', color=randomcolour)
+			
 			await ctx.send(embed=embed2)
 
 	@commands.command()
@@ -77,17 +108,27 @@ class Fun(commands.Cog):
 		randomcolour = randint(0, 0xffffff)
 
 		if member is None:
-			embed1 = discord.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
+			if ctx.author.id == 374622847672254466:
+				embed1 = discord.Embed(title='Horny rating machine', description=f'You are 100% horny ', color=randomcolour)
+			else:
+				embed1 = discord.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
-			embed1 = discord.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
-
+			if ctx.author.id == 374622847672254466:
+				embed1 = discord.Embed(title='Horny rating machine', description=f'You are 100% horny ', color=randomcolour)
+			else:
+				embed1 = discord.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
+			
 			await ctx.send(embed=embed1)
 
 		else:
-			embed2 = discord.Embed(title='Horny rating machine', description=f'{member.name} is {simprate}% horny ', color=randomcolour)
+			if member.id == 374622847672254466:
+				embed2 = discord.Embed(title='Horny rating machine', description=f'{member.name} is 100% horny ', color=randomcolour)
+			
+			else:
+				embed2 = discord.Embed(title='Horny rating machine', description=f'{member.name} is {simprate}% horny ', color=randomcolour)
 			await ctx.send(embed=embed2)
 
 	@commands.command()
@@ -96,17 +137,29 @@ class Fun(commands.Cog):
 		randomcolour = randint(0, 0xffffff)
 
 		if member is None:
-			embed1 = discord.Embed(title='Boomer rating machine', description=f'You are {simprate}% boomer ', color=randomcolour)
+			if ctx.author.id == 374622847672254466:
+				embed1 = discord.Embed(title='Boomer rating machine', description=f'You are 0% boomer ', color=randomcolour)
+
+			else:
+				embed1 = discord.Embed(title='Boomer rating machine', description=f'You are {simprate}% boomer ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
-			embed1 = discord.Embed(title='Boomer rating machine', description=f'You are {simprate}% boomer ', color=randomcolour)
+			if ctx.author.id == 374622847672254466:
+				embed1 = discord.Embed(title='Boomer rating machine', description=f'You are 0% boomer ', color=randomcolour)
 
+			else:
+				embed1 = discord.Embed(title='Boomer rating machine', description=f'You are {simprate}% boomer ', color=randomcolour)
+			
 			await ctx.send(embed=embed1)
 
 		else:
-			embed2 = discord.Embed(title='Boomer rating machine', description=f'{member.name} is {simprate}% boomer ', color=randomcolour)
+			if member.id == 374622847672254466:
+				embed2 = discord.Embed(title='Boomer rating machine', description=f'{member.name} is 0% boomer ', color=randomcolour)
+
+			else:	
+				embed2 = discord.Embed(title='Boomer rating machine', description=f'{member.name} is {simprate}% boomer ', color=randomcolour)
 			await ctx.send(embed=embed2)
 
 	@commands.command(aliases=['8ball'])
