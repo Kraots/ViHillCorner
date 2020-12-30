@@ -18,7 +18,10 @@ class Birthdays(commands.Cog):
 
 		alist = users[str(user.id)]["reclist"]
 
-		em = discord.Embed(color=member.color, title=f"{member.name}'s Anime Recommendations:", description = f"{alist}")
+		for line in alist.splitlines():
+			final = alist.replace("\n", "\n`###`\u2800")
+
+		em = discord.Embed(color=member.color, title=f"{member.name}'s Anime Recommendations:", description = f"`###`\u2800{final}")
 		em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
 		await ctx.send(embed=em)
 
@@ -36,8 +39,8 @@ class Birthdays(commands.Cog):
 		users[str(user.id)] = {}
 		users[str(user.id)]['reclist'] = args
 
-		with open("AnimeList.json", "w") as f:
-			json.dump(users, f)
+		with open("AnimeList.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
 
 		await ctx.message.delete()
 		await ctx.send(f"Reclist set! {user.mention}")
@@ -69,8 +72,9 @@ class Birthdays(commands.Cog):
 
 		del users[str(ctx.author.id)]
 
-		with open("AnimeList.json", "w") as f:
-			json.dump(users, f)
+		with open("AnimeList.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
+
 		await ctx.send("Succesfully deleted your reclist! {}".format(ctx.author.mention))
 
 
@@ -111,8 +115,8 @@ async def update_arec(user, change = "\n", mode = "reclist"):
 	users = await get_arec_data()
 	users[str(user.id)][mode] += change
 	
-	with open("AnimeList.json", "w") as f:
-		json.dump(users, f)
+	with open("AnimeList.json", "w", encoding="utf-8") as f:
+		json.dump(users, f, ensure_ascii = False, indent = 4)
 
 	areclist = users[str(user.id)]["reclist"]
 	return areclist
