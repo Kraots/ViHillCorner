@@ -21,6 +21,13 @@ class developer(commands.Cog):
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 
+	@commands.Cog.listener()
+	async def on_message(self, message: discord.Message):
+		if message.content.lower() == ":blush:":
+			await message.delete()
+			await message.channel.send(":skull:")
+
+
 	@tasks.loop(seconds = 125)
 	async def ch_pr(self):
 		await self.client.wait_until_ready()
