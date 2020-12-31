@@ -4,6 +4,27 @@ import json
 import asyncio
 import datetime
 import utils.colors as color
+from utils.paginator import SimplePages
+
+
+
+class TagPageEntry:
+	def __init__(self, entry):
+		
+		with open("tags.json", "r") as f:
+			entries = json.load(f)
+
+		self.name = entries[entry]['the_tag_name']
+		self.owner_id = entries[entry]['tag_owner_id']
+
+	def __str__(self):
+		return f'{self.name}\u2800•\u2800(`Owner:` <@!{self.owner_id}>)'
+
+class TagPages(SimplePages):
+	def __init__(self, entries, *, per_page=12):
+		converted = [TagPageEntry(entry) for entry in entries]
+		super().__init__(converted, per_page=per_page)
+
 
 class Tags(commands.Cog):
 	
@@ -30,6 +51,14 @@ class Tags(commands.Cog):
 			
 			except KeyError:
 				await ctx.send("Tag `{}` does not exist!".format(tag_name))
+
+
+
+	@tag.command()
+	async def all(self, ctx):
+		entries = await get_tags_data()
+		p = TagPages(entries = entries, per_page = 7)
+		await p.start(ctx)
 
 
 

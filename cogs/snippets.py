@@ -2,6 +2,27 @@ import discord
 from discord.ext import commands
 import json
 import asyncio
+from utils.paginator import SimplePages
+import datetime
+import utils.colors as color
+
+class TagPageEntry:
+	def __init__(self, entry):
+		
+		with open("snippets.json", "r") as f:
+			entries = json.load(f)
+
+		self.name = entries[entry]['snippet_name']
+		self.id = entries[entry]['snippet_credits']
+
+	def __str__(self):
+		return f'{self.name}\u2800•\u2800(`Owner:` <@!{self.id}>)'
+
+class SnippetPages(SimplePages):
+	def __init__(self, entries, *, per_page=12):
+		converted = [TagPageEntry(entry) for entry in entries]
+		super().__init__(converted, per_page=per_page)
+
 
 
 class Snippets(commands.Cog):
@@ -12,13 +33,44 @@ class Snippets(commands.Cog):
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 
-	@commands.group(invoke_without_command=True, case_insensitive=True)
-	@commands.has_role("Staff")
+	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['snippets'])
 	async def snippet(self, ctx):
-		await ctx.send("Invalid usage!\nPlease use `!snippet create` or `!snippet delete`")
+		with open("snippets.json", "r") as f:
+			entries = json.load(f)
+		
+		p = SnippetPages(entries = entries, per_page = 7)
+		await p.start(ctx)
 
 	@snippet.command()
-	@commands.has_role("Staff")
+	async def info(self, ctx, *, snippet_name : str = None):
+		snippets = await get_snippets_data()
+
+		if snippet_name is None:
+			await ctx.send("`!snippet info <snippet_name>`")
+			return
+
+		else:
+			try:
+				snippet_name = snippets[str(snippet_name.lower())]["snippet_name"]
+				snippet_owner_id = snippets[str(snippet_name.lower())]["snippet_credits"]
+				snippet_uses = snippets[str(snippet_name.lower())]["uses_count"]
+				snippet_created_at = snippets[str(snippet_name.lower())]["created_at"]
+
+				snippet_owner = self.client.get_user(snippet_owner_id)
+
+				em = discord.Embed(color=color.reds, title=snippet_name)
+				em.set_author(name=snippet_owner, url=snippet_owner.avatar_url, icon_url=snippet_owner.avatar_url)
+				em.add_field(name="Owner", value=snippet_owner.mention)
+				em.add_field(name="Uses", value=snippet_uses)
+				em.set_footer(text="Snippet created at • {}".format(snippet_created_at))
+
+				await ctx.send(embed=em)
+
+			except KeyError:
+				await ctx.send("Snippet `{}` does not exist!".format(snippet_name))
+
+	@snippet.command()
+	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
 	async def create(self, ctx):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
@@ -48,15 +100,20 @@ class Snippets(commands.Cog):
 				if str(snippet_name) in snippets:
 					await ctx.send("That snippet already exists!")
 				else:
+					get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
 					snippets[str(snippet_name)] = {}
 					snippets[str(snippet_name)]["snippet_content"] = snippet_info
 					snippets[str(snippet_name)]["snippet_credits"] = ctx.author.id
+					snippets[str(snippet_name)]["snippet_name"] = snippet_name
+					snippets[str(snippet_name)]["created_at"] = get_time
+					snippets[str(snippet_name)]["uses_count"] = 0
 					with open("snippets.json", "w", encoding="utf-8") as f:
 						json.dump(snippets, f, ensure_ascii = False, indent = 4)
 
 					await ctx.send("Snippet Added!")
 
 	@snippet.command(aliases=['remove'])
+	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
 	async def delete(self, ctx):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
@@ -96,6 +153,10 @@ class Snippets(commands.Cog):
 			credits_user = self.client.get_user(get_credits_info)
 			credits_avatar = credits_user.avatar_url
 
+			snippets[str(snippet_name)]["uses_count"] += 1
+			with open("snippets.json", "w", encoding = "utf-8") as f:
+				json.dump(snippets, f, ensure_ascii = False, indent = 4)
+
 			if message.content.lower().startswith(f";{snippet_name}"):
 				em = discord.Embed(color=discord.Color.red())
 				em.set_image(url=snippet)
@@ -106,6 +167,20 @@ class Snippets(commands.Cog):
 		except KeyError:
 			return
 
+	@snippet.error
+	async def snippet_error(self, ctx, error):
+		if isinstance(error, commands.errors.MissingAnyRole):
+			await ctx.send("You need to be `lvl 55+` to use this command!")
+
+	@create.error
+	async def create_error(self, ctx, error):
+		if isinstance(error, commands.errors.MissingAnyRole):
+			await ctx.send("You need to be `lvl 55+` to use this command!")
+
+	@delete.error
+	async def delete_error(self, ctx, error):
+		if isinstance(error, commands.errors.MissingAnyRole):
+			await ctx.send("You need to be `lvl 55+` to use this command!")
 
 
 

@@ -18,7 +18,7 @@ class Help(commands.Cog):
 		helpEm = discord.Embed(description="", color=color.lightpink)
 		helpEm.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 		helpEm.set_thumbnail(url=self.client.user.avatar_url)
-		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`, `define`, `search`, `calculator`, `marry`, `marriedwho`, `divorce`, `scrs`, `tag`")
+		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`, `define`, `search`, `calculator`, `marry`, `marriedwho`, `divorce`, `scrs`, `tag`, `snippets`")
 		helpEm.add_field(name="Economy", value="`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `ppsuck`", inline=False)
 		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `spam`, `english`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `serverinfo`, `vote`", inline=False)
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
@@ -30,9 +30,16 @@ class Help(commands.Cog):
 		await ctx.message.channel.send(embed=helpEm)
 
 	@help.command()
+	async def snippets(self, ctx):
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!snippets```")
+		em.add_field(name="***Info:***", value="• Send paginated list of all snippets.")
+
+		await ctx.send(embed=em)
+	
+	@help.command(aliases=['tags'])
 	async def tag(self, ctx):
 		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!tag <tag_name>```")
-		em.add_field(name="***Commands:***", value="\n• **create**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag create <tag_name>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800Create a new tag!\n\u2800\u2800***Warning:***\n\u2800\u2800\u2800• They cannot contain any of the banned words (in case it does you will be banned without a second thought, so be careful!)\n\u2800\u2800\u2800• They cannot contain attachments!\n\n• **delete**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag delete <tag_name>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800Delete a tag that you made.\n\n• **info**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag info <tag_name>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800 See info about a tag!", inline=False)
+		em.add_field(name="***Commands:***", value="\n• **create**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• make\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag create <tag_name>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create a new tag!\n\u2800\u2800***Warning:***\n\u2800\u2800\u2800• They cannot contain any of the banned words (in case it does you will be banned without a second thought, so be careful!)\n\u2800\u2800\u2800• They cannot contain attachments!\n\n• **delete**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag delete <tag_name>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete a tag that you made.\n\n• **info**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag info <tag_name>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See info about a tag!\n\n• **all**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• list\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag all`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get paginated list with all tags.", inline=False)
 		em.add_field(name="***Info:***", value="• Allows you to tag text for later retrieval.", inline=False)
 		await ctx.send(embed=em)
 
@@ -90,6 +97,8 @@ class Help(commands.Cog):
 	async def snippet(self, ctx):
 		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!snippet create | delete```")
 		em.add_field(name="***Info:***", value="• Create or delete a snippet.", inline=False)
+		em.add_field(name="***Requirements:***", value="• Level 55+", inline=False)
+
 		await ctx.send(embed=em)
 
 	@help.command()
@@ -217,12 +226,6 @@ class Help(commands.Cog):
 		nick.add_field(name="***Info:***", value="• Change your nickname | Remove your nickname", inline=False)
 		nick.add_field(name="***Requirements:***", value="• Level 3 +", inline=False)
 		await ctx.message.channel.send(embed=nick)
-
-	@help.command()
-	async def snippets(self, ctx):
-		snippets = discord.Embed(title="***Usage:***", description="```\n!snippets```", color=color.lightpink)
-		snippets.add_field(name="***Info:***", value="• See the list of all existing snippets.")
-		await ctx.message.channel.send(embed=snippets)
 
 	@help.command()
 	async def profile(self, ctx):
