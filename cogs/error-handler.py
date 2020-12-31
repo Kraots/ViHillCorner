@@ -32,6 +32,7 @@ class GlobalErrorHandler(commands.Cog):
 			await ctx.channel.send(embed=error, delete_after=50)
 			await asyncio.sleep(49.5)
 			await ctx.message.delete()
+			
 
 						# print(type(error))
 
