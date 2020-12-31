@@ -9,7 +9,7 @@ class Tags(commands.Cog):
 	
 	def __init__(self, client):
 		self.client = client
-	
+
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	async def tag(self, ctx, *, tag_name: str = None):
 		if tag_name is None:
