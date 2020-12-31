@@ -27,7 +27,8 @@ bad_words = [
 				"handicapped",
 				"hoe",
 				"wheelchair-bound",
-				"slut"
+				"slut",
+				"cunt"
 				]
 
 zalgo_vars = ['\u030D', '\u030E', '\u0304', '\u0305', '\u033F',
