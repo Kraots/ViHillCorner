@@ -4,7 +4,7 @@
         "tag_owner_id": 374622847672254466,
         "the_tag_name": "pandie",
         "created_at": "30/12/2020",
-        "uses_count": 3
+        "uses_count": 4
     },
     "f": {
         "tag_content": "F",
@@ -18,7 +18,7 @@
         "tag_owner_id": 463229242273038356,
         "the_tag_name": "bubble wrap",
         "created_at": "31/12/2020",
-        "uses_count": 5
+        "uses_count": 7
     },
     "gay": {
         "tag_content": "daniel wants to suck",
@@ -32,6 +32,6 @@
         "tag_owner_id": 750004830319411240,
         "the_tag_name": "yes",
         "created_at": "31/12/2020",
-        "uses_count": 0
+        "uses_count": 1
     }
 }

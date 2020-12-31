@@ -187,33 +187,36 @@ class Snippets(commands.Cog):
 				await ctx.send("That snippet does not exist!")
 
 
-		@commands.Cog.listener()
-		async def on_message(self, message : discord.Message):
-			if message.author.bot:
-				return
-			presnippet_name = message.content.lower()
-			snippet_name = "".join(presnippet_name.split(";", 1))
-			try:
-				await open_snippets(snippet_name)
-				snippets = await get_snippets_data()
-				snippet = snippets[str(snippet_name)]["snippet_content"]
-				get_credits_info = snippets[str(snippet_name)]["snippet_credits"]
-				credits_user = self.client.get_user(get_credits_info)
-				credits_avatar = credits_user.avatar_url
+	@commands.Cog.listener()
+	async def on_message(self, message : discord.Message):
 
-				snippets[str(snippet_name)]["uses_count"] += 1
-				with open("snippets.json", "w", encoding = "utf-8") as f:
-					json.dump(snippets, f, ensure_ascii = False, indent = 4)
+		if message.author.bot:
+			return
+		presnippet_name = message.content.lower()
+		snippet_name = "".join(presnippet_name.split(";", 1))
 
-				if message.content.lower().startswith(f";{snippet_name}"):
-					em = discord.Embed(color=discord.Color.red())
-					em.set_image(url=snippet)
-					em.set_footer(text=f"Credits: {credits_user}", icon_url=credits_avatar)
-					msg = await message.channel.send(embed=em)
-					await msg.add_reaction('🗑️')
+		try:
+			await open_snippets(snippet_name)
+			snippets = await get_snippets_data()
+			snippet = snippets[str(snippet_name)]["snippet_content"]
+			get_credits_info = snippets[str(snippet_name)]["snippet_credits"]
+			credits_user = self.client.get_user(get_credits_info)
+			credits_avatar = credits_user.avatar_url
 
-			except KeyError:
-				return
+
+			snippets[str(snippet_name)]["uses_count"] += 1
+			with open("snippets.json", "w", encoding = "utf-8") as f:
+				json.dump(snippets, f, ensure_ascii = False, indent = 4)
+
+
+			if message.content.lower().startswith(f";{snippet_name}"):
+				em = discord.Embed(color=discord.Color.red())
+				em.set_image(url=snippet)
+				em.set_footer(text=f"Credits: {credits_user}", icon_url=credits_avatar)
+				msg = await message.channel.send(embed=em)
+				await msg.add_reaction('🗑️')
+		except KeyError:
+			return
 
 
 	@snippet.error
