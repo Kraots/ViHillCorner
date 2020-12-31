@@ -308,7 +308,16 @@ class EcoCommands(commands.Cog):
 
 	@commands.command(aliases=["steal"])
 	@commands.cooldown(1, 20, commands.BucketType.user)
-	async def rob(self, ctx, member : discord.Member):
+	async def rob(self, ctx, member : discord.Member = None):
+		if member is None:
+			await ctx.send("You must specify the user you want to mention, dumbass.")
+			ctx.command.reset_cooldown(ctx)
+			return
+		if member is ctx.author:
+			await ctx.send("You cannot rob yourself, dumbass.")
+			ctx.command.reset_cooldown(ctx)
+			return
+
 		await open_account(ctx.author)
 		await open_account(member)
 		
@@ -317,10 +326,12 @@ class EcoCommands(commands.Cog):
 
 		if ball[0] < 350:
 			await ctx.send("You need `350` coins to rob someone!")
+			ctx.command.reset_cooldown(ctx)
 			return
 
 		if bal[0] < 250:
 			await ctx.send('The user must have at least `250` coins!')
+			ctx.command.reset_cooldown(ctx)
 			return
 
 		earnings = randint(250, bal[0])
@@ -367,6 +378,7 @@ class EcoCommands(commands.Cog):
 		await open_account(ctx.author)
 		if amount is None:
 			await ctx.send('Please enter the amount.')
+			ctx.command.reset_cooldown(ctx)
 			return
 
 		bal = await update_bank(ctx.author)
@@ -377,10 +389,12 @@ class EcoCommands(commands.Cog):
 		
 		if amount > bal[0]:
 			await ctx.send('You do not own that much money!')
+			ctx.command.reset_cooldown(ctx)
 			return
 
 		if amount < 300:
 			await ctx.send('You must bet more than `300` coins.')
+			ctx.command.reset_cooldown(ctx)
 			return
 
 		prefinal = []

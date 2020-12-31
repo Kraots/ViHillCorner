@@ -31,6 +31,8 @@ class Tags(commands.Cog):
 			except KeyError:
 				await ctx.send("Tag `{}` does not exist!".format(tag_name))
 
+
+
 	@tag.command()
 	async def info(self, ctx, *, tag_name : str = None):
 		tags = await get_tags_data()
