@@ -582,11 +582,13 @@ class EcoCommands(commands.Cog):
 
 
                 # PP SUCK (credigs : PANDIE)
-
+	@commands.command()
+	async def ppsuck(self, ctx):
+		await ctx.send("Due to numerous complains the command has been changed to `!race`. {}".format(ctx.author.mention))
 
 	@commands.command()
 	@commands.cooldown(1, 10, commands.BucketType.user)
-	async def ppsuck(self, ctx):
+	async def race(self, ctx):
 		kraots = self.client.get_user(374622847672254466)
 		await open_account(ctx.author)
 		user = ctx.author
@@ -598,61 +600,65 @@ class EcoCommands(commands.Cog):
 		earningss = randint(300, 620)
 		earningsss = randint(600, 1200)
 		earningssss = randint(20000, 150000)
-		earningssssss = randint(500000, 10000000)
+		earningssssss = randint(500000, 5000000)
 		losts = randint(1000, 1200)
 
-		if aaaa == 1:
-			users[str(user.id)]["wallet"] += earnings
-			await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earnings))
-			with open("mainbank.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
+		try:
+
+			if aaaa == 1:
+				users[str(user.id)]["wallet"] += earnings
+				await ctx.send(":third_place: you won the race 3rd place an won: `{:,}` coins.".format(earnings))
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+				return
+
+			elif aaaa == 4:
+				users[str(user.id)]["wallet"] += earningss
+				await ctx.send("U were close to lose the race by getting 5th place. You got a total of: `{:,}` coins.".format(earningss))
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+				return
+
+			elif aaaa == 6:
+				users[str(user.id)]["wallet"] += earningsss
+				await ctx.send("After winning on 4th place you got: `{:,}` coins.".format(earningsss))
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+				return
+
+			elif aaaa == 7:
+				users[str(user.id)]["wallet"] += earningssss
+				await ctx.send(":sparkles: :second_place: after winning on the 2nd place, you won: `{:,}` coins.".format(kraots.name, earningssss))
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+				return
+
+			elif bbbb == 1:
+				users[str(user.id)]["wallet"] += earningssssss
+				await ctx.send(":sparkles: :first_place: :medal: :sparkles: after winning the race on the first place you won a total of: `{:,}` coins.".format(kraots.name, earningssssss))
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+				return
+
+			else:
+				users[str(user.id)]["wallet"] -= losts
+				await ctx.send("Sadly you lost the race, your lost consists of `{:,}` coins from your wallet.".format(losts))
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+				return
+
+		except:
+			ctx.command.reset_cooldown(ctx)
 			return
 
-		elif aaaa == 4:
-			users[str(user.id)]["wallet"] += earningss
-			await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earningss))
-			with open("mainbank.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
-			return
-
-		elif aaaa == 6:
-			users[str(user.id)]["wallet"] += earningsss
-			await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earningsss))
-			with open("mainbank.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
-			return
-
-		elif aaaa == 7:
-			users[str(user.id)]["wallet"] += earningssss
-			await ctx.send(":smirk: you sucked {}'s pp dry and swallowed his white stuff got `{:,}` coins.".format(kraots.name, earningssss))
-			with open("mainbank.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
-			return
-
-		elif bbbb == 1:
-			users[str(user.id)]["wallet"] += earningssssss
-			await ctx.send(":smirk: :smirk: :yum: :yum: you not only sucked {}'s pp dry and swallowed his white stuff, but he also filled every hole untill his white stuff is dripping out of every hole and u got `{:,}` coins.".format(kraots.name, earningssssss))
-			with open("mainbank.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
-			return
-
-		else:
-			users[str(user.id)]["wallet"] -= losts
-			await ctx.send("You did a fucking bad job at sucking and lost `{:,}` coins from your wallet.".format(losts))
-			with open("mainbank.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
-			return
 
 
 
 
-
-
-
-	@ppsuck.error
+	@race.error
 	async def ppsuck_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f"OK OK CHILLE, IK U WANT THAT WHITE STUFF BUT PLEASE WAIT {time_phaserr(error.retry_after)}."
+				msg = f"You cannot race that fast! Please wait: {time_phaserr(error.retry_after)}."
 				await ctx.channel.send(msg)
 
 
