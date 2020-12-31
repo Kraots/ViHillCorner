@@ -71,18 +71,53 @@ class Snippets(commands.Cog):
 
 	@snippet.command()
 	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
-	async def create(self, ctx):
-		def check(m):
-			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
-		await ctx.send("What do you want to name this snippet?")
-		try:
-			presnippet_name = await self.client.wait_for('message', timeout = 60, check=check)
-			snippet_name = presnippet_name.content.lower()
+	async def create(self, ctx, *, get_snippet_name = None):
 
-		except asyncio.TimeoutError:
-			return
+		if get_snippet_name is None:
+			def check(m):
+				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+			await ctx.send("What do you want to name this snippet?")
+			try:
+				presnippet_name = await self.client.wait_for('message', timeout = 60, check=check)
+				snippet_name = presnippet_name.content.lower()
+
+			except asyncio.TimeoutError:
+				return
+
+			else:
+				await ctx.send("Please send the image of the snippet.")
+				try:
+					presnippet_info = await self.client.wait_for('message', timeout = 180, check=check)
+					snippet_info = presnippet_info.attachments[0].url
+
+				except asyncio.TimeoutError:
+					return
+
+				except IndexError:
+					await ctx.send("That is not an image! Please send an image and nothing else!")
+					return
+
+				else:
+					snippets = await get_snippets_data()
+					if str(snippet_name) in snippets:
+						await ctx.send("That snippet already exists!")
+					else:
+						get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
+						snippets[str(snippet_name)] = {}
+						snippets[str(snippet_name)]["snippet_content"] = snippet_info
+						snippets[str(snippet_name)]["snippet_credits"] = ctx.author.id
+						snippets[str(snippet_name)]["snippet_name"] = snippet_name
+						snippets[str(snippet_name)]["created_at"] = get_time
+						snippets[str(snippet_name)]["uses_count"] = 0
+						with open("snippets.json", "w", encoding="utf-8") as f:
+							json.dump(snippets, f, ensure_ascii = False, indent = 4)
+
+						await ctx.send("Snippet Added!")
 
 		else:
+			def check(m):
+				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+
 			await ctx.send("Please send the image of the snippet.")
 			try:
 				presnippet_info = await self.client.wait_for('message', timeout = 180, check=check)
@@ -97,16 +132,16 @@ class Snippets(commands.Cog):
 
 			else:
 				snippets = await get_snippets_data()
-				if str(snippet_name) in snippets:
+				if str(get_snippet_name) in snippets:
 					await ctx.send("That snippet already exists!")
 				else:
 					get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-					snippets[str(snippet_name)] = {}
-					snippets[str(snippet_name)]["snippet_content"] = snippet_info
-					snippets[str(snippet_name)]["snippet_credits"] = ctx.author.id
-					snippets[str(snippet_name)]["snippet_name"] = snippet_name
-					snippets[str(snippet_name)]["created_at"] = get_time
-					snippets[str(snippet_name)]["uses_count"] = 0
+					snippets[str(get_snippet_name)] = {}
+					snippets[str(get_snippet_name)]["snippet_content"] = snippet_info
+					snippets[str(get_snippet_name)]["snippet_credits"] = ctx.author.id
+					snippets[str(get_snippet_name)]["snippet_name"] = get_snippet_name
+					snippets[str(get_snippet_name)]["created_at"] = get_time
+					snippets[str(get_snippet_name)]["uses_count"] = 0
 					with open("snippets.json", "w", encoding="utf-8") as f:
 						json.dump(snippets, f, ensure_ascii = False, indent = 4)
 
@@ -114,58 +149,72 @@ class Snippets(commands.Cog):
 
 	@snippet.command(aliases=['remove'])
 	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
-	async def delete(self, ctx):
+	async def delete(self, ctx, *, get_snippet_name = None):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
-		await ctx.send("What's the name of the snippet you wish to delete?")
-		try:
-			raw_get_snippet = await self.client.wait_for('message', timeout=60, check=check)
-			snippet_name = raw_get_snippet.content.lower()
+		if get_snippet_name is None:
+			await ctx.send("What's the name of the snippet you wish to delete?")
+			try:
+				raw_get_snippet = await self.client.wait_for('message', timeout=60, check=check)
+				snippet_name = raw_get_snippet.content.lower()
 
-		except asyncio.TimeoutError:
-			return
+			except asyncio.TimeoutError:
+				return
 
+			else:
+				try:
+					snippets = await get_snippets_data()
+					del snippets[str(snippet_name)]
+					with open ("snippets.json", "w", encoding="utf-8") as f:
+						json.dump(snippets, f, ensure_ascii = False, indent = 4)
+
+					await ctx.send(f"`{snippet_name}` deleted succesfully!")
+
+				except KeyError:
+					await ctx.send("That snippet does not exist!")
+				
 		else:
 			try:
 				snippets = await get_snippets_data()
-				del snippets[str(snippet_name)]
+				del snippets[str(get_snippet_name)]
 				with open ("snippets.json", "w", encoding="utf-8") as f:
 					json.dump(snippets, f, ensure_ascii = False, indent = 4)
 
-				await ctx.send(f"`{snippet_name}` deleted succesfully!")
+				await ctx.send(f"`{get_snippet_name}` deleted succesfully!")
 
 			except KeyError:
 				await ctx.send("That snippet does not exist!")
 
 
-	@commands.Cog.listener()
-	async def on_message(self, message : discord.Message):
-		if message.author.bot:
-			return
-		presnippet_name = message.content.lower()
-		snippet_name = "".join(presnippet_name.split(";", 1))
-		try:
-			await open_snippets(snippet_name)
-			snippets = await get_snippets_data()
-			snippet = snippets[str(snippet_name)]["snippet_content"]
-			get_credits_info = snippets[str(snippet_name)]["snippet_credits"]
-			credits_user = self.client.get_user(get_credits_info)
-			credits_avatar = credits_user.avatar_url
+		@commands.Cog.listener()
+		async def on_message(self, message : discord.Message):
+			if message.author.bot:
+				return
+			presnippet_name = message.content.lower()
+			snippet_name = "".join(presnippet_name.split(";", 1))
+			try:
+				await open_snippets(snippet_name)
+				snippets = await get_snippets_data()
+				snippet = snippets[str(snippet_name)]["snippet_content"]
+				get_credits_info = snippets[str(snippet_name)]["snippet_credits"]
+				credits_user = self.client.get_user(get_credits_info)
+				credits_avatar = credits_user.avatar_url
 
-			snippets[str(snippet_name)]["uses_count"] += 1
-			with open("snippets.json", "w", encoding = "utf-8") as f:
-				json.dump(snippets, f, ensure_ascii = False, indent = 4)
+				snippets[str(snippet_name)]["uses_count"] += 1
+				with open("snippets.json", "w", encoding = "utf-8") as f:
+					json.dump(snippets, f, ensure_ascii = False, indent = 4)
 
-			if message.content.lower().startswith(f";{snippet_name}"):
-				em = discord.Embed(color=discord.Color.red())
-				em.set_image(url=snippet)
-				em.set_footer(text=f"Credits: {credits_user}", icon_url=credits_avatar)
-				msg = await message.channel.send(embed=em)
-				await msg.add_reaction('🗑️')
+				if message.content.lower().startswith(f";{snippet_name}"):
+					em = discord.Embed(color=discord.Color.red())
+					em.set_image(url=snippet)
+					em.set_footer(text=f"Credits: {credits_user}", icon_url=credits_avatar)
+					msg = await message.channel.send(embed=em)
+					await msg.add_reaction('🗑️')
 
-		except KeyError:
-			return
+			except KeyError:
+				return
+
 
 	@snippet.error
 	async def snippet_error(self, ctx, error):
