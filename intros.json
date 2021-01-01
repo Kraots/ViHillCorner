@@ -8,12 +8,12 @@
         "interests": "singing, photographing, people"
     },
     "747329236695777340": {
-        "name": "twilight",
-        "location": "asia",
+        "name": "Twilight",
+        "location": "Asia",
         "age": 15,
-        "gender": "female",
-        "status": "single",
-        "interests": "music, webtoons, kpop, talking to people etc."
+        "gender": "Female",
+        "status": "Taken",
+        "interests": "Music, webtoons, kpop, discord and food"
     },
     "543948420608425990": {
         "name": "confesscords son",
@@ -65,11 +65,11 @@
     },
     "732068233682747433": {
         "name": "pandie",
-        "location": "my mom 😃",
+        "location": "america",
         "age": 11,
         "gender": "female",
-        "status": "single",
-        "interests": "food anime and sleeping"
+        "status": "taken",
+        "interests": "food anime sleeping uhhh books and discord"
     },
     "750004830319411240": {
         "name": "What's your name?",
@@ -196,8 +196,8 @@
         "location": "Europe",
         "age": 69420,
         "gender": "male",
-        "status": "single | not looking | go away",
-        "interests": "dying"
+        "status": "taken by the cutiest :smirk:",
+        "interests": "kenji :smirk:"
     },
     "696368083517964288": {
         "name": "Spen",
@@ -206,5 +206,21 @@
         "gender": "Racist",
         "status": "taken",
         "interests": "carrots shit server"
+    },
+    "573662104549195776": {
+        "name": "Weaver Le Catto",
+        "location": "I loss",
+        "age": 16,
+        "gender": "Male",
+        "status": "taken",
+        "interests": "CATS! catcatcatcatcatcatcatcatcatcat owo"
+    },
+    "212362991138635776": {
+        "name": "Hubaka Ghayati Setyakurnia",
+        "location": "Bandung",
+        "age": 23,
+        "gender": "Male",
+        "status": "single",
+        "interests": "Anime and gaming"
     }
 }
