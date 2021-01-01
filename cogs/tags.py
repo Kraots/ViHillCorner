@@ -252,6 +252,40 @@ class Tags(commands.Cog):
 						return
 
 
+	@tag.command()
+	@commands.is_owner()
+	async def remove(self, ctx, *, tag_name: str = None):
+		if tag_name is None:
+			await ctx.send("`!tag delete <tag_name>`")
+			return
+		
+		else:
+			tags = await get_tags_data()
+			try:
+				the_tag_name = tags[str(tag_name)]["the_tag_name"]
+				get_tag_owner = tags[str(tag_name)]["tag_owner_id"]
+				tag_created_at = tags[str(tag_name)]["created_at"]
+				tag_owner = self.client.get_user(get_tag_owner)
+
+			except KeyError:
+				await ctx.send("Tag does not exist!")
+				return
+			
+			else:
+			
+				del tags[str(tag_name)]
+
+				with open("tags.json", "w", encoding = "utf-8") as f:
+					json.dump(tags, f, ensure_ascii = False, indent = 4)
+				
+				em = discord.Embed(title="Tag Deleted", color=color.red)
+				em.add_field(name = "Name", value = the_tag_name)
+				em.add_field(name = "Owner", value = tag_owner)
+				em.set_footer(text=f"Tag created at • {tag_created_at}")
+
+				await ctx.send(embed=em)
+		
+
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
 		tags = await get_tags_data()

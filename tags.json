@@ -53,6 +53,20 @@
         "tag_owner_id": 750004830319411240,
         "the_tag_name": "porn",
         "created_at": "31/12/2020",
-        "uses_count": 0
+        "uses_count": 1
+    },
+    "why are you gay": {
+        "tag_content": "Please send the tag's content. $mention",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "why are you gay",
+        "created_at": "01/01/2021",
+        "uses_count": 2
+    },
+    "dumb": {
+        "tag_content": "<@!750004830319411240>",
+        "tag_owner_id": 374622847672254466,
+        "the_tag_name": "dumb",
+        "created_at": "01/01/2021",
+        "uses_count": 1
     }
 }
