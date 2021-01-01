@@ -6,7 +6,7 @@ import datetime
 import utils.colors as color
 from utils.paginator import SimplePages
 import re
-from utils.paginator_v2 import WrappedPaginator, PaginatorEmbedInterface
+from utils.paginator_v3 import WrappedPaginator, PaginatorEmbedInterface
 
 filter_invite = re.compile("(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 
@@ -56,7 +56,7 @@ class Tags(commands.Cog):
 				await ctx.send("Tag `{}` does not exist!".format(tag_name))
 
 
-	@commands.command(invoke_without_command = True, case_insensitive = True, ignore_extra = False)
+	@commands.command()
 	async def tags(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
@@ -90,12 +90,6 @@ class Tags(commands.Cog):
 
 			await interface.send_to(ctx)
 
-	@tags.command()
-	async def all(self, ctx):
-		entries = await get_tags_data()
-		p = TagPages(entries = entries, per_page = 7)
-		await p.start(ctx)
-
 	@tag.command()
 	async def list(self, ctx, member: discord.Member = None):
 		if member is None:
@@ -123,13 +117,12 @@ class Tags(commands.Cog):
 
 		result = "\n".join(tags_list)
 
-		if len(result) > 35:
+		if len(result) > 1:
 			paginator = WrappedPaginator(prefix = f"**`{member}`'𝘀 𝗢𝘄𝗻𝗲𝗱 𝗧𝗮𝗴𝘀** \n", suffix = '', max_size = 250)
 			paginator.add_line(result)
 			interface = PaginatorEmbedInterface(ctx.bot, paginator, owner = ctx.author)
 
 			await interface.send_to(ctx)
-
 
 
 	@tag.command()
@@ -391,10 +384,6 @@ class Tags(commands.Cog):
 		if isinstance(error, commands.TooManyArguments):
 			return
 
-	@tags.error
-	async def tags_error(self, ctx, error):
-		if isinstance(error, commands.TooManyArguments):
-			return
 
 
 async def get_tags_data():
