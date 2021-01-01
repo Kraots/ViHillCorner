@@ -147,7 +147,7 @@ class Snippets(commands.Cog):
 
 					await ctx.send("Snippet Added!")
 
-	@snippet.command(aliases=['remove'])
+	@snippet.command()
 	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
 	async def delete(self, ctx, *, get_snippet_name = None):
 		def check(m):
@@ -165,11 +165,66 @@ class Snippets(commands.Cog):
 			else:
 				try:
 					snippets = await get_snippets_data()
+
+					snippet_owner = snippets[str(snippet_name)]["snippet_credits"]
+
+					if ctx.author.id != snippet_owner:
+						await ctx.send("You do not own this snippet!")
+						return
+
+					else:
+						del snippets[str(snippet_name)]
+						with open ("snippets.json", "w", encoding="utf-8") as f:
+							json.dump(snippets, f, ensure_ascii = False, indent = 4)
+
+						await ctx.send(f"`{snippet_name}` deleted succesfully!")
+
+				except KeyError:
+					await ctx.send("That snippet does not exist!")
+				
+		else:
+			try:
+				snippets = await get_snippets_data()
+				snippet_owner = snippets[str(get_snippet_name)]["snippet_credits"]
+
+				if ctx.author.id != snippet_owner:
+						await ctx.send("You do not own this snippet!")
+						return
+				else:
+
+					del snippets[str(get_snippet_name)]
+					with open ("snippets.json", "w", encoding="utf-8") as f:
+						json.dump(snippets, f, ensure_ascii = False, indent = 4)
+
+					await ctx.send(f"`{get_snippet_name}` deleted succesfully!")
+
+			except KeyError:
+				await ctx.send("That snippet does not exist!")
+
+
+	@snippet.command()
+	@commands.is_owner()
+	async def remove(self, ctx, *, get_snippet_name = None):
+		def check(m):
+			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+
+		if get_snippet_name is None:
+			await ctx.send("What's the name of the snippet you wish to remove?")
+			try:
+				raw_get_snippet = await self.client.wait_for('message', timeout=60, check=check)
+				snippet_name = raw_get_snippet.content.lower()
+
+			except asyncio.TimeoutError:
+				return
+
+			else:
+				try:
+					snippets = await get_snippets_data()
 					del snippets[str(snippet_name)]
 					with open ("snippets.json", "w", encoding="utf-8") as f:
 						json.dump(snippets, f, ensure_ascii = False, indent = 4)
 
-					await ctx.send(f"`{snippet_name}` deleted succesfully!")
+					await ctx.send(f"`{snippet_name}` removed succesfully!")
 
 				except KeyError:
 					await ctx.send("That snippet does not exist!")
@@ -181,10 +236,11 @@ class Snippets(commands.Cog):
 				with open ("snippets.json", "w", encoding="utf-8") as f:
 					json.dump(snippets, f, ensure_ascii = False, indent = 4)
 
-				await ctx.send(f"`{get_snippet_name}` deleted succesfully!")
+				await ctx.send(f"`{get_snippet_name}` removed succesfully!")
 
 			except KeyError:
 				await ctx.send("That snippet does not exist!")
+
 
 
 	@commands.Cog.listener()
