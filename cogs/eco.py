@@ -585,6 +585,7 @@ class EcoCommands(commands.Cog):
 
                 # PP SUCK (credigs : PANDIE)
 	@commands.command()
+	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def ppsuck(self, ctx):
 		kraots = self.client.get_user(374622847672254466)
 		await open_account(ctx.author)
