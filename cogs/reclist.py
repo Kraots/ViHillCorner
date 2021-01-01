@@ -8,7 +8,7 @@ class Reclist(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 
-	@commands.group(invoke_without_command=True, case_insensitive=True)
+	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra = False)
 	async def reclist(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
@@ -86,11 +86,8 @@ class Reclist(commands.Cog):
 	async def reclist_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.send("User does not have any reclist!")
-
-
-
-
-
+		elif isinstance(error, commands.TooManyArguments):
+			return
 
 
 

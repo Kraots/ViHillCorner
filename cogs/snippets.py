@@ -34,7 +34,7 @@ class Snippets(commands.Cog):
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 
-	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['snippets'])
+	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['snippets'], ignore_extra = False)
 	async def snippet(self, ctx):
 		with open("snippets.json", "r") as f:
 			entries = json.load(f)
@@ -348,6 +348,8 @@ class Snippets(commands.Cog):
 	async def snippet_error(self, ctx, error):
 		if isinstance(error, commands.errors.MissingAnyRole):
 			await ctx.send("You need to be `lvl 55+` to use this command!")
+		elif isinstance(error, commands.TooManyArguments):
+			return
 
 	@create.error
 	async def create_error(self, ctx, error):

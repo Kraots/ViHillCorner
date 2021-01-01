@@ -34,7 +34,7 @@ class Tags(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 
-	@commands.group(invoke_without_command=True, case_insensitive=True)
+	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra = False)
 	async def tag(self, ctx, *, tag_name: str = None):
 		if tag_name is None:
 			await ctx.send("`!tag <tag_name>`")
@@ -56,7 +56,7 @@ class Tags(commands.Cog):
 				await ctx.send("Tag `{}` does not exist!".format(tag_name))
 
 
-	@commands.command()
+	@commands.command(invoke_without_command = True, case_insensitive = True, ignore_extra = False)
 	async def tags(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
@@ -90,7 +90,11 @@ class Tags(commands.Cog):
 
 			await interface.send_to(ctx)
 
-
+	@tags.command()
+	async def all(self, ctx):
+		entries = await get_tags_data()
+		p = TagPages(entries = entries, per_page = 7)
+		await p.start(ctx)
 
 	@tag.command()
 	async def list(self, ctx, member: discord.Member = None):
@@ -382,6 +386,15 @@ class Tags(commands.Cog):
 		if isinstance(error, commands.errors.MissingAnyRole):
 			await ctx.send("You need to be `lvl 15+` to use this command!")
 
+	@tag.error
+	async def tag_error(self, ctx, error):
+		if isinstance(error, commands.TooManyArguments):
+			return
+
+	@tags.error
+	async def tags_error(self, ctx, error):
+		if isinstance(error, commands.TooManyArguments):
+			return
 
 
 async def get_tags_data():
