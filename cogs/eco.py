@@ -586,7 +586,84 @@ class EcoCommands(commands.Cog):
                 # PP SUCK (credigs : PANDIE)
 	@commands.command()
 	async def ppsuck(self, ctx):
-		await ctx.send("Due to numerous complains the command has been changed to `!race`. {}".format(ctx.author.mention))
+		kraots = self.client.get_user(374622847672254466)
+		await open_account(ctx.author)
+		user = ctx.author
+		users = await get_bank_data()
+
+		aaaa = randint(1, 7)
+		bbbb = randint(1, 100)
+		earnings = randint(800, 2500)
+		earningss = randint(300, 620)
+		earningsss = randint(600, 1200)
+		earningssss = randint(20000, 150000)
+		earningssssss = randint(500000, 5000000)
+		earningsssssss = randint(500000, 50000000)
+		losts = randint(1000, 1200)
+
+		try:
+
+			if aaaa == 1:
+				users[str(user.id)]["wallet"] += earnings
+				await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earnings))
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+				return
+
+			elif aaaa == 4:
+				users[str(user.id)]["wallet"] += earningss
+				await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earningss))
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+				return
+
+			elif aaaa == 6:
+				users[str(user.id)]["wallet"] += earningsss
+				await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earningsss))
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+				return
+
+			elif aaaa == 7:
+				users[str(user.id)]["wallet"] += earningssss
+				
+				if ctx.author.id == 711356598580412439:
+					await ctx.send(":smirk: you sucked {}'s pp dry and swallowed his white stuff got `{:,}` coins.".format(kraots.name, earningssss))
+				
+				else:
+					await ctx.send(":smirk: You sucked your best friend and he liked it very much and decided to gave you `{:,}`".format(earningssss))
+
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+				return
+
+			elif bbbb == 1:
+				users[str(user.id)]["wallet"] += earningsssssss
+				if ctx.author.id == 711356598580412439:
+					await ctx.send(":smirk: :smirk: :yum: :yum: you not only sucked {}'s pp dry and swallowed his white stuff, but he also filled every hole untill his white stuff is dripping out of every hole and u got `{:,}` coins.".format(kraots.name, earningsssssss))
+
+					with open("mainbank.json", "w", encoding="utf-8") as f:
+						json.dump(users, f, ensure_ascii = False, indent = 4)
+					return
+				
+				else:
+					users[str(user.id)]["wallet"] += earningssssss
+					await ctx.send(":smirk: :smirk: you sucked your crush and she loved it, you ended up dating and got {:,} coins.".format(earningssssss))
+
+					with open("mainbank.json", "w", encoding="utf-8") as f:
+						json.dump(users, f, ensure_ascii = False, indent = 4)
+					return
+
+			else:
+				users[str(user.id)]["wallet"] -= losts
+				await ctx.send("You did a fucking bad job at sucking and lost `{:,}` coins from your wallet.".format(losts))
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+				return
+
+		except:
+			ctx.command.reset_cooldown(ctx)
+			return
 
 	@commands.command()
 	@commands.cooldown(1, 10, commands.BucketType.user)
@@ -658,11 +735,16 @@ class EcoCommands(commands.Cog):
 
 
 	@race.error
-	async def ppsuck_error(self, ctx, error):
+	async def race_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f"You cannot race that fast! Please wait: {time_phaserr(error.retry_after)}."
 				await ctx.channel.send(msg)
 
+	@ppsuck.error
+	async def ppsuck_error(self, ctx, error):
+		if isinstance(error, commands.CommandOnCooldown):
+				msg = f"OK OK CHILLE, IK U WANT THAT WHITE STUFF BUT PLEASE WAIT {time_phaserr(error.retry_after)}."
+				await ctx.channel.send(msg)
 
 	@gtn.error
 	async def gtn_error(self, ctx, error):

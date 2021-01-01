@@ -172,7 +172,7 @@
         "snippet_credits": 374622847672254466,
         "snippet_name": "pand 5",
         "created_at": "31/12/2020",
-        "uses_count": 0
+        "uses_count": 1
     },
     "simp twilight": {
         "snippet_content": "https://cdn.discordapp.com/attachments/752164200222163016/793553459671728138/Screenshot_20201228_130741.png",
@@ -243,5 +243,12 @@
         "snippet_name": "dan x neko 2",
         "created_at": "01/01/2021",
         "uses_count": 0
+    },
+    "science pandie": {
+        "snippet_content": "https://cdn.discordapp.com/attachments/750160851822182482/794675392149061672/image0.png",
+        "snippet_credits": 374622847672254466,
+        "snippet_name": "science pandie",
+        "created_at": "01/01/2021",
+        "uses_count": 1
     }
 }

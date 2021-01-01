@@ -19,7 +19,7 @@ class Help(commands.Cog):
 		helpEm.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 		helpEm.set_thumbnail(url=self.client.user.avatar_url)
 		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`, `define`, `search`, `calculator`, `marry`, `marriedwho`, `divorce`, `scrs`, `tag`, `snippets`")
-		helpEm.add_field(name="Economy", value="`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `race`", inline=False)
+		helpEm.add_field(name="Economy", value="`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `race`, `ppsuck`", inline=False)
 		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `spam`, `english`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `serverinfo`, `vote`", inline=False)
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
 			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `kick`, `ban`, `opban`, `unban`, `opunban`, `nsfw`, `slowmode`, `snippet`", inline=False)
@@ -29,6 +29,13 @@ class Help(commands.Cog):
 
 		await ctx.message.channel.send(embed=helpEm)
 	
+	@help.command()
+	async def ppsuck(self, ctx):
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!ppsuck```")
+		em.add_field(name="***Info:***", value="\u2800• Suck pp for some quick money.")
+
+		await ctx.send(embed=em)
+
 	@help.command(aliases=['tags'])
 	async def tag(self, ctx):
 		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```\n!tag <tag_name>```")
