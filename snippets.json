@@ -222,5 +222,26 @@
         "snippet_name": "nitro pandie",
         "created_at": "01/01/2021",
         "uses_count": 1
+    },
+    "kenji 😏": {
+        "snippet_content": "https://cdn.discordapp.com/attachments/750160851822182482/794656374050258994/Screenshot_20210101-014704_Discord.png",
+        "snippet_credits": 374622847672254466,
+        "snippet_name": "kenji 😏",
+        "created_at": "01/01/2021",
+        "uses_count": 0
+    },
+    "dan x neko 1": {
+        "snippet_content": "https://cdn.discordapp.com/attachments/750160851822182482/794656417167441960/Screenshot_20210101_025059.png",
+        "snippet_credits": 374622847672254466,
+        "snippet_name": "dan x neko 1",
+        "created_at": "01/01/2021",
+        "uses_count": 0
+    },
+    "dan x neko 2": {
+        "snippet_content": "https://cdn.discordapp.com/attachments/750160851822182482/794656445622255626/Screenshot_20210101_025109.png",
+        "snippet_credits": 374622847672254466,
+        "snippet_name": "dan x neko 2",
+        "created_at": "01/01/2021",
+        "uses_count": 0
     }
 }
