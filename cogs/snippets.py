@@ -130,7 +130,7 @@ class Snippets(commands.Cog):
 			except KeyError:
 				await ctx.send("Snippet `{}` does not exist!".format(snippet_name))
 
-	@snippet.command()
+	@snippet.command(aliases=['make', 'add'])
 	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
 	async def create(self, ctx, *, get_snippet_name = None):
 
@@ -145,10 +145,15 @@ class Snippets(commands.Cog):
 					await ctx.send("Snippet's name cannot be that long! Max is: `35`")
 					return
 
+				elif len(snippet_name) < 3:
+					await ctx.send("Snippet's name cannot be less than `3` characters long!")
+					return
+
 			except asyncio.TimeoutError:
 				return
 
 			else:
+
 				await ctx.send("Please send the image of the snippet.")
 				try:
 					presnippet_info = await self.client.wait_for('message', timeout = 180, check=check)
@@ -182,6 +187,10 @@ class Snippets(commands.Cog):
 			
 			if len(get_snippet_name) >= 35:
 					await ctx.send("Snippet's name cannot be that long! Max is: `35`")
+					return
+			
+			elif len(get_snippet_name) < 3:
+					await ctx.send("Snippet's name cannot be less than `3` characters long!")
 					return
 
 			def check(m):

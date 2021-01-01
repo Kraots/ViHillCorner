@@ -161,7 +161,7 @@ class Tags(commands.Cog):
 			except KeyError:
 				await ctx.send("Tag `{}` does not exist!".format(tag_name))
 
-	@tag.command(aliases=['make'])
+	@tag.command(aliases=['make', 'add'])
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")	
 	async def create(self, ctx, *, tag_name_constructor : str = None):
 		tags = await get_tags_data()
@@ -187,6 +187,10 @@ class Tags(commands.Cog):
 				
 				elif len(tag_name) >= 35:
 					await ctx.send("Tag's name canot be longer than `35` characters!")
+					return
+				
+				elif len(tag_name) < 3:
+					await ctx.send("Tag's name cannot be less than `3` characters long!")
 					return
 				
 			except asyncio.TimeoutError:
@@ -243,6 +247,9 @@ class Tags(commands.Cog):
 			elif len(tag_name_constructor) >= 35:
 				await ctx.send("Tag's name canot be longer than `35` characters!")
 				return
+			elif len(tag_name_constructor) < 3:
+					await ctx.send("Tag's name cannot be less than `3` characters long!")
+					return
 
 			await ctx.send("Please send the tag's content. {}".format(ctx.author.mention))
 			try:

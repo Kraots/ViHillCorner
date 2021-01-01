@@ -53,7 +53,7 @@
         "tag_owner_id": 374622847672254466,
         "the_tag_name": "dumb",
         "created_at": "01/01/2021",
-        "uses_count": 1
+        "uses_count": 2
     },
     "sad": {
         "tag_content": "<:umaru_cry:750757917501948026> <:vampy_cry:750755087986458805> <:whytheworldsocruel:773539887349497906> <:why:758755649986887690> <:vampy_cry:750755087986458805> <:rooSob:773536960068190229> <:sam_cry:773538203122008084> <:peppo_cry:750763418272792648> <:pepolife:758755922695684096> <:pepecry:773834962063458304> <:pepe_sad:750756320449134663> <:pepe_f:773535323874394134> <:chickcry:757940480083230820> <:blobsweats:757937942428778507> <:angry_cry:750760272184213517>",
@@ -82,5 +82,54 @@
         "the_tag_name": "xd",
         "created_at": "01/01/2021",
         "uses_count": 1
+    },
+    "cakrots": {
+        "tag_content": "stupid",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "cakrots",
+        "created_at": "01/01/2021",
+        "uses_count": 1
+    },
+    "tag": {
+        "tag_content": "to create a tag write !tag create , thank you",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "tag",
+        "created_at": "01/01/2021",
+        "uses_count": 2
+    },
+    "help": {
+        "tag_content": "Commands\nee, nick, profile, created, joined, av, waifu, invite, suggest, spotify, meme, cat, dog, snipe, nsfw, topic, gayrate, straightrate , simprate, hornyrate, boomerrate, 8ball, fight, birthday, intro, whois, reclist, dev-portal, perm-calc, cr, vampify, clapify, define, search, calculator, marry, marriedwho, divorce, scrs, tag, snippets\nEconomy\nbalance, deposit, withdraw, steal, slots, beg, give, work, crime, guess, race\nInfo\nuntill-partner, membercount, level, rank, sfw, spam, english, botinfo, uptime, ping, serverad, rawad, serverinfo, vote",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "help",
+        "created_at": "01/01/2021",
+        "uses_count": 3
+    },
+    "pic perms": {
+        "tag_content": "what",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "pic perms",
+        "created_at": "01/01/2021",
+        "uses_count": 1
+    },
+    ".": {
+        "tag_content": ".",
+        "tag_owner_id": 374622847672254466,
+        "the_tag_name": ".",
+        "created_at": "01/01/2021",
+        "uses_count": 0
+    },
+    "discord status": {
+        "tag_content": "https://discordstatus.com",
+        "tag_owner_id": 374622847672254466,
+        "the_tag_name": "discord status",
+        "created_at": "01/01/2021",
+        "uses_count": 1
+    },
+    "discordstatus": {
+        "tag_content": "https://discordstatus.com",
+        "tag_owner_id": 374622847672254466,
+        "the_tag_name": "discordstatus",
+        "created_at": "01/01/2021",
+        "uses_count": 0
     }
 }
