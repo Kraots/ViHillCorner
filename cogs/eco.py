@@ -56,6 +56,7 @@ class EcoCommands(commands.Cog):
 		user = member
 		users = await get_bank_data()
 
+
 		wallet_amt = users[str(user.id)]['wallet']
 		bank_amt = users[str(user.id)]['bank']
 		total_amt = users[str(user.id)]["wallet"] + users[str(user.id)]["bank"]
@@ -63,6 +64,7 @@ class EcoCommands(commands.Cog):
 		em.add_field(name="Wallet Balance", value="`{:,}` coins".format(wallet_amt), inline=False)
 		em.add_field(name="Bank Balance", value="`{:,}` coins".format(bank_amt), inline=False)
 		em.add_field(name="Total Balance", value="`{:,}` coins".format(total_amt))
+
 		await ctx.send(embed=em)
 
 	@balance.command(aliases=['add-bank'])
