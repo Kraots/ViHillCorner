@@ -33,5 +33,26 @@
         "the_tag_name": "yes",
         "created_at": "31/12/2020",
         "uses_count": 1
+    },
+    "inv": {
+        "tag_content": "https://discord.gg/Uf2kA8q",
+        "tag_owner_id": 374622847672254466,
+        "the_tag_name": "inv",
+        "created_at": "31/12/2020",
+        "uses_count": 1
+    },
+    "putin": {
+        "tag_content": "https://www.youtube.com/watch?v=oyy5meN44qg",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "putin",
+        "created_at": "31/12/2020",
+        "uses_count": 1
+    },
+    "porn": {
+        "tag_content": "gay",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "porn",
+        "created_at": "31/12/2020",
+        "uses_count": 0
     }
 }

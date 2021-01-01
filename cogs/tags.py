@@ -5,7 +5,9 @@ import asyncio
 import datetime
 import utils.colors as color
 from utils.paginator import SimplePages
+import re
 
+filter_invite = re.compile("(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 
 
 class TagPageEntry:
@@ -104,6 +106,11 @@ class Tags(commands.Cog):
 			try:
 				pre_tag = await self.client.wait_for('message', timeout=180, check=check)
 				tag_name = pre_tag.content.lower()
+				matches = re.findall(filter_invite, tag_name)
+
+				for tag_name in matches:
+					await ctx.send("No invites or what so ever.")
+					return
 
 				if str(tag_name) in tags:
 					await ctx.send("Tag name already taken.")
@@ -125,6 +132,11 @@ class Tags(commands.Cog):
 						return					
 					else:
 						tag_content = pre_tag_content.content
+						matches = re.findall(filter_invite, tag_content)
+
+						for tag_content in matches:
+							await ctx.send("No invites or what so ever.")
+							return
 
 				except asyncio.TimeoutError:
 					await ctx.send("Time expired. {}".format(ctx.author.mention))
@@ -146,6 +158,12 @@ class Tags(commands.Cog):
 
 
 		else:
+
+			matches = re.findall(filter_invite, tag_name_constructor)
+			for tag_name_constructor in matches:
+				await ctx.send("No invites or what so ever.")
+				return
+
 			def check(m):
 				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
@@ -165,6 +183,11 @@ class Tags(commands.Cog):
 					return					
 				else:
 					tag_content = pre_tag_content.content
+					matches = re.findall(filter_invite, tag_content)
+
+					for tag_content in matches:
+						await ctx.send("No invites or what so ever.")
+						return
 
 			except asyncio.TimeoutError:
 				await ctx.send("Time expired. {}".format(ctx.author.mention))
