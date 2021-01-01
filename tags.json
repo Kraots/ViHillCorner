@@ -54,5 +54,33 @@
         "the_tag_name": "dumb",
         "created_at": "01/01/2021",
         "uses_count": 1
+    },
+    "sad": {
+        "tag_content": "<:umaru_cry:750757917501948026> <:vampy_cry:750755087986458805> <:whytheworldsocruel:773539887349497906> <:why:758755649986887690> <:vampy_cry:750755087986458805> <:rooSob:773536960068190229> <:sam_cry:773538203122008084> <:peppo_cry:750763418272792648> <:pepolife:758755922695684096> <:pepecry:773834962063458304> <:pepe_sad:750756320449134663> <:pepe_f:773535323874394134> <:chickcry:757940480083230820> <:blobsweats:757937942428778507> <:angry_cry:750760272184213517>",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "sad",
+        "created_at": "01/01/2021",
+        "uses_count": 0
+    },
+    "no": {
+        "tag_content": "lmao",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "no",
+        "created_at": "01/01/2021",
+        "uses_count": 0
+    },
+    "fuck": {
+        "tag_content": "carrots",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "fuck",
+        "created_at": "01/01/2021",
+        "uses_count": 0
+    },
+    "xd": {
+        "tag_content": ";;makemod <@750004830319411240>",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "xd",
+        "created_at": "01/01/2021",
+        "uses_count": 1
     }
 }

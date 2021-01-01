@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
 import json
+from utils.paginator_v2 import WrappedPaginator, PaginatorEmbedInterface
 
-class Birthdays(commands.Cog):
+class Reclist(commands.Cog):
 
 	def __init__(self, client):
 		self.client = client
@@ -21,9 +22,11 @@ class Birthdays(commands.Cog):
 		for line in alist.splitlines():
 			final = alist.replace("\n", "\n`###`\u2800")
 
-		em = discord.Embed(color=member.color, title=f"{member.name}'s Anime Recommendations:", description = f"`###`\u2800{final}")
-		em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
-		await ctx.send(embed=em)
+		if len(final) > 1:
+			paginator = WrappedPaginator(prefix=f"**`{member.name}`'𝘀 𝗔𝗻𝗶𝗺𝗲 𝗥𝗲𝗰𝗼𝗺𝗺𝗲𝗻𝗱𝗮𝘁𝗶𝗼𝗻𝘀:**\n", suffix='', max_size = 500)
+			paginator.add_line(final)
+			interface = PaginatorEmbedInterface(ctx.bot, paginator, owner=ctx.author)
+			await interface.send_to(ctx)
 
 
 
@@ -37,7 +40,7 @@ class Birthdays(commands.Cog):
 		users = await get_arec_data()
 
 		users[str(user.id)] = {}
-		users[str(user.id)]['reclist'] = args
+		users[str(user.id)]['reclist'] = f"`###`\u2800{args}"
 
 		with open("AnimeList.json", "w", encoding="utf-8") as f:
 			json.dump(users, f, ensure_ascii = False, indent = 4)
@@ -123,4 +126,4 @@ async def update_arec(user, change = "\n", mode = "reclist"):
 
 
 def setup(client):
-	client.add_cog(Birthdays(client))
+	client.add_cog(Reclist(client))

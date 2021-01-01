@@ -5,6 +5,7 @@ import asyncio
 from utils.paginator import SimplePages
 import datetime
 import utils.colors as color
+from utils.paginator_v2 import WrappedPaginator, PaginatorEmbedInterface
 
 class TagPageEntry:
 	def __init__(self, entry):
@@ -40,6 +41,66 @@ class Snippets(commands.Cog):
 		
 		p = SnippetPages(entries = entries, per_page = 7)
 		await p.start(ctx)
+
+
+	@snippet.command()
+	async def list(self, ctx, member: discord.Member = None):
+		if member is None:
+			member = ctx.author
+
+		snippets = await get_snippets_data()
+
+		snippets_list = []
+		index = 0
+		
+		for key in snippets:
+			owner_id = snippets[str(key)]["snippet_credits"]
+			snippet_owner = self.client.get_user(owner_id)
+
+			if str(member) in str(snippet_owner):
+				snippet_name = snippets[str(key)]["snippet_name"]
+				get_snippet_create_date = snippets[str(key)]["created_at"]
+
+				fin = f"{snippet_name} (`Created At`: {get_snippet_create_date})"
+
+				if not snippet_name in snippets_list:
+					index += 1
+					indexed_row = f"{index}. {fin}"
+					snippets_list.append(indexed_row)
+
+		result = "\n".join(snippets_list)
+
+		if len(result) > 35:
+			paginator = WrappedPaginator(prefix = f'**`{member}` 𝗢𝘄𝗻𝗲𝗱 𝗦𝗻𝗶𝗽𝗽𝗲𝘁𝘀** \n', suffix = '', max_size = 250)
+			paginator.add_line(result)
+			interface = PaginatorEmbedInterface(ctx.bot, paginator, owner = ctx.author)
+
+			await interface.send_to(ctx)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	@snippet.command()
 	async def info(self, ctx, *, snippet_name : str = None):
@@ -80,6 +141,9 @@ class Snippets(commands.Cog):
 			try:
 				presnippet_name = await self.client.wait_for('message', timeout = 60, check=check)
 				snippet_name = presnippet_name.content.lower()
+				if len(snippet_name) >= 35:
+					await ctx.send("Snippet's name cannot be that long! Max is: `35`")
+					return
 
 			except asyncio.TimeoutError:
 				return
@@ -115,6 +179,11 @@ class Snippets(commands.Cog):
 						await ctx.send("Snippet Added!")
 
 		else:
+			
+			if len(get_snippet_name) >= 35:
+					await ctx.send("Snippet's name cannot be that long! Max is: `35`")
+					return
+
 			def check(m):
 				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 

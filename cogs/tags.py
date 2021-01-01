@@ -6,6 +6,7 @@ import datetime
 import utils.colors as color
 from utils.paginator import SimplePages
 import re
+from utils.paginator_v2 import WrappedPaginator, PaginatorEmbedInterface
 
 filter_invite = re.compile("(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 
@@ -55,6 +56,77 @@ class Tags(commands.Cog):
 				await ctx.send("Tag `{}` does not exist!".format(tag_name))
 
 
+	@commands.command()
+	async def tags(self, ctx, member: discord.Member = None):
+		if member is None:
+			member = ctx.author
+
+		tags = await get_tags_data()
+
+		tags_list = []
+		index = 0
+		
+		for key in tags:
+			owner_id = tags[str(key)]["tag_owner_id"]
+			tag_owner = self.client.get_user(owner_id)
+
+			if str(member) in str(tag_owner):
+				tag_name = tags[str(key)]["the_tag_name"]
+				get_snippet_create_date = tags[str(key)]["created_at"]
+
+				fin = f"{tag_name} (`Created At`: {get_snippet_create_date})"
+
+				if not tag_name in tags_list:
+					index += 1
+					indexed_row = f"{index}. {fin}"
+					tags_list.append(indexed_row)
+
+		result = "\n".join(tags_list)
+
+		if len(result) > 35:
+			paginator = WrappedPaginator(prefix = f"**`{member}`'𝘀 𝗢𝘄𝗻𝗲𝗱 𝗧𝗮𝗴𝘀** \n", suffix = '', max_size = 250)
+			paginator.add_line(result)
+			interface = PaginatorEmbedInterface(ctx.bot, paginator, owner = ctx.author)
+
+			await interface.send_to(ctx)
+
+
+
+	@tag.command()
+	async def list(self, ctx, member: discord.Member = None):
+		if member is None:
+			member = ctx.author
+
+		tags = await get_tags_data()
+
+		tags_list = []
+		index = 0
+		
+		for key in tags:
+			owner_id = tags[str(key)]["tag_owner_id"]
+			tag_owner = self.client.get_user(owner_id)
+
+			if str(member) in str(tag_owner):
+				tag_name = tags[str(key)]["the_tag_name"]
+				get_snippet_create_date = tags[str(key)]["created_at"]
+
+				fin = f"{tag_name} (`Created At`: {get_snippet_create_date})"
+
+				if not tag_name in tags_list:
+					index += 1
+					indexed_row = f"{index}. {fin}"
+					tags_list.append(indexed_row)
+
+		result = "\n".join(tags_list)
+
+		if len(result) > 35:
+			paginator = WrappedPaginator(prefix = f"**`{member}`'𝘀 𝗢𝘄𝗻𝗲𝗱 𝗧𝗮𝗴𝘀** \n", suffix = '', max_size = 250)
+			paginator.add_line(result)
+			interface = PaginatorEmbedInterface(ctx.bot, paginator, owner = ctx.author)
+
+			await interface.send_to(ctx)
+
+
 
 	@tag.command()
 	async def all(self, ctx):
@@ -92,7 +164,7 @@ class Tags(commands.Cog):
 			except KeyError:
 				await ctx.send("Tag `{}` does not exist!".format(tag_name))
 
-	@tag.command()
+	@tag.command(aliases=['make'])
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")	
 	async def create(self, ctx, *, tag_name_constructor : str = None):
 		tags = await get_tags_data()
@@ -116,8 +188,8 @@ class Tags(commands.Cog):
 					await ctx.send("Tag name already taken.")
 					return
 				
-				elif len(tag_name) >= 30:
-					await ctx.send("Tag's name canot be longer than `30` characters!")
+				elif len(tag_name) >= 35:
+					await ctx.send("Tag's name canot be longer than `35` characters!")
 					return
 				
 			except asyncio.TimeoutError:
@@ -171,8 +243,8 @@ class Tags(commands.Cog):
 				await ctx.send("Tag name already taken.")
 				return
 			
-			elif len(tag_name_constructor) >= 30:
-				await ctx.send("Tag's name canot be longer than `30` characters!")
+			elif len(tag_name_constructor) >= 35:
+				await ctx.send("Tag's name canot be longer than `35` characters!")
 				return
 
 			await ctx.send("Please send the tag's content. {}".format(ctx.author.mention))
@@ -317,6 +389,7 @@ async def get_tags_data():
 		tags = json.load(f)
 	
 	return tags
+
 
 def setup(client):
 	client.add_cog(Tags(client))
