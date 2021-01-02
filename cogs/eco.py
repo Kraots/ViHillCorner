@@ -40,6 +40,17 @@ class EcoCommands(commands.Cog):
 			
 			else:
 				index += 1
+		
+		for index2, (mem, amt) in enumerate(leader_board, start = 1):
+			id = mem.id
+			string1 = f"{index2} {id} {amt}"
+			string2 = f"{index2} {ctx.author.id} {amt}"
+			if string1 == string2:
+				index=index2
+				break
+			else:
+				index2 += 1
+		em.add_field(name="_ _ \nYour place:", value=f"`#{index}`")
 
 		await ctx.send(embed=em)
 
@@ -51,19 +62,38 @@ class EcoCommands(commands.Cog):
 	async def balance(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
-		
+
 		await open_account(member)
 		user = member
 		users = await get_bank_data()
 
+		leader_board = {}
+				
+		for uid, details in users.items():  
+			userr = self.client.get_user(int(uid))  
+			leader_board[userr] = details['wallet'] + details['bank']  
+		
+		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True)
+
+		for index2, (mem, amt) in enumerate(leader_board, start = 1):
+			id = mem.id
+			string1 = f"{index2} {id} {amt}"
+			string2 = f"{index2} {user.id} {amt}"
+			if string1 == string2:
+				index=index2
+				break
+			else:
+				index2 += 1
 
 		wallet_amt = users[str(user.id)]['wallet']
 		bank_amt = users[str(user.id)]['bank']
 		total_amt = users[str(user.id)]["wallet"] + users[str(user.id)]["bank"]
+
 		em = discord.Embed(title=f"{member.name}'s balance", color=color.lightpink)
 		em.add_field(name="Wallet Balance", value="`{:,}` coins".format(wallet_amt), inline=False)
 		em.add_field(name="Bank Balance", value="`{:,}` coins".format(bank_amt), inline=False)
 		em.add_field(name="Total Balance", value="`{:,}` coins".format(total_amt))
+		em.add_field(name="Rank", value=f"`#{index}`")
 
 		await ctx.send(embed=em)
 
