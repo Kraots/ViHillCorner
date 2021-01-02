@@ -4,7 +4,7 @@
         "tag_owner_id": 374622847672254466,
         "the_tag_name": "pandie",
         "created_at": "30/12/2020",
-        "uses_count": 5
+        "uses_count": 8
     },
     "f": {
         "tag_content": "F",
@@ -185,6 +185,13 @@
         "tag_content": "stfu",
         "tag_owner_id": 750004830319411240,
         "the_tag_name": "stfu",
+        "created_at": "02/01/2021",
+        "uses_count": 0
+    },
+    "info": {
+        "tag_content": "info",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "info",
         "created_at": "02/01/2021",
         "uses_count": 0
     }

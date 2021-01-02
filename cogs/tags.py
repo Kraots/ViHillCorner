@@ -131,11 +131,60 @@ class Tags(commands.Cog):
 		p = TagPages(entries = entries, per_page = 7)
 		await p.start(ctx)
 
+	@tag.command(aliases=['lb'])
+	async def leaderboard(self, ctx, x=10):
+		tags = await get_tags_data()
+
+		leader_board = {}
+				
+		for uid, details in tags.items():  
+			tag_namee = tags[str(uid)]["the_tag_name"]  
+			leader_board[tag_namee] = details['uses_count']  
+		
+		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True) 
+		
+		em = discord.Embed(color=discord.Color.blurple(), title=f"Top `{x}` Tags")
+
+		for index, (mem, amt) in enumerate(leader_board[:x], start = 1):
+			uses = tags[str(mem)]["uses_count"]
+			owner_id = tags[str(mem)]["tag_owner_id"]
+			owner = self.client.get_user(owner_id)
+			em.add_field(name=f"_ _ \n{index}#\u2800`{mem}`", value=f"Uses:\n\u2800`{uses}`\nOwner:\n\u2800`{owner}`", inline=True)
+			
+			if index == x:
+				break
+			
+			else:
+				index += 1
+
+		em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.avatar_url)
+		
+		await ctx.send(embed=em)
 
 
 	@tag.command()
 	async def info(self, ctx, *, tag_name : str = None):
 		tags = await get_tags_data()
+
+		leader_board = {}
+				
+		for uid, details in tags.items():  
+			tag_namee = tags[str(uid)]["the_tag_name"]  
+			leader_board[tag_namee] = details['uses_count']  
+		
+		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True) 
+
+		for index2, (mem, amt) in enumerate(leader_board, start = 1):
+
+			string1 = f"{index2} {mem}"
+			string2 = f"{index2} {tag_name}"
+
+			if string1 == string2:
+				index=index2
+				break
+			else:
+				index2 += 1
+
 
 		if tag_name is None:
 			await ctx.send("`!tag info <tag_name>`")
@@ -154,6 +203,7 @@ class Tags(commands.Cog):
 				em.set_author(name=tag_owner, url=tag_owner.avatar_url, icon_url=tag_owner.avatar_url)
 				em.add_field(name="Owner", value=tag_owner.mention)
 				em.add_field(name="Uses", value=tag_uses)
+				em.add_field(name="Rank", value=f"`#{index}`")
 				em.set_footer(text="Tag created at • {}".format(tag_created_at))
 
 				await ctx.send(embed=em)
