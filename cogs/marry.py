@@ -29,6 +29,10 @@ class MarryCommands(commands.Cog):
 			await ctx.send("This user is not interested in marriage or any of that stuff.")
 			return
 
+		elif member.bot:
+			await ctx.send("Sad kid u can't marry bots smh.")
+			return
+
 		else:
 			users = await get_marry_data()
 

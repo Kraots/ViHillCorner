@@ -3,6 +3,8 @@ from discord.ext import commands
 import os
 from discord import Member
 from discord.ext.commands import Greedy
+from utils.helpers import Lovers
+
 
 huggles = os.environ.get("HUGGLES")
 grouphug = os.environ.get("GROUPHUG")
@@ -350,7 +352,7 @@ class actions(commands.Cog):
 
 
 	@commands.command(hidden=True)
-	@commands.has_role('Staff')
+	@commands.check(Lovers)
 	async def specialkiss(self, ctx, members : Greedy[Member] = None):
 			version = discord.Embed(color=discord.Color.red())
 			version.set_image(url=specialkiss)
