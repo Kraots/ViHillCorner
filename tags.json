@@ -144,7 +144,7 @@
         "tag_owner_id": 750004830319411240,
         "the_tag_name": "battle",
         "created_at": "01/01/2021",
-        "uses_count": 0
+        "uses_count": 1
     },
     "bald": {
         "tag_content": "<@750004830319411240>",
@@ -153,11 +153,11 @@
         "created_at": "01/01/2021",
         "uses_count": 1
     },
-    "the popular": {
-        "tag_content": "<@750004830319411240>",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "the popular",
-        "created_at": "01/01/2021",
+    "carrots": {
+        "tag_content": "🗑️",
+        "tag_owner_id": 374622847672254466,
+        "the_tag_name": "carrots",
+        "created_at": "02/01/2021",
         "uses_count": 0
     }
 }
