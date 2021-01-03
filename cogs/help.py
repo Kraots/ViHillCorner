@@ -407,8 +407,8 @@ class Help(commands.Cog):
 	async def nsfw(self, ctx):
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
 
-			em = discord.Embed(color=color.lightpink, title='***Usage:***', description='```CSS\n!nsfw block <users>\n!unblock <users>```')
-			em.add_field(name="***Info:***", value="• Block / Unblock people from using the `!nsfw me add` command & seeing the nsfw channel.", inline=False)
+			em = discord.Embed(color=color.lightpink, title='***Usage:***', description='```CSS\n!nsfw block <users>\n!nsfw unblock <users>\n!nsfw blocks```')
+			em.add_field(name="***Info:***", value="• Block / Unblock people from using the `!nsfw me add` command & seeing the nsfw channel, or get paginated list of all blocked users.", inline=False)
 			await ctx.send(embed=em)
 
 		else:

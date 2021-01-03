@@ -6,6 +6,23 @@ from utils.helpers import NSFW
 from discord.ext.commands import Greedy
 from discord import Member
 import json
+from utils.paginator import SimplePages
+
+class TagPageEntry:
+	def __init__(self, entry):
+		
+		with open("nsfw-blocks.json", "r") as f:
+			entries = json.load(f)
+
+		self.id = entries[entry]['user_id']
+
+	def __str__(self):
+		return f'<@!{self.id}>\u2800•\u2800(`UserID:` {self.id})'
+
+class TagPages(SimplePages):
+	def __init__(self, entries, *, per_page=12):
+		converted = [TagPageEntry(entry) for entry in entries]
+		super().__init__(converted, per_page=per_page)
 
 class NSFW(commands.Cog):
 
@@ -114,7 +131,7 @@ class NSFW(commands.Cog):
 
 		elif choice == "add":
 			if str(user.id) in users:
-				await ctx.send("You are blocked from the nsfw channel, therefore your permissions have not been changed! {}".format(user.mention))
+				await ctx.send("You are restricted from using that command, therefore your permissions have not been changed! {}".format(user.mention))
 				return
 
 			else:
@@ -123,7 +140,7 @@ class NSFW(commands.Cog):
 				await ctx.message.delete()
 
 
-	@nsfw.command()
+	@nsfw.group()
 	@commands.has_role("Staff")
 	async def block(self, ctx, members : Greedy[Member]):
 		users = await get_nsfw_data()
@@ -142,13 +159,18 @@ class NSFW(commands.Cog):
 			blocked_members = " | ".join(blocked_list)
 
 			users[str(member.id)] = {}
-			users[str(member.id)]["is_blocked"] = "yes"
+			users[str(member.id)]["user_id"] = member.id
 			with open("nsfw-blocks.json", "w", encoding = 'utf-8') as f:
 				json.dump(users, f, ensure_ascii = False, indent = 4)
 		
 		await ctx.send(f"`{blocked_members}` have been blocked from seeing the nsfw channel.")
 
-
+	@nsfw.command()
+	@commands.has_role("Staff")
+	async def blocks(self, ctx):
+		entries = await get_nsfw_data()
+		p = TagPages(entries = entries, per_page = 7)
+		await p.start(ctx)
 
 	@nsfw.command()
 	@commands.has_role("Staff")
@@ -166,11 +188,11 @@ class NSFW(commands.Cog):
 				del users[str(member.id)]
 				with open("nsfw-blocks.json", "w", encoding = 'utf-8') as f:
 					json.dump(users, f, ensure_ascii = False, indent = 4)
+				await member.send("Your acces for using the `!nsfw me` command has ben re-approved.")
 			except KeyError:
-				await ctx.send("User(s) are not blocked.")
-		
-		await ctx.send(f"`{blocked_members}` have been unblocked from seeing the nsfw channel.")
+				pass
 
+		await ctx.send(f"`{blocked_members}` have been unblocked from seeing the nsfw channel.")
 
 
 
