@@ -309,7 +309,7 @@ class Snippets(commands.Cog):
 
 					em = discord.Embed(title="Snippet Deleted", color=color.red)
 					em.add_field(name = "Name", value = name)
-					em.add_field(name = "Owner", value = owner)
+					em.add_field(name = "Owner", value = owner.mention)
 					em.set_footer(text=f"Snippet created at • {snippet_created_at}")
 
 					await ctx.send(embed=em)
@@ -321,10 +321,10 @@ class Snippets(commands.Cog):
 			try:
 				snippets = await get_snippets_data()
 
-				name = snippets[str(snippet_name)]["snippet_name"]
-				get_owner = snippets[str(snippet_name)]["snippet_credits"]
+				name = snippets[str(get_snippet_name)]["snippet_name"]
+				get_owner = snippets[str(get_snippet_name)]["snippet_credits"]
 				owner = self.client.get_user(get_owner)
-				snippet_created_at = snippets[str(snippet_name)]["created_at"]
+				snippet_created_at = snippets[str(get_snippet_name)]["created_at"]
 
 				del snippets[str(get_snippet_name)]
 				with open ("snippets.json", "w", encoding="utf-8") as f:
@@ -332,7 +332,7 @@ class Snippets(commands.Cog):
 
 				em = discord.Embed(title="Snippet Deleted", color=color.red)
 				em.add_field(name = "Name", value = name)
-				em.add_field(name = "Owner", value = owner)
+				em.add_field(name = "Owner", value = owner.mention)
 				em.set_footer(text=f"Snippet created at • {snippet_created_at}")
 
 				await ctx.send(embed=em)
