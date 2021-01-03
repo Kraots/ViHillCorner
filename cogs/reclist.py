@@ -56,9 +56,20 @@ class Reclist(commands.Cog):
 
 		user = ctx.author
 
-		thechange = f"\n{args}"
+		users = await get_arec_data()
+		
+		if not str(user.id) in users:
+			users[str(user.id)] = {}
+			users[str(user.id)]["reclist"] = f"`###`\u2800{args}"
 
-		await update_arec(user, thechange)
+			with open("AnimeList.json", "w", encoding='utf-8') as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
+
+		else:
+			thechange = f"\n{args}"
+
+			await update_arec(user, thechange)
+		
 		await ctx.message.delete()
 		await ctx.send("Succesfully added to your reclist! {}".format(user.mention))
 
@@ -67,7 +78,7 @@ class Reclist(commands.Cog):
 
 
 
-	@reclist.command(aliases=['remove'])
+	@reclist.command()
 	async def delete(self, ctx):
 		await open_arec(ctx.author)
 
@@ -80,7 +91,19 @@ class Reclist(commands.Cog):
 
 		await ctx.send("Succesfully deleted your reclist! {}".format(ctx.author.mention))
 
+	@reclist.command()
+	@commands.is_owner()
+	async def remove(self, ctx, user : discord.Member):
+		await open_arec(user)
 
+		users = await get_arec_data()
+
+		del users[str(user.id)]
+
+		with open("AnimeList.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
+
+		await ctx.send("Succesfully deleted `{}`'s reclist!".format(user.display_name))
 
 	@reclist.error
 	async def reclist_error(self, ctx, error):
