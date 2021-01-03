@@ -438,16 +438,19 @@ class EcoCommands(commands.Cog):
 			final = "\u2800┃\u2800".join(prefinal)
 
 		embed = discord.Embed(color=color.lightpink, title="Slots!", description=f"<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+		embed.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
 		msg = await ctx.send(embed=embed)
 
 		line1 = prefinal[0] 
 		line2 = prefinal[1]
 
 		em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+		em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
 		await asyncio.sleep(0.7)
 		await msg.edit(embed=em)
 
 		em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
+		em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
 		await asyncio.sleep(0.7)
 		await msg.edit(embed=em)
 
