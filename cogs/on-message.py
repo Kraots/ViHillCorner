@@ -80,7 +80,7 @@ class on_message(commands.Cog):
 		if message.guild:
 
 			if message.channel.id in [750160851822182486, 750160851822182487]:
-				if message.content.lower() == "!rank":
+				if message.content.lower() in ["!rank", "!level", "!lvl"]:
 					await message.channel.send("`^rank` smh...")
 
 			if message.author.id == kraots.id:

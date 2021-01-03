@@ -23,7 +23,6 @@ bad_words = [
 				"fatso",
 				"druggie",
 				"whore",
-				"wino",
 				"handicapped",
 				"hoe",
 				"wheelchair-bound",
