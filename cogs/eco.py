@@ -629,7 +629,6 @@ class EcoCommands(commands.Cog):
 		earningsss = randint(600, 1200)
 		earningssss = randint(20000, 150000)
 		earningssssss = randint(500000, 5000000)
-		earningsssssss = randint(500000, 50000000)
 		losts = randint(1000, 1200)
 
 		try:
@@ -657,33 +656,20 @@ class EcoCommands(commands.Cog):
 
 			elif aaaa == 7:
 				users[str(user.id)]["wallet"] += earningssss
-				
-				if ctx.author.id == 711356598580412439:
-					await ctx.send(":smirk: you sucked {}'s pp dry and swallowed his white stuff got `{:,}` coins.".format(kraots.name, earningssss))
-				
-				else:
-					await ctx.send(":smirk: You sucked your best friend and he liked it very much and decided to gave you `{:,}`".format(earningssss))
+
+				await ctx.send(":smirk: You sucked your best friend and he liked it very much and decided to gave you `{:,}`".format(earningssss))
 
 				with open("mainbank.json", "w", encoding="utf-8") as f:
 					json.dump(users, f, ensure_ascii = False, indent = 4)
 				return
 
 			elif bbbb == 1:
-				users[str(user.id)]["wallet"] += earningsssssss
-				if ctx.author.id == 711356598580412439:
-					await ctx.send(":smirk: :smirk: :yum: :yum: you not only sucked {}'s pp dry and swallowed his white stuff, but he also filled every hole untill his white stuff is dripping out of every hole and u got `{:,}` coins.".format(kraots.name, earningsssssss))
+				users[str(user.id)]["wallet"] += earningssssss
+				await ctx.send(":smirk: :smirk: you sucked your crush and she loved it, you ended up dating and got {:,} coins.".format(earningssssss))
 
-					with open("mainbank.json", "w", encoding="utf-8") as f:
-						json.dump(users, f, ensure_ascii = False, indent = 4)
-					return
-				
-				else:
-					users[str(user.id)]["wallet"] += earningssssss
-					await ctx.send(":smirk: :smirk: you sucked your crush and she loved it, you ended up dating and got {:,} coins.".format(earningssssss))
-
-					with open("mainbank.json", "w", encoding="utf-8") as f:
-						json.dump(users, f, ensure_ascii = False, indent = 4)
-					return
+				with open("mainbank.json", "w", encoding="utf-8") as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+				return
 
 			else:
 				users[str(user.id)]["wallet"] -= losts
