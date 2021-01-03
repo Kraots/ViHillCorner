@@ -85,7 +85,7 @@ class on_message(commands.Cog):
 			else:
 				user_name = message.author.name
 				user_nickname = message.author.nick
-				new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
+				new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(9)])
 
 				if str(user_name).lower() == "kraots":
 					await message.author.edit(nick=new_nick)

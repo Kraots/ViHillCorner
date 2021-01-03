@@ -25,7 +25,7 @@
         "tag_owner_id": 750004830319411240,
         "the_tag_name": "gay",
         "created_at": "31/12/2020",
-        "uses_count": 0
+        "uses_count": 1
     },
     "yes": {
         "tag_content": "yes",
@@ -46,7 +46,7 @@
         "tag_owner_id": 750004830319411240,
         "the_tag_name": "putin",
         "created_at": "31/12/2020",
-        "uses_count": 1
+        "uses_count": 2
     },
     "dumb": {
         "tag_content": "<@!750004830319411240>",
@@ -74,7 +74,7 @@
         "tag_owner_id": 750004830319411240,
         "the_tag_name": "fuck",
         "created_at": "01/01/2021",
-        "uses_count": 0
+        "uses_count": 1
     },
     "xd": {
         "tag_content": ";;makemod <@750004830319411240>",
@@ -88,7 +88,7 @@
         "tag_owner_id": 750004830319411240,
         "the_tag_name": "cakrots",
         "created_at": "01/01/2021",
-        "uses_count": 1
+        "uses_count": 2
     },
     "tag": {
         "tag_content": "to create a tag write !tag create , thank you",
@@ -172,14 +172,14 @@
         "tag_owner_id": 673580099752427652,
         "the_tag_name": "i do suck indeed",
         "created_at": "02/01/2021",
-        "uses_count": 2
+        "uses_count": 3
     },
     "oh fuk": {
         "tag_content": "I do suck indeed",
         "tag_owner_id": 673580099752427652,
         "the_tag_name": "oh fuk",
         "created_at": "02/01/2021",
-        "uses_count": 1
+        "uses_count": 2
     },
     "stfu": {
         "tag_content": "stfu",
@@ -193,6 +193,13 @@
         "tag_owner_id": 750004830319411240,
         "the_tag_name": "info",
         "created_at": "02/01/2021",
+        "uses_count": 0
+    },
+    "question": {
+        "tag_content": "what is lamknd",
+        "tag_owner_id": 750004830319411240,
+        "the_tag_name": "question",
+        "created_at": "03/01/2021",
         "uses_count": 0
     }
 }
