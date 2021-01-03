@@ -821,7 +821,7 @@ class EcoCommands(commands.Cog):
 	@ppsuck.error
 	async def ppsuck_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f"OK OK CHILLE, IK U WANT THAT WHITE STUFF BUT PLEASE WAIT {time_phaserr(error.retry_after)}."
+				msg = f"OK OK CHILLE, IK U WANT TO SUCK ON SOMETHING BUT PLEASE WAIT {time_phaserr(error.retry_after)}."
 				await ctx.channel.send(msg)
 
 	@gtn.error
