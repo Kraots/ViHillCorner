@@ -298,11 +298,21 @@ class Snippets(commands.Cog):
 			else:
 				try:
 					snippets = await get_snippets_data()
+					name = snippets[str(snippet_name)]["snippet_name"]
+					get_owner = snippets[str(snippet_name)]["snippet_credits"]
+					owner = self.client.get_user(get_owner)
+					snippet_created_at = snippets[str(snippet_name)]["created_at"]
+					
 					del snippets[str(snippet_name)]
 					with open ("snippets.json", "w", encoding="utf-8") as f:
 						json.dump(snippets, f, ensure_ascii = False, indent = 4)
 
-					await ctx.send(f"`{snippet_name}` removed succesfully!")
+					em = discord.Embed(title="Snippet Deleted", color=color.red)
+					em.add_field(name = "Name", value = name)
+					em.add_field(name = "Owner", value = owner)
+					em.set_footer(text=f"Snippet created at • {snippet_created_at}")
+
+					await ctx.send(embed=em)
 
 				except KeyError:
 					await ctx.send("That snippet does not exist!")
@@ -310,11 +320,22 @@ class Snippets(commands.Cog):
 		else:
 			try:
 				snippets = await get_snippets_data()
+
+				name = snippets[str(snippet_name)]["snippet_name"]
+				get_owner = snippets[str(snippet_name)]["snippet_credits"]
+				owner = self.client.get_user(get_owner)
+				snippet_created_at = snippets[str(snippet_name)]["created_at"]
+
 				del snippets[str(get_snippet_name)]
 				with open ("snippets.json", "w", encoding="utf-8") as f:
 					json.dump(snippets, f, ensure_ascii = False, indent = 4)
 
-				await ctx.send(f"`{get_snippet_name}` removed succesfully!")
+				em = discord.Embed(title="Snippet Deleted", color=color.red)
+				em.add_field(name = "Name", value = name)
+				em.add_field(name = "Owner", value = owner)
+				em.set_footer(text=f"Snippet created at • {snippet_created_at}")
+
+				await ctx.send(embed=em)
 
 			except KeyError:
 				await ctx.send("That snippet does not exist!")
