@@ -255,8 +255,8 @@ class Intros(commands.Cog):
 
 		del users[str(ctx.author.id)]
 
-		with open("intros.json", "w") as f:
-			json.dump(users, f)
+		with open("intros.json", "w", encoding = 'utf-8') as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
 
 		await ctx.send("Intro deleted.")
 

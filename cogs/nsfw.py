@@ -5,6 +5,7 @@ import utils.colors as color
 from utils.helpers import NSFW
 from discord.ext.commands import Greedy
 from discord import Member
+import json
 
 class NSFW(commands.Cog):
 
@@ -96,51 +97,80 @@ class NSFW(commands.Cog):
 				await ctx.channel.send(embed=embed)
 
 	@nsfw.command()
-	@commands.has_role('Staff')
-	async def add(self, ctx, members: Greedy[Member]):
+	async def me(self, ctx, choice : str):
+		user = ctx.author
 		guild = self.client.get_guild(750160850077089853)
-		NSFW = guild.get_role(780370679425925141)
-		added_list = []
-		for member in members:
-			a = f"{member.name}#{member.discriminator}"
-			added_list.append(a)
-			added_members = " | ".join(added_list)
-			await member.add_roles(NSFW)
-			await member.send('You can now see the nsfw channel! <#780374324598145055> <:peepo_yay:773535977624698890>')
-		await ctx.send(f'`{added_members}` can now see the nsfw channel!')
-		log_channel = guild.get_channel(788377362739494943)
+		nsfwchannel = guild.get_channel(780374324598145055)
 
-		em = discord.Embed(color=color.reds, title="___GRANTED NSFW ACCES___", timestamp = ctx.message.created_at)
-		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-		em.add_field(name="Action", value=f"`Used the nsfw grant acces command`", inline=False)
-		em.add_field(name="Members", value=f"`{added_members}`", inline=False)
-		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+		users = await get_nsfw_data()
 
-		await log_channel.send(embed=em)
+		if choice == "remove":
+			try:
+				await nsfwchannel.set_permissions(user, overwrite = None)
+				await user.send("You cannot see the nsfw channel anymore. <:weird:773538796087803934>")
+				await ctx.message.delete()
+			except:
+				return
+
+		elif choice == "add":
+			if str(user.id) in users:
+				await ctx.send("You are blocked from the nsfw channel, therefore your permissions have not been changed! {}".format(user.mention))
+				return
+
+			else:
+				await nsfwchannel.set_permissions(user, read_messages = True, reason = "The user requested by himself the permission using `!nsfw me`")
+				await user.send('You can now see the nsfw channel! <#780374324598145055> <:peepo_yay:773535977624698890>')
+				await ctx.message.delete()
+
 
 	@nsfw.command()
-	@commands.has_role('Staff')
-	async def remove(self, ctx, members: Greedy[Member]):
+	@commands.has_role("Staff")
+	async def block(self, ctx, members : Greedy[Member]):
+		users = await get_nsfw_data()
 		guild = self.client.get_guild(750160850077089853)
-		NSFW = guild.get_role(780370679425925141)
-		removed_list = []
-		
+		nsfwchannel = guild.get_channel(780374324598145055)
+
+		blocked_list = []
 		for member in members:
+			try:
+				await nsfwchannel.set_permissions(member, overwrite = None)
+			except:
+				pass
+			
 			a = f"{member.name}#{member.discriminator}"
-			removed_list.append(a)
-			removed_members = " | ".join(removed_list)
-			await member.remove_roles(NSFW)
-			await member.send('You cannot see the nsfw channel anymore <:weird:773538796087803934>')
-		await ctx.send(f'`{removed_members}` cannot see the nsfw channel anymore!')
-		log_channel = guild.get_channel(788377362739494943)
+			blocked_list.append(a)
+			blocked_members = " | ".join(blocked_list)
 
-		em = discord.Embed(color=color.reds, title="___REMOVED NSFW ACCES___", timestamp = ctx.message.created_at)
-		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-		em.add_field(name="Action", value=f"`Used the remove nsfw acces command`", inline=False)
-		em.add_field(name="Members", value=f"`{removed_members}`", inline=False)
-		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+			users[str(member.id)] = {}
+			users[str(member.id)]["is_blocked"] = "yes"
+			with open("nsfw-blocks.json", "w", encoding = 'utf-8') as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
+		
+		await ctx.send(f"`{blocked_members}` have been blocked from seeing the nsfw channel.")
 
-		await log_channel.send(embed=em)
+
+
+	@nsfw.command()
+	@commands.has_role("Staff")
+	async def unblock(self, ctx, members : Greedy[Member]):
+		users = await get_nsfw_data()
+
+		blocked_list = []
+		for member in members:
+			
+			a = f"{member.name}#{member.discriminator}"
+			blocked_list.append(a)
+			blocked_members = " | ".join(blocked_list)
+
+			try:
+				del users[str(member.id)]
+				with open("nsfw-blocks.json", "w", encoding = 'utf-8') as f:
+					json.dump(users, f, ensure_ascii = False, indent = 4)
+			except KeyError:
+				await ctx.send("User(s) are not blocked.")
+		
+		await ctx.send(f"`{blocked_members}` have been unblocked from seeing the nsfw channel.")
+
 
 
 
@@ -148,7 +178,7 @@ class NSFW(commands.Cog):
 	async def nsfw_error(self, ctx, error):
 		if isinstance(error, commands.CheckFailure):
 			if "Staff" in [role.name for role in ctx.message.author.roles]:
-				await ctx.send('Invalid format!\nUse: `!nsfw add <users>` or `!nsfw remove <users>`!')
+				await ctx.send('Invalid format!\nUse: `!nsfw block <users>` or `!nsfw unblock <users>`!')
 			else:
 
 				msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
@@ -183,7 +213,11 @@ class NSFW(commands.Cog):
 
 
 
-
+async def get_nsfw_data():
+	with open("nsfw-blocks.json", "r") as f:
+		users = json.load(f)
+	
+	return users
 
 
 
