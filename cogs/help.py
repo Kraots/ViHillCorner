@@ -38,8 +38,8 @@ class Help(commands.Cog):
 
 	@help.command(aliases=['tags'])
 	async def tag(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!tag <tag_name>```")
-		em.add_field(name="***Commands:***", value="\n• **create**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **make**\n\u2800\u2800\u2800• **add**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag create <tag_name>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create a new tag!\n\u2800\u2800***Warning:***\n\u2800\u2800\u2800• They cannot contain any of the banned words (in case it does you will be banned without a second thought, so be careful!)\n\u2800\u2800\u2800• They cannot contain attachments!\n\n• **delete**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag delete <tag_name>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete a tag that you made.\n\n• **info**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag info <tag_name>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See info about a tag!\n\n• **all**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag all`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get paginated list with all tags.\n\n• **list**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag list [user]`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get paginated list with all tags that a user owns.\n\n• **leaderboard**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **lb**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!tag leaderboard`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See top `10` most used tags!", inline=False)
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!tag <tag_name>\n!tag create <tag_name>\n!tag delete <tag_name>\n!tag info <tag_name>\n!tag all\n!tag list\n!tag leaderboard```")
+		em.add_field(name="***Commands:***", value="\n• **create**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **make**\n\u2800\u2800\u2800• **add**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create a new tag!\n\u2800\u2800***Warning:***\n\u2800\u2800\u2800• They cannot contain any of the banned words (in case it does you will be banned without a second thought, so be careful!)\n\u2800\u2800\u2800• They cannot contain attachments!\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete a tag that you made.\n\n• **info**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See info about a tag!\n\n• **all**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get paginated list with all tags.\n\n• **list**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get paginated list with all tags that a user owns.\n\n• **leaderboard**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **lb**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See top `10` most used tags!", inline=False)
 		
 		if ctx.author.id == 374622847672254466:
 			em.add_field(name="_ _ \n***Owner Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!tag remove <tag_name>`\n\u2800***Info:***\n\u2800\u2800• Remove a tag from the database.\n _ _")
@@ -99,8 +99,8 @@ class Help(commands.Cog):
 
 	@help.command(aliases=['snippets'])
 	async def snippet(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!snippets```")
-		em.add_field(name="***Commands:***", value="• **create**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **make**\n\u2800\u2800\u2800• **add**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!snippet create <snippet_name>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create a new snippet.\n\u2800\u2800***Requirements:***\n\u2800\u2800\u2800• Level 55+\n\n• **delete**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!snippet delete <snippet_name>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete a snippet you own.\n\u2800\u2800***Requirements:***\n\u2800\u2800\u2800• Level 55+\n\n• **list**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!snippet list [user]`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get a paginated list of snippets that a user owns.", inline=False)
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!snippets\n!snippet create <snippet_name>\n!snippet delete <snippet_name>\n!snippet list [user]```")
+		em.add_field(name="***Commands:***", value="• **create**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **make**\n\u2800\u2800\u2800• **add**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create a new snippet.\n\u2800\u2800***Requirements:***\n\u2800\u2800\u2800• Level 55+\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete a snippet you own.\n\u2800\u2800***Requirements:***\n\u2800\u2800\u2800• Level 55+\n\n• **list**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get a paginated list of snippets that a user owns.", inline=False)
 
 		if ctx.author.id == 374622847672254466:
 			em.add_field(name="_ _ \n***Owner Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!snippet remove <snippet_name>`\n\u2800***Info:***\n\u2800\u2800• Remove a snippet from the database.\n _ _")
@@ -130,8 +130,8 @@ class Help(commands.Cog):
 
 	@help.command()
 	async def reclist(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!reclist [user]```")
-		em.add_field(name="***Commands:***", value="• **set**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!reclist set <recommendations>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set up your reclist.\n\n • **add**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!reclist add <recommendations>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Add reccomendations up your reclist.\n\n• **delete**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!reclist delete`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your reclist.\n\n• **raw**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!reclist raw`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get a raw version of your reclist!\n*• This is used so you can copy paste your old reclist, and then remove what you want to remove from it so you don't have to type your reclist over and over again.*", inline=False)
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!reclist [user]\n!reclist set <recommendations>\n!reclist add <recommendations>\n!reclist delete```")
+		em.add_field(name="***Commands:***", value="• **set**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set up your reclist.\n\n • **add**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Add reccomendations up your reclist.\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your reclist.\n\n• **raw**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get a raw version of your reclist!\n*• This is used so you can copy paste your old reclist, and then remove what you want to remove from it so you don't have to type your reclist over and over again.*", inline=False)
 		
 		if ctx.author.id == 374622847672254466:
 			em.add_field(name="_ _ \n***Owner Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!reclist remove <user>`\n\u2800***Info:***\n\u2800\u2800• Remove a user's reclist from the database.\n _ _")
@@ -161,9 +161,9 @@ class Help(commands.Cog):
 
 	@help.command(aliases=['b-day', 'bday'])
 	async def birthday(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!birthday [user] | set [birthday] | remove```")
+		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!birthday [user]\n!birthday set <day | month>\n!birthday remove```")
 		embed.add_field(name="***Aliases:***", value="• b-day\n• bday", inline=False)
-		embed.add_field(name="***Commands:***", value="• **set**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!birthday set <day |month>`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set up your birthday.\n\n • **delete**\n\n\u2800\u2800***Aliases:***\n\n\u2800\u2800\u2800• **remove**\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!birthday delete`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your birthday from the database.", inline=False)
+		embed.add_field(name="***Commands:***", value="• **set**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set up your birthday.\n\n • **delete**\n\n\u2800\u2800***Aliases:***\n\n\u2800\u2800\u2800• **remove**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your birthday from the database.", inline=False)
 		embed.add_field(name="***Info:***", value="• See when someone's birthday is.")
 		await ctx.send(embed=embed)
 
@@ -237,7 +237,7 @@ class Help(commands.Cog):
 
 	@help.command()
 	async def nick(self, ctx):
-		nick = discord.Embed(title="***Usage:***", description="```CSS\n!nick <newnickname>```", color=color.lightpink)
+		nick = discord.Embed(title="***Usage:***", description="```CSS\n!nick <newnickname>\n!nick remove```", color=color.lightpink)
 		nick.add_field(name="***Commands:***", value="• **remove**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **reset**\n\u2800\u2800\u2800• **off**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Remove your nickname.")
 		nick.add_field(name="***Info:***", value="• Change your nickname", inline=False)
 		nick.add_field(name="***Requirements:***", value="• Level 3 +", inline=False)
@@ -442,8 +442,8 @@ class Help(commands.Cog):
 	@help.command(aliases=['balance'])
 	async def bal(self, ctx):
 		if ctx.author.id == 374622847672254466:
-			embedd = discord.Embed(title="***Usage:***", description="```CSS\n!bal```", color=color.lightpink)
-			embedd.add_field(name="***Commands:***", value="• add-wallet\n\n\u2800\u2800\u2800***Usage:***\n\u2800\u2800`!bal add-wallet [amount] [user]`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Add money to an user's wallet.\n\n• add-bank\n\n\u2800\u2800***Usage:***\n\u2800\u2800`!bal add-bank [amount] [user]`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Add money to an user's bank.\n\n• set-wallet\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!bal set-walet [amount] [user]`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set user's wallet money.\n\n• set-bank\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!bal set-bank [amount] [user]`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set user's bank money.\n\n• reset\n\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800`!bal reset [user]`\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Reset user's balance.")
+			embedd = discord.Embed(title="***Usage:***", description="```CSS\n!bal\n!bal add-wallet <amount> [user]\n!bal add-bank <amount> [user]\n!bal set-wallet <amount> [user]\n!bal set-bank <amount> [user]\n!bal reset [user]```", color=color.lightpink)
+			embedd.add_field(name="***Commands:***", value="• **add-wallet**\n\n\u2800\u2800\u2800***Info:***\n\u2800\u2800\u2800• Add money to an user's wallet.\n\n• **add-bank**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Add money to an user's bank.\n\n• **set-wallet**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set user's wallet money.\n\n• **set-bank**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set user's bank money.\n\n• **reset**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Reset user's balance.")
 			embedd.add_field(name="***Info:***", value="• Check your or another user's balance!", inline=False)
 			await ctx.send(embed=embedd)
 
