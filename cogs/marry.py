@@ -29,6 +29,10 @@ class MarryCommands(commands.Cog):
 			await ctx.send("no...")
 			return
 
+		elif ctx.author.id == 374622847672254466:
+			await ctx.send("no...")
+			return
+
 		elif member.bot:
 			await ctx.send("Sad kid u can't marry bots smh.")
 			return
