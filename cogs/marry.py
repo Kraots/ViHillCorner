@@ -26,7 +26,7 @@ class MarryCommands(commands.Cog):
 			return
 		
 		elif member.id == 374622847672254466:
-			await ctx.send("This user is not interested in marriage or any of that stuff.")
+			await ctx.send("no...")
 			return
 
 		elif member.bot:
