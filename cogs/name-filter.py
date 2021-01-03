@@ -24,8 +24,11 @@ class NameFilter(commands.Cog):
 			except AttributeError:
 				pass
 				
-			if user_nickname:
-				return
+			try:	
+				if user_nickname:
+					return
+			except UnboundLocalError:
+				pass
 
 			for x in user_name:
 				if x not in allowed_letters:

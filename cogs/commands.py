@@ -111,7 +111,7 @@ class command(commands.Cog):
 
 		await ctx.channel.send(embed=embed)
 
-	@commands.command()
+	@commands.command(aliases=['ad'])
 	async def serverad(self, ctx):
 		await ctx.message.delete()
 		ad = discord.Embed(color=color.lightpink, title="Here's the ad to the server:", description="**__ViHill Corner__**\nViHill Corner is mainly for talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\n\nhttps://discord.gg/Uf2kA8q")
