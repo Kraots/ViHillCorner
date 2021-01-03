@@ -94,6 +94,7 @@ class EcoCommands(commands.Cog):
 		em.add_field(name="Bank Balance", value="`{:,}` coins".format(bank_amt), inline=False)
 		em.add_field(name="Total Balance", value="`{:,}` coins".format(total_amt))
 		em.add_field(name="Rank", value=f"`#{index}`")
+		em.set_thumbnail(url=user.avatar_url)
 
 		await ctx.send(embed=em)
 
@@ -669,12 +670,12 @@ class EcoCommands(commands.Cog):
 		try:
 
 			if aaaa == 1:
-				if user.id == 374622847672254466:
-					users[str(user.id)]["wallet"] += kraotscheat1
-					earned = kraotscheat1
-				else:		
-					users[str(user.id)]["wallet"] += earnings
-					earned = earnings
+		#		if user.id == 374622847672254466:
+		#			users[str(user.id)]["wallet"] += kraotscheat1
+		#			earned = kraotscheat1
+		#		else:		
+				users[str(user.id)]["wallet"] += earnings
+				earned = earnings
 
 				await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earned))
 				with open("mainbank.json", "w", encoding="utf-8") as f:
@@ -682,12 +683,12 @@ class EcoCommands(commands.Cog):
 				return
 
 			elif aaaa == 4:
-				if user.id == 374622847672254466:
-					users[str(user.id)]["wallet"] += kraotscheat2
-					earned = kraotscheat2
-				else:
-					users[str(user.id)]["wallet"] += earningss
-					earned = earningss
+#				if user.id == 374622847672254466:
+#					users[str(user.id)]["wallet"] += kraotscheat2
+#					earned = kraotscheat2
+#				else:
+				users[str(user.id)]["wallet"] += earningss
+				earned = earningss
 
 				await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earned))
 				with open("mainbank.json", "w", encoding="utf-8") as f:
@@ -695,12 +696,12 @@ class EcoCommands(commands.Cog):
 				return
 
 			elif aaaa == 6:
-				if user.id == 374622847672254466:
-					users[str(user.id)]["wallet"] += kraotscheat3
-					earned = kraotscheat3
-				else:
-					users[str(user.id)]["wallet"] += earningsss
-					earned = earningsss
+#				if user.id == 374622847672254466:
+#					users[str(user.id)]["wallet"] += kraotscheat3
+#					earned = kraotscheat3
+#				else:
+				users[str(user.id)]["wallet"] += earningsss
+				earned = earningsss
 				
 				await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earned))
 				with open("mainbank.json", "w", encoding="utf-8") as f:
@@ -708,12 +709,12 @@ class EcoCommands(commands.Cog):
 				return
 
 			elif aaaa == 7:
-				if user.id == 374622847672254466:
-					users[str(user.id)]["wallet"] += kraotscheat4
-					earned = kraotscheat4
-				else:
-					users[str(user.id)]["wallet"] += earningssss
-					earned = earningssss
+#				if user.id == 374622847672254466:
+#					users[str(user.id)]["wallet"] += kraotscheat4
+#					earned = kraotscheat4
+#				else:
+				users[str(user.id)]["wallet"] += earningssss
+				earned = earningssss
 
 				await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you `{:,}`".format(earned))
 
@@ -722,13 +723,13 @@ class EcoCommands(commands.Cog):
 				return
 
 			elif bbbb == 1:
-				if user.id == 374622847672254466:
-					users[str(user.id)]["wallet"] += kraotscheat5
-					earned = kraotscheat5
-				else:
-					users[str(user.id)]["wallet"] += earningssssss
-					earned = earningssssss
-				
+	#			if user.id == 374622847672254466:
+	#				users[str(user.id)]["wallet"] += kraotscheat5
+	#				earned = kraotscheat5
+	#			else:
+				users[str(user.id)]["wallet"] += earningssssss
+				earned = earningssssss
+			
 				await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got `{:,}` coins.".format(earned))
 
 				with open("mainbank.json", "w", encoding="utf-8") as f:
