@@ -85,7 +85,7 @@ class Reclist(commands.Cog):
 
 		final = user_list[6:]
 
-		paginator = WrappedPaginator(prefix='```', suffix='```', max_size = 375)
+		paginator = WrappedPaginator(prefix='```CSS', suffix='```', max_size = 375)
 		paginator.add_line(final)
 		interface = PaginatorEmbedInterface(ctx.bot, paginator, owner=ctx.author)
 		await interface.send_to(ctx)

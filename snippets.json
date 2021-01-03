@@ -165,7 +165,7 @@
         "snippet_credits": 374622847672254466,
         "snippet_name": "pand 5",
         "created_at": "31/12/2020",
-        "uses_count": 1
+        "uses_count": 2
     },
     "simp twilight": {
         "snippet_content": "https://cdn.discordapp.com/attachments/752164200222163016/793553459671728138/Screenshot_20201228_130741.png",
@@ -249,6 +249,20 @@
         "snippet_credits": 374622847672254466,
         "snippet_name": "gay twilight",
         "created_at": "02/01/2021",
+        "uses_count": 1
+    },
+    "traumatized pandie": {
+        "snippet_content": "https://cdn.discordapp.com/attachments/750160851822182482/795377909212250142/image0.png",
+        "snippet_credits": 732068233682747433,
+        "snippet_name": "traumatized pandie",
+        "created_at": "03/01/2021",
+        "uses_count": 1
+    },
+    "forgiving pandie": {
+        "snippet_content": "https://cdn.discordapp.com/attachments/750160851822182482/795380374397386792/unknown.png",
+        "snippet_credits": 374622847672254466,
+        "snippet_name": "forgiving pandie",
+        "created_at": "03/01/2021",
         "uses_count": 1
     }
 }
