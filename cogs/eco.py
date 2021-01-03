@@ -477,7 +477,7 @@ class EcoCommands(commands.Cog):
 				json.dump(users, f)
 
 			wallet_amt = users[str(ctx.author.id)]['wallet']
-			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou won `{:,}` coins. \nNow in wallet: `{:,}`.".format(final, amount, earned, wallet_amt))
+			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou won `{:,}` coins. \nNow in wallet: `{:,}`.".format(final, amount, wallet_amt))
 			await asyncio.sleep(0.7)
 			await msg.edit(embed=winembed)
 
