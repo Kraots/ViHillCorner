@@ -729,7 +729,7 @@ class EcoCommands(commands.Cog):
 					users[str(user.id)]["wallet"] += earningssssss
 					earned = earningssssss
 				
-				await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got {:,} coins.".format(earned))
+				await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got `{:,}` coins.".format(earned))
 
 				with open("mainbank.json", "w", encoding="utf-8") as f:
 					json.dump(users, f, ensure_ascii = False, indent = 4)
