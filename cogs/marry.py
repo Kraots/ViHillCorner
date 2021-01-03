@@ -30,7 +30,7 @@ class MarryCommands(commands.Cog):
 			return
 
 		elif ctx.author.id == 374622847672254466:
-			await ctx.send("no...")
+			await ctx.send("no... remember?-")
 			return
 
 		elif member.bot:
@@ -146,6 +146,14 @@ class MarryCommands(commands.Cog):
 
 		users = await get_marry_data()
 		user = member
+
+		if user.id == 374622847672254466:
+			await ctx.send("That user will is not married, and will never be, self choice. :wave:")
+			return
+		
+		elif user.bot:
+			await ctx.send("Bot's cannot marry u dumbo <:pepe_cringe:750755809700348166>")
+			return
 
 		try:
 			user_married_to = users[str(user.id)]["married_to"]

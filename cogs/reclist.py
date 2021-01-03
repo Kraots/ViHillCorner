@@ -75,7 +75,20 @@ class Reclist(commands.Cog):
 
 
 
+	@reclist.command()
+	async def raw(self, ctx):
+		await open_arec(ctx.author)
 
+		users = await get_arec_data()
+
+		user_list = users[str(ctx.author.id)]["reclist"]
+
+		final = user_list[6:]
+
+		paginator = WrappedPaginator(prefix='```', suffix='```', max_size = 375)
+		paginator.add_line(final)
+		interface = PaginatorEmbedInterface(ctx.bot, paginator, owner=ctx.author)
+		await interface.send_to(ctx)
 
 
 	@reclist.command()
@@ -90,6 +103,8 @@ class Reclist(commands.Cog):
 			json.dump(users, f, ensure_ascii = False, indent = 4)
 
 		await ctx.send("Succesfully deleted your reclist! {}".format(ctx.author.mention))
+		return
+
 
 	@reclist.command()
 	@commands.is_owner()
