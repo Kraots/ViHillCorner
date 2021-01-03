@@ -28,7 +28,7 @@ class Ping(commands.Cog):
 
     @commands.command(hidden=True)
     async def uptime(self, ctx):
-        uptime = discord.Embed(description=f"Bot has been online for: " + str(time_phaserr(int(time.time()-up))), color=color.lightpink)
+        uptime = discord.Embed(description=f"Bot has been online for: `{time_phaserr(int(time.time()-up))}`", color=color.lightpink)
         uptime.set_footer(text=f'Bot made by: Kraots#0001', icon_url=self.client.user.avatar_url)
         await ctx.channel.send(embed=uptime)
 
