@@ -19,8 +19,11 @@ class NameFilter(commands.Cog):
 
 			new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(9)])
 			user_name = str(message.author.name).lower()
-			user_nickname = str(message.author.nick).lower()
-
+			try:
+				user_nickname = str(message.author.nick).lower()
+			except AttributeError:
+				pass
+				
 			if user_nickname:
 				return
 
