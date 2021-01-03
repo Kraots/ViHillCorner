@@ -431,37 +431,65 @@ class EcoCommands(commands.Cog):
 
 		prefinal = []
 		for i in range(3):
-			a = random.choice(["❌", "🇴", "🅰️", "✨", "🔥", "<:tfBruh:784689708890324992>", "👑"])
+			a = random.choice(["❌", "🇴", "✨", "🔥", "<:tfBruh:784689708890324992>", "👑"])
 
 			prefinal.append(a)
 
 			final = "\u2800┃\u2800".join(prefinal)
 
-			embed = discord.Embed(color=color.lightpink, title="Slots!", description=f"{final}")
+		embed = discord.Embed(color=color.lightpink, title="Slots!", description=f"<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
 		msg = await ctx.send(embed=embed)
 
+		line1 = prefinal[0] 
+		line2 = prefinal[1]
+
+		em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+		await asyncio.sleep(0.7)
+		await msg.edit(embed=em)
+
+		em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
+		await asyncio.sleep(0.7)
+		await msg.edit(embed=em)
+
+
+
 		if prefinal[0] == prefinal[1] == prefinal[2]:
-			await update_bank(ctx.author, 2.5*amount)
+			earned = 2.5*amount
 			users = await get_bank_data()
+
+			users[str(ctx.author.id)]['wallet'] += earned
+			with open("mainbank.json", "w", encoding='utf-8') as f:
+				json.dump(users, f)
+
 			wallet_amt = users[str(ctx.author.id)]['wallet']
-			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou bet a total of `{:,}` coins and won `{:,}` coins. \nNow in wallet: `{:,}`.".formant(final, amount, 2.5*amount, wallet_amt))
-			await asyncio.sleep(0.2)
+			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou bet a total of `{:,}` coins and won `{:,}` coins. \nNow in wallet: `{:,}`.".formant(final, amount, earned, wallet_amt))
+			await asyncio.sleep(0.7)
 			await msg.edit(embed=winembed)
 
+
+
 		elif prefinal[0] == prefinal[1] or prefinal[0] == prefinal[2] or prefinal[2] == prefinal[1]:
-			await update_bank(ctx.author, 2*amount)
+			earned = amount
 			users = await get_bank_data()
+
+			users[str(ctx.author.id)]['wallet'] += earned
+			with open("mainbank.json", "w", encoding='utf-8') as f:
+				json.dump(users, f)
+
 			wallet_amt = users[str(ctx.author.id)]['wallet']
-			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou bet a total amount of `{:,}` coins and won `{:,}` coins. \nNow in wallet: `{:,}`.".format(final, amount, 2*amount, wallet_amt))
-			await asyncio.sleep(0.2)
+			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou won `{:,}` coins. \nNow in wallet: `{:,}`.".format(final, amount, earned, wallet_amt))
+			await asyncio.sleep(0.7)
 			await msg.edit(embed=winembed)
+
+
 
 		else:
 			await update_bank(ctx.author, -1*amount)
 			users = await get_bank_data()
 			wallet_amt = users[str(ctx.author.id)]['wallet']
+		
 			lostembed = discord.Embed(color=color.red, title="LOST!", description="{}\n\nYou bet a total amount of `{:,}` coins but you lost them! :c\nNow in wallet: `{:,}`.".format(final, amount, wallet_amt))
-			await asyncio.sleep(0.2)
+			await asyncio.sleep(0.7)
 			await msg.edit(embed=lostembed)
 
 
@@ -617,7 +645,6 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def ppsuck(self, ctx):
-		kraots = self.client.get_user(374622847672254466)
 		await open_account(ctx.author)
 		user = ctx.author
 		users = await get_bank_data()
@@ -625,47 +652,81 @@ class EcoCommands(commands.Cog):
 		aaaa = randint(1, 7)
 		bbbb = randint(1, 100)
 		earnings = randint(800, 2500)
+		kraotscheat1 = randint(10000, 100000)
 		earningss = randint(300, 620)
+		kraotscheat2 = randint(250000, 500000)
 		earningsss = randint(600, 1200)
+		kraotscheat3 = randint(500000, 1000000)
 		earningssss = randint(20000, 150000)
+		kraotscheat4 = randint(1000000, 10000000)
 		earningssssss = randint(500000, 5000000)
+		kraotscheat5 = randint(25000000, 100000000)
 		losts = randint(1000, 1200)
 
 		try:
 
 			if aaaa == 1:
-				users[str(user.id)]["wallet"] += earnings
-				await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earnings))
+				if user.id == 374622847672254466:
+					users[str(user.id)]["wallet"] += kraotscheat1
+					earned = kraotscheat1
+				else:		
+					users[str(user.id)]["wallet"] += earnings
+					earned = earnings
+
+				await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earned))
 				with open("mainbank.json", "w", encoding="utf-8") as f:
 					json.dump(users, f, ensure_ascii = False, indent = 4)
 				return
 
 			elif aaaa == 4:
-				users[str(user.id)]["wallet"] += earningss
-				await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earningss))
+				if user.id == 374622847672254466:
+					users[str(user.id)]["wallet"] += kraotscheat2
+					earned = kraotscheat2
+				else:
+					users[str(user.id)]["wallet"] += earningss
+					earned = earningss
+
+				await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earned))
 				with open("mainbank.json", "w", encoding="utf-8") as f:
 					json.dump(users, f, ensure_ascii = False, indent = 4)
 				return
 
 			elif aaaa == 6:
-				users[str(user.id)]["wallet"] += earningsss
-				await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earningsss))
+				if user.id == 374622847672254466:
+					users[str(user.id)]["wallet"] += kraotscheat3
+					earned = kraotscheat3
+				else:
+					users[str(user.id)]["wallet"] += earningsss
+					earned = earningsss
+				
+				await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earned))
 				with open("mainbank.json", "w", encoding="utf-8") as f:
 					json.dump(users, f, ensure_ascii = False, indent = 4)
 				return
 
 			elif aaaa == 7:
-				users[str(user.id)]["wallet"] += earningssss
+				if user.id == 374622847672254466:
+					users[str(user.id)]["wallet"] += kraotscheat4
+					earned = kraotscheat4
+				else:
+					users[str(user.id)]["wallet"] += earningssss
+					earned = earningssss
 
-				await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you `{:,}`".format(earningssss))
+				await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you `{:,}`".format(earned))
 
 				with open("mainbank.json", "w", encoding="utf-8") as f:
 					json.dump(users, f, ensure_ascii = False, indent = 4)
 				return
 
 			elif bbbb == 1:
-				users[str(user.id)]["wallet"] += earningssssss
-				await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got {:,} coins.".format(earningssssss))
+				if user.id == 374622847672254466:
+					users[str(user.id)]["wallet"] += kraotscheat5
+					earned = kraotscheat5
+				else:
+					users[str(user.id)]["wallet"] += earningssssss
+					earned = earningssssss
+				
+				await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got {:,} coins.".format(earned))
 
 				with open("mainbank.json", "w", encoding="utf-8") as f:
 					json.dump(users, f, ensure_ascii = False, indent = 4)
