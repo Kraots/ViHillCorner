@@ -83,12 +83,16 @@ class Tags(commands.Cog):
 
 		result = "\n".join(tags_list)
 
-		if len(result) > 35:
+		if len(result) > 1:
 			paginator = WrappedPaginator(prefix = f"**`{member}`'𝘀 𝗢𝘄𝗻𝗲𝗱 𝗧𝗮𝗴𝘀** \n", suffix = '', max_size = 250)
 			paginator.add_line(result)
 			interface = PaginatorEmbedInterface(ctx.bot, paginator, owner = ctx.author)
 
 			await interface.send_to(ctx)
+		
+		elif len(result) <= 1:
+			await ctx.send("`{}` has no tags.".format(member))
+			return
 
 	@tag.command()
 	async def list(self, ctx, member: discord.Member = None):
@@ -123,6 +127,11 @@ class Tags(commands.Cog):
 			interface = PaginatorEmbedInterface(ctx.bot, paginator, owner = ctx.author)
 
 			await interface.send_to(ctx)
+		
+		elif len(result) <= 1:
+			await ctx.send("`{}` has no tags.".format(member))
+			return
+
 
 
 	@tag.command()

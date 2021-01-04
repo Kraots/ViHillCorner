@@ -7,6 +7,8 @@ import datetime
 import utils.colors as color
 from utils.paginator_v2 import WrappedPaginator, PaginatorEmbedInterface
 
+nono_names = ["huggles", "grouphug", "eat", "chew", "sip", "clap", "cry", "rofl", "lol", "kill", "pat", "rub", "nom", "catpat", "hug", "pillow", "spray", "hype", "specialkiss", "kiss", "ily", "nocry", "shrug", "smug", "bearhug", "moan"]
+
 class TagPageEntry:
 	def __init__(self, entry):
 		
@@ -70,13 +72,16 @@ class Snippets(commands.Cog):
 
 		result = "\n".join(snippets_list)
 
-		if len(result) > 35:
+		if len(result) > 1:
 			paginator = WrappedPaginator(prefix = f'**`{member}` 𝗢𝘄𝗻𝗲𝗱 𝗦𝗻𝗶𝗽𝗽𝗲𝘁𝘀** \n', suffix = '', max_size = 250)
 			paginator.add_line(result)
 			interface = PaginatorEmbedInterface(ctx.bot, paginator, owner = ctx.author)
 
 			await interface.send_to(ctx)
 
+		elif len(result) <= 1:
+			await ctx.send("`{}` has no snippets.".format(member))
+			return
 
 
 
@@ -148,6 +153,10 @@ class Snippets(commands.Cog):
 				elif len(snippet_name) < 3:
 					await ctx.send("Snippet's name cannot be less than `3` characters long!")
 					return
+				
+				elif snippet_name in nono_names:
+					await ctx.send("Those names are invalid! Reason: `They are used in other commands, actions, to be more specific.`")
+					return
 
 			except asyncio.TimeoutError:
 				return
@@ -191,6 +200,10 @@ class Snippets(commands.Cog):
 			
 			elif len(get_snippet_name) < 3:
 					await ctx.send("Snippet's name cannot be less than `3` characters long!")
+					return
+
+			elif get_snippet_name in nono_names:
+					await ctx.send("Those names are invalid! Reason: `They are used in other commands, actions, to be more specific.`")
 					return
 
 			def check(m):

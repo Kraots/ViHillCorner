@@ -444,6 +444,7 @@ class EcoCommands(commands.Cog):
 
 		line1 = prefinal[0] 
 		line2 = prefinal[1]
+		line3 = prefinal[1]
 
 		em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
 		em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
@@ -466,7 +467,7 @@ class EcoCommands(commands.Cog):
 				json.dump(users, f)
 
 			wallet_amt = users[str(ctx.author.id)]['wallet']
-			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou bet a total of `{:,}` coins and won `{:,}` coins. \nNow in wallet: `{:,}`.".formant(final, amount, earned, wallet_amt))
+			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of `{:,}` coins and won `{:,}` coins. \nNow in wallet: `{:,}`.".formant(line1, line2, line3, final, amount, earned, wallet_amt))
 			await asyncio.sleep(0.7)
 			await msg.edit(embed=winembed)
 

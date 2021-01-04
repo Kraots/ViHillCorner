@@ -97,6 +97,3 @@ def NSFW(ctx):
 
 def BotChannels(ctx):
 	return ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016]
-
-def Lovers(ctx):
-	return ctx.author.id in [711356598580412439, 374622847672254466]
