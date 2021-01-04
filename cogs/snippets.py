@@ -153,6 +153,27 @@ class Snippets(commands.Cog):
 
 		else:
 			try:
+
+				leader_board = {}
+						
+				for uid, details in snippets.items():  
+					snippet_namee = snippets[str(uid)]["snippet_name"]  
+					leader_board[snippet_namee] = details['uses_count']  
+				
+				leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True) 
+
+				for index2, (mem, amt) in enumerate(leader_board, start = 1):
+
+					string1 = f"{index2} {mem}"
+					string2 = f"{index2} {snippet_name}"
+
+					if string1 == string2:
+						index=index2
+						break
+					else:
+						index2 += 1
+
+
 				snippet_name = snippets[str(snippet_name.lower())]["snippet_name"]
 				snippet_owner_id = snippets[str(snippet_name.lower())]["snippet_credits"]
 				snippet_uses = snippets[str(snippet_name.lower())]["uses_count"]
@@ -164,6 +185,7 @@ class Snippets(commands.Cog):
 				em.set_author(name=snippet_owner, url=snippet_owner.avatar_url, icon_url=snippet_owner.avatar_url)
 				em.add_field(name="Owner", value=snippet_owner.mention)
 				em.add_field(name="Uses", value=snippet_uses)
+				em.add_field(name="Rank", value="`#{}`".format(index))
 				em.set_footer(text="Snippet created at • {}".format(snippet_created_at))
 
 				await ctx.send(embed=em)
