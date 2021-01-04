@@ -148,7 +148,7 @@ class MarryCommands(commands.Cog):
 		user = member
 
 		if user.id == 374622847672254466:
-			await ctx.send("That user will is not married, and will never be, self choice. :wave:")
+			await ctx.send("That user is not married, and has no interests in any relationships or what-so-ever related stuff, :wave:")
 			return
 		
 		elif user.bot:
