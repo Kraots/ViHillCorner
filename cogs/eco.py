@@ -447,6 +447,7 @@ class EcoCommands(commands.Cog):
 		line3 = prefinal[1]
 
 
+
 		if prefinal[0] == prefinal[1] == prefinal[2]:
 			earned = 2.5*amount
 			users = await get_bank_data()

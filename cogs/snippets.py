@@ -44,6 +44,42 @@ class Snippets(commands.Cog):
 		p = SnippetPages(entries = entries, per_page = 7)
 		await p.start(ctx)
 
+	@snippet.command(aliases=['lb'])
+	async def leaderboard(self, ctx, x=10):
+		snippets = await get_snippets_data()
+
+		leader_board = {}
+				
+		for uid, details in snippets.items():  
+			snippet_namee = snippets[str(uid)]["snippet_name"]  
+			leader_board[snippet_namee] = details['uses_count']  
+		
+		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True) 
+		
+		em = discord.Embed(color=discord.Color.blurple(), title=f"Top `{x}` Snippets")
+
+		for index, (mem, amt) in enumerate(leader_board[:x], start = 1):
+			uses = snippets[str(mem)]["uses_count"]
+			owner_id = snippets[str(mem)]["snippet_credits"]
+			owner = self.client.get_user(owner_id)
+			em.add_field(name=f"_ _ \n{index}#\u2800`{mem}`", value=f"Uses:\n\u2800`{uses}`\nOwner:\n\u2800`{owner}`", inline=True)
+			
+			if index == x:
+				break
+			
+			else:
+				index += 1
+
+		em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.avatar_url)
+		
+		await ctx.send(embed=em)
+
+
+
+
+
+
+
 
 	@snippet.command()
 	async def list(self, ctx, member: discord.Member = None):

@@ -99,8 +99,8 @@ class Help(commands.Cog):
 
 	@help.command(aliases=['snippets'])
 	async def snippet(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!snippets\n!snippet create <snippet_name>\n!snippet delete <snippet_name>\n!snippet list [user]```")
-		em.add_field(name="***Commands:***", value="• **create**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **make**\n\u2800\u2800\u2800• **add**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create a new snippet.\n\u2800\u2800***Requirements:***\n\u2800\u2800\u2800• Level 55+\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete a snippet you own.\n\u2800\u2800***Requirements:***\n\u2800\u2800\u2800• Level 55+\n\n• **list**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get a paginated list of snippets that a user owns.", inline=False)
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!snippets\n!snippet create <snippet_name>\n!snippet delete <snippet_name>\n!snippet list [user]\n!snippet leaderboard```")
+		em.add_field(name="***Commands:***", value="• **create**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **make**\n\u2800\u2800\u2800• **add**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create a new snippet.\n\u2800\u2800***Requirements:***\n\u2800\u2800\u2800• Level 55+\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete a snippet you own.\n\u2800\u2800***Requirements:***\n\u2800\u2800\u2800• Level 55+\n\n• **list**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get a paginated list of snippets that a user owns.\n\n• **leaderboard**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **lb**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See top `10` most used snippets!", inline=False)
 
 		if ctx.author.id == 374622847672254466:
 			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!snippet remove <snippet_name>`\n\u2800***Info:***\n\u2800\u2800• Remove a snippet from the database.\n _ _")
