@@ -504,6 +504,16 @@ class EcoCommands(commands.Cog):
 			users = await get_bank_data()
 			wallet_amt = users[str(ctx.author.id)]['wallet']
 		
+			em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+			em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
+			await asyncio.sleep(0.7)
+			await msg.edit(embed=em)
+
+			em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
+			em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
+			await asyncio.sleep(0.7)
+			await msg.edit(embed=em)
+
 			lostembed = discord.Embed(color=color.red, title="LOST!", description="{}\n\nYou bet a total amount of `{:,}` coins but you lost them! :c\nNow in wallet: `{:,}`.".format(final, amount, wallet_amt))
 			await asyncio.sleep(0.7)
 			await msg.edit(embed=lostembed)
