@@ -22,7 +22,7 @@ class Help(commands.Cog):
 		helpEm.add_field(name="Economy", value="`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `race`, `ppsuck`", inline=False)
 		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `spam`, `english`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `serverinfo`, `vote`", inline=False)
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
-			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `kick`, `ban`, `opban`, `unban`, `opunban`, `nsfw`, `slowmode`, `snippet`", inline=False)
+			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `kick`, `ban`, `opban`, `unban`, `opunban`, `nsfw`, `slowmode`", inline=False)
 		
 		if ctx.author.id == 374622847672254466:
 			helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload all`, `unload all`, `load all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
@@ -42,7 +42,7 @@ class Help(commands.Cog):
 		em.add_field(name="***Commands:***", value="\n• **create**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **make**\n\u2800\u2800\u2800• **add**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create a new tag!\n\u2800\u2800***Warning:***\n\u2800\u2800\u2800• They cannot contain any of the banned words (in case it does you will be banned without a second thought, so be careful!)\n\u2800\u2800\u2800• They cannot contain attachments!\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete a tag that you made.\n\n• **info**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See info about a tag!\n\n• **all**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get paginated list with all tags.\n\n• **list**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get paginated list with all tags that a user owns.\n\n• **leaderboard**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **lb**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See top `10` most used tags!", inline=False)
 		
 		if ctx.author.id == 374622847672254466:
-			em.add_field(name="_ _ \n***Owner Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!tag remove <tag_name>`\n\u2800***Info:***\n\u2800\u2800• Remove a tag from the database.\n _ _")
+			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!tag remove <tag_name>`\n\u2800***Info:***\n\u2800\u2800• Remove a tag from the database.\n _ _")
 
 		em.add_field(name="***Info:***", value="• Allows you to tag text for later retrieval.", inline=False)
 		await ctx.send(embed=em)
@@ -103,7 +103,7 @@ class Help(commands.Cog):
 		em.add_field(name="***Commands:***", value="• **create**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **make**\n\u2800\u2800\u2800• **add**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create a new snippet.\n\u2800\u2800***Requirements:***\n\u2800\u2800\u2800• Level 55+\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete a snippet you own.\n\u2800\u2800***Requirements:***\n\u2800\u2800\u2800• Level 55+\n\n• **list**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get a paginated list of snippets that a user owns.", inline=False)
 
 		if ctx.author.id == 374622847672254466:
-			em.add_field(name="_ _ \n***Owner Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!snippet remove <snippet_name>`\n\u2800***Info:***\n\u2800\u2800• Remove a snippet from the database.\n _ _")
+			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!snippet remove <snippet_name>`\n\u2800***Info:***\n\u2800\u2800• Remove a snippet from the database.\n _ _")
 
 		em.add_field(name="***Info:***", value="• Send paginated list of all snippets.", inline=False)
 
@@ -134,7 +134,7 @@ class Help(commands.Cog):
 		em.add_field(name="***Commands:***", value="• **set**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set up your reclist.\n\n • **add**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Add reccomendations up your reclist.\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your reclist.\n\n• **raw**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get a raw version of your reclist!\n*• This is used so you can copy paste your old reclist, and then remove what you want to remove from it so you don't have to type your reclist over and over again.*", inline=False)
 		
 		if ctx.author.id == 374622847672254466:
-			em.add_field(name="_ _ \n***Owner Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!reclist remove <user>`\n\u2800***Info:***\n\u2800\u2800• Remove a user's reclist from the database.\n _ _")
+			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!reclist remove <user>`\n\u2800***Info:***\n\u2800\u2800• Remove a user's reclist from the database.\n _ _")
 
 		em.add_field(name="Info", value="• Check your or someone else's reclist\n• Reclist stands for recommendations list, please recommend anime only!", inline=False)
 
