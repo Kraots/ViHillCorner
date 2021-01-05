@@ -415,11 +415,12 @@ class EcoCommands(commands.Cog):
 			return
 
 		bal = await update_bank(ctx.author)
+		
 		if amount.lower() == "all":
 			amount = bal[0]
-		
+
 		amount = int(amount)
-		
+
 		if amount > bal[0]:
 			await ctx.send('You do not own that much money!')
 			ctx.command.reset_cooldown(ctx)
