@@ -130,7 +130,7 @@
         "tag_owner_id": 374622847672254466,
         "the_tag_name": "discordstatus",
         "created_at": "01/01/2021",
-        "uses_count": 1
+        "uses_count": 2
     },
     "the idiot": {
         "tag_content": "<@!750004830319411240>",
@@ -221,6 +221,6 @@
         "tag_owner_id": 463229242273038356,
         "the_tag_name": "wiggle",
         "created_at": "04/01/2021",
-        "uses_count": 13
+        "uses_count": 14
     }
 }
