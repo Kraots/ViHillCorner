@@ -5,6 +5,7 @@ import os
 import utils.colors as color
 from utils import time
 from typing import Union
+import datetime
 
 nono_list = ["pornhub.com", "hentaiheaven.com", "nhentai.net", "hanime.tv", "xvideos.com", "hentai.com", "hentai.net"]
 
@@ -56,10 +57,18 @@ class command(commands.Cog):
 			if dt is None:
 				return 'N/A'
 			return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
-		
-		embed = discord.Embed(color=color.lightpink)
-		embed.add_field(name='Join Date:', value=f"{user} **--->** {format_date(getattr(user, 'joined_at', None))}")
-		await ctx.send(embed=embed)
+
+		if user.id == 374622847672254466:
+			x = "2020-09-01 01:11"
+			kraots_joined = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
+			embed = discord.Embed(color=color.lightpink)
+			embed.add_field(name='Join Date:', value=f"{user} **--->** {format_date(kraots_joined)}")
+			await ctx.send(embed=embed)
+
+		else:
+			embed = discord.Embed(color=color.lightpink)
+			embed.add_field(name='Join Date:', value=f"{user} **--->** {format_date(getattr(user, 'joined_at', None))}")
+			await ctx.send(embed=embed)
 
 	@commands.command()
 	async def created(self, ctx, user: Union[discord.Member, discord.User]=None):
