@@ -12,8 +12,7 @@ class Reclist(commands.Cog):
 	async def reclist(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
-		
-		await open_arec(member)
+
 		user = member
 		users = await get_arec_data()
 
@@ -33,7 +32,6 @@ class Reclist(commands.Cog):
 
 	@reclist.command()
 	async def set(self, ctx, *, args):
-		await open_arec(ctx.author)
 
 		user = ctx.author
 
@@ -52,7 +50,6 @@ class Reclist(commands.Cog):
 
 	@reclist.command()
 	async def add(self, ctx, *, args):
-		await open_arec(ctx.author)
 
 		user = ctx.author
 
@@ -77,7 +74,6 @@ class Reclist(commands.Cog):
 
 	@reclist.command()
 	async def raw(self, ctx):
-		await open_arec(ctx.author)
 
 		users = await get_arec_data()
 
@@ -93,7 +89,6 @@ class Reclist(commands.Cog):
 
 	@reclist.command()
 	async def delete(self, ctx):
-		await open_arec(ctx.author)
 
 		users = await get_arec_data()
 
@@ -106,10 +101,12 @@ class Reclist(commands.Cog):
 		return
 
 
+
+
+
 	@reclist.command()
 	@commands.is_owner()
 	async def remove(self, ctx, user : discord.Member):
-		await open_arec(user)
 
 		users = await get_arec_data()
 
@@ -119,6 +116,24 @@ class Reclist(commands.Cog):
 			json.dump(users, f, ensure_ascii = False, indent = 4)
 
 		await ctx.send("Succesfully deleted `{}`'s reclist!".format(user.display_name))
+
+	@commands.Cog.listener()
+	async def on_member_remove(self, member):
+
+		users = await get_arec_data()
+
+		del users[str(member.id)]
+
+		with open("AnimeList.json", "w", encoding="utf-8") as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
+
+
+
+
+
+
+
+
 
 	@reclist.error
 	async def reclist_error(self, ctx, error):
@@ -134,13 +149,6 @@ class Reclist(commands.Cog):
 
 
 
-
-async def open_arec(user):
-
-	users = await get_arec_data()
-
-	if str(user.id) in users:
-		return False
 
 
 async def get_arec_data():

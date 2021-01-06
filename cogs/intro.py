@@ -27,7 +27,6 @@ class Intros(commands.Cog):
 	async def intro(self, ctx):
 		await ctx.message.delete()
 		
-		await open_intro(ctx.author)
 		user = ctx.author
 		users = await get_intro_data()
 
@@ -252,7 +251,6 @@ class Intros(commands.Cog):
 
 	@intro.command(aliases=["remove"])
 	async def delete(self, ctx):
-		await open_intro(ctx.author)
 
 		users = await get_intro_data()
 
@@ -276,8 +274,6 @@ class Intros(commands.Cog):
 	async def whois(self, ctx, member: discord.Member= None):
 		if member is None:
 			member = ctx.author
-
-		await open_intro(member)
 
 		user = member
 
@@ -308,6 +304,20 @@ class Intros(commands.Cog):
 			await ctx.send(embed=em)
 
 
+	@commands.Cog.listener()
+	async def on_member_remove(self, member):
+
+		users = await get_intro_data()
+
+		try:
+			del users[str(member.id)]
+
+		except KeyError:
+			return
+
+		with open("intros.json", "w", encoding = 'utf-8') as f:
+			json.dump(users, f, ensure_ascii = False, indent = 4)
+
 
 
 
@@ -337,15 +347,7 @@ class Intros(commands.Cog):
 
 
 
-
-
-
-async def open_intro(user):
-
-	users = await get_intro_data()
-
-	if str(user.id) in users:
-		return False
+		
 
 async def get_intro_data():
 	with open("intros.json", "r") as f:
