@@ -147,12 +147,16 @@ class Intros(commands.Cog):
 											await introchannel.send(embed=em)
 											await ctx.channel.send("Intro edited successfully. You can see in <#750160850593251449>")
 
-											await update_intro(ctx.author, name.content, "name")
-											await update_intro(ctx.author, location.content, "location")
-											await update_intro(ctx.author, agenumber, "age")
-											await update_intro(ctx.author, gender.content, "gender")
-											await update_intro(ctx.author, status, "status")
-											await update_intro(ctx.author, interests.content, "interests")
+											users[str(user.id)]["name"] = name.content
+											users[str(user.id)]["location"] = location.content
+											users[str(user.id)]["age"] = agenumber
+											users[str(user.id)]["gender"] = gender.content
+											users[str(user.id)]["status"] = status
+											users[str(user.id)]["interests"] = interests.content
+
+											with open("intros.json", "w", encoding="utf-8") as f:
+												json.dump(users, f, ensure_ascii = False, indent = 4)
+
 											return
 
 		else:
@@ -248,12 +252,16 @@ class Intros(commands.Cog):
 
 	@intro.command(aliases=["remove"])
 	async def delete(self, ctx):
-		
 		await open_intro(ctx.author)
 
 		users = await get_intro_data()
 
-		del users[str(ctx.author.id)]
+		try:
+			del users[str(ctx.author.id)]
+
+		except KeyError:
+			await ctx.send("User does not have an intro!")
+			return
 
 		with open("intros.json", "w", encoding = 'utf-8') as f:
 			json.dump(users, f, ensure_ascii = False, indent = 4)
@@ -344,24 +352,6 @@ async def get_intro_data():
 		users = json.load(f)
 
 	return users
-
-
-async def update_intro(user, change, mode):
-	users = await get_intro_data()
-
-	users[str(user.id)][mode] = change
-	users[str(user.id)][mode] = change
-	users[str(user.id)][mode] = change
-	users[str(user.id)][mode] = change
-	users[str(user.id)][mode] = change
-
-	
-	with open("intros.json", "w", encoding="utf-8") as f:
-		json.dump(users, f, ensure_ascii = False, indent = 4)
-
-	introstotal = [users[str(user.id)]["name"], users[str(user.id)]["location"], users[str(user.id)]["age"], users[str(user.id)]["gender"], users[str(user.id)]["interests"]]
-	return introstotal
-
 
 
 
