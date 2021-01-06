@@ -32,6 +32,7 @@ class EcoCommands(commands.Cog):
 		
 		em = discord.Embed(title=f'Top {x} richest people', color=color.reds) 
 		for index, (mem, amt) in enumerate(leader_board[:x], start=1): 
+			
 			name = mem.name
 
 			em.add_field(name=f"{index}.   {name}", value="`{:,}` coins".format(amt), inline=False)
@@ -42,7 +43,10 @@ class EcoCommands(commands.Cog):
 				index += 1
 		
 		for index2, (mem, amt) in enumerate(leader_board, start = 1):
-			id = mem.id
+			try:
+				id = mem.id
+			except:
+				pass
 			string1 = f"{index2} {id} {amt}"
 			string2 = f"{index2} {ctx.author.id} {amt}"
 			if string1 == string2:
@@ -76,9 +80,13 @@ class EcoCommands(commands.Cog):
 		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True)
 
 		for index2, (mem, amt) in enumerate(leader_board, start = 1):
-			id = mem.id
-			string1 = f"{index2} {id} {amt}"
-			string2 = f"{index2} {user.id} {amt}"
+			try:
+				list_id = mem.id
+			except:
+				pass
+			
+			string1 = f"{index2} {list_id}"
+			string2 = f"{index2} {user.id}"
 			if string1 == string2:
 				index=index2
 				break
