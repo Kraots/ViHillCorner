@@ -307,6 +307,7 @@ class Intros(commands.Cog):
 	async def wi_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.channel.send("User does not have any intro!")
+			ctx.command.reset_cooldown(ctx)
 
 		elif isinstance(error, commands.CommandOnCooldown):
 				msg = f'Please wait {time_phaserr(error.retry_after)}.'
@@ -323,6 +324,7 @@ class Intros(commands.Cog):
 			await ctx.channel.send(msg)
 
 		elif isinstance(error, commands.TooManyArguments):
+			ctx.command.reset_cooldown(ctx)
 			return
 
 
