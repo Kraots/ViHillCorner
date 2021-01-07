@@ -6,11 +6,6 @@ import datetime
 from datetime import date
 import utils.colors as color
 from utils import time
-from discord.ext.commands import Greedy
-from discord import Member
-import os
-
-specialkiss = os.getenv("SPECIALKISS")
 
 class MarryCommands(commands.Cog):
 	
@@ -198,6 +193,24 @@ class MarryCommands(commands.Cog):
 				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
 				await ctx.send(embed=em)
 
+
+	@commands.Cog.listener()
+	async def on_member_remove(self, member):
+		users = await get_marry_data()
+		user = member
+
+		try:
+			user_married_to = users[str(user.id)]["married_to"]
+		except KeyError:
+			return
+		
+		else:
+			the_married_to_user = self.client.get_user(user_married_to)
+			del users[str(user.id)]
+			del users[str(the_married_to_user.id)]
+
+			with open("marry-data.json", "w", encoding = 'utf-8') as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
 
 
 async def get_marry_data():
