@@ -923,17 +923,17 @@ class EcoCommands(commands.Cog):
 	@deposit.error
 	async def dep_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid amount! Please deposit numbers only, and no commas!")
+			await ctx.send("Invalid amount! Please deposit numbers only!")
 
 	@withdraw.error
 	async def with_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid amount! Please deposit numbers only, and no commas!")
+			await ctx.send("Invalid amount! Please deposit numbers only!")
 
 	@give.error
 	async def give_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid amount! Please deposit numbers only, and no commas!")
+			await ctx.send("Invalid amount! Please deposit numbers only!")
 
 
 
