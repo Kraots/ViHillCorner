@@ -119,6 +119,8 @@ class EcoCommands(commands.Cog):
 
 		await open_account(member)
 
+		amount = amount.replace(",", "")
+
 		amount = int(amount)
 
 		await update_bank(member, amount, "bank")
@@ -145,6 +147,8 @@ class EcoCommands(commands.Cog):
 			return
 
 		await open_account(member)
+
+		amount = amount.replace(",", "")
 
 		amount = int(amount)
 
@@ -174,6 +178,7 @@ class EcoCommands(commands.Cog):
 		await open_account(member)
 		user = member
 		users = await get_bank_data()
+		amount = amount.replace(",", "")
 		amount = int(amount)
 		users[str(user.id)]['bank'] = amount
 
@@ -230,6 +235,7 @@ class EcoCommands(commands.Cog):
 		await open_account(member)
 		user = member
 		users = await get_bank_data()
+		amount = amount.replace(",", "")
 		amount = int(amount)
 		users[str(user.id)]['wallet'] = amount
 
@@ -267,6 +273,10 @@ class EcoCommands(commands.Cog):
 		if amount.lower() == "all":
 			amount = bal[1]
 
+		try:
+			amount = amount.replace(",", "")
+		except:
+			pass
 		amount = int(amount)
 
 		if amount > bal[1]:
@@ -297,7 +307,10 @@ class EcoCommands(commands.Cog):
 		bal = await update_bank(ctx.author)
 		if amount.lower() == "all":
 			amount = bal[0]
-
+		try:
+			amount = amount.replace(",", "")
+		except:
+			pass
 		amount = int(amount)
 
 		if amount > bal[0]:
@@ -326,6 +339,7 @@ class EcoCommands(commands.Cog):
 			await ctx.send('Please enter the amount you want to withdraw.')
 			return
 
+		amount = amount.replace(",", "")
 		amount = int(amount)
 		bal = await update_bank(ctx.author)
 
@@ -426,7 +440,10 @@ class EcoCommands(commands.Cog):
 		
 		if amount.lower() == "all":
 			amount = bal[0]
-
+		try:
+			amount = amount.replace(",", "")
+		except:
+			pass
 		amount = int(amount)
 
 		if amount > bal[0]:
