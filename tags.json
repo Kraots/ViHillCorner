@@ -27,76 +27,6 @@
         "created_at": "31/12/2020",
         "uses_count": 1
     },
-    "putin": {
-        "tag_content": "https://www.youtube.com/watch?v=oyy5meN44qg",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "putin",
-        "created_at": "31/12/2020",
-        "uses_count": 3
-    },
-    "dumb": {
-        "tag_content": "<@!750004830319411240>",
-        "tag_owner_id": 374622847672254466,
-        "the_tag_name": "dumb",
-        "created_at": "01/01/2021",
-        "uses_count": 7
-    },
-    "sad": {
-        "tag_content": "<:umaru_cry:750757917501948026> <:vampy_cry:750755087986458805> <:whytheworldsocruel:773539887349497906> <:why:758755649986887690> <:vampy_cry:750755087986458805> <:rooSob:773536960068190229> <:sam_cry:773538203122008084> <:peppo_cry:750763418272792648> <:pepolife:758755922695684096> <:pepecry:773834962063458304> <:pepe_sad:750756320449134663> <:pepe_f:773535323874394134> <:chickcry:757940480083230820> <:blobsweats:757937942428778507> <:angry_cry:750760272184213517>",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "sad",
-        "created_at": "01/01/2021",
-        "uses_count": 0
-    },
-    "no": {
-        "tag_content": "lmao",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "no",
-        "created_at": "01/01/2021",
-        "uses_count": 0
-    },
-    "fuck": {
-        "tag_content": "carrots",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "fuck",
-        "created_at": "01/01/2021",
-        "uses_count": 1
-    },
-    "xd": {
-        "tag_content": ";;makemod <@750004830319411240>",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "xd",
-        "created_at": "01/01/2021",
-        "uses_count": 1
-    },
-    "cakrots": {
-        "tag_content": "stupid",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "cakrots",
-        "created_at": "01/01/2021",
-        "uses_count": 2
-    },
-    "tag": {
-        "tag_content": "to create a tag write !tag create , thank you",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "tag",
-        "created_at": "01/01/2021",
-        "uses_count": 4
-    },
-    "help": {
-        "tag_content": "Commands\nee, nick, profile, created, joined, av, waifu, invite, suggest, spotify, meme, cat, dog, snipe, nsfw, topic, gayrate, straightrate , simprate, hornyrate, boomerrate, 8ball, fight, birthday, intro, whois, reclist, dev-portal, perm-calc, cr, vampify, clapify, define, search, calculator, marry, marriedwho, divorce, scrs, tag, snippets\nEconomy\nbalance, deposit, withdraw, steal, slots, beg, give, work, crime, guess, race\nInfo\nuntill-partner, membercount, level, rank, sfw, spam, english, botinfo, uptime, ping, serverad, rawad, serverinfo, vote",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "help",
-        "created_at": "01/01/2021",
-        "uses_count": 4
-    },
-    "pic perms": {
-        "tag_content": "what",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "pic perms",
-        "created_at": "01/01/2021",
-        "uses_count": 2
-    },
     ".": {
         "tag_content": ".",
         "tag_owner_id": 374622847672254466,
@@ -118,40 +48,12 @@
         "created_at": "01/01/2021",
         "uses_count": 3
     },
-    "the idiot": {
-        "tag_content": "<@!750004830319411240>",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "the idiot",
-        "created_at": "01/01/2021",
-        "uses_count": 5
-    },
-    "battle": {
-        "tag_content": "r or s",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "battle",
-        "created_at": "01/01/2021",
-        "uses_count": 2
-    },
-    "bald": {
-        "tag_content": "<@750004830319411240>",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "bald",
-        "created_at": "01/01/2021",
-        "uses_count": 2
-    },
     "carrots": {
         "tag_content": "🗑️",
         "tag_owner_id": 374622847672254466,
         "the_tag_name": "carrots",
         "created_at": "02/01/2021",
         "uses_count": 2
-    },
-    "twilight's neko": {
-        "tag_content": "Why don't i have a tag <:pepecry:773834962063458304>",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "twilight's neko",
-        "created_at": "02/01/2021",
-        "uses_count": 1
     },
     "i do suck indeed": {
         "tag_content": "Oh fuk",
@@ -166,27 +68,6 @@
         "the_tag_name": "oh fuk",
         "created_at": "02/01/2021",
         "uses_count": 2
-    },
-    "stfu": {
-        "tag_content": "stfu",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "stfu",
-        "created_at": "02/01/2021",
-        "uses_count": 0
-    },
-    "info": {
-        "tag_content": "info",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "info",
-        "created_at": "02/01/2021",
-        "uses_count": 0
-    },
-    "question": {
-        "tag_content": "what is lamknd",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "question",
-        "created_at": "03/01/2021",
-        "uses_count": 1
     },
     "peepeepoopoo": {
         "tag_content": "how do i even-",
@@ -223,17 +104,17 @@
         "created_at": "05/01/2021",
         "uses_count": 1
     },
-    "pepe": {
-        "tag_content": "<:why:758755649986887690> <:WHAT:755002093689110599> <:weird:773538796087803934> <:tfBruh:784689708890324992> <:smort:750751866454802484> <:pogpepe:773834679337615370> <:peppo_cry:750763418272792648> <:pepothink:773835228392718356> <:pepolife:758755922695684096> <:pepo_evil:757941676445532161> <:pepecry:773834962063458304> <:pepe_sweats:773535424143556609> <:pepe_sus:750751092459044926> <:pepe_sip:750751258620592209> <:pepe_sad:750756320449134663> <:pepe_reee:750757148408938646> <:pepe_laugh:750751413919023215> <:pepe_hang:750754805651079209> <:pepe_f:773535323874394134> <:pepe_ez:750755821045940394> <:pepe_cringe:750755809700348166> <:peepoBlush:773547898745913356> <:peepo_yay:773535977624698890> <:peepo_love:773540912613556304> <:peepo_happy:773540680013840394> <:hah:773784267675009025> <:FeelsWeirdestMan:791355329530298400> <:bakalaugh:773784285517709332>",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "pepe",
+    "learn python": {
+        "tag_content": "<https://automatetheboringstuff.com/> (for complete beginners to programming)\n<https://learnxinyminutes.com/docs/python3/> (for people who know programming already)\n<https://docs.python.org/3/tutorial/> (official tutorial)\n<http://python.swaroopch.com/> (useful book)\n<http://greenteapress.com/wp/think-python-2e/> (another decent book)\nsee also: <http://www.codeabbey.com/> (exercises for beginners)",
+        "tag_owner_id": 374622847672254466,
+        "the_tag_name": "learn python",
         "created_at": "07/01/2021",
         "uses_count": 1
     },
-    "n word": {
-        "tag_content": "nigga",
-        "tag_owner_id": 750004830319411240,
-        "the_tag_name": "n word",
+    "lp": {
+        "tag_content": "<https://automatetheboringstuff.com/> (for complete beginners to programming)\n<https://learnxinyminutes.com/docs/python3/> (for people who know programming already)\n<https://docs.python.org/3/tutorial/> (official tutorial)\n<http://python.swaroopch.com/> (useful book)\n<http://greenteapress.com/wp/think-python-2e/> (another decent book)\nsee also: <http://www.codeabbey.com/> (exercises for beginners)",
+        "tag_owner_id": 374622847672254466,
+        "the_tag_name": "lp",
         "created_at": "07/01/2021",
         "uses_count": 1
     }

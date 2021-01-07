@@ -56,6 +56,7 @@ class Tags(commands.Cog):
 				await ctx.send("Tag `{}` does not exist!".format(tag_name))
 
 
+
 	@commands.command()
 	async def tags(self, ctx, member: discord.Member = None):
 		if member is None:
@@ -426,9 +427,10 @@ class Tags(commands.Cog):
 		tags = await get_tags_data()
 
 		for key in tags:
-			the_owner = tags[str(key)]["tag_owner_id"]
+			get_owner = tags[str(key)]["tag_owner_id"]
+			the_owner = self.client.get_user(get_owner)
 
-			if member.id == the_owner:
+			if member.id == the_owner.id:
 				del tags[str(key)]
 
 				with open("tags.json", "w", encoding = "utf-8") as f:

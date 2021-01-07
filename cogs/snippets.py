@@ -444,6 +444,22 @@ class Snippets(commands.Cog):
 		except KeyError:
 			return
 
+	@commands.Cog.listener()
+	async def on_member_remove(self, member):
+		snippets = await get_snippets_data()
+		
+		for key in snippets:
+			owner_id = snippets[str(key)]["snippet_credits"]
+			snippet_owner = self.client.get_user(owner_id)
+
+			if str(member) in str(snippet_owner):
+				snippet_name = snippets[str(key)]["snippet_name"]
+				del snippets[str(snippet_name)]
+
+				with open("snippets.json", "w", encoding = 'utf-8') as f:
+					json.dump(snippets, f, ensure_ascii = False, indent = 4)
+
+
 
 	@snippet.error
 	async def snippet_error(self, ctx, error):
