@@ -3,7 +3,7 @@ from discord.ext import commands
 import os
 from discord import Member
 from discord.ext.commands import Greedy
-
+import json
 
 huggles = os.environ.get("HUGGLES")
 grouphug = os.environ.get("GROUPHUG")
@@ -23,7 +23,6 @@ hug = os.environ.get("HUG")
 pillow = os.environ.get("PILLOW")
 spray = os.environ.get("SPRAY")
 hype = os.environ.get("HYPE")
-specialkiss = os.environ.get("SPECIALKISS")
 kiss = os.environ.get("KISS")
 ily = os.environ.get("ILY")
 nocry = os.environ.get("NOCRY")
@@ -32,6 +31,7 @@ smug = os.environ.get("SMUG")
 bearhugg = os.environ.get("BEARHUG")
 moann = os.environ.get("MOAN")
 cuddles = os.getenv("CUDDLE")
+specialkiss = os.getenv("SPECIALKISS")
 
 
 class actions(commands.Cog):
@@ -372,27 +372,6 @@ class actions(commands.Cog):
 
 
 	@commands.command(hidden=True)
-	@commands.has_role("Staff")
-	async def specialkiss(self, ctx, members : Greedy[Member] = None):
-			version = discord.Embed(color=discord.Color.red())
-			version.set_image(url=specialkiss)
-			mention_list = []
-
-			if members == None:
-				msg = await ctx.send(embed=version)
-
-			else:
-				for member in members:
-					a = member.mention
-			
-					mention_list.append(a)
-					mentions = f" ".join(mention_list)
-				
-				msg = await ctx.send(mentions, embed=version)
-			await msg.add_reaction('🗑️')
-
-
-	@commands.command(hidden=True)
 	@commands.has_any_role('Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
 	async def kiss(self, ctx, members : Greedy[Member] = None):
 			version = discord.Embed(color=discord.Color.red())
@@ -503,6 +482,44 @@ class actions(commands.Cog):
 		await msg.add_reaction('🗑️')
 
 
+	@commands.command()
+	async def specialkiss(self, ctx, member : discord.Member = None):
+
+			
+		if member is None:
+			await ctx.send("You must specify the user you want to kiss.")
+			return
+		
+		else:
+			users = await get_marry_data()
+
+			try:
+				get_marry = users[str(member.id)]["married_to"]
+				user = self.client.get_user(get_marry)
+
+				if ctx.author.id == user.id:
+
+					em = discord.Embed(color=discord.Color.red())
+					em.set_image(url=specialkiss)
+
+					msg = await ctx.send(member.mention, embed=em)
+					await msg.add_reaction('🗑️')
+
+				elif not ctx.author.id == user.id:
+					await ctx.send("That user is married to `{}`, and only they can kiss that person!".format(user.display_name))
+
+			except KeyError:
+				await ctx.send("That member must be married to you in order to be able to kiss them!")
+				return
+
+
+
+
+async def get_marry_data():
+	with open("marry-data.json", "r") as f:
+		users = json.load(f)
+	
+	return users
 
 
 def setup (client):
