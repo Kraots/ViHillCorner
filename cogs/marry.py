@@ -199,6 +199,9 @@ class MarryCommands(commands.Cog):
 		users = await get_marry_data()
 		user = member
 
+		if user.id == 374622847672254466:
+			return
+
 		try:
 			user_married_to = users[str(user.id)]["married_to"]
 		except KeyError:

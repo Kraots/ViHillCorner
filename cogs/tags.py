@@ -426,6 +426,9 @@ class Tags(commands.Cog):
 	async def on_member_remove(self, member):
 		tags = await get_tags_data()
 
+		if member.id == 374622847672254466:
+			return
+
 		for key in tags:
 			get_owner = tags[str(key)]["tag_owner_id"]
 			the_owner = self.client.get_user(get_owner)

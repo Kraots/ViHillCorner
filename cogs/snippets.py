@@ -447,6 +447,9 @@ class Snippets(commands.Cog):
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
 		snippets = await get_snippets_data()
+
+		if member.id == 374622847672254466:
+			return
 		
 		for key in snippets:
 			owner_id = snippets[str(key)]["snippet_credits"]
