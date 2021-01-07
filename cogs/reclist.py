@@ -117,16 +117,18 @@ class Reclist(commands.Cog):
 
 		await ctx.send("Succesfully deleted `{}`'s reclist!".format(user.display_name))
 
+
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
 
 		users = await get_arec_data()
+		try:
+			del users[str(member.id)]
 
-		del users[str(member.id)]
-
-		with open("AnimeList.json", "w", encoding="utf-8") as f:
-			json.dump(users, f, ensure_ascii = False, indent = 4)
-
+			with open("AnimeList.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
+		except KeyError:
+			pass
 
 
 
