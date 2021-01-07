@@ -214,14 +214,14 @@
         "snippet_credits": 374622847672254466,
         "snippet_name": "dan x neko 1",
         "created_at": "01/01/2021",
-        "uses_count": 1
+        "uses_count": 2
     },
     "dan x neko 2": {
         "snippet_content": "https://cdn.discordapp.com/attachments/750160851822182482/794656445622255626/Screenshot_20210101_025109.png",
         "snippet_credits": 374622847672254466,
         "snippet_name": "dan x neko 2",
         "created_at": "01/01/2021",
-        "uses_count": 1
+        "uses_count": 2
     },
     "science pandie": {
         "snippet_content": "https://cdn.discordapp.com/attachments/750160851822182482/794675392149061672/image0.png",
@@ -256,6 +256,6 @@
         "snippet_credits": 374622847672254466,
         "snippet_name": "papi",
         "created_at": "04/01/2021",
-        "uses_count": 13
+        "uses_count": 16
     }
 }
