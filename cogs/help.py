@@ -233,7 +233,7 @@ class Help(commands.Cog):
 	async def ee(self, ctx):
 		ee = discord.Embed(title="***Usage:***", description="```CSS\n!ee <emote>```", color=color.lightpink)
 		ee.add_field(name="***Info:***", value="• Enlarges the chosen emote.")
-		await ctx.message.channel.send(embed=ee)
+		await ctx.reply(embed=ee)
 
 	@help.command()
 	async def nick(self, ctx):
@@ -241,7 +241,7 @@ class Help(commands.Cog):
 		nick.add_field(name="***Commands:***", value="• **remove**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **reset**\n\u2800\u2800\u2800• **off**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Remove your nickname.")
 		nick.add_field(name="***Info:***", value="• Change your nickname", inline=False)
 		nick.add_field(name="***Requirements:***", value="• Level 3 +", inline=False)
-		await ctx.message.channel.send(embed=nick)
+		await ctx.reply(embed=nick)
 
 	@help.command()
 	async def profile(self, ctx):

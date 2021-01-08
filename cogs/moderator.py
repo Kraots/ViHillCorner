@@ -87,7 +87,7 @@ class Moderation(commands.Cog):
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
 			if before_members.content.lower() == "cancel":
-				await ctx.reply("Canceled.")
+				await ctx.send("Canceled.")
 				return
 			else:
 				kicked_members = before_members.mentions
@@ -96,11 +96,11 @@ class Moderation(commands.Cog):
 			return
 		
 		else:
-			await ctx.reply("What's the reason for the kick?")
+			await ctx.send("What's the reason for the kick?")
 			try:
 				before_reason = await self.client.wait_for('message', timeout=360, check=check)
 				if before_reason.content.lower() == "cancel":
-					await ctx.reply("Canceled.")
+					await ctx.send("Canceled.")
 					return
 				else:
 					kicked_reason = before_reason.content
@@ -178,7 +178,7 @@ class Moderation(commands.Cog):
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
 			if before_members.content.lower() == "cancel":
-				await ctx.reply("Canceled.")
+				await ctx.send("Canceled.")
 				return
 			else:	
 				banned_members = before_members.mentions
@@ -187,11 +187,11 @@ class Moderation(commands.Cog):
 			return
 		
 		else:
-			await ctx.reply("What's the reason for the ban?")
+			await ctx.send("What's the reason for the ban?")
 			try:
 				before_reason = await self.client.wait_for('message', timeout=360, check=check)
 				if before_reason.content.lower() == "cancel":
-					await ctx.reply("Canceled.")
+					await ctx.send("Canceled.")
 					return
 				else:
 					banned_reason = before_reason.content
@@ -283,7 +283,7 @@ class Moderation(commands.Cog):
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
 			if before_members.content.lower() == "cancel":
-				await ctx.reply("Canceled.")
+				await ctx.send("Canceled.")
 				return
 			else:
 				muted_members = before_members.mentions
@@ -292,11 +292,11 @@ class Moderation(commands.Cog):
 			return
 		
 		else:
-			await ctx.reply("What's the reason for the mute?")
+			await ctx.send("What's the reason for the mute?")
 			try:
 				before_reason = await self.client.wait_for('message', timeout=360, check=check)
 				if before_reason.content.lower() == "cancel":
-					await ctx.reply("Canceled.")
+					await ctx.send("Canceled.")
 					return
 				else:
 					mute_reason = before_reason.content
@@ -351,7 +351,7 @@ class Moderation(commands.Cog):
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
 			if before_members.content.lower() == "cancel":
-					await ctx.reply("Canceled.")
+					await ctx.send("Canceled.")
 					return
 			else:
 				unmuted_members = before_members.mentions
@@ -400,7 +400,7 @@ class Moderation(commands.Cog):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 		
-		await ctx.reply("What's the reason?")
+		await ctx.send("What's the reason?")
 		try:
 			get_reason = await self.client.wait_for('message', timeout=180, check=check)
 			reason_content = get_reason.content
@@ -411,7 +411,7 @@ class Moderation(commands.Cog):
 		else:
 
 			if time is None:
-				await ctx.reply("You need to specify time.")
+				await ctx.send("You need to specify time.")
 				return
 			else:
 				muted = guild.get_role(750465726069997658)
