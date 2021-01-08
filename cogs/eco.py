@@ -56,7 +56,7 @@ class EcoCommands(commands.Cog):
 				index2 += 1
 		em.add_field(name="_ _ \nYour place:", value=f"`#{index}`")
 
-		await ctx.send(embed=em)
+		await ctx.reply(embed=em)
 
 
 
@@ -104,7 +104,7 @@ class EcoCommands(commands.Cog):
 		em.add_field(name="Rank", value=f"`#{index}`")
 		em.set_thumbnail(url=user.avatar_url)
 
-		await ctx.send(embed=em)
+		await ctx.reply(embed=em)
 
 	@balance.command(aliases=['add-bank'])
 	@commands.is_owner()
@@ -432,7 +432,7 @@ class EcoCommands(commands.Cog):
 	async def slots(self, ctx, amount = None):
 		await open_account(ctx.author)
 		if amount is None:
-			await ctx.send('Please enter the amount.')
+			await ctx.reply('Please enter the amount.')
 			ctx.command.reset_cooldown(ctx)
 			return
 
@@ -447,12 +447,12 @@ class EcoCommands(commands.Cog):
 		amount = int(amount)
 
 		if amount > bal[0]:
-			await ctx.send('You do not own that much money!')
+			await ctx.reply('You do not own that much money!')
 			ctx.command.reset_cooldown(ctx)
 			return
 
 		if amount < 300:
-			await ctx.send('You must bet more than `300` coins.')
+			await ctx.reply('You must bet more than `300` coins.')
 			ctx.command.reset_cooldown(ctx)
 			return
 
@@ -466,7 +466,7 @@ class EcoCommands(commands.Cog):
 
 		embed = discord.Embed(color=color.lightpink, title="Slots!", description=f"<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
 		embed.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
-		msg = await ctx.send(embed=embed)
+		msg = await ctx.reply(embed=embed)
 
 		line1 = prefinal[0] 
 		line2 = prefinal[1]
@@ -650,9 +650,8 @@ class EcoCommands(commands.Cog):
 	@commands.command(aliases=['guess'])
 	@commands.cooldown(1, 3, commands.BucketType.user)
 	async def gtn(self, ctx):
-		channel = ctx.message.channel
 		usercheck = ctx.author.id
-		await channel.send('Pick a number between 1 and 10.')
+		await ctx.send('Pick a number between 1 and 10.')
 		await open_account(ctx.author)
 		user = ctx.author
 		users = await get_bank_data()
@@ -662,7 +661,7 @@ class EcoCommands(commands.Cog):
 		number = random.randint(1, 10)
 
 		def check(message):
-			return message.author.id == usercheck and message.channel.id == channel.id
+			return message.author.id == usercheck and message.channel.id == ctx.channel.id
 			try:
 				int(message.content)
 				return True
@@ -673,11 +672,11 @@ class EcoCommands(commands.Cog):
 			msg = await self.client.wait_for('message', timeout= 30 , check=check)
 			attempt = int(msg.content)
 			if attempt > number:
-				await ctx.send('Try going lower.')
+				await msg.reply('Try going lower.')
 				
 
 			elif attempt < number:
-				await ctx.send('Try going higher.')
+				await msg.reply('Try going higher.')
 				
 
 			else:

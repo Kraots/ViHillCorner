@@ -14,20 +14,20 @@ class All(commands.Cog):
 	@commands.is_owner()
 	async def load(self, ctx, extension):
 			self.client.load_extension(extension)
-			await ctx.send(f":inbox_tray: `{extension}`")
+			await ctx.reply(f":inbox_tray: `{extension}`")
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.is_owner()
 	async def reload(self, ctx, extension):
 			self.client.unload_extension(extension)
 			self.client.load_extension(extension)
-			await ctx.send(f":repeat: `{extension}`")
+			await ctx.reply(f":repeat: `{extension}`")
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.is_owner()
 	async def unload(self, ctx, extension):
 			self.client.unload_extension(extension)
-			await ctx.send(f":outbox_tray: `{extension}`")
+			await ctx.reply(f":outbox_tray: `{extension}`")
 
 
 
@@ -54,7 +54,7 @@ class All(commands.Cog):
 
 		em.description = final_Cogs
 		em.set_footer(text="If the cog has an ❌, then it means it failed to load, or was never loaded.")
-		await ctx.channel.send(embed=em)
+		await ctx.reply(embed=em)
 
 
 	@load.command(aliases=["all"])
@@ -79,7 +79,7 @@ class All(commands.Cog):
 
 		em.description = final_Cogs
 		em.set_footer(text="If the cog has an ❌, then it means it failed to load, or was already loaded.")
-		await ctx.channel.send(embed=em)
+		await ctx.reply(embed=em)
 
 	@unload.command(aliases=["all"])
 	@commands.is_owner()
@@ -103,7 +103,7 @@ class All(commands.Cog):
 
 		em.description = final_Cogs
 		em.set_footer(text="If the cog has an ❌, then it means it failed to unload, or was never loaded.")
-		await ctx.channel.send(embed=em)
+		await ctx.reply(embed=em)
 
 
 

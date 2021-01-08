@@ -29,11 +29,11 @@ class Snipe(commands.Cog):
 		try:
 			msg = snipes[channel.id]
 		except KeyError:
-			return await ctx.send('Nothing to snipe!', delete_after=5)
+			return await ctx.reply('Nothing to snipe!', delete_after=5)
 
 		embed = discord.Embed(description= msg.content, color=msg.author.color, timestamp=msg.created_at)
 		embed.set_author(name=msg.author, icon_url=msg.author.avatar_url)
-		await ctx.send(embed=embed)
+		await ctx.reply(embed=embed)
 
 
 			

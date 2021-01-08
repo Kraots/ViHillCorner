@@ -25,7 +25,7 @@ class Metrics(commands.Cog):
 		guilds = len(list(self.client.guilds))
 		metrics = discord.Embed(color=color.inviscolor)
 		start = time.time() * 1000
-		msg = await ctx.message.channel.send(embed=metrics)
+		msg = await ctx.reply(embed=metrics)
 		end = time.time() * 1000
 		metrics = discord.Embed(title="Metrics", color=color.inviscolor)
 		metrics.add_field(name="Ping:", value=f"Avg. Latency: `{(round(self.client.latency * 1000, 2))}ms`\nRest: `{int(round(end-start, 0))}ms`", inline=False)

@@ -23,7 +23,7 @@ class BotInfo(commands.Cog):
 		botinfo.add_field(name="About:", value="*This bot is a private bot (meaning it is not open sourced) made only for ViHill Corner, so do not ask to host it or to add it to your server!*", inline=True)
 		botinfo.add_field(name="Vote:", value="\n[Click Here](https://top.gg/servers/750160850077089853/vote)", inline=False)
 		botinfo.set_thumbnail(url=self.client.user.avatar_url)
-		await ctx.channel.send(embed=botinfo)
+		await ctx.reply(embed=botinfo)
 
 def setup (client):
 	client.add_cog(BotInfo(client))

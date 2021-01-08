@@ -110,7 +110,7 @@ class CustomRoles(commands.Cog):
 		def check(message):
 			return message.author.id == usercheck and message.channel.id == channel.id
 
-		await ctx.send("Are you sure you want to delete your custom role? `yes` | `no`")
+		await ctx.reply("Are you sure you want to delete your custom role? `yes` | `no`")
 
 		try:
 
@@ -131,7 +131,7 @@ class CustomRoles(commands.Cog):
 				with open("customroles.json", "w", encoding="utf-8") as f:
 					json.dump(users, f, ensure_ascii = False, indent = 4)
 
-				await ctx.send("Succesfully deleted your custom role!")
+				await ctx.send("Succesfully deleted your custom role! {}".format(ctx.author.mention))
 
 		except asyncio.TimeoutError:
 			return

@@ -68,7 +68,7 @@ class Moderation(commands.Cog):
 	@commands.is_owner()
 	async def say(self, ctx, *, arg):
 		await ctx.message.delete()
-		await ctx.send(arg)
+		await ctx.reply(arg)
 	
 
 		# KICK
@@ -83,11 +83,11 @@ class Moderation(commands.Cog):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
-		await ctx.send("What member(s) do you wish to kick? To cancel type `cancel`")
+		await ctx.reply("What member(s) do you wish to kick? To cancel type `cancel`")
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
 			if before_members.content.lower() == "cancel":
-				await ctx.send("Canceled.")
+				await ctx.reply("Canceled.")
 				return
 			else:
 				kicked_members = before_members.mentions
@@ -96,11 +96,11 @@ class Moderation(commands.Cog):
 			return
 		
 		else:
-			await ctx.send("What's the reason for the kick?")
+			await ctx.reply("What's the reason for the kick?")
 			try:
 				before_reason = await self.client.wait_for('message', timeout=360, check=check)
 				if before_reason.content.lower() == "cancel":
-					await ctx.send("Canceled.")
+					await ctx.reply("Canceled.")
 					return
 				else:
 					kicked_reason = before_reason.content
@@ -145,7 +145,7 @@ class Moderation(commands.Cog):
 		get_member = await self.client.fetch_user(member)
 		await guild.ban(get_member)
 		em = discord.Embed(color=discord.Color.red(), description=f"`{get_member}` was banned succesfully.")
-		await ctx.send(embed=em)
+		await ctx.reply(embed=em)
 
 
 		# OP UNBAN
@@ -156,7 +156,7 @@ class Moderation(commands.Cog):
 		get_member = await self.client.fetch_user(member)
 		await guild.unban(get_member)
 		em = discord.Embed(color=discord.Color.red(), description=f"`{get_member}` was unbanned succesfully.")
-		await ctx.send(embed=em)
+		await ctx.reply(embed=em)
 
 
 			# BAN
@@ -174,11 +174,11 @@ class Moderation(commands.Cog):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
-		await ctx.send("What member(s) do you wish to ban? To cancel type `cancel`")
+		await ctx.reply("What member(s) do you wish to ban? To cancel type `cancel`")
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
 			if before_members.content.lower() == "cancel":
-				await ctx.send("Canceled.")
+				await ctx.reply("Canceled.")
 				return
 			else:	
 				banned_members = before_members.mentions
@@ -187,11 +187,11 @@ class Moderation(commands.Cog):
 			return
 		
 		else:
-			await ctx.send("What's the reason for the ban?")
+			await ctx.reply("What's the reason for the ban?")
 			try:
 				before_reason = await self.client.wait_for('message', timeout=360, check=check)
 				if before_reason.content.lower() == "cancel":
-					await ctx.send("Canceled.")
+					await ctx.reply("Canceled.")
 					return
 				else:
 					banned_reason = before_reason.content
@@ -239,7 +239,7 @@ class Moderation(commands.Cog):
 		
 		unban = discord.Embed(description= f"`{member}` has been unbanned from the server" , color=discord.Color.red())
 
-		await ctx.send(embed=unban)
+		await ctx.reply(embed=unban)
 
 		log_channel = guild.get_channel(788377362739494943)
 
@@ -279,11 +279,11 @@ class Moderation(commands.Cog):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
-		await ctx.send("What member(s) do you wish to mute? To cancel type `cancel`")
+		await ctx.reply("What member(s) do you wish to mute? To cancel type `cancel`")
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
 			if before_members.content.lower() == "cancel":
-				await ctx.send("Canceled.")
+				await ctx.reply("Canceled.")
 				return
 			else:
 				muted_members = before_members.mentions
@@ -292,11 +292,11 @@ class Moderation(commands.Cog):
 			return
 		
 		else:
-			await ctx.send("What's the reason for the mute?")
+			await ctx.reply("What's the reason for the mute?")
 			try:
 				before_reason = await self.client.wait_for('message', timeout=360, check=check)
 				if before_reason.content.lower() == "cancel":
-					await ctx.send("Canceled.")
+					await ctx.reply("Canceled.")
 					return
 				else:
 					mute_reason = before_reason.content
@@ -347,11 +347,11 @@ class Moderation(commands.Cog):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
-		await ctx.send("What member(s) do you wish to unmute? To cancel type `cancel`")
+		await ctx.reply("What member(s) do you wish to unmute? To cancel type `cancel`")
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
 			if before_members.content.lower() == "cancel":
-					await ctx.send("Canceled.")
+					await ctx.reply("Canceled.")
 					return
 			else:
 				unmuted_members = before_members.mentions
@@ -400,7 +400,7 @@ class Moderation(commands.Cog):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 		
-		await ctx.send("What's the reason?")
+		await ctx.reply("What's the reason?")
 		try:
 			get_reason = await self.client.wait_for('message', timeout=180, check=check)
 			reason_content = get_reason.content
@@ -411,7 +411,7 @@ class Moderation(commands.Cog):
 		else:
 
 			if time is None:
-				await ctx.send("You need to specify time.")
+				await ctx.reply("You need to specify time.")
 				return
 			else:
 				muted = guild.get_role(750465726069997658)
@@ -426,7 +426,7 @@ class Moderation(commands.Cog):
 
 				unban = discord.Embed(description= f'{member.mention} has been temporarily muted. \n\nTime: `{time_phaserr(time)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**' , color=color.red)
 				
-				await ctx.send(embed=unban)
+				await ctx.reply(embed=unban)
 
 				log = discord.Embed(color=color.reds, title="___Mute___", timestamp = ctx.message.created_at)
 				log.add_field(name="Member", value=f"`{member}`", inline=False)
@@ -470,12 +470,12 @@ class Moderation(commands.Cog):
 	@mute.error
 	async def mute_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid User!")
+			await ctx.reply("Invalid User!")
 
 	@unmute.error
 	async def unmute_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid User!")
+			await ctx.reply("Invalid User!")
 
 
 def setup (client):
