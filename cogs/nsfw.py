@@ -225,7 +225,19 @@ class NSFW(commands.Cog):
 			await ctx.channel.send(msg)
 
 
+	@commands.Cog.listener()
+	async def on_member_remove(self, member):
+		if member.id == 374622847672254466:
+			return
+			
+		users = await get_nsfw_data()
+		try:
+			del users[str(member.id)]
 
+			with open("nsfw-blocks.json", "w", encoding="utf-8") as f:
+				json.dump(users, f, ensure_ascii = False, indent = 4)
+		except KeyError:
+			pass
 
 
 
