@@ -117,7 +117,7 @@ class command(commands.Cog):
 		embed.set_image(url=emoji.url)
 		embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
 
-		await ctx.reply(embed=embed)
+		await ctx.send(embed=embed)
 
 	@commands.command(aliases=['ad'])
 	async def serverad(self, ctx):
@@ -133,7 +133,7 @@ class command(commands.Cog):
 		ad = discord.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```**__ViHill Corner__**\nViHill Corner is mainly for talking & meeting new people & generally chatting!\n\n**WHAT WE HAVE TO OFFER**\n★ Awesome Private Bot\n★ Fun Channels\n★ Active Users\n★ Lots Of Emotes\n★ Reaction Roles\n\n\nhttps://discord.gg/Uf2kA8q```")
 		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
-		await ctx.reply(embed=ad)
+		await ctx.send(embed=ad)
 
 	@commands.command(aliases=["untill-partner"])
 	async def up(self, ctx):
