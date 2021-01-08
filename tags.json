@@ -18,7 +18,7 @@
         "tag_owner_id": 463229242273038356,
         "the_tag_name": "bubble wrap",
         "created_at": "31/12/2020",
-        "uses_count": 12
+        "uses_count": 13
     },
     "inv": {
         "tag_content": "https://discord.gg/Uf2kA8q",
@@ -95,14 +95,14 @@
         "tag_owner_id": 374622847672254466,
         "the_tag_name": "bubble wrap v2",
         "created_at": "05/01/2021",
-        "uses_count": 2
+        "uses_count": 3
     },
     "bubble wrap v3": {
         "tag_content": "||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||",
         "tag_owner_id": 374622847672254466,
         "the_tag_name": "bubble wrap v3",
         "created_at": "05/01/2021",
-        "uses_count": 1
+        "uses_count": 2
     },
     "learn python": {
         "tag_content": "<https://automatetheboringstuff.com/> (for complete beginners to programming)\n<https://learnxinyminutes.com/docs/python3/> (for people who know programming already)\n<https://docs.python.org/3/tutorial/> (official tutorial)\n<http://python.swaroopch.com/> (useful book)\n<http://greenteapress.com/wp/think-python-2e/> (another decent book)\nsee also: <http://www.codeabbey.com/> (exercises for beginners)",
@@ -116,6 +116,6 @@
         "tag_owner_id": 374622847672254466,
         "the_tag_name": "lp",
         "created_at": "07/01/2021",
-        "uses_count": 1
+        "uses_count": 2
     }
 }
