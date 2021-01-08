@@ -239,12 +239,12 @@ class Snippets(commands.Cog):
 						await ctx.send("That snippet already exists!")
 					else:
 						get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-						snippets[str(snippet_name)] = {}
-						snippets[str(snippet_name)]["snippet_content"] = snippet_info
-						snippets[str(snippet_name)]["snippet_credits"] = ctx.author.id
-						snippets[str(snippet_name)]["snippet_name"] = snippet_name
-						snippets[str(snippet_name)]["created_at"] = get_time
-						snippets[str(snippet_name)]["uses_count"] = 0
+						snippets[str(snippet_name.lower())] = {}
+						snippets[str(snippet_name.lower())]["snippet_content"] = snippet_info
+						snippets[str(snippet_name.lower())]["snippet_credits"] = ctx.author.id
+						snippets[str(snippet_name.lower())]["snippet_name"] = snippet_name.lower()
+						snippets[str(snippet_name.lower())]["created_at"] = get_time
+						snippets[str(snippet_name.lower())]["uses_count"] = 0
 						with open("snippets.json", "w", encoding="utf-8") as f:
 							json.dump(snippets, f, ensure_ascii = False, indent = 4)
 
@@ -285,12 +285,12 @@ class Snippets(commands.Cog):
 					await ctx.send("That snippet already exists!")
 				else:
 					get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-					snippets[str(get_snippet_name)] = {}
-					snippets[str(get_snippet_name)]["snippet_content"] = snippet_info
-					snippets[str(get_snippet_name)]["snippet_credits"] = ctx.author.id
-					snippets[str(get_snippet_name)]["snippet_name"] = get_snippet_name
-					snippets[str(get_snippet_name)]["created_at"] = get_time
-					snippets[str(get_snippet_name)]["uses_count"] = 0
+					snippets[str(get_snippet_name.lower())] = {}
+					snippets[str(get_snippet_name.lower())]["snippet_content"] = snippet_info
+					snippets[str(get_snippet_name.lower())]["snippet_credits"] = ctx.author.id
+					snippets[str(get_snippet_name.lower())]["snippet_name"] = get_snippet_name.lower()
+					snippets[str(get_snippet_name.lower())]["created_at"] = get_time
+					snippets[str(get_snippet_name.lower())]["uses_count"] = 0
 					with open("snippets.json", "w", encoding="utf-8") as f:
 						json.dump(snippets, f, ensure_ascii = False, indent = 4)
 

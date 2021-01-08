@@ -277,12 +277,12 @@ class Tags(commands.Cog):
 				
 				else:
 					get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-					tags[str(tag_name)] = {}
-					tags[str(tag_name)]["tag_content"] = tag_content.lower()
-					tags[str(tag_name)]["tag_owner_id"] = ctx.author.id
-					tags[str(tag_name)]["the_tag_name"] = tag_name
-					tags[str(tag_name)]["created_at"] = get_time
-					tags[str(tag_name)]["uses_count"] = 0
+					tags[str(tag_name.lower())] = {}
+					tags[str(tag_name.lower())]["tag_content"] = tag_content
+					tags[str(tag_name.lower())]["tag_owner_id"] = ctx.author.id
+					tags[str(tag_name.lower())]["the_tag_name"] = tag_name.lower()
+					tags[str(tag_name.lower())]["created_at"] = get_time
+					tags[str(tag_name.lower())]["uses_count"] = 0
 					with open("tags.json", "w", encoding="utf-8") as f:
 						json.dump(tags, f, ensure_ascii = False, indent = 4)
 					
@@ -331,12 +331,12 @@ class Tags(commands.Cog):
 			
 			else:
 				get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-				tags[str(tag_name_constructor)] = {}
-				tags[str(tag_name_constructor)]["tag_content"] = tag_content.lower()
-				tags[str(tag_name_constructor)]["tag_owner_id"] = ctx.author.id
-				tags[str(tag_name_constructor)]["the_tag_name"] = tag_name_constructor
-				tags[str(tag_name_constructor)]["created_at"] = get_time
-				tags[str(tag_name_constructor)]["uses_count"] = 0
+				tags[str(tag_name_constructor.lower())] = {}
+				tags[str(tag_name_constructor.lower())]["tag_content"] = tag_content
+				tags[str(tag_name_constructor.lower())]["tag_owner_id"] = ctx.author.id
+				tags[str(tag_name_constructor.lower())]["the_tag_name"] = tag_name_constructor.lower()
+				tags[str(tag_name_constructor.lower())]["created_at"] = get_time
+				tags[str(tag_name_constructor.lower())]["uses_count"] = 0
 				with open("tags.json", "w", encoding="utf-8") as f:
 					json.dump(tags, f, ensure_ascii = False, indent = 4)
 				
