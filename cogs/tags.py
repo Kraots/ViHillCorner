@@ -278,7 +278,7 @@ class Tags(commands.Cog):
 				else:
 					get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
 					tags[str(tag_name)] = {}
-					tags[str(tag_name)]["tag_content"] = tag_content
+					tags[str(tag_name)]["tag_content"] = tag_content.lower()
 					tags[str(tag_name)]["tag_owner_id"] = ctx.author.id
 					tags[str(tag_name)]["the_tag_name"] = tag_name
 					tags[str(tag_name)]["created_at"] = get_time
@@ -332,7 +332,7 @@ class Tags(commands.Cog):
 			else:
 				get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
 				tags[str(tag_name_constructor)] = {}
-				tags[str(tag_name_constructor)]["tag_content"] = tag_content
+				tags[str(tag_name_constructor)]["tag_content"] = tag_content.lower()
 				tags[str(tag_name_constructor)]["tag_owner_id"] = ctx.author.id
 				tags[str(tag_name_constructor)]["the_tag_name"] = tag_name_constructor
 				tags[str(tag_name_constructor)]["created_at"] = get_time

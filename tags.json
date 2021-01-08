@@ -116,6 +116,13 @@
         "tag_owner_id": 374622847672254466,
         "the_tag_name": "lp",
         "created_at": "07/01/2021",
-        "uses_count": 2
-    }
+        "uses_count": 3
+    },
+    "ide": {
+        "tag_content": "GUI-based editors:\n    - Visual Studio Code (IDE-like with plugins)\n    - Atom (IDE-like with plugins)\n    - Sublime Text (IDE-like with plugins)\n    - Emacs\n\nIDEs:\n    - NetBeans\n    - PyCharm\n    - IntelliJ IDEA\n    - Eclipse\n    - Aptana Studio 3\n    - KDevelop (KDE)\n\nCommand Line Based:\n    - vi / vim / nvim (all OSes)\n    - nano (Unix mostly)\n\nEditors that can handle code but are not specifically made for code:\n    - gedit (comes with Gnome)\n    - Kate / Kwrite (KDE)\n    - Notepad (++) (common on Windows )",
+        "tag_owner_id": 374622847672254466,
+        "the_tag_name": "ide",
+        "created_at": "08/01/2021",
+        "uses_count": 4
+	}
 }
