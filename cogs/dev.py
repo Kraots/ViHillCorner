@@ -60,7 +60,7 @@ class developer(commands.Cog):
 			return
 
 		if args is None:
-			await ctx.reply("You must provide args!")
+			await ctx.send("You must provide args!")
 			return
 
 		for member in members:
@@ -71,9 +71,10 @@ class developer(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def modmute(self, ctx, members: Greedy[Member]):
-		staff = discord.utils.get(ctx.guild.roles, name="Staff")
-		mod = discord.utils.get(ctx.guild.roles, name="Mod")
-		mute = discord.utils.get(ctx.guild.roles, name="Muted")
+		guild = self.client.get_guild(750160850077089853)
+		staff = guild.get_role(754676705741766757)
+		mod = guild.get_role(750162714407600228)
+		mute = guild.get_role(750465726069997658)
 		
 		for member in members:
 			await member.add_roles(mute)
@@ -87,9 +88,10 @@ class developer(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def modunmute(self, ctx, members: Greedy[Member]):
-		staff = discord.utils.get(ctx.guild.roles, name="Staff")
-		mod = discord.utils.get(ctx.guild.roles, name="Mod")
-		mute = discord.utils.get(ctx.guild.roles, name="Muted")
+		guild = self.client.get_guild(750160850077089853)
+		staff = guild.get_role(754676705741766757)
+		mod = guild.get_role(750162714407600228)
+		mute = guild.get_role(750465726069997658)
 		
 		for member in members: 
 			await member.add_roles(staff)
@@ -102,8 +104,9 @@ class developer(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def makemod(self, ctx, members: Greedy[Member]):
-		staff = discord.utils.get(ctx.guild.roles, name="Staff")
-		mod = discord.utils.get(ctx.guild.roles, name="Mod")
+		guild = self.client.get_guild(750160850077089853)
+		staff = guild.get_role(754676705741766757)
+		mod = guild.get_role(750162714407600228)
 
 		for member in members:
 			await member.add_roles(staff)
@@ -115,8 +118,9 @@ class developer(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def removemod(self, ctx, members: Greedy[Member]):
-		staff = discord.utils.get(ctx.guild.roles, name="Staff")
-		mod = discord.utils.get(ctx.guild.roles, name="Mod")
+		guild = self.client.get_guild(750160850077089853)
+		staff = guild.get_role(754676705741766757)
+		mod = guild.get_role(750162714407600228)
 		
 		for member in members:
 			await member.remove_roles(staff)
@@ -185,7 +189,7 @@ class developer(commands.Cog):
 	async def online(self, ctx):
 		await ctx.message.delete()
 		await self.client.change_presence(status=discord.Status.online)
-		await ctx.reply("**[ONLINE]** Status succesfully changed.", delete_after=5)
+		await ctx.send("**[ONLINE]** Status succesfully changed.", delete_after=5)
 
 
 
@@ -195,13 +199,13 @@ class developer(commands.Cog):
 		await ctx.message.delete()
 		
 		if args is None:
-			await ctx.reply("You must provide args!", delete_after=5)
+			await ctx.send("You must provide args!", delete_after=5)
 		
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.playing, name=f"{args}")
 			await self.client.change_presence(status=discord.Status.online, activity=listening)
-			await ctx.reply("**[ONLINE] [PLAYING]** Status succesfully changed.", delete_after=5)
+			await ctx.send("**[ONLINE] [PLAYING]** Status succesfully changed.", delete_after=5)
 
 	@online.command(aliases=["listening"])
 	@commands.is_owner()
@@ -209,13 +213,13 @@ class developer(commands.Cog):
 		await ctx.message.delete()
 		
 		if args is None:
-			await ctx.reply("You must provide args!", delete_after=5)
+			await ctx.send("You must provide args!", delete_after=5)
 		
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.listening, name=f"{args}")
 			await self.client.change_presence(status=discord.Status.online, activity=listening)
-			await ctx.reply("**[ONLINE] [LISTENING]** Status succesfully changed.", delete_after=5)
+			await ctx.send("**[ONLINE] [LISTENING]** Status succesfully changed.", delete_after=5)
 
 	@online.command(aliases=["watching"])
 	@commands.is_owner()
@@ -223,13 +227,13 @@ class developer(commands.Cog):
 		await ctx.message.delete()
 		
 		if args is None:
-			await ctx.reply("You must provide args!", delete_after=5)
+			await ctx.send("You must provide args!", delete_after=5)
 		
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.watching, name=f"{args}")
 			await self.client.change_presence(status=discord.Status.online, activity=listening)
-			await ctx.reply("**[ONLINE] [WATCHING]** Status succesfully changed.", delete_after=5)
+			await ctx.send("**[ONLINE] [WATCHING]** Status succesfully changed.", delete_after=5)
 
 
 
@@ -253,7 +257,7 @@ class developer(commands.Cog):
 	async def idle(self, ctx):
 		await ctx.message.delete()
 		await self.client.change_presence(status=discord.Status.idle)
-		await ctx.reply("**[IDLE]** Status succesfully changed.", delete_after=5)
+		await ctx.send("**[IDLE]** Status succesfully changed.", delete_after=5)
 
 
 
@@ -263,13 +267,13 @@ class developer(commands.Cog):
 		await ctx.message.delete()
 		
 		if args is None:
-			await ctx.reply("You must provide args!", delete_after=5)
+			await ctx.send("You must provide args!", delete_after=5)
 		
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.playing, name=f"{args}")
 			await self.client.change_presence(status=discord.Status.idle, activity=listening)
-			await ctx.reply("**[IDLE] [PLAYING]** Status succesfully changed.", delete_after=5)
+			await ctx.send("**[IDLE] [PLAYING]** Status succesfully changed.", delete_after=5)
 
 	@idle.command(aliases=["listening"])
 	@commands.is_owner()
@@ -277,13 +281,13 @@ class developer(commands.Cog):
 		await ctx.message.delete()
 		
 		if args is None:
-			await ctx.reply("You must provide args!", delete_after=5)
+			await ctx.send("You must provide args!", delete_after=5)
 
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.listening, name=f"{args}")
 			await self.client.change_presence(status=discord.Status.idle, activity=listening)
-			await ctx.reply("**[IDLE] [LISTENING]** Status succesfully changed.", delete_after=5)
+			await ctx.send("**[IDLE] [LISTENING]** Status succesfully changed.", delete_after=5)
 
 	@idle.command(aliases=["watching"])
 	@commands.is_owner()
@@ -291,13 +295,13 @@ class developer(commands.Cog):
 		await ctx.message.delete()
 		
 		if args is None:
-			await ctx.reply("You must provide args!", delete_after=5)
+			await ctx.send("You must provide args!", delete_after=5)
 		
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.watching, name=f"{args}")
 			await self.client.change_presence(status=discord.Status.idle, activity=listening)
-			await ctx.reply("**[IDLE] [WATCHING]** Status succesfully changed.", delete_after=5)
+			await ctx.send("**[IDLE] [WATCHING]** Status succesfully changed.", delete_after=5)
 
 
 
@@ -321,7 +325,7 @@ class developer(commands.Cog):
 	async def dnd(self, ctx):
 		await ctx.message.delete()
 		await self.client.change_presence(status=discord.Status.do_not_disturb)
-		await ctx.reply("**[DND]** Status succesfully changed.", delete_after=5)
+		await ctx.send("**[DND]** Status succesfully changed.", delete_after=5)
 
 
 
@@ -331,13 +335,13 @@ class developer(commands.Cog):
 		await ctx.message.delete()
 		
 		if args is None:
-			await ctx.reply("You must provide args!", delete_after=5)
+			await ctx.send("You must provide args!", delete_after=5)
 		
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.playing, name=f"{args}")
 			await self.client.change_presence(status=discord.Status.do_not_disturb, activity=listening)
-			await ctx.reply("**[DND] [PLAYING]** Status succesfully changed.", delete_after=5)
+			await ctx.send("**[DND] [PLAYING]** Status succesfully changed.", delete_after=5)
 
 	@dnd.command(aliases=["listening"])
 	@commands.is_owner()
@@ -345,13 +349,13 @@ class developer(commands.Cog):
 		await ctx.message.delete()
 		
 		if args is None:
-			await ctx.reply("You must provide args!", delete_after=5)
+			await ctx.send("You must provide args!", delete_after=5)
 		
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.listening, name=f"{args}")
 			await self.client.change_presence(status=discord.Status.do_not_disturb, activity=listening)
-			await ctx.reply("**[DND] [LISTENING]** Status succesfully changed.", delete_after=5)
+			await ctx.send("**[DND] [LISTENING]** Status succesfully changed.", delete_after=5)
 
 	@dnd.command(aliases=["watching"])
 	@commands.is_owner()
@@ -359,13 +363,13 @@ class developer(commands.Cog):
 		await ctx.message.delete()
 		
 		if args is None:
-			await ctx.reply("You must provide args!", delete_after=5)
+			await ctx.send("You must provide args!", delete_after=5)
 		
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.watching, name=f"{args}")
 			await self.client.change_presence(status=discord.Status.do_not_disturb, activity=listening)
-			await ctx.reply("**[DND] [WATCHING]** Status succesfully changed.", delete_after=5)
+			await ctx.send("**[DND] [WATCHING]** Status succesfully changed.", delete_after=5)
 
 
 
@@ -387,7 +391,7 @@ class developer(commands.Cog):
 	async def offline(self, ctx):
 		await ctx.message.delete()
 		await self.client.change_presence(status=discord.Status.offline)
-		await ctx.reply("**[OFFLINE]** Status succesfully changed.", delete_after=5)
+		await ctx.send("**[OFFLINE]** Status succesfully changed.", delete_after=5)
 
 
 

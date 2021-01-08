@@ -28,11 +28,11 @@ class on_join(commands.Cog):
 	async def on_member_join(self, member):
 
 
-		AHguild = self.client.get_guild(750160850077089853)
-		welcomechannel = AHguild.get_channel(750160850303582237)
-		member_count = len([m for m in AHguild.members if not m.bot])
+		VHguild = self.client.get_guild(750160850077089853)
+		welcomechannel = VHguild.get_channel(750160850303582237)
+		member_count = len([m for m in VHguild.members if not m.bot])
 
-		if member.guild == AHguild:
+		if member.guild == VHguild:
 			def format_date(dt):
 				if dt is None:
 					return 'N/A'
@@ -44,25 +44,25 @@ class on_join(commands.Cog):
 			await welcomechannel.send(msg, embed=welcome)
 
 
-			color1 = AHguild.get_role(750272224170082365)
-			color2 = AHguild.get_role(750160850299387977)
-			color3 = AHguild.get_role(750160850299387976)
-			color4 = AHguild.get_role(750160850299387975)
-			color5 = AHguild.get_role(750160850299387974)
-			color6 = AHguild.get_role(750160850299518985)
-			color7 = AHguild.get_role(750160850299518984)
-			color8 = AHguild.get_role(750160850299518983)
-			color9 = AHguild.get_role(750160850299518982)
-			color10 = AHguild.get_role(750160850299518981)
-			color11 = AHguild.get_role(750160850299518980)
-			color12 = AHguild.get_role(750160850299518979)
-			color13 = AHguild.get_role(750160850299518978)
-			color14 = AHguild.get_role(750160850299518977)
-			color15 = AHguild.get_role(750160850295324752)
-			color16 = AHguild.get_role(750160850299518976)
-			color17 = AHguild.get_role(750160850295324751)
-			color18 = AHguild.get_role(750272729533644850)
-			color19 = AHguild.get_role(788112413261168660)
+			color1 = VHguild.get_role(750272224170082365)
+			color2 = VHguild.get_role(750160850299387977)
+			color3 = VHguild.get_role(750160850299387976)
+			color4 = VHguild.get_role(750160850299387975)
+			color5 = VHguild.get_role(750160850299387974)
+			color6 = VHguild.get_role(750160850299518985)
+			color7 = VHguild.get_role(750160850299518984)
+			color8 = VHguild.get_role(750160850299518983)
+			color9 = VHguild.get_role(750160850299518982)
+			color10 = VHguild.get_role(750160850299518981)
+			color11 = VHguild.get_role(750160850299518980)
+			color12 = VHguild.get_role(750160850299518979)
+			color13 = VHguild.get_role(750160850299518978)
+			color14 = VHguild.get_role(750160850299518977)
+			color15 = VHguild.get_role(750160850295324752)
+			color16 = VHguild.get_role(750160850299518976)
+			color17 = VHguild.get_role(750160850295324751)
+			color18 = VHguild.get_role(750272729533644850)
+			color19 = VHguild.get_role(788112413261168660)
 
 			choice = randint(1, 19)
 
@@ -130,7 +130,7 @@ class on_join(commands.Cog):
 			users = await get_intro_data()
 			
 			
-			introchannel = AHguild.get_channel(750160850593251449)
+			introchannel = VHguild.get_channel(750160850593251449)
 			
 			await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself to us? `yes` | `no`")
 
@@ -155,8 +155,9 @@ class on_join(commands.Cog):
 
 			try:
 
-				await self.client.wait_for('message', timeout= 360, check=newmember)
-
+				answer = await self.client.wait_for('message', timeout= 360, check=newmember)
+				if answer.content.lower() == "no":
+					await member.send("Alrighty, you can do your intro later by typing `!intro` in a `bots only` channel. Enjoy your stay! :wave:")
 			except asyncio.TimeoutError:
 				return
 
