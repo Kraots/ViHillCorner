@@ -11,7 +11,7 @@
         "tag_owner_id": 374622847672254466,
         "the_tag_name": "f",
         "created_at": "31/12/2020",
-        "uses_count": 10
+        "uses_count": 11
     },
     "bubble wrap": {
         "tag_content": "||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||||pop||",
@@ -32,7 +32,7 @@
         "tag_owner_id": 374622847672254466,
         "the_tag_name": ".",
         "created_at": "01/01/2021",
-        "uses_count": 4
+        "uses_count": 5
     },
     "discord status": {
         "tag_content": "https://discordstatus.com",
@@ -124,5 +124,5 @@
         "the_tag_name": "ide",
         "created_at": "08/01/2021",
         "uses_count": 4
-	}
+    }
 }
