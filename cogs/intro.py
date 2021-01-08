@@ -1,8 +1,15 @@
 import discord 
 from discord.ext import commands
 import asyncio
-import json
 from utils.helpers import BotChannels, time_phaserr
+from pymongo import MongoClient
+import os
+
+DBKEY = os.getenv("MONGODBKEY")
+
+cluster = MongoClient(DBKEY)
+db = cluster["ViHillCornerDB"]
+collection = db["Intros"]
 
 status_pos=[
 			"taken",
@@ -25,10 +32,14 @@ class Intros(commands.Cog):
 	@commands.cooldown(1, 360, commands.BucketType.user)
 	@commands.check(BotChannels)
 	async def intro(self, ctx):
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
+		
 		await ctx.message.delete()
 		
 		user = ctx.author
-		users = await get_intro_data()
 
 		channel = ctx.message.channel
 		usercheck = ctx.author.id
@@ -55,7 +66,7 @@ class Intros(commands.Cog):
 			return message.content.lower() in status_pos and message.author.id == usercheck and message.channel.id == channel.id
 
 		
-		if str(user.id) in users:
+		if user.id in all_users:
 			await ctx.send("You already have intro set, would you like to edit your intro? `yes` | `no`")
 			
 			try:
@@ -145,16 +156,8 @@ class Intros(commands.Cog):
 											em.add_field(name="Interests", value=interests.content, inline=False)
 											await introchannel.send(embed=em)
 											await ctx.channel.send("Intro edited successfully. You can see in <#750160850593251449>")
-
-											users[str(user.id)]["name"] = name.content
-											users[str(user.id)]["location"] = location.content
-											users[str(user.id)]["age"] = agenumber
-											users[str(user.id)]["gender"] = gender.content
-											users[str(user.id)]["status"] = status
-											users[str(user.id)]["interests"] = interests.content
-
-											with open("intros.json", "w", encoding="utf-8") as f:
-												json.dump(users, f, ensure_ascii = False, indent = 4)
+											
+											collection.update_one({"_id": ctx.author.id}, {"$set": {"name": name.content, "location": location.content, "age": agenumber, "gender": gender.content, "status": status, "interests": interests.content}})
 
 											return
 
@@ -234,16 +237,9 @@ class Intros(commands.Cog):
 									await introchannel.send(embed=em)
 									await ctx.channel.send("Intro added successfully. You can see in <#750160850593251449>")
 
-									users[str(user.id)] = {}
-									users[str(user.id)]["name"] = name.content
-									users[str(user.id)]["location"] = location.content
-									users[str(user.id)]["age"] = agenumber
-									users[str(user.id)]["gender"] = gender.content
-									users[str(user.id)]["status"] = status
-									users[str(user.id)]["interests"] = interests.content
-
-									with open("intros.json", "w", encoding="utf-8") as f:
-										json.dump(users, f, ensure_ascii = False, indent = 4)
+									post = {"_id": ctx.author.id, "name": name.content, "location": location.content, "age": agenumber, "gender": gender.content, "status": status, "interests": interests.content}
+											
+									collection.insert_one(post)
 
 									return
 
@@ -251,22 +247,18 @@ class Intros(commands.Cog):
 
 	@intro.command(aliases=["remove"])
 	async def delete(self, ctx):
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		users = await get_intro_data()
+		if ctx.author.id in all_users:
+			collection.delete_one({"_id": ctx.author.id})
+			await ctx.send("Intro deleted.")
 
-		try:
-			del users[str(ctx.author.id)]
-
-		except KeyError:
-			await ctx.send("User does not have an intro!")
+		else:
+			await ctx.send("You do not have an intro!")
 			return
-
-		with open("intros.json", "w", encoding = 'utf-8') as f:
-			json.dump(users, f, ensure_ascii = False, indent = 4)
-
-		await ctx.send("Intro deleted.")
-
-
 
 
 	@commands.command(aliases=['wi'])
@@ -275,22 +267,24 @@ class Intros(commands.Cog):
 		if member is None:
 			member = ctx.author
 
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
+		
 		user = member
 
-		users = await get_intro_data()
+		if user.id in all_users:
+			get_user = collection.find({"_id": user.id})
 
-		introname = users[str(user.id)]["name"]
-		introlocation = users[str(user.id)]["location"]
-		introage = users[str(user.id)]["age"]
-		introgender = users[str(user.id)]["gender"]
-		relationshipstatus = users[str(user.id)]["status"]
-		introinterests = users[str(user.id)]["interests"]
-		
-		if str(user.id) not in users:
-			await ctx.send("User does not have any intro!")
-			return
+			for info in get_user:
+				introname = info['name']
+				introlocation = info['location']
+				introage = info['age']
+				introgender = info['gender']
+				relationshipstatus = info['status']
+				introinterests = info['interests']
 
-		else:
 			await ctx.message.delete()
 			em = discord.Embed(color=member.color)
 			em.set_author(name=member, url=member.avatar_url, icon_url=member.avatar_url)
@@ -302,21 +296,22 @@ class Intros(commands.Cog):
 			em.add_field(name="Relationship Status", value=relationshipstatus, inline=True)
 			em.add_field(name="Interests", value=introinterests, inline=False)
 			await ctx.send(embed=em)
+		
+		else:
+			if ctx.author.id == user.id:
+				await ctx.send("You do not have an intro!")
+				ctx.command.reset_cooldown(ctx)
+				return
+			else:
+				await ctx.send("User does not have an intro!")
+				ctx.command.reset_cooldown(ctx)
+				return
 
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
 
-		users = await get_intro_data()
-
-		try:
-			del users[str(member.id)]
-
-		except KeyError:
-			return
-
-		with open("intros.json", "w", encoding = 'utf-8') as f:
-			json.dump(users, f, ensure_ascii = False, indent = 4)
+		collection.delete({"_id": member.id})
 
 
 
@@ -345,15 +340,6 @@ class Intros(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			return
 
-
-
-		
-
-async def get_intro_data():
-	with open("intros.json", "r") as f:
-		users = json.load(f)
-
-	return users
 
 
 

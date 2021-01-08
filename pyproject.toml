@@ -15,6 +15,8 @@ parsedatetime = "^2.6"
 wolframalpha = "^4.1.1"
 discord-ext-menus = {git = "https://github.com/Rapptz/discord-ext-menus"}
 "discord.py" = "^1.6.0"
+pymongo = "^3.11.2"
+dnspython = "^2.1.0"
 
 [tool.poetry.dev-dependencies]
 

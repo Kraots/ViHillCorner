@@ -1,7 +1,14 @@
 import discord
 from discord.ext import commands
 import asyncio
-import json
+from pymongo import MongoClient
+import os
+
+DBKEY = os.getenv("MONGODBKEY")
+
+cluster = MongoClient(DBKEY)
+db = cluster["ViHillCornerDB"]
+collection = db["Custom Roles"]
 
 nono_list = [
 				"staff",
@@ -28,15 +35,18 @@ class CustomRoles(commands.Cog):
 	async def create(self, ctx):
 		guild = self.client.get_guild(750160850077089853)
 		user = ctx.author
-		users = await get_role_data()
 		channel = ctx.message.channel
 		usercheck = ctx.author.id
 
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
 		def check(message):
 			return message.author.id == usercheck and message.channel.id == channel.id
 
-		if str(user.id) in users:
+		if ctx.author.id in all_users:
 			await ctx.send("You already have a custom role.")
 			return
 
@@ -81,11 +91,8 @@ class CustomRoles(commands.Cog):
 
 					await ctx.author.add_roles(newcr)
 
-					users[str(user.id)] = {}
-					users[str(user.id)]["CustomRoleName"] = crname.content
-
-					with open("customroles.json", "w", encoding="utf-8") as f:
-						json.dump(users, f, ensure_ascii = False, indent = 4)
+					post = {"_id": user.id, "CustomRoleName": crname.content}
+					collection.insert_one(post)
 
 					positions = {
 						newcr: 65
@@ -101,41 +108,47 @@ class CustomRoles(commands.Cog):
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
 	async def delete(self, ctx):
 		user = ctx.author
-		users = await get_role_data()
 		channel = ctx.message.channel
 		usercheck = ctx.author.id
 		guild = self.client.get_guild(750160850077089853)
 
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
+		
+		resultss = collection.find({"_id": user.id})
 
-		def check(message):
-			return message.author.id == usercheck and message.channel.id == channel.id
+		for info in resultss:
+			get_role = info['CustomRoleName']
+		
+		if ctx.author.id in all_users:
 
-		await ctx.reply("Are you sure you want to delete your custom role? `yes` | `no`")
+			def check(message):
+				return message.author.id == usercheck and message.channel.id == channel.id
 
-		try:
+			await ctx.reply("Are you sure you want to delete your custom role? `yes` | `no`")
 
-			reply = await self.client.wait_for('message', timeout=30, check=check)
-			answer = reply.content
-			if answer.lower() == "no":
+			try:
+
+				reply = await self.client.wait_for('message', timeout=30, check=check)
+				answer = reply.content
+				if answer.lower() == "no":
+					return
+
+				elif answer.lower() == "yes":
+					crname = discord.utils.get(guild.roles, name=get_role)
+					await crname.delete()
+
+					collection.delete_one({"_id": ctx.author.id})
+
+					await ctx.send("Succesfully deleted your custom role! {}".format(ctx.author.mention))
+
+			except asyncio.TimeoutError:
 				return
 
-			elif answer.lower() == "yes":
-				get_role = users[str(user.id)]["CustomRoleName"]
-				crname = discord.utils.get(guild.roles, name=get_role)
-				await crname.delete()
-				
-
-
-				del users[str(user.id)]
-
-				with open("customroles.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
-
-				await ctx.send("Succesfully deleted your custom role! {}".format(ctx.author.mention))
-
-		except asyncio.TimeoutError:
-			return
-
+		else:
+			await ctx.send("You do not have a custom role! Type: `!cr create` to create your role!")
 
 
 
@@ -166,69 +179,8 @@ class CustomRoles(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
-		user = member
-		guild = self.client.get_guild(750160850077089853)
-
-		await open_role(user)
-
-		users = await get_role_data()
-
-		if str(user.id) in users:
-			get_role = users[str(user.id)]["CustomRoleName"]
-			crname = discord.utils.get(guild.roles, name=get_role)
-			await crname.delete()
-			del users[str(user.id)]
-
-		with open("customroles.json", "w", encoding="utf-8") as f:
-			json.dump(users, f, ensure_ascii = False, indent = 4)
-			
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-async def open_role(user):
-
-	users = await get_role_data()
-
-	if str(user.id) in users:
-		return False
-
-async def get_role_data():
-	with open("customroles.json", "r") as f:
-		users = json.load(f)
-
-	return users
-
-async def update_role(user, change, mode):
-	users = await get_role_data()
-	users[str(user.id)][mode] = change
-	users[str(user.id)][mode] = change
-	
-	with open("customroles.json", "w", encoding="utf-8") as f:
-			json.dump(users, f, ensure_ascii = False, indent = 4)
-
-	finalthing = [users[str(user.id)]["CustomRole"], users[str(user.id)]["CustomRoleColor"]]
-	return finalthing
-
-
-
-
-
-
-
-
-
-
+		collection.delete_one({"_id": member.id})
+		
 
 
 

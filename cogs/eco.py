@@ -1,12 +1,19 @@
 import discord
 from discord.ext import commands
-import json 
 from random import randint
 import random
 import utils.colors as color
 import asyncio
 from utils.helpers import time_phaserr
+import pymongo
+from pymongo import MongoClient
+import os
 
+DBKEY = os.getenv("MONGODBKEY")
+
+cluster = MongoClient(DBKEY)
+db = cluster["ViHillCornerDB"]
+collection = db["Economy"]
 
 class EcoCommands(commands.Cog):
 
@@ -17,66 +24,70 @@ class EcoCommands(commands.Cog):
 		return ctx.prefix == self.prefix
 
 
-			# LEADERBOARD
+			# REGISTER
 
-	@commands.command(aliases=['lb', 'baltop'])
-	async def leaderboard(self, ctx, x = 10):
-		users = await get_bank_data()
-		leader_board = {}
-				
-		for uid, details in users.items():  
-			user = self.client.get_user(int(uid))  
-			leader_board[user] = details['wallet'] + details['bank']  
-		
-		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True)  
-		
-		em = discord.Embed(title=f'Top {x} richest people', color=color.reds) 
-		for index, (mem, amt) in enumerate(leader_board[:x], start=1): 
-			
-			name = mem.name
+	@commands.command()
+	async def register(self, ctx):
+		user = ctx.author
 
-			em.add_field(name=f"{index}.   {name}", value="`{:,}` coins".format(amt), inline=False)
-			if index == x:
-				break
-			
-			else:
-				index += 1
-		
-		for index2, (mem, amt) in enumerate(leader_board, start = 1):
-			try:
-				id = mem.id
-			except:
-				pass
-			string1 = f"{index2} {id} {amt}"
-			string2 = f"{index2} {ctx.author.id} {amt}"
-			if string1 == string2:
-				index=index2
-				break
-			else:
-				index2 += 1
-		em.add_field(name="_ _ \nYour place:", value=f"`#{index}`")
+		post = {"_id": user.id, "wallet": 0, "bank": 0}
 
-		await ctx.reply(embed=em)
+		try:
+			collection.insert_one(post)
+			await ctx.send("Succesfully registered!")
+
+		except pymongo.errors.DuplicateKeyError:
+			await ctx.send("You are already registered!")
+	
+
+			# UNREGISTER
 
 
+	@commands.command()
+	async def unregister(self, ctx):
+		user = ctx.author
 
-            # BALANCE
+		collection.delete_one({"_id": user.id})
+		await ctx.send("Succesfully unregistered!")
+          
+		  
+		  
+		    # BALANCE
+
+
 
 	@commands.group(invoke_without_command=True, aliases=['bal'])
 	async def balance(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
 
-		await open_account(member)
 		user = member
-		users = await get_bank_data()
+		
+		results = collection.find({"_id": user.id})
+		all_accounts = collection.find({})
 
 		leader_board = {}
-				
-		for uid, details in users.items():  
-			userr = self.client.get_user(int(uid))  
-			leader_board[userr] = details['wallet'] + details['bank']  
-		
+
+		for all_results in all_accounts:
+			userr = self.client.get_user(all_results["_id"])
+			all_wallet_amt = all_results["wallet"]
+			all_bank_amt = all_results["bank"]
+			leader_board[userr] = all_wallet_amt + all_bank_amt
+
+		for result in results:
+			wallet_amt = result["wallet"]
+			bank_amt = result["bank"]
+
+		try:
+			total_amt = wallet_amt + bank_amt
+
+		except UnboundLocalError:
+			if member.id == ctx.author.id:
+				await ctx.send("You are not registered! Type: `!register` to register.")
+			else:
+				await ctx.send("User is not registered!")
+			return
+
 		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True)
 
 		for index2, (mem, amt) in enumerate(leader_board, start = 1):
@@ -91,20 +102,63 @@ class EcoCommands(commands.Cog):
 				index=index2
 				break
 			else:
-				index2 += 1
+				index2 += 1	
 
-		wallet_amt = users[str(user.id)]['wallet']
-		bank_amt = users[str(user.id)]['bank']
-		total_amt = users[str(user.id)]["wallet"] + users[str(user.id)]["bank"]
 
 		em = discord.Embed(title=f"{member.name}'s balance", color=color.lightpink)
 		em.add_field(name="Wallet Balance", value="`{:,}` coins".format(wallet_amt), inline=False)
 		em.add_field(name="Bank Balance", value="`{:,}` coins".format(bank_amt), inline=False)
 		em.add_field(name="Total Balance", value="`{:,}` coins".format(total_amt))
-		em.add_field(name="Rank", value=f"`#{index}`")
+		em.add_field(name="Rank", value="`#{}`".format(index))
 		em.set_thumbnail(url=user.avatar_url)
 
 		await ctx.reply(embed=em)
+
+			# LEADERBOARD
+
+	@commands.command(aliases=['lb', 'baltop'])
+	async def leaderboard(self, ctx, x = 10):
+		results = collection.find({})
+		leader_board = {}
+
+		all_users = []
+
+		for result in results:
+			user = self.client.get_user(result["_id"])  
+			leader_board[user] = result["wallet"] + result["bank"]  
+			all_users.append(result['_id'])
+		
+		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True)  
+		
+		em = discord.Embed(title=f'Top {x} richest people', color=color.reds) 
+		
+		for index, (mem, amt) in enumerate(leader_board[:x], start=1): 
+			
+			name = mem.name
+
+			em.add_field(name=f"{index}.   {name}", value="`{:,}` coins".format(amt), inline=False)
+			if index == x:
+				break
+			
+			else:
+				index += 1
+		if ctx.author.id in all_users:
+			for index2, (mem, amt) in enumerate(leader_board, start = 1):
+				try:
+					id = mem.id
+				except:
+					pass
+				string1 = f"{index2} {id} {amt}"
+				string2 = f"{index2} {ctx.author.id} {amt}"
+				if string1 == string2:
+					index=index2
+					break
+				else:
+					index2 += 1
+			em.add_field(name="_ _ \nYour place:", value=f"`#{index}`")
+			
+		await ctx.reply(embed=em)
+
 
 	@balance.command(aliases=['add-bank'])
 	@commands.is_owner()
@@ -113,56 +167,80 @@ class EcoCommands(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		if amount is None:
-			await ctx.send("Please specify the amount of money you want to add!")
-			return
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		await open_account(member)
+		if member.id in all_users:
 
-		amount = amount.replace(",", "")
+			if amount is None:
+				await ctx.send("Please specify the amount of money you want to add!")
+				return
 
-		amount = int(amount)
+			user = member
 
-		await update_bank(member, amount, "bank")
-		
+			amount = amount.replace(",", "")
+
+			amount = int(amount)
+
+			collection.update_one({"_id": user.id}, {"$set":{"bank": amount}})
 			
-		await ctx.send("Successfully added `{:,}` coins, and deposited them into the bank for `{}`!".format(amount, member.name))
+				
+			await ctx.send("Successfully added `{:,}` coins, and deposited them into the bank for `{}`!".format(amount, member.name))
 
-		if ctx.author.id == kraots.id:
-			return
+			if ctx.author.id == kraots.id:
+				return
+			else:
+				embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added `{:,}` coins to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+		
+				await kraots.send(embed=embed)
+
 		else:
-			embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added `{:,}` coins to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
-	
-			await kraots.send(embed=embed)
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
+			return
 
 	@balance.command(aliases=['add-wallet'])
 	@commands.is_owner()
-	async def wallet(self, ctx, amount = None, member: discord.Member = None):
+	async def add_wallet(self, ctx, amount = None, member: discord.Member = None):
 		kraots = self.client.get_user(374622847672254466)
 		if member is None:
 			member = ctx.author
 
-		if amount is None:
-			await ctx.send("Please specify the amount of money you want to add!")
-			return
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		await open_account(member)
+		if member.id in all_users:
 
-		amount = amount.replace(",", "")
+			if amount is None:
+				await ctx.send("Please specify the amount of money you want to add!")
+				return
 
-		amount = int(amount)
+			user = member
 
-		await update_bank(member, amount, "wallet")
-		
+			amount = amount.replace(",", "")
+
+			amount = int(amount)
+
+			collection.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
 			
-		await ctx.send("Successfully added `{:,}` coins to the wallet for `{}`!".format(amount, member.name))
+				
+			await ctx.send("Successfully added `{:,}` coins to the wallet for `{}`!".format(amount, member.name))
 
-		if ctx.author.id == kraots.id:
-			return
+			if ctx.author.id == kraots.id:
+				return
+			else:
+				embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added `{:,}` coins to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+		
+				await kraots.send(embed=embed)
+
 		else:
-			embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added `{:,}` coins to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
-	
-			await kraots.send(embed=embed)
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
+			return
 
 	@balance.command(aliases=['set-bank'])
 	@commands.is_owner()
@@ -171,29 +249,36 @@ class EcoCommands(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		if amount is None:
-			await ctx.send("Please specify the amount of money you want to set!")
-			return
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		await open_account(member)
-		user = member
-		users = await get_bank_data()
-		amount = amount.replace(",", "")
-		amount = int(amount)
-		users[str(user.id)]['bank'] = amount
+		if member.id in all_users:
+			if amount is None:
+				await ctx.send("Please specify the amount of money you want to set!")
+				return
+
+			user = member
+			amount = amount.replace(",", "")
+			amount = int(amount)
 
 
-		with open("mainbank.json", "w", encoding="utf-8") as f:
-			json.dump(users, f, ensure_ascii = False, indent = 4)
+			collection.update_one({"_id": user.id}, {"$set":{"bank": amount}})
 
-		await ctx.send("Balance successfully set to `{:,}` coins in the bank for `{}`!".format(amount, member.name))
-		
-		if ctx.author.id == kraots.id:
-			return		
+			await ctx.send("Balance successfully set to `{:,}` coins in the bank for `{}`!".format(amount, member.name))
+			
+			if ctx.author.id == kraots.id:
+				return		
+			
+			else:
+				embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to `{:,}` coins in the bank for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+				await kraots.send(embed=embed)
 		
 		else:
-			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to `{:,}` coins in the bank for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
-			await kraots.send(embed=embed)
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
+			return
 
 	@balance.command()
 	@commands.is_owner()
@@ -202,57 +287,71 @@ class EcoCommands(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		await open_account(member)
-		user = member
-		users = await get_bank_data()
-		users[str(user.id)]['bank'] = 0
-		users[str(user.id)]['wallet'] = 0
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
+		if member.id in all_users:
 
-		with open("mainbank.json", "w", encoding="utf-8") as f:
-			json.dump(users, f, ensure_ascii = False, indent = 4)
+			user = member
 
-		await ctx.send(f"Reseted balance for `{member.name}`.")
+			collection.update_one({"_id": user.id}, {"$set":{"wallet": 0}})
+			collection.update_one({"_id": user.id}, {"$set":{"bank": 0}})
+
+			await ctx.send(f"Reseted balance for `{member.name}`.")
+			
+			if ctx.author.id == kraots.id:
+				return
 		
-		if ctx.author.id == kraots.id:
-			return
+			else:
+				embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description=f"`{ctx.author}` reseted the balance for `{member}`.\n\n`{ctx.author.id}` - person who reseted the money\n`{member.id}` - person who got the money reseted back to 0")
+				await kraots.send(embed=embed)
 		
 		else:
-			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description=f"`{ctx.author}` reseted the balance for `{member}`.\n\n`{ctx.author.id}` - person who reseted the money\n`{member.id}` - person who got the money reseted back to 0")
-			await kraots.send(embed=embed)
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
+			return
 
 	@balance.command(aliases=['set-wallet'])
 	@commands.is_owner()
 	async def set_wallet(self, ctx, amount = None, member: discord.Member = None):
+
 		kraots = self.client.get_user(374622847672254466)
 		if member is None:
 			member = ctx.author
 
-		if amount is None:
-			await ctx.send("Please specify the amount of money you want to set!")
-			return
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		await open_account(member)
-		user = member
-		users = await get_bank_data()
-		amount = amount.replace(",", "")
-		amount = int(amount)
-		users[str(user.id)]['wallet'] = amount
+		if member.id in all_users:
+			if amount is None:
+				await ctx.send("Please specify the amount of money you want to set!")
+				return
 
+			user = member
+			
+			amount = amount.replace(",", "")
+			amount = int(amount)
 
-		with open("mainbank.json", "w", encoding="utf-8") as f:
-			json.dump(users, f, ensure_ascii = False, indent = 4)
+			collection.update_one({"_id": user.id}, {"$set":{"wallet": amount}})
 
-		await ctx.send("Balance successfully set to `{:,}` coins in the wallet for `{}`!".format(amount, member.name))
-		
-		if ctx.author.id == kraots.id:
-			return
-		
+			await ctx.send("Balance successfully set to `{:,}` coins in the wallet for `{}`!".format(amount, member.name))
+			
+			if ctx.author.id == kraots.id:
+				return
+			
+			else:
+				embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to `{:,}` coins in the wallet for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+			
+				await kraots.send(embed=embed)
+
 		else:
-			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to `{:,}` coins in the wallet for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
-		
-			await kraots.send(embed=embed)
-
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
+			return
 
 
 
@@ -261,102 +360,140 @@ class EcoCommands(commands.Cog):
 
 	@commands.group(aliases=['with'])
 	async def withdraw(self, ctx, amount = None):
-		await open_account(ctx.author)
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
+
+		if ctx.author.id in all_users:
 		
-		if amount is None:
-			await ctx.send('Please enter the amount you want to withdraw.')
+			if amount is None:
+				await ctx.send('Please enter the amount you want to withdraw.')
+				return
+
+			results = collection.find({"_id": ctx.author.id})
+
+			for result in results:
+				bal = result["bank"]
+
+			if amount.lower() == "all":
+				amount = bal
+
+			try:
+				amount = amount.replace(",", "")
+			except:
+				pass
+			amount = int(amount)
+
+			if amount > bal:
+				await ctx.send('You do not own that much money!')
+				return
+
+			elif amount < 1:
+				await ctx.send('Invalid amount.')
+				return
+
+			collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": amount}})
+			collection.update_one({"_id": ctx.author.id}, {"$inc":{"bank": -amount}})
+
+			await ctx.send("Successfully withdrew `{:,}` coins!".format(amount))
+
+		else:
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
 			return
-
-
-		bal = await update_bank(ctx.author)
-
-		if amount.lower() == "all":
-			amount = bal[1]
-
-		try:
-			amount = amount.replace(",", "")
-		except:
-			pass
-		amount = int(amount)
-
-		if amount > bal[1]:
-			await ctx.send('You do not own that much money!')
-			return
-
-		elif amount < 1:
-			await ctx.send('Invalid amount.')
-			return
-
-		await update_bank(ctx.author, amount)
-		await update_bank(ctx.author, -1*amount, "bank")
-
-		await ctx.send("Successfully withdrew `{:,}` coins!".format(amount))
-
 
 			# DEPOSIT
 
 
 	@commands.command(aliases=['dep'])
 	async def deposit(self, ctx, amount = None):
-		await open_account(ctx.author)
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
+
+		if ctx.author.id in all_users:
 		
-		if amount is None:
-			await ctx.send('Please enter the amount you want to deposit.')
+			if amount is None:
+				await ctx.send('Please enter the amount you want to deposit.')
+				return
+		
+			results = collection.find({"_id": ctx.author.id})
+
+			for result in results:
+				bal = result["wallet"]
+
+			if amount.lower() == "all":
+				amount = bal
+			try:
+				amount = amount.replace(",", "")
+			except:
+				pass
+			amount = int(amount)
+
+			if amount > bal:
+				await ctx.send('You do not own that much money!')
+				return
+
+			elif amount < 1:
+				await ctx.send('Invalid amount.')
+				return
+
+			collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -amount}})
+			collection.update_one({"_id": ctx.author.id}, {"$inc":{"bank": amount}})
+
+			await ctx.send("Successfully deposited `{:,}` coins!".format(amount))
+
+		else:
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
 			return
-
-		bal = await update_bank(ctx.author)
-		if amount.lower() == "all":
-			amount = bal[0]
-		try:
-			amount = amount.replace(",", "")
-		except:
-			pass
-		amount = int(amount)
-
-		if amount > bal[0]:
-			await ctx.send('You do not own that much money!')
-			return
-
-		elif amount < 1:
-			await ctx.send('Invalid amount.')
-			return
-
-		await update_bank(ctx.author, -1*amount)
-		await update_bank(ctx.author, amount, "bank")
-
-		await ctx.send("Successfully deposited `{:,}` coins!".format(amount))
-
 
 			# GIVE
 
 
 	@commands.command()
 	async def give(self, ctx, member : discord.Member, amount = None):
-		await open_account(ctx.author)
-		await open_account(member)
-		
-		if amount is None:
-			await ctx.send('Please enter the amount you want to withdraw.')
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
+
+		if ctx.author.id in all_users:
+			user = member
+			author = ctx.author
+			
+			if amount is None:
+				await ctx.send('Please enter the amount you want to withdraw.')
+				return
+
+			amount = amount.replace(",", "")
+			amount = int(amount)
+			
+			results = collection.find({"_id": author.id})
+
+			for result in results:
+				bal = result["wallet"]
+
+			if amount > bal:
+				await ctx.send('You do not own that much money!')
+				return
+
+			if amount < 100:
+				await ctx.send('You cannot give less than `100` coins.')
+				return
+
+			collection.update_one({"_id": author.id}, {"$inc":{"wallet": -amount}})
+			collection.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
+
+			await ctx.send("You gave `{:,}` coins to `{}`.".format(amount, member.name))
+
+		else:
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
 			return
-
-		amount = amount.replace(",", "")
-		amount = int(amount)
-		bal = await update_bank(ctx.author)
-
-		if amount > bal[1]:
-			await ctx.send('You do not own that much money!')
-			return
-
-		if amount < 100:
-			await ctx.send('You cannot give less than `100` coins.')
-			return
-
-		await update_bank(ctx.author, -1*amount, "bank")
-		await update_bank(member, amount, "bank")
-
-		await ctx.send("You gave `{:,}` coins to `{}`.".format(amount, member.name))
-
-
+			
 
 			# ROB
 
@@ -364,65 +501,81 @@ class EcoCommands(commands.Cog):
 	@commands.command(aliases=["steal"])
 	@commands.cooldown(1, 20, commands.BucketType.user)
 	async def rob(self, ctx, member : discord.Member = None):
-		if member is None:
-			await ctx.send("You must specify the user you want to mention, dumbass.")
-			ctx.command.reset_cooldown(ctx)
-			return
-		if member is ctx.author:
-			await ctx.send("You cannot rob yourself, dumbass.")
-			ctx.command.reset_cooldown(ctx)
-			return
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		await open_account(ctx.author)
-		await open_account(member)
-		
-		bal = await update_bank(member)
-		ball = await update_bank(ctx.author)
+		if ctx.author.id in all_users:
+			if member is None:
+				await ctx.send("You must specify the user you want to mention, dumbass.")
+				ctx.command.reset_cooldown(ctx)
+				return
+			if member is ctx.author:
+				await ctx.send("You cannot rob yourself, dumbass.")
+				ctx.command.reset_cooldown(ctx)
+				return
 
-		if ball[0] < 350:
-			await ctx.send("You need `350` coins to rob someone!")
-			ctx.command.reset_cooldown(ctx)
-			return
+			user = member
+			author = ctx.author
+			
+			get_user_bal = collection.find({"_id": user.id})
+			get_author_bal = collection.find({"_id": author.id})
 
-		if bal[0] < 250:
-			await ctx.send('The user must have at least `250` coins!')
-			ctx.command.reset_cooldown(ctx)
-			return
+			for result in get_user_bal:
+				user_bal = result["wallet"]
 
-		earnings = randint(250, bal[0])
+			for result in get_author_bal:
+				author_bal = result["walet"]
 
-		chance = randint(1, 10)
+			if author_bal < 350:
+				await ctx.send("You need `350` coins to rob someone!")
+				ctx.command.reset_cooldown(ctx)
+				return
+
+			if user_bal < 250:
+				await ctx.send('The user must have at least `250` coins!')
+				ctx.command.reset_cooldown(ctx)
+				return
+
+			earnings = randint(250, user_bal)
+
+			chance = randint(1, 10)
 
 
-		if chance == 1:
-			await update_bank(ctx.author, earnings)
-			await update_bank(member, -1*earnings, "wallet")
+			if chance == 1:
+				collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
+				collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
-			await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
+				await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
 
-		elif chance == 3:
-			await update_bank(ctx.author, earnings)
-			await update_bank(member, -1*earnings, "wallet")
+			elif chance == 3:
+				collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
+				collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
-			await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
+				await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
 
-		elif chance == 7:
-			await update_bank(ctx.author, earnings)
-			await update_bank(member, -1*earnings, "wallet")
+			elif chance == 7:
+				collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
+				collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
-			await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
+				await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
 
-		elif chance == 10:
-			await update_bank(ctx.author, earnings)
-			await update_bank(member, -1*earnings, "wallet")
+			elif chance == 10:
+				collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
+				collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
-			await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
+				await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
+
+			else:
+				collection.update_one({"_id": author.id}, {"$inc":{"wallet": -350}})
+
+				await ctx.send(f"You failed in stealing from that person and you lost `350` coins")
 
 		else:
-			await update_bank(ctx.author, -350, "wallet")
-
-			await ctx.send(f"You failed in stealing from that person and you lost `350` coins")
-
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
+			return
 
 			# SLOTS
 
@@ -430,121 +583,129 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 7, commands.BucketType.user)
 	async def slots(self, ctx, amount = None):
-		await open_account(ctx.author)
-		if amount is None:
-			await ctx.reply('Please enter the amount.')
-			ctx.command.reset_cooldown(ctx)
-			return
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		bal = await update_bank(ctx.author)
-		
-		if amount.lower() == "all":
-			amount = bal[0]
-		try:
-			amount = amount.replace(",", "")
-		except:
-			pass
-		amount = int(amount)
+		if ctx.author.id in all_users:
+			if amount is None:
+				await ctx.reply('Please enter the amount.')
+				ctx.command.reset_cooldown(ctx)
+				return
 
-		if amount > bal[0]:
-			await ctx.reply('You do not own that much money!')
-			ctx.command.reset_cooldown(ctx)
-			return
+			results = collection.find({"_id": ctx.author.id})
+			
+			for result in results:
+				bal = result["wallet"]
 
-		if amount < 300:
-			await ctx.reply('You must bet more than `300` coins.')
-			ctx.command.reset_cooldown(ctx)
-			return
+			if amount.lower() == "all":
+				amount = bal
+			try:
+				amount = amount.replace(",", "")
+			except:
+				pass
+			amount = int(amount)
 
-		prefinal = []
-		for i in range(3):
-			a = random.choice(["❌", "🇴", "✨", "🔥", "<:tfBruh:784689708890324992>", "👑"])
+			if amount > bal:
+				await ctx.reply('You do not own that much money!')
+				ctx.command.reset_cooldown(ctx)
+				return
 
-			prefinal.append(a)
+			if amount < 300:
+				await ctx.reply('You must bet more than `300` coins.')
+				ctx.command.reset_cooldown(ctx)
+				return
 
-			final = "\u2800┃\u2800".join(prefinal)
+			prefinal = []
+			for i in range(3):
+				a = random.choice(["❌", "🇴", "✨", "🔥", "<:tfBruh:784689708890324992>", "👑"])
 
-		embed = discord.Embed(color=color.lightpink, title="Slots!", description=f"<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
-		embed.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
-		msg = await ctx.reply(embed=embed)
+				prefinal.append(a)
 
-		line1 = prefinal[0] 
-		line2 = prefinal[1]
-		line3 = prefinal[2]
+				final = "\u2800┃\u2800".join(prefinal)
 
+			embed = discord.Embed(color=color.lightpink, title="Slots!", description=f"<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+			embed.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
+			msg = await ctx.reply(embed=embed)
 
-
-		if prefinal[0] == prefinal[1] == prefinal[2]:
-			earned = 2.5*amount
-			users = await get_bank_data()
-
-			users[str(ctx.author.id)]['wallet'] += earned
-			with open("mainbank.json", "w", encoding='utf-8') as f:
-				json.dump(users, f)
-
-			wallet_amt = users[str(ctx.author.id)]['wallet']
-
-			em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
-			em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
-			await asyncio.sleep(0.7)
-			await msg.edit(embed=em)
-
-			em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
-			em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
-			await asyncio.sleep(0.7)
-			await msg.edit(embed=em)
-		
-			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of `{:,}` coins and won `{:,}` coins. \nNow in wallet: `{:,}`.".formant(line1, line2, line3, final, amount, earned, wallet_amt))
-			await asyncio.sleep(0.7)
-			await msg.edit(embed=winembed)
+			line1 = prefinal[0] 
+			line2 = prefinal[1]
+			line3 = prefinal[2]
 
 
 
-		elif prefinal[0] == prefinal[1] or prefinal[0] == prefinal[2] or prefinal[2] == prefinal[1]:
-			earned = amount
-			users = await get_bank_data()
+			if prefinal[0] == prefinal[1] == prefinal[2]:
+				earned = 2.5*amount
 
-			users[str(ctx.author.id)]['wallet'] += earned
-			with open("mainbank.json", "w", encoding='utf-8') as f:
-				json.dump(users, f)
+				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
-			wallet_amt = users[str(ctx.author.id)]['wallet']
-		
-			em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
-			em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
-			await asyncio.sleep(0.7)
-			await msg.edit(embed=em)
+				wallet_amt = bal + earned
 
-			em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
-			em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
-			await asyncio.sleep(0.7)
-			await msg.edit(embed=em)
-	
-			winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou won `{:,}` coins. \nNow in wallet: `{:,}`.".format(final, amount, wallet_amt))
-			await asyncio.sleep(0.7)
-			await msg.edit(embed=winembed)
+				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+				em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
+				await asyncio.sleep(0.7)
+				await msg.edit(embed=em)
+
+				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
+				em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
+				await asyncio.sleep(0.7)
+				await msg.edit(embed=em)
+				
+
+				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of `{:,}` coins and won `{:,}` coins. \nNow in wallet: `{:,}`.".formant(line1, line2, line3, final, amount, earned, wallet_amt))
+				await asyncio.sleep(0.7)
+				await msg.edit(embed=winembed)
 
 
+
+			elif prefinal[0] == prefinal[1] or prefinal[0] == prefinal[2] or prefinal[2] == prefinal[1]:
+				earned = amount
+
+				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+
+				wallet_amt = bal + earned
+
+				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+				em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
+				await asyncio.sleep(0.7)
+				await msg.edit(embed=em)
+
+				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
+				em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
+				await asyncio.sleep(0.7)
+				await msg.edit(embed=em)
+
+				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou won `{:,}` coins. \nNow in wallet: `{:,}`.".format(final, amount, wallet_amt))
+				await asyncio.sleep(0.7)
+				await msg.edit(embed=winembed)
+
+
+
+			else:
+
+				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -amount}})
+				
+				wallet_amt = bal - amount
+			
+				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+				em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
+				await asyncio.sleep(0.7)
+				await msg.edit(embed=em)
+
+				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
+				em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
+				await asyncio.sleep(0.7)
+				await msg.edit(embed=em)
+
+				lostembed = discord.Embed(color=color.red, title="LOST!", description="{}\n\nYou bet a total amount of `{:,}` coins but you lost them! :c\nNow in wallet: `{:,}`.".format(final, amount, wallet_amt))
+				await asyncio.sleep(0.7)
+				await msg.edit(embed=lostembed)
 
 		else:
-			await update_bank(ctx.author, -1*amount)
-			users = await get_bank_data()
-			wallet_amt = users[str(ctx.author.id)]['wallet']
-		
-			em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
-			em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
-			await asyncio.sleep(0.7)
-			await msg.edit(embed=em)
-
-			em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
-			em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
-			await asyncio.sleep(0.7)
-			await msg.edit(embed=em)
-
-			lostembed = discord.Embed(color=color.red, title="LOST!", description="{}\n\nYou bet a total amount of `{:,}` coins but you lost them! :c\nNow in wallet: `{:,}`.".format(final, amount, wallet_amt))
-			await asyncio.sleep(0.7)
-			await msg.edit(embed=lostembed)
-
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
+			return
 
 
 
@@ -553,26 +714,23 @@ class EcoCommands(commands.Cog):
 
 	@commands.command()
 	@commands.cooldown(1, 5, commands.BucketType.user)
-	async def beg(self, ctx, member : discord.Member = None):
-		if member is None:
-			member = ctx.author
+	async def beg(self, ctx):
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		await open_account(member)
-		user = member
-		users = await get_bank_data()
+		if ctx.author.id in all_users:
+			earnings = randint(100, 500)
 
-		earnings = randint(100, 500)
+			await ctx.send(f"Someone gave you `{earnings}` coins!!")
 
-		await ctx.send(f"Someone gave you `{earnings}` coins!!")
+			collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
 
-
-		users[str(user.id)]['wallet'] += earnings
-
-
-		with open("mainbank.json", "w", encoding="utf-8") as f:
-			json.dump(users, f, ensure_ascii = False, indent = 4)
-
-		
+		else:
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
+			return
 
 			# WORK
 	
@@ -580,17 +738,21 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 3600, commands.BucketType.user)
 	async def work(self, ctx):
-		await open_account(ctx.author)
-		user = ctx.author
-		users = await get_bank_data()
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		await ctx.send("You worked and got `5,000` coins. The money have been deposited into your bank!")
+		if ctx.author.id in all_users:
 
-		users[str(user.id)]["bank"] += 5000
+			await ctx.send("You worked and got `5,000` coins. The money have been deposited into your bank!")
 
-		with open("mainbank.json", "w", encoding="utf-8") as f:
-			json.dump(users, f, ensure_ascii = False, indent = 4)
-
+			collection.update_one({"_id": ctx.author.id}, {"$inc":{"bank": 5000}})
+		
+		else:
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
+			return
 
 
 				# CRIME
@@ -598,50 +760,49 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 15, commands.BucketType.user)
 	async def crime(self, ctx):
-		await open_account(ctx.author)
-		user = ctx.author
-		users = await get_bank_data()
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		aaaa = randint(1, 7)
-		earnings = randint(500, 1500)
-		earningss = randint(100, 420)
-		earningsss = randint(400, 800)
-		earningssss = randint(5000, 50000)
-		losts = randint(300, 700)
+		if ctx.author.id in all_users:
 
-		if aaaa == 2:
-			users[str(user.id)]["wallet"] += earnings
-			await ctx.send("<:weird:773538796087803934> you commited a bigger crime and got `{:,}` coins.".format(earnings))
-			with open("mainbank.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
-			return
+			aaaa = randint(1, 7)
+			earnings = randint(500, 1500)
+			earningss = randint(100, 420)
+			earningsss = randint(400, 800)
+			earningssss = randint(5000, 50000)
+			losts = randint(300, 700)
 
-		if aaaa == 4:
-			users[str(user.id)]["wallet"] += earningss
-			await ctx.send("<:weird:773538796087803934> you commited a smaller crime and got `{:,}` coins.".format(earningss))
-			with open("mainbank.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
-			return
+			if aaaa == 2:
+				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
 
-		if aaaa == 6:
-			users[str(user.id)]["wallet"] += earningsss
-			await ctx.send("<:weird:773538796087803934> you commited a medium crime and got `{:,}` coins.".format(earningsss))
-			with open("mainbank.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
-			return
+				await ctx.send("<:weird:773538796087803934> you commited a bigger crime and got `{:,}` coins.".format(earnings))
+				return
 
-		if aaaa == 7:
-			users[str(user.id)]["wallet"] += earningssss
-			await ctx.send("<:weird:773538796087803934> you commited a large crime and got `{:,}` coins.".format(earningssss))
-			with open("mainbank.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
-			return
+			if aaaa == 4:
+				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
+				await ctx.send("<:weird:773538796087803934> you commited a smaller crime and got `{:,}` coins.".format(earningss))
+				return
 
+			if aaaa == 6:
+				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
+				await ctx.send("<:weird:773538796087803934> you commited a medium crime and got `{:,}` coins.".format(earningsss))
+				return
+
+			if aaaa == 7:
+				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
+				await ctx.send("<:weird:773538796087803934> you commited a large crime and got `{:,}` coins.".format(earningssss))
+				return
+
+			else:
+				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
+				await ctx.send("You lost `{:,}` coins from your wallet.".format(losts))
+				return
+		
 		else:
-			users[str(user.id)]["wallet"] -= losts
-			await ctx.send("You lost `{:,}` coins from your wallet.".format(losts))
-			with open("mainbank.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
 			return
 
 				# GUESS THE NUMBER
@@ -650,46 +811,49 @@ class EcoCommands(commands.Cog):
 	@commands.command(aliases=['guess'])
 	@commands.cooldown(1, 3, commands.BucketType.user)
 	async def gtn(self, ctx):
-		usercheck = ctx.author.id
-		await ctx.send('Pick a number between 1 and 10.')
-		await open_account(ctx.author)
-		user = ctx.author
-		users = await get_bank_data()
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		lost_amt = randint(100, 400)
-		win_amt = randint(130, 570)
-		number = random.randint(1, 10)
+		if ctx.author.id in all_users:
+			usercheck = ctx.author.id
+			await ctx.send('Pick a number between 1 and 10.')
 
-		def check(message):
-			return message.author.id == usercheck and message.channel.id == ctx.channel.id
-			try:
-				int(message.content)
-				return True
-			except ValueError:
-				return False
-		
-		for guess in range(0,3):
-			msg = await self.client.wait_for('message', timeout= 30 , check=check)
-			attempt = int(msg.content)
-			if attempt > number:
-				await msg.reply('Try going lower.')
-				
+			lost_amt = randint(100, 400)
+			win_amt = randint(130, 570)
+			number = random.randint(1, 10)
 
-			elif attempt < number:
-				await msg.reply('Try going higher.')
-				
+			def check(message):
+				return message.author.id == usercheck and message.channel.id == ctx.channel.id
+				try:
+					int(message.content)
+					return True
+				except ValueError:
+					return False
+			
+			for guess in range(0,3):
+				msg = await self.client.wait_for('message', timeout= 30 , check=check)
+				attempt = int(msg.content)
+				if attempt > number:
+					await msg.reply('Try going lower.')
+					
 
+				elif attempt < number:
+					await msg.reply('Try going higher.')
+					
+
+				else:
+					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": win_amt}})
+					await ctx.send(f'You guessed it! Good job! You got `{win_amt}` coins. The number was {number}.')
+					return
 			else:
-				users[str(user.id)]["wallet"] += win_amt
-				await ctx.send(f'You guessed it! Good job! You got `{win_amt}` coins. The number was {number}.')
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
+				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -lost_amt}})
+				await ctx.send(f"You didn't get it and lost `{lost_amt}` coins. The number was `{number}`.")
 				return
 		else:
-			users[str(user.id)]["wallet"] -= lost_amt
-			await ctx.send(f"You didn't get it and lost `{lost_amt}` coins. The number was `{number}`.")
-			with open("mainbank.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			ctx.command.reset_cooldown(ctx)
 			return
 
 
@@ -697,166 +861,152 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def ppsuck(self, ctx):
-		await open_account(ctx.author)
-		user = ctx.author
-		users = await get_bank_data()
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		aaaa = randint(1, 7)
-		bbbb = randint(1, 100)
-		earnings = randint(800, 2500)
-		kraotscheat1 = randint(10000, 100000)
-		earningss = randint(300, 620)
-		kraotscheat2 = randint(250000, 500000)
-		earningsss = randint(600, 1200)
-		kraotscheat3 = randint(500000, 1000000)
-		earningssss = randint(20000, 150000)
-		kraotscheat4 = randint(1000000, 10000000)
-		earningssssss = randint(500000, 5000000)
-		kraotscheat5 = randint(25000000, 100000000)
-		losts = randint(1000, 1200)
+		if ctx.author.id in all_users:
+			aaaa = randint(1, 7)
+			bbbb = randint(1, 100)
+			earnings = randint(800, 2500)
+			kraotscheat1 = randint(10000, 100000)
+			earningss = randint(300, 620)
+			kraotscheat2 = randint(250000, 500000)
+			earningsss = randint(600, 1200)
+			kraotscheat3 = randint(500000, 1000000)
+			earningssss = randint(20000, 150000)
+			kraotscheat4 = randint(1000000, 10000000)
+			earningssssss = randint(500000, 5000000)
+			kraotscheat5 = randint(25000000, 100000000)
+			losts = randint(1000, 1200)
 
-		try:
+			try:
 
-			if aaaa == 1:
-				if user.id == 374622847672254466:
-					users[str(user.id)]["wallet"] += kraotscheat1
-					earned = kraotscheat1
-				else:		
-					users[str(user.id)]["wallet"] += earnings
-					earned = earnings
+				if aaaa == 1:
+					if ctx.author.id == 374622847672254466:
+						earned = kraotscheat1
+					else:
+						earned = earnings
+						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
-				await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earned))
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
-				return
+					await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earned))
+					return
 
-			elif aaaa == 4:
-				if user.id == 374622847672254466:
-					users[str(user.id)]["wallet"] += kraotscheat2
-					earned = kraotscheat2
+				elif aaaa == 4:
+					if ctx.author.id == 374622847672254466:
+						earned = kraotscheat2
+						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+					else:
+						earned = earningss
+						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+
+					await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earned))
+					return
+
+				elif aaaa == 6:
+					if ctx.author.id == 374622847672254466:
+						earned = kraotscheat3
+						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+					else:
+						earned = earningsss
+						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+					
+					await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earned))
+					return
+
+				elif aaaa == 7:
+					if ctx.author.id == 374622847672254466:
+						earned = kraotscheat4
+						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+					else:
+						earned = earningssss
+						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+
+					await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you `{:,}`".format(earned))
+					return
+
+				elif bbbb == 1:
+					if ctx.author.id == 374622847672254466:
+						earned = kraotscheat5
+						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+					else:
+						earned = earningssssss
+						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+
+					await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got `{:,}` coins.".format(earned))
+					return
+
 				else:
-					users[str(user.id)]["wallet"] += earningss
-					earned = earningss
+					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
+					await ctx.send("You did a fucking bad job at sucking and lost `{:,}` coins from your wallet.".format(losts))
+					return
 
-				await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earned))
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
+			except:
+				ctx.command.reset_cooldown(ctx)
 				return
-
-			elif aaaa == 6:
-				if user.id == 374622847672254466:
-					users[str(user.id)]["wallet"] += kraotscheat3
-					earned = kraotscheat3
-				else:
-					users[str(user.id)]["wallet"] += earningsss
-					earned = earningsss
-				
-				await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earned))
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
-				return
-
-			elif aaaa == 7:
-				if user.id == 374622847672254466:
-					users[str(user.id)]["wallet"] += kraotscheat4
-					earned = kraotscheat4
-				else:
-					users[str(user.id)]["wallet"] += earningssss
-					earned = earningssss
-
-				await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you `{:,}`".format(earned))
-
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
-				return
-
-			elif bbbb == 1:
-				if user.id == 374622847672254466:
-					users[str(user.id)]["wallet"] += kraotscheat5
-					earned = kraotscheat5
-				else:
-					users[str(user.id)]["wallet"] += earningssssss
-					earned = earningssssss
-			
-				await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got `{:,}` coins.".format(earned))
-
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
-				return
-
-			else:
-				users[str(user.id)]["wallet"] -= losts
-				await ctx.send("You did a fucking bad job at sucking and lost `{:,}` coins from your wallet.".format(losts))
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
-				return
-
-		except:
+		else:
+			await ctx.send("You are not registered! Type: `!register` to register.")
 			ctx.command.reset_cooldown(ctx)
 			return
 
 	@commands.command()
 	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def race(self, ctx):
-		kraots = self.client.get_user(374622847672254466)
-		await open_account(ctx.author)
-		user = ctx.author
-		users = await get_bank_data()
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		aaaa = randint(1, 7)
-		bbbb = randint(1, 100)
-		earnings = randint(800, 2500)
-		earningss = randint(300, 620)
-		earningsss = randint(600, 1200)
-		earningssss = randint(20000, 150000)
-		earningssssss = randint(500000, 5000000)
-		losts = randint(1000, 1200)
+		if ctx.author.id in all_users:
+			kraots = self.client.get_user(374622847672254466)
 
-		try:
+			aaaa = randint(1, 7)
+			bbbb = randint(1, 100)
+			earnings = randint(800, 2500)
+			earningss = randint(300, 620)
+			earningsss = randint(600, 1200)
+			earningssss = randint(20000, 150000)
+			earningssssss = randint(500000, 5000000)
+			losts = randint(1000, 1200)
 
-			if aaaa == 1:
-				users[str(user.id)]["wallet"] += earnings
-				await ctx.send(":third_place: you won the race 3rd place an won: `{:,}` coins.".format(earnings))
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
+			try:
+
+				if aaaa == 1:
+					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
+					await ctx.send(":third_place: you won the race 3rd place an won: `{:,}` coins.".format(earnings))
+					return
+
+				elif aaaa == 4:
+					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
+					await ctx.send("U were close to lose the race by getting 5th place. You got a total of: `{:,}` coins.".format(earningss))
+					return
+
+				elif aaaa == 6:
+					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
+					await ctx.send("After winning on 4th place you got: `{:,}` coins.".format(earningsss))
+					return
+
+				elif aaaa == 7:
+					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
+					await ctx.send(":sparkles: :second_place: after winning on the 2nd place, you won: `{:,}` coins.".format(kraots.name, earningssss))
+					return
+
+				elif bbbb == 1:
+					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssssss}})
+					await ctx.send(":sparkles: :first_place: :medal: :sparkles: after winning the race on the first place you won a total of: `{:,}` coins.".format(kraots.name, earningssssss))
+					return
+
+				else:
+					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
+					await ctx.send("Sadly you lost the race, your lost consists of `{:,}` coins from your wallet.".format(losts))
+					return
+
+			except:
+				ctx.command.reset_cooldown(ctx)
 				return
-
-			elif aaaa == 4:
-				users[str(user.id)]["wallet"] += earningss
-				await ctx.send("U were close to lose the race by getting 5th place. You got a total of: `{:,}` coins.".format(earningss))
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
-				return
-
-			elif aaaa == 6:
-				users[str(user.id)]["wallet"] += earningsss
-				await ctx.send("After winning on 4th place you got: `{:,}` coins.".format(earningsss))
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
-				return
-
-			elif aaaa == 7:
-				users[str(user.id)]["wallet"] += earningssss
-				await ctx.send(":sparkles: :second_place: after winning on the 2nd place, you won: `{:,}` coins.".format(kraots.name, earningssss))
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
-				return
-
-			elif bbbb == 1:
-				users[str(user.id)]["wallet"] += earningssssss
-				await ctx.send(":sparkles: :first_place: :medal: :sparkles: after winning the race on the first place you won a total of: `{:,}` coins.".format(kraots.name, earningssssss))
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
-				return
-
-			else:
-				users[str(user.id)]["wallet"] -= losts
-				await ctx.send("Sadly you lost the race, your lost consists of `{:,}` coins from your wallet.".format(losts))
-				with open("mainbank.json", "w", encoding="utf-8") as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
-				return
-
-		except:
+		else:
+			await ctx.send("You are not registered! Type: `!register` to register.")
 			ctx.command.reset_cooldown(ctx)
 			return
 
@@ -942,56 +1092,7 @@ class EcoCommands(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
-		user = member
-
-		await open_account(user)
-
-		users = await get_bank_data()
-
-		if str(user.id) in users:
-			del users[str(user.id)]
-
-		with open("mainbank.json", "w", encoding="utf-8") as f:
-			json.dump(users, f, ensure_ascii = False, indent = 4)
-			
-
-
-
-
-
-async def open_account(user):
-
-	users = await get_bank_data()
-
-	if str(user.id) in users:
-		return False
-
-	else:
-		users[str(user.id)] = {}
-		users[str(user.id)]['wallet'] = 0
-		users[str(user.id)]['bank'] = 1000
-
-	with open("mainbank.json", "w", encoding="utf-8") as f:
-		json.dump(users, f, ensure_ascii = False, indent = 4)
-
-	return True
-
-async def get_bank_data():
-	with open("mainbank.json", "r") as f:
-		users = json.load(f)
-
-	return users
-
-async def update_bank(user, change = 0, mode = "wallet"):
-	users = await get_bank_data()
-	users[str(user.id)][mode] += change
-	
-	with open("mainbank.json", "w", encoding="utf-8") as f:
-		json.dump(users, f, ensure_ascii = False, indent = 4)
-
-	bal = [users[str(user.id)]["wallet"], users[str(user.id)]["bank"]]
-	return bal
-
+		collection.delete_one({"_id": member.id})
 
 
 
