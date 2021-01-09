@@ -52,7 +52,7 @@ class Snippets(commands.Cog):
 	async def leaderboard(self, ctx):
 		results = collection.find({}).sort([("uses_count", -1)]).limit(10)
 		index = 0
-		em = discord.Embed(color=discord.Color.blurple())
+		em = discord.Embed(color=color.reds)
 		for result in results:
 			snippet_name = result['_id']
 			uses = result['uses_count']
@@ -362,11 +362,11 @@ class Snippets(commands.Cog):
 
 					collection.delete_one({"_id": snippet_name})
 
-					em = discord.Embed(title="Tag Deleted", color=color.red)
+					em = discord.Embed(title="Snippet Deleted", color=color.red)
 					em.add_field(name = "Name", value = the_snippet_name)
 					em.add_field(name = "Owner", value = snippet_owner)
 					em.add_field(name="Uses", value=f"`{uses}`", inline = False)
-					em.set_footer(text=f"Tag created at • {snippet_created_at}")
+					em.set_footer(text=f"Snippet created at • {snippet_created_at}")
 
 					await ctx.send(embed=em)
 				
@@ -392,11 +392,11 @@ class Snippets(commands.Cog):
 
 				collection.delete_one({"_id": get_snippet_name.lower()})
 
-				em = discord.Embed(title="Tag Deleted", color=color.red)
+				em = discord.Embed(title="Snippet Deleted", color=color.red)
 				em.add_field(name = "Name", value = the_snippet_name)
 				em.add_field(name = "Owner", value = snippet_owner)
 				em.add_field(name="Uses", value=f"`{uses}`", inline = False)
-				em.set_footer(text=f"Tag created at • {snippet_created_at}")
+				em.set_footer(text=f"Snippet created at • {snippet_created_at}")
 
 				await ctx.send(embed=em)
 

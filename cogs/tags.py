@@ -520,14 +520,44 @@ class Tags(commands.Cog):
 			else:
 				get_info = collection.find({"_id": tag_name})
 				for info in get_info:
+					get_tag_owner = info['tag_owner_id']
+					tag_owner = self.client.get_user(get_tag_owner)
 					the_tag_name = info['the_tag_name']
+					tag_created_at = info['created_at']
+					uses = info['uses_count']
 				
 				collection.delete_one({"_id": tag_name})
-				await ctx.send(f"Tag `{the_tag_name}` has been removed from the database!")
+				
+				em = discord.Embed(title="Tag Removed", color=color.red)
+				em.add_field(name = "Name", value = the_tag_name)
+				em.add_field(name = "Owner", value = tag_owner)
+				em.add_field(name="Uses", value=f"`{uses}`", inline = False)
+				em.set_footer(text=f"Tag created at • {tag_created_at}")
+
+				await ctx.send(embed=em)
 		
 		else:
+			get_data = collection.find({"the_tag_name": tag_name})
+					
+			for data in get_data:
+				get_tag_owner = data['tag_owner_id']
+				tag_owner = self.client.get_user(get_tag_owner)
+				the_tag_name = data['the_tag_name']
+				tag_created_at = data['created_at']
+				uses = data['uses_count']
+
 			collection.delete_one({"the_tag_name": tag_name})
-			await ctx.send(f"Tag `{the_tag_name}` has been removed from the database!")
+
+			em = discord.Embed(title="Tag Removed", color=color.red)
+			em.add_field(name = "Name", value = the_tag_name)
+			em.add_field(name = "Owner", value = tag_owner)
+			em.add_field(name="Uses", value=f"`{uses}`", inline = False)
+			em.set_footer(text=f"Tag created at • {tag_created_at}")
+
+			await ctx.send(embed=em)
+
+
+
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
