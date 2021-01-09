@@ -181,6 +181,10 @@ class CustomRoles(commands.Cog):
 				await ctx.send("You must provide the new name!")
 				return
 			
+			elif new_name.lower() in nono_list:
+				await ctx.send("You tried, but no, lol!")
+				return
+
 			else:
 				collection.update_one({"_id": ctx.author.id}, {"$set":{"CustomRoleName": new_name}})
 				await crname.edit(name=new_name)
