@@ -158,6 +158,10 @@ class Snippets(commands.Cog):
 				elif len(snippet_name) < 3:
 					await ctx.send("Snippet's name cannot be less than `3` characters long!")
 					return
+
+				elif snippet_name.isnumeric():
+					await ctx.send("Snippet name cannot be a number!")
+					return
 				
 				elif snippet_name in nono_names:
 					await ctx.send("Those names are invalid! Reason: `They are used in other commands, actions, to be more specific.`")
@@ -213,6 +217,10 @@ class Snippets(commands.Cog):
 			elif len(get_snippet_name) < 3:
 					await ctx.send("Snippet's name cannot be less than `3` characters long!")
 					return
+			
+			elif get_snippet_name.isnumeric():
+				await ctx.send("Snippet name cannot be a number!")
+				return
 
 			elif get_snippet_name.lower() in nono_names:
 					await ctx.send("Those names are invalid! Reason: `They are used in other commands, actions, to be more specific.`")

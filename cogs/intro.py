@@ -318,7 +318,7 @@ class Intros(commands.Cog):
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
 
-		collection.delete({"_id": member.id})
+		collection.delete_one({"_id": member.id})
 
 
 

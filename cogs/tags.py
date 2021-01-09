@@ -123,6 +123,7 @@ class Tags(commands.Cog):
 		p = TagPages(entries = entries, per_page = 7)
 		await p.start(ctx)
 	
+
 	@tag.command(aliases=['lb'])
 	async def leaderboard(self, ctx):
 		results = collection.find({}).sort([("uses_count", -1)]).limit(10)
@@ -282,10 +283,13 @@ class Tags(commands.Cog):
 					await ctx.send("Tag's name canot be longer than `35` characters!")
 					return
 				
-				elif len(tag_name) < 5:
-					await ctx.send("Tag's name cannot be less than `5` characters long!")
+				elif len(tag_name) < 2:
+					await ctx.send("Tag's name cannot be less than `2` characters long!")
 					return
-				
+					
+				elif tag_name.isnumeric():
+					await ctx.send("Tag name cannot be a number!")
+					return
 			except asyncio.TimeoutError:
 				await ctx.send("Time expired. {}".format(ctx.author.mention))
 
@@ -346,11 +350,15 @@ class Tags(commands.Cog):
 			elif len(tag_name_constructor) >= 35:
 				await ctx.send("Tag's name canot be longer than `35` characters!")
 				return
-			elif len(tag_name_constructor) < 5:
-					await ctx.send("Tag's name cannot be less than `5` characters long!")
+			elif len(tag_name_constructor) < 2:
+					await ctx.send("Tag's name cannot be less than `2` characters long!")
 					return
+			elif tag_name_constructor.isnumeric():
+				await ctx.send("Tag name cannot be a number!")
+				return
 
 			await ctx.send("Please send the tag's content. {}".format(ctx.author.mention))
+			
 			try:
 				pre_tag_content = await self.client.wait_for('message', timeout=420, check=check)
 				if pre_tag_content.attachments:
