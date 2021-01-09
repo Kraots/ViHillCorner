@@ -1,10 +1,17 @@
 import discord
 from discord.ext import commands
 import utils.colors as color
-import json
 import asyncio
 from random import randint
 from utils import time
+from pymongo import MongoClient
+import os
+
+DBKEY = os.getenv("MONGODBKEY")
+
+cluster = MongoClient(DBKEY)
+db = cluster["ViHillCornerDB"]
+collection = db["Intros"]
 
 positive_messages=["yes",
 				   "sure",
@@ -125,9 +132,7 @@ class on_join(commands.Cog):
 
 			
 			
-			await open_intro(member)
 			user = member
-			users = await get_intro_data()
 			
 			
 			introchannel = VHguild.get_channel(750160850593251449)
@@ -236,16 +241,16 @@ class on_join(commands.Cog):
 										await introchannel.send(embed=em)
 										await member.send("Intro added successfully.")
 
-										users[str(user.id)] = {}
-										users[str(user.id)]["name"] = name.content
-										users[str(user.id)]["location"] = location.content
-										users[str(user.id)]["age"] = agenumber
-										users[str(user.id)]["gender"] = gender.content
-										users[str(user.id)]["status"] = status
-										users[str(user.id)]["interests"] = interests.content
-
-										with open("intros.json", "w") as f:
-											json.dump(users, f)
+										post = {"_id": member.id, 
+											"name": name.content,
+											"location": location.content,
+											"age": agenumber,
+											"gender": gender.content,
+											"status": status,
+											"interests": interests.content
+											}
+											
+										collection.insert_one(post)
 
 										return
 
@@ -259,20 +264,6 @@ class on_join(commands.Cog):
 
 
 
-
-
-async def open_intro(user):
-
-	users = await get_intro_data()
-
-	if str(user.id) in users:
-		return False
-
-async def get_intro_data():
-	with open("intros.json", "r") as f:
-		users = json.load(f)
-
-	return users
 
 def setup (client):
 	client.add_cog(on_join(client))

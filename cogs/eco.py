@@ -46,10 +46,17 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	async def unregister(self, ctx):
 		user = ctx.author
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
-		collection.delete_one({"_id": user.id})
-		await ctx.send("Succesfully unregistered!")
-          
+		if user.id in all_users:
+			collection.delete_one({"_id": user.id})
+			await ctx.send("Succesfully unregistered!")
+        
+		else:
+			await ctx.send("You are not registered! Type: `!regiser` to register.")
 		  
 		  
 		    # BALANCE
@@ -197,8 +204,7 @@ class EcoCommands(commands.Cog):
 				await kraots.send(embed=embed)
 
 		else:
-			await ctx.send("You are not registered! Type: `!register` to register.")
-			ctx.command.reset_cooldown(ctx)
+			await ctx.send("User not registered!")
 			return
 
 	@balance.command(aliases=['add-wallet'])
@@ -238,8 +244,7 @@ class EcoCommands(commands.Cog):
 				await kraots.send(embed=embed)
 
 		else:
-			await ctx.send("You are not registered! Type: `!register` to register.")
-			ctx.command.reset_cooldown(ctx)
+			await ctx.send("User not registered!")
 			return
 
 	@balance.command(aliases=['set-bank'])
@@ -276,8 +281,7 @@ class EcoCommands(commands.Cog):
 				await kraots.send(embed=embed)
 		
 		else:
-			await ctx.send("You are not registered! Type: `!register` to register.")
-			ctx.command.reset_cooldown(ctx)
+			await ctx.send("User not registered!")
 			return
 
 	@balance.command()
@@ -309,8 +313,7 @@ class EcoCommands(commands.Cog):
 				await kraots.send(embed=embed)
 		
 		else:
-			await ctx.send("You are not registered! Type: `!register` to register.")
-			ctx.command.reset_cooldown(ctx)
+			await ctx.send("User not registered!")
 			return
 
 	@balance.command(aliases=['set-wallet'])
@@ -349,8 +352,7 @@ class EcoCommands(commands.Cog):
 				await kraots.send(embed=embed)
 
 		else:
-			await ctx.send("You are not registered! Type: `!register` to register.")
-			ctx.command.reset_cooldown(ctx)
+			await ctx.send("User not registered!")
 			return
 
 

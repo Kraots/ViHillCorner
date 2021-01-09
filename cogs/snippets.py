@@ -1,29 +1,31 @@
 import discord
 from discord.ext import commands
-import json
 import asyncio
-from utils.paginator import SimplePages
+from utils.paginator_v3 import SimplePages
 import datetime
 import utils.colors as color
-from utils.paginator_v2 import WrappedPaginator, PaginatorEmbedInterface
+from pymongo import MongoClient
+import os
+DBKEY = os.getenv("MONGODBKEY")
+
+cluster = MongoClient(DBKEY)
+db = cluster["ViHillCornerDB"]
+collection = db["Snippets"]
 
 nono_names = ["huggles", "grouphug", "eat", "chew", "sip", "clap", "cry", "rofl", "lol", "kill", "pat", "rub", "nom", "catpat", "hug", "pillow", "spray", "hype", "specialkiss", "kiss", "ily", "nocry", "shrug", "smug", "bearhug", "moan"]
 
-class TagPageEntry:
+class SnippetPageEntry:
 	def __init__(self, entry):
-		
-		with open("snippets.json", "r") as f:
-			entries = json.load(f)
 
-		self.name = entries[entry]['snippet_name']
-		self.id = entries[entry]['snippet_credits']
+		self.name = entry['_id']
+		self.id = entry['snippet_credits']
 
 	def __str__(self):
 		return f'{self.name}\u2800•\u2800(`Owner:` <@!{self.id}>)'
 
 class SnippetPages(SimplePages):
 	def __init__(self, entries, *, per_page=12):
-		converted = [TagPageEntry(entry) for entry in entries]
+		converted = [SnippetPageEntry(entry) for entry in entries]
 		super().__init__(converted, per_page=per_page)
 
 
@@ -38,39 +40,26 @@ class Snippets(commands.Cog):
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['snippets'], ignore_extra = False)
 	async def snippet(self, ctx):
-		with open("snippets.json", "r") as f:
-			entries = json.load(f)
+		entries = collection.find({})
 		
 		p = SnippetPages(entries = entries, per_page = 7)
 		await p.start(ctx)
 
+
+
+
 	@snippet.command(aliases=['lb'])
-	async def leaderboard(self, ctx, x=10):
-		snippets = await get_snippets_data()
-
-		leader_board = {}
-				
-		for uid, details in snippets.items():  
-			snippet_namee = snippets[str(uid)]["snippet_name"]  
-			leader_board[snippet_namee] = details['uses_count']  
-		
-		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True) 
-		
-		em = discord.Embed(color=discord.Color.blurple(), title=f"Top `{x}` Snippets")
-
-		for index, (mem, amt) in enumerate(leader_board[:x], start = 1):
-			uses = snippets[str(mem)]["uses_count"]
-			owner_id = snippets[str(mem)]["snippet_credits"]
-			owner = self.client.get_user(owner_id)
-			em.add_field(name=f"_ _ \n{index}#\u2800`{mem}`", value=f"Uses:\n\u2800`{uses}`\nOwner:\n\u2800`{owner}`", inline=True)
-			
-			if index == x:
-				break
-			
-			else:
-				index += 1
-
-		em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.avatar_url)
+	async def leaderboard(self, ctx):
+		results = collection.find({}).sort([("uses_count", -1)]).limit(10)
+		index = 0
+		em = discord.Embed(color=discord.Color.blurple())
+		for result in results:
+			snippet_name = result['_id']
+			uses = result['uses_count']
+			get_owner = result['snippet_credits']
+			owner = self.client.get_user(get_owner)
+			index += 1
+			em.add_field(name=f"`{index}`.\u2800{snippet_name}", value=f"Uses: `{uses}`\n Owner: `{owner}`", inline=False)
 		
 		await ctx.send(embed=em)
 
@@ -85,99 +74,58 @@ class Snippets(commands.Cog):
 	async def list(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
-
-		snippets = await get_snippets_data()
-
-		snippets_list = []
-		index = 0
+		all_users = []
+		results = collection.find({})
+		for result in results:
+			all_users.append(result['snippet_credits'])
 		
-		for key in snippets:
-			owner_id = snippets[str(key)]["snippet_credits"]
-			snippet_owner = self.client.get_user(owner_id)
+		if member.id in all_users:
+			entries = collection.find({"snippet_credits": member.id})
+			p = SnippetPages(entries = entries, per_page = 7)
+			await p.start(ctx)
 
-			if str(member) in str(snippet_owner):
-				snippet_name = snippets[str(key)]["snippet_name"]
-				get_snippet_create_date = snippets[str(key)]["created_at"]
-
-				fin = f"{snippet_name} (`Created At`: {get_snippet_create_date})"
-
-				if not snippet_name in snippets_list:
-					index += 1
-					indexed_row = f"{index}. {fin}"
-					snippets_list.append(indexed_row)
-
-		result = "\n".join(snippets_list)
-
-		if len(result) > 1:
-			paginator = WrappedPaginator(prefix = f'**`{member}` 𝗢𝘄𝗻𝗲𝗱 𝗦𝗻𝗶𝗽𝗽𝗲𝘁𝘀** \n', suffix = '', max_size = 250)
-			paginator.add_line(result)
-			interface = PaginatorEmbedInterface(ctx.bot, paginator, owner = ctx.author)
-
-			await interface.send_to(ctx)
-
-		elif len(result) <= 1:
-			await ctx.send("`{}` has no snippets.".format(member))
-			return
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		else:
+			await ctx.send("`{}` has no snippets".format(member))
 
 
 
 
 	@snippet.command()
 	async def info(self, ctx, *, snippet_name : str = None):
-		snippets = await get_snippets_data()
+		results = collection.find({}).sort([('uses_count', -1)])
+		index2 = 1
+		for result in results:
+			snippet_namee = result['_id']
+			string1 = f"{index2} {snippet_namee}"
+			string2 = f"{index2} {snippet_name.lower()}"
+			if string1 == string2:
+				index = index2
+				break
+			else:
+				index2 += 1
 
 		if snippet_name is None:
 			await ctx.send("`!snippet info <snippet_name>`")
 			return
 
 		else:
-			try:
+			all_snippets = []
+			resultss = collection.find()
+			for resultt in resultss:
+				all_snippets.append(result['_id'])
 
-				leader_board = {}
-						
-				for uid, details in snippets.items():  
-					snippet_namee = snippets[str(uid)]["snippet_name"]  
-					leader_board[snippet_namee] = details['uses_count']  
-				
-				leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True) 
+			if not snippet_name.lower() in all_snippets:
+				await ctx.send(f"Snippet `{snippet_name}` does not exist!")
+				return
 
-				for index2, (mem, amt) in enumerate(leader_board, start = 1):
+			else:
+				get_data = collection.find({"_id": snippet_name.lower()})
 
-					string1 = f"{index2} {mem}"
-					string2 = f"{index2} {snippet_name}"
-
-					if string1 == string2:
-						index=index2
-						break
-					else:
-						index2 += 1
-
-
-				snippet_name = snippets[str(snippet_name.lower())]["snippet_name"]
-				snippet_owner_id = snippets[str(snippet_name.lower())]["snippet_credits"]
-				snippet_uses = snippets[str(snippet_name.lower())]["uses_count"]
-				snippet_created_at = snippets[str(snippet_name.lower())]["created_at"]
+				for data in get_data:
+					snippet_name = data['_id']
+					snippet_owner_id = data['snippet_credits']
+					snippet_uses = data['uses_count']
+					snippet_created_at = data['created_at']
 
 				snippet_owner = self.client.get_user(snippet_owner_id)
 
@@ -190,12 +138,11 @@ class Snippets(commands.Cog):
 
 				await ctx.send(embed=em)
 
-			except KeyError:
-				await ctx.send("Snippet `{}` does not exist!".format(snippet_name))
+
 
 	@snippet.command(aliases=['make', 'add'])
 	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
-	async def create(self, ctx, *, get_snippet_name = None):
+	async def create(self, ctx, *, get_snippet_name : str = None):
 
 		if get_snippet_name is None:
 			def check(m):
@@ -232,21 +179,28 @@ class Snippets(commands.Cog):
 				except IndexError:
 					await ctx.send("That is not an image! Please send an image and nothing else!")
 					return
-
+				
 				else:
-					snippets = await get_snippets_data()
-					if str(snippet_name) in snippets:
+					results = collection.find({})
+
+					all_names = []
+
+					for result in results:
+						db_snippet_name = result["_id"]
+						all_names.append(str(db_snippet_name))
+
+					if str(snippet_name.lower()) in all_names:
 						await ctx.send("That snippet already exists!")
 					else:
 						get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-						snippets[str(snippet_name.lower())] = {}
-						snippets[str(snippet_name.lower())]["snippet_content"] = snippet_info
-						snippets[str(snippet_name.lower())]["snippet_credits"] = ctx.author.id
-						snippets[str(snippet_name.lower())]["snippet_name"] = snippet_name.lower()
-						snippets[str(snippet_name.lower())]["created_at"] = get_time
-						snippets[str(snippet_name.lower())]["uses_count"] = 0
-						with open("snippets.json", "w", encoding="utf-8") as f:
-							json.dump(snippets, f, ensure_ascii = False, indent = 4)
+						post = {"_id": str(snippet_name.lower()), 
+								"snippet_content": snippet_info,
+								"snippet_credits": ctx.author.id,
+								"created_at": get_time,
+								"uses_count": 0
+								}
+
+						collection.insert_one(post)
 
 						await ctx.send("Snippet Added!")
 
@@ -260,7 +214,7 @@ class Snippets(commands.Cog):
 					await ctx.send("Snippet's name cannot be less than `3` characters long!")
 					return
 
-			elif get_snippet_name in nono_names:
+			elif get_snippet_name.lower() in nono_names:
 					await ctx.send("Those names are invalid! Reason: `They are used in other commands, actions, to be more specific.`")
 					return
 
@@ -280,25 +234,35 @@ class Snippets(commands.Cog):
 				return
 
 			else:
-				snippets = await get_snippets_data()
-				if str(get_snippet_name) in snippets:
+				results = collection.find({})
+
+				all_names = []
+
+				for result in results:
+					db_snippet_name = result["_id"]
+					all_names.append(str(db_snippet_name))
+
+				if str(get_snippet_name.lower()) in all_names:
 					await ctx.send("That snippet already exists!")
 				else:
+					print(get_snippet_name)
 					get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-					snippets[str(get_snippet_name.lower())] = {}
-					snippets[str(get_snippet_name.lower())]["snippet_content"] = snippet_info
-					snippets[str(get_snippet_name.lower())]["snippet_credits"] = ctx.author.id
-					snippets[str(get_snippet_name.lower())]["snippet_name"] = get_snippet_name.lower()
-					snippets[str(get_snippet_name.lower())]["created_at"] = get_time
-					snippets[str(get_snippet_name.lower())]["uses_count"] = 0
-					with open("snippets.json", "w", encoding="utf-8") as f:
-						json.dump(snippets, f, ensure_ascii = False, indent = 4)
+					post = {"_id": get_snippet_name.lower(), 
+							"snippet_content": snippet_info,
+							"snippet_credits": ctx.author.id,
+							"created_at": get_time,
+							"uses_count": 0
+							}
+					
+					print(post)
+
+					collection.insert_one(post)
 
 					await ctx.send("Snippet Added!")
 
 	@snippet.command()
 	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
-	async def delete(self, ctx, *, get_snippet_name = None):
+	async def delete(self, ctx, *, get_snippet_name : str = None):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
@@ -312,53 +276,63 @@ class Snippets(commands.Cog):
 				return
 
 			else:
-				try:
-					snippets = await get_snippets_data()
+				all_snippets = []
+				resultss = collection.find()
+				for resultt in resultss:
+					all_snippets.append(resultt['_id'])
 
-					snippet_owner = snippets[str(snippet_name)]["snippet_credits"]
+				if not snippet_name in all_snippets:
+					await ctx.send(f"Snippet `{snippet_name}` does not exist!")
+					return
+				
+				else:
+					get_data = collection.find({"_id": snippet_name})
+					
+					for data in get_data:
+						snippet_owner = data['snippet_credits']
 
 					if ctx.author.id != snippet_owner:
 						await ctx.send("You do not own this snippet!")
 						return
 
 					else:
-						del snippets[str(snippet_name)]
-						with open ("snippets.json", "w", encoding="utf-8") as f:
-							json.dump(snippets, f, ensure_ascii = False, indent = 4)
+						collection.delete_one({"_id": snippet_name})
 
 						await ctx.send(f"`{snippet_name}` deleted succesfully!")
-
-				except KeyError:
-					await ctx.send("That snippet does not exist!")
 				
 		else:
-			try:
-				snippets = await get_snippets_data()
-				snippet_owner = snippets[str(get_snippet_name)]["snippet_credits"]
+			all_snippets = []
+			resultss = collection.find()
+			for resultt in resultss:
+				all_snippets.append(resultt['_id'])
 
-				if ctx.author.id != snippet_owner:
-						await ctx.send("You do not own this snippet!")
-						return
-				else:
+			if not get_snippet_name.lower() in all_snippets:
+				await ctx.send(f"Snippet `{get_snippet_name}` does not exist!")
+				return
+			
+			else:
+				get_data = collection.find({"_id": get_snippet_name.lower()})
+				
+				for data in get_data:
+					snippet_owner = data['snippet_credits']
 
-					del snippets[str(get_snippet_name)]
-					with open ("snippets.json", "w", encoding="utf-8") as f:
-						json.dump(snippets, f, ensure_ascii = False, indent = 4)
+			if ctx.author.id != snippet_owner:
+					await ctx.send("You do not own this snippet!")
+					return
+			else:
+				collection.delete_one({"_id": get_snippet_name.lower()})
 
-					await ctx.send(f"`{get_snippet_name}` deleted succesfully!")
-
-			except KeyError:
-				await ctx.send("That snippet does not exist!")
+				await ctx.send(f"`{get_snippet_name}` deleted succesfully!")
 
 
 	@snippet.command()
 	@commands.is_owner()
-	async def remove(self, ctx, *, get_snippet_name = None):
+	async def remove(self, ctx, *, get_snippet_name : str = None):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
 		if get_snippet_name is None:
-			await ctx.send("What's the name of the snippet you wish to remove?")
+			await ctx.send("What's the name of the snippet you wish to delete?")
 			try:
 				raw_get_snippet = await self.client.wait_for('message', timeout=60, check=check)
 				snippet_name = raw_get_snippet.content.lower()
@@ -367,50 +341,64 @@ class Snippets(commands.Cog):
 				return
 
 			else:
-				try:
-					snippets = await get_snippets_data()
-					name = snippets[str(snippet_name)]["snippet_name"]
-					get_owner = snippets[str(snippet_name)]["snippet_credits"]
-					owner = self.client.get_user(get_owner)
-					snippet_created_at = snippets[str(snippet_name)]["created_at"]
-					
-					del snippets[str(snippet_name)]
-					with open ("snippets.json", "w", encoding="utf-8") as f:
-						json.dump(snippets, f, ensure_ascii = False, indent = 4)
+				all_snippets = []
+				resultss = collection.find()
+				for resultt in resultss:
+					all_snippets.append(resultt['_id'])
 
-					em = discord.Embed(title="Snippet Deleted", color=color.red)
-					em.add_field(name = "Name", value = name)
-					em.add_field(name = "Owner", value = owner.mention)
-					em.set_footer(text=f"Snippet created at • {snippet_created_at}")
+				if not snippet_name in all_snippets:
+					await ctx.send(f"Snippet `{snippet_name}` does not exist!")
+					return
+				
+				else:
+					get_data = collection.find({"_id": snippet_name})
+					
+					for data in get_data:
+						get_snippet_owner = data['snippet_credits']
+						snippet_owner = self.client.get_user(get_snippet_owner)
+						the_snippet_name = data['_id']
+						snippet_created_at = data['created_at']
+						uses = data['uses_count']
+
+					collection.delete_one({"_id": snippet_name})
+
+					em = discord.Embed(title="Tag Deleted", color=color.red)
+					em.add_field(name = "Name", value = the_snippet_name)
+					em.add_field(name = "Owner", value = snippet_owner)
+					em.add_field(name="Uses", value=f"`{uses}`", inline = False)
+					em.set_footer(text=f"Tag created at • {snippet_created_at}")
 
 					await ctx.send(embed=em)
-
-				except KeyError:
-					await ctx.send("That snippet does not exist!")
 				
 		else:
-			try:
-				snippets = await get_snippets_data()
+			all_snippets = []
+			resultss = collection.find()
+			for resultt in resultss:
+				all_snippets.append(resultt['_id'])
 
-				name = snippets[str(get_snippet_name)]["snippet_name"]
-				get_owner = snippets[str(get_snippet_name)]["snippet_credits"]
-				owner = self.client.get_user(get_owner)
-				snippet_created_at = snippets[str(get_snippet_name)]["created_at"]
+			if not get_snippet_name.lower() in all_snippets:
+				await ctx.send(f"Snippet `{get_snippet_name}` does not exist!")
+				return
+			
+			else:
+				get_data = collection.find({"_id": get_snippet_name.lower()})
+				
+				for data in get_data:
+					get_snippet_owner = data['snippet_credits']
+					snippet_owner = self.client.get_user(get_snippet_owner)
+					the_snippet_name = data['_id']
+					snippet_created_at = data['created_at']
+					uses = data['uses_count']
 
-				del snippets[str(get_snippet_name)]
-				with open ("snippets.json", "w", encoding="utf-8") as f:
-					json.dump(snippets, f, ensure_ascii = False, indent = 4)
+				collection.delete_one({"_id": get_snippet_name.lower()})
 
-				em = discord.Embed(title="Snippet Deleted", color=color.red)
-				em.add_field(name = "Name", value = name)
-				em.add_field(name = "Owner", value = owner.mention)
-				em.set_footer(text=f"Snippet created at • {snippet_created_at}")
+				em = discord.Embed(title="Tag Deleted", color=color.red)
+				em.add_field(name = "Name", value = the_snippet_name)
+				em.add_field(name = "Owner", value = snippet_owner)
+				em.add_field(name="Uses", value=f"`{uses}`", inline = False)
+				em.set_footer(text=f"Tag created at • {snippet_created_at}")
 
 				await ctx.send(embed=em)
-
-			except KeyError:
-				await ctx.send("That snippet does not exist!")
-
 
 
 	@commands.Cog.listener()
@@ -421,18 +409,24 @@ class Snippets(commands.Cog):
 		presnippet_name = message.content.lower()
 		snippet_name = "".join(presnippet_name.split(";", 1))
 
-		try:
-			await open_snippets(snippet_name)
-			snippets = await get_snippets_data()
-			snippet = snippets[str(snippet_name)]["snippet_content"]
-			get_credits_info = snippets[str(snippet_name)]["snippet_credits"]
-			credits_user = self.client.get_user(get_credits_info)
-			credits_avatar = credits_user.avatar_url
+		all_snippets = []
+		results = collection.find()
+		for result in results:
+			all_snippets.append(result['_id'])
 
+		if not snippet_name in all_snippets:
+			return
+		
+		else:
+			get_data = collection.find({"_id": snippet_name})
 
-			snippets[str(snippet_name)]["uses_count"] += 1
-			with open("snippets.json", "w", encoding = "utf-8") as f:
-				json.dump(snippets, f, ensure_ascii = False, indent = 4)
+			for data in get_data:
+				snippet = data['snippet_content']
+				get_credits_info = data['snippet_credits']
+				credits_user = self.client.get_user(get_credits_info)
+				credits_avatar = credits_user.avatar_url
+
+			collection.update_one({"_id": snippet_name}, {"$inc":{"uses_count": 1}})
 
 
 			if message.content.lower().startswith(f";{snippet_name}"):
@@ -441,26 +435,13 @@ class Snippets(commands.Cog):
 				em.set_footer(text=f"Credits: {credits_user}", icon_url=credits_avatar)
 				msg = await message.channel.send(embed=em)
 				await msg.add_reaction('🗑️')
-		except KeyError:
-			return
+
+			else:
+				pass
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
-		snippets = await get_snippets_data()
-
-		if member.id == 374622847672254466:
-			return
-		
-		for key in snippets:
-			owner_id = snippets[str(key)]["snippet_credits"]
-			snippet_owner = self.client.get_user(owner_id)
-
-			if str(member) in str(snippet_owner):
-				snippet_name = snippets[str(key)]["snippet_name"]
-				del snippets[str(snippet_name)]
-
-				with open("snippets.json", "w", encoding = 'utf-8') as f:
-					json.dump(snippets, f, ensure_ascii = False, indent = 4)
+		collection.delete_many({"snippet_credits": member.id})
 
 
 
@@ -480,24 +461,6 @@ class Snippets(commands.Cog):
 	async def delete_error(self, ctx, error):
 		if isinstance(error, commands.errors.MissingAnyRole):
 			await ctx.send("You need to be `lvl 55+` to use this command!")
-
-
-
-
-
-
-async def open_snippets(snippet_name):
-
-	snippets = await get_snippets_data()
-
-	if str(snippet_name) in snippets:
-		return False
-
-async def get_snippets_data():
-	with open("snippets.json", "r") as f:
-		snippet = json.load(f)
-
-	return snippet
 
 
 def setup (client):

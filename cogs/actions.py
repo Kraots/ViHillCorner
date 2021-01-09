@@ -3,7 +3,13 @@ from discord.ext import commands
 import os
 from discord import Member
 from discord.ext.commands import Greedy
-import json
+from pymongo import MongoClient
+
+DBKEY = os.getenv("MONGODBKEY")
+
+cluster = MongoClient(DBKEY)
+db = cluster["ViHillCornerDB"]
+collection = db["Marry Data"]
 
 huggles = os.environ.get("HUGGLES")
 grouphug = os.environ.get("GROUPHUG")
@@ -491,11 +497,22 @@ class actions(commands.Cog):
 			return
 		
 		else:
-			users = await get_marry_data()
+			all_users = []
+			results = collection.find()
+			for result in results:
+				all_users.append(result['_id'])
 
-			try:
-				get_marry = users[str(member.id)]["married_to"]
-				user = self.client.get_user(get_marry)
+			if not ctx.author.id in all_users:
+				await ctx.send("You must be married to someone in order to use this command!")
+				return
+			if not member.id in all_users:
+				await ctx.send("That user is not married to anyone, therefore that member cannot be kissed that way.")
+				return
+			else:
+				get_marry = collection.find({"_id": member.id})
+
+				for x in get_marry:
+					user = self.client.get_user(x['married_to'])
 
 				if ctx.author.id == user.id:
 
@@ -508,18 +525,6 @@ class actions(commands.Cog):
 				elif not ctx.author.id == user.id:
 					await ctx.send("That user is married to `{}`, and only they can kiss that person!".format(user.display_name))
 
-			except KeyError:
-				await ctx.send("That member must be married to you in order to be able to kiss them!")
-				return
-
-
-
-
-async def get_marry_data():
-	with open("marry-data.json", "r") as f:
-		users = json.load(f)
-	
-	return users
 
 
 def setup (client):

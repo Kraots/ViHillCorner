@@ -1,27 +1,29 @@
 import discord
 from discord.ext import commands
-import json
 import asyncio
 import datetime
 import utils.colors as color
 from utils.paginator import SimplePages
 import re
-from utils.paginator_v3 import WrappedPaginator, PaginatorEmbedInterface
+from pymongo import MongoClient
+import os
+DBKEY = os.getenv("MONGODBKEY")
+
+cluster = MongoClient(DBKEY)
+db = cluster["ViHillCornerDB"]
+collection = db["Tags"]
 
 filter_invite = re.compile("(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 
 
 class TagPageEntry:
 	def __init__(self, entry):
-		
-		with open("tags.json", "r") as f:
-			entries = json.load(f)
 
-		self.name = entries[entry]['the_tag_name']
-		self.owner_id = entries[entry]['tag_owner_id']
+		self.name = entry['the_tag_name']
+		self.id = entry['_id']
 
 	def __str__(self):
-		return f'{self.name}\u2800•\u2800(`Owner:` <@!{self.owner_id}>)'
+		return f'{self.name}\u2800•\u2800(`ID:` {self.id})'
 
 class TagPages(SimplePages):
 	def __init__(self, entries, *, per_page=12):
@@ -41,19 +43,42 @@ class Tags(commands.Cog):
 			return
 
 		else:
-			tags = await get_tags_data()
+			all_names = []
+			results = collection.find()
+			for result in results:
+				all_names.append(result['the_tag_name'])
+			if tag_name.lower() in all_names:
+				get_tag = collection.find({"the_tag_name": tag_name.lower()})
 
-			try:
-				tag = tags[str(tag_name.lower())]["tag_content"]
-				tags[str(tag_name.lower())]["uses_count"] += 1
-
-				with open("tags.json", "w", encoding = "utf-8") as f:
-					json.dump(tags, f, ensure_ascii = False, indent = 4)
-			
+				for data in get_tag:
+					tag = data['tag_content']
+					collection.update_one({"_id": data['_id']}, {"$inc":{"uses_count": 1}})
 				await ctx.send(tag)
-			
-			except KeyError:
-				await ctx.send("Tag `{}` does not exist!".format(tag_name))
+				return
+		
+			else:
+				try:
+					tag_name = int(tag_name)
+				except ValueError:
+					await ctx.send(f"Tag `{tag_name}` does not exist!")
+					return
+
+				all_ids = []
+				get_ids = collection.find()
+				for id in get_ids:
+					all_ids.append(id['_id'])
+				
+				if not tag_name in all_ids:
+					await ctx.send("That tag does not exist!")
+					return
+				
+				else:
+					get_data = collection.find({"_id": tag_name})
+
+					for info in get_data:
+						tag = info['tag_content']
+						collection.update_one({"_id": info['_id']}, {"$inc":{"uses_count": 1}})
+					await ctx.send(tag)
 
 
 
@@ -61,151 +86,149 @@ class Tags(commands.Cog):
 	async def tags(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
-
-		tags = await get_tags_data()
-
-		tags_list = []
-		index = 0
+		all_users = []
+		results = collection.find({})
+		for result in results:
+			all_users.append(result['tag_owner_id'])
 		
-		for key in tags:
-			owner_id = tags[str(key)]["tag_owner_id"]
-			tag_owner = self.client.get_user(owner_id)
+		if member.id in all_users:
+			entries = collection.find({"tag_owner_id": member.id})
+			p = TagPages(entries = entries, per_page = 7)
+			await p.start(ctx)
 
-			if str(member) in str(tag_owner):
-				tag_name = tags[str(key)]["the_tag_name"]
-				get_snippet_create_date = tags[str(key)]["created_at"]
-
-				fin = f"{tag_name} (`Created At`: {get_snippet_create_date})"
-
-				if not tag_name in tags_list:
-					index += 1
-					indexed_row = f"{index}. {fin}"
-					tags_list.append(indexed_row)
-
-		result = "\n".join(tags_list)
-
-		if len(result) > 1:
-			paginator = WrappedPaginator(prefix = f"**`{member}`'𝘀 𝗢𝘄𝗻𝗲𝗱 𝗧𝗮𝗴𝘀** \n", suffix = '', max_size = 250)
-			paginator.add_line(result)
-			interface = PaginatorEmbedInterface(ctx.bot, paginator, owner = ctx.author)
-
-			await interface.send_to(ctx)
-		
-		elif len(result) <= 1:
-			await ctx.send("`{}` has no tags.".format(member))
-			return
+		else:
+			await ctx.send("`{}` has no tags".format(member))
 
 	@tag.command()
 	async def list(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
-
-		tags = await get_tags_data()
-
-		tags_list = []
-		index = 0
+		all_users = []
+		results = collection.find({})
+		for result in results:
+			all_users.append(result['tag_owner_id'])
 		
-		for key in tags:
-			owner_id = tags[str(key)]["tag_owner_id"]
-			tag_owner = self.client.get_user(owner_id)
+		if member.id in all_users:
+			entries = collection.find({"tag_owner_id": member.id})
+			p = TagPages(entries = entries, per_page = 7)
+			await p.start(ctx)
 
-			if str(member) in str(tag_owner):
-				tag_name = tags[str(key)]["the_tag_name"]
-				get_snippet_create_date = tags[str(key)]["created_at"]
-
-				fin = f"{tag_name} (`Created At`: {get_snippet_create_date})"
-
-				if not tag_name in tags_list:
-					index += 1
-					indexed_row = f"{index}. {fin}"
-					tags_list.append(indexed_row)
-
-		result = "\n".join(tags_list)
-
-		if len(result) > 1:
-			paginator = WrappedPaginator(prefix = f"**`{member}`'𝘀 𝗢𝘄𝗻𝗲𝗱 𝗧𝗮𝗴𝘀** \n", suffix = '', max_size = 250)
-			paginator.add_line(result)
-			interface = PaginatorEmbedInterface(ctx.bot, paginator, owner = ctx.author)
-
-			await interface.send_to(ctx)
-		
-		elif len(result) <= 1:
-			await ctx.send("`{}` has no tags.".format(member))
-			return
-
+		else:
+			await ctx.send("`{}` has no tags".format(member))
 
 
 	@tag.command()
 	async def all(self, ctx):
-		entries = await get_tags_data()
+		entries = collection.find({})
 		p = TagPages(entries = entries, per_page = 7)
 		await p.start(ctx)
-
+	
 	@tag.command(aliases=['lb'])
-	async def leaderboard(self, ctx, x=10):
-		tags = await get_tags_data()
-
-		leader_board = {}
-				
-		for uid, details in tags.items():  
-			tag_namee = tags[str(uid)]["the_tag_name"]  
-			leader_board[tag_namee] = details['uses_count']  
-		
-		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True) 
-		
-		em = discord.Embed(color=discord.Color.blurple(), title=f"Top `{x}` Tags")
-
-		for index, (mem, amt) in enumerate(leader_board[:x], start = 1):
-			uses = tags[str(mem)]["uses_count"]
-			owner_id = tags[str(mem)]["tag_owner_id"]
-			owner = self.client.get_user(owner_id)
-			em.add_field(name=f"_ _ \n{index}#\u2800`{mem}`", value=f"Uses:\n\u2800`{uses}`\nOwner:\n\u2800`{owner}`", inline=True)
-			
-			if index == x:
-				break
-			
-			else:
-				index += 1
-
-		em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.avatar_url)
+	async def leaderboard(self, ctx):
+		results = collection.find({}).sort([("uses_count", -1)]).limit(10)
+		index = 0
+		em = discord.Embed(color=discord.Color.blurple())
+		for result in results:
+			tag_name = result['the_tag_name']
+			uses = result['uses_count']
+			get_owner = result['tag_owner_id']
+			owner = self.client.get_user(get_owner)
+			index += 1
+			em.add_field(name=f"`{index}`.\u2800{tag_name}", value=f"Uses: `{uses}`\n Owner: `{owner}`", inline=False)
 		
 		await ctx.send(embed=em)
 
-
 	@tag.command()
 	async def info(self, ctx, *, tag_name : str = None):
-		tags = await get_tags_data()
 
-		leader_board = {}
-				
-		for uid, details in tags.items():  
-			tag_namee = tags[str(uid)]["the_tag_name"]  
-			leader_board[tag_namee] = details['uses_count']  
-		
-		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True) 
-
-		for index2, (mem, amt) in enumerate(leader_board, start = 1):
-
-			string1 = f"{index2} {mem}"
-			string2 = f"{index2} {tag_name}"
-
+		results = collection.find({}).sort([('uses_count', -1)])
+		index2 = 1
+		for result in results:
+			tag_namee = result['the_tag_name']
+			string1 = f"{index2} {tag_namee}"
+			string2 = f"{index2} {tag_name.lower()}"
 			if string1 == string2:
-				index=index2
+				index = index2
 				break
 			else:
 				index2 += 1
-
 
 		if tag_name is None:
 			await ctx.send("`!tag info <tag_name>`")
 			return
 
 		else:
-			try:
-				tag_name = tags[str(tag_name.lower())]["the_tag_name"]
-				tag_owner_id = tags[str(tag_name.lower())]["tag_owner_id"]
-				tag_uses = tags[str(tag_name.lower())]["uses_count"]
-				tag_created_at = tags[str(tag_name.lower())]["created_at"]
+			all_tags = []
+			resultss = collection.find()
+			for resultt in resultss:
+				all_tags.append(resultt['the_tag_name'])
+				
+
+
+
+			if not tag_name.lower() in all_tags:
+				try:
+					tag_name = int(tag_name)
+				except ValueError:
+					await ctx.send(f"Tag `{tag_name}` does not exist!")
+					return
+
+				all_ids = []
+				get_ids = collection.find()
+				for id in get_ids:
+					all_ids.append(id['_id'])
+				
+				if not tag_name in all_ids:
+					await ctx.send("That tag does not exist!")
+					return
+				else:
+					rresults = collection.find({}).sort([('uses_count', -1)])
+					index3 = 1
+					for z in rresults:
+						tag_id = z['_id']
+						string3 = f"{index3} {tag_id}"
+						string4 = f"{index3} {tag_name}"
+						if string3 == string4:
+							index1 = index3
+							break
+						else:
+							index3 += 1
+
+					get_data = collection.find({"_id": tag_name})
+
+					for data in get_data:
+						tag_name = data["the_tag_name"]
+						tag_owner_id = data["tag_owner_id"]
+						tag_uses = data["uses_count"]
+						tag_created_at = data["created_at"]
+						the_id = data["_id"]
+
+					tag_owner = self.client.get_user(tag_owner_id)
+
+					em = discord.Embed(color=color.blue, title=tag_name)
+					em.set_author(name=tag_owner, url=tag_owner.avatar_url, icon_url=tag_owner.avatar_url)
+					em.add_field(name="Owner", value=tag_owner.mention)
+					em.add_field(name="Uses", value=tag_uses)
+					em.add_field(name="Rank", value=f"`#{index1}`")
+					em.add_field(name="Tag ID",value="`{}`".format(the_id), inline= False)
+					em.set_footer(text="Tag created at • {}".format(tag_created_at))
+
+					await ctx.send(embed=em)
+				return
+			
+
+
+
+			else:
+				
+				get_data = collection.find({"the_tag_name": tag_name.lower()})
+
+				for data in get_data:
+					tag_name = data["the_tag_name"]
+					tag_owner_id = data["tag_owner_id"]
+					tag_uses = data["uses_count"]
+					tag_created_at = data["created_at"]
+					the_tag_id = data["_id"]
 
 				tag_owner = self.client.get_user(tag_owner_id)
 
@@ -214,17 +237,26 @@ class Tags(commands.Cog):
 				em.add_field(name="Owner", value=tag_owner.mention)
 				em.add_field(name="Uses", value=tag_uses)
 				em.add_field(name="Rank", value=f"`#{index}`")
+				em.add_field(name="Tag ID",value="`{}`".format(the_tag_id), inline= False)
 				em.set_footer(text="Tag created at • {}".format(tag_created_at))
 
 				await ctx.send(embed=em)
 
-			except KeyError:
-				await ctx.send("Tag `{}` does not exist!".format(tag_name))
+
+
+
+
 
 	@tag.command(aliases=['make', 'add'])
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")	
 	async def create(self, ctx, *, tag_name_constructor : str = None):
-		tags = await get_tags_data()
+		results = collection.find({})
+
+		all_names = []
+
+		for result in results:
+			db_tag_name = result["the_tag_name"]
+			all_names.append(str(db_tag_name))
 
 		if tag_name_constructor is None:
 			def check(m):
@@ -240,8 +272,9 @@ class Tags(commands.Cog):
 				for tag_name in matches:
 					await ctx.send("No invites or what so ever.")
 					return
+				
 
-				if str(tag_name) in tags:
+				if str(tag_name) in all_names:
 					await ctx.send("Tag name already taken.")
 					return
 				
@@ -249,8 +282,8 @@ class Tags(commands.Cog):
 					await ctx.send("Tag's name canot be longer than `35` characters!")
 					return
 				
-				elif len(tag_name) < 3:
-					await ctx.send("Tag's name cannot be less than `3` characters long!")
+				elif len(tag_name) < 5:
+					await ctx.send("Tag's name cannot be less than `5` characters long!")
 					return
 				
 			except asyncio.TimeoutError:
@@ -277,16 +310,22 @@ class Tags(commands.Cog):
 				
 				else:
 					get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-					tags[str(tag_name.lower())] = {}
-					tags[str(tag_name.lower())]["tag_content"] = tag_content
-					tags[str(tag_name.lower())]["tag_owner_id"] = ctx.author.id
-					tags[str(tag_name.lower())]["the_tag_name"] = tag_name.lower()
-					tags[str(tag_name.lower())]["created_at"] = get_time
-					tags[str(tag_name.lower())]["uses_count"] = 0
-					with open("tags.json", "w", encoding="utf-8") as f:
-						json.dump(tags, f, ensure_ascii = False, indent = 4)
+					get_sorted = collection.find({}).sort([("_id", -1)]).limit(1)
+					
+					for x in get_sorted:
+						last_id = x['_id']
+					
+					post = {"_id": last_id + 1,
+							"tag_content": tag_content, 
+							"tag_owner_id": ctx.author.id, 
+							"the_tag_name": tag_name.lower(), 
+							"created_at": get_time, "uses_count": 0
+							}
+					
+					collection.insert_one(post)
 					
 					await ctx.send("Tag `{}` succesfully created!".format(tag_name))
+			return
 
 
 
@@ -300,15 +339,15 @@ class Tags(commands.Cog):
 			def check(m):
 				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
-			if str(tag_name_constructor) in tags:
+			if str(tag_name_constructor) in all_names:
 				await ctx.send("Tag name already taken.")
 				return
 			
 			elif len(tag_name_constructor) >= 35:
 				await ctx.send("Tag's name canot be longer than `35` characters!")
 				return
-			elif len(tag_name_constructor) < 3:
-					await ctx.send("Tag's name cannot be less than `3` characters long!")
+			elif len(tag_name_constructor) < 5:
+					await ctx.send("Tag's name cannot be less than `5` characters long!")
 					return
 
 			await ctx.send("Please send the tag's content. {}".format(ctx.author.mention))
@@ -331,16 +370,23 @@ class Tags(commands.Cog):
 			
 			else:
 				get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-				tags[str(tag_name_constructor.lower())] = {}
-				tags[str(tag_name_constructor.lower())]["tag_content"] = tag_content
-				tags[str(tag_name_constructor.lower())]["tag_owner_id"] = ctx.author.id
-				tags[str(tag_name_constructor.lower())]["the_tag_name"] = tag_name_constructor.lower()
-				tags[str(tag_name_constructor.lower())]["created_at"] = get_time
-				tags[str(tag_name_constructor.lower())]["uses_count"] = 0
-				with open("tags.json", "w", encoding="utf-8") as f:
-					json.dump(tags, f, ensure_ascii = False, indent = 4)
+				get_sorted = collection.find({}).sort([("_id", -1)]).limit(1)
+				for x in get_sorted:
+					last_id = x['_id']
+
+				post = {"_id": last_id + 1,
+						"tag_content": tag_content, 
+						"tag_owner_id": ctx.author.id, 
+						"the_tag_name": tag_name_constructor.lower(), 
+						"created_at": get_time, "uses_count": 0
+						}
+					
+				collection.insert_one(post)
 				
 				await ctx.send("Tag `{}` succesfully created!".format(tag_name_constructor))
+
+
+
 
 	@tag.command()
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
@@ -350,94 +396,142 @@ class Tags(commands.Cog):
 			return
 		
 		else:
-			tags = await get_tags_data()
-			try:
-				the_tag_name = tags[str(tag_name)]["the_tag_name"]
-				tag_owner = tags[str(tag_name)]["tag_owner_id"]
+			results = collection.find({})
 
-			except KeyError:
-				await ctx.send("Tag does not exist!")
-				return
-			
-			else:
-				if ctx.author.id != tag_owner:
-					await ctx.send("You do not own this tag, therefore, you cannot delete it.")
+			all_names = []
+
+			for result in results:
+				db_tag_name = result["the_tag_name"]
+				all_names.append(str(db_tag_name))
+
+			if not tag_name.lower() in all_names:
+				try:
+					tag_name = int(tag_name)
+				except ValueError:
+					await ctx.send(f"Tag `{tag_name}` does not exist!")
+					return
+
+				all_ids = []
+				get_ids = collection.find()
+				for id in get_ids:
+					all_ids.append(id['_id'])
+				
+				if not tag_name in all_ids:
+					await ctx.send("That tag does not exist!")
 					return
 				
 				else:
-					await ctx.send("Are you sure you want to delete the tag `{}` ? `yes` | `no`".format(the_tag_name))
+					get_info = collection.find({"_id": tag_name})
+					for info in get_info:
+						the_tag_name = info['the_tag_name']
+						tags_owner = info['tag_owner_id']
 					
-					def check(m):
-						return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
-					
-					try:
-						response = await self.client.wait_for('message', timeout=60, check=check)
-						if response.content.lower() == "no":
-							await ctx.send("Tag has not been deleted.")
-						
-						elif response.content.lower() == "yes":
-							del tags[str(tag_name)]
-
-							with open("tags.json", "w", encoding = "utf-8") as f:
-								json.dump(tags, f, ensure_ascii = False, indent = 4)
-							
-							await ctx.send("Tag deleted succesfully.")
-					
-					except asyncio.TimeoutError:
-						await ctx.send("Time expired!")
+					if ctx.author.id != tags_owner:
+						await ctx.send("You do not own this tag, therefore, you cannot delete it.")
 						return
+					else:
+						await ctx.send("Are you sure you want to delete the tag `{}` ? `yes` | `no`".format(the_tag_name))
+					
+						def check(m):
+							return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+						
+						try:
+							response = await self.client.wait_for('message', timeout=60, check=check)
+							if response.content.lower() == "no":
+								await ctx.send("Tag has not been deleted.")
+							
+							elif response.content.lower() == "yes":
+								collection.delete_one({"_id": tag_name})
+								
+								await ctx.send("Tag `{}` deleted succesfully!".format(the_tag_name))
+						
+						except asyncio.TimeoutError:
+							await ctx.send("Time expired!")
+							return
+					return
+			
+			else:
+				get_data = collection.find({"the_tag_name": tag_name.lower()})
+
+				for data in get_data:
+					the_tag_name = data["the_tag_name"]
+					tag_owner = data["tag_owner_id"]
+			
+			if ctx.author.id != tag_owner:
+				await ctx.send("You do not own this tag, therefore, you cannot delete it.")
+				return
+			
+			else:
+				await ctx.send("Are you sure you want to delete the tag `{}` ? `yes` | `no`".format(the_tag_name))
+				
+				def check(m):
+					return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+				
+				try:
+					response = await self.client.wait_for('message', timeout=60, check=check)
+					if response.content.lower() == "no":
+						await ctx.send("Tag has not been deleted.")
+					
+					elif response.content.lower() == "yes":
+						collection.delete_one({"the_tag_name": the_tag_name.lower()})
+						
+						await ctx.send("Tag deleted succesfully.")
+				
+				except asyncio.TimeoutError:
+					await ctx.send("Time expired!")
+					return
+
+
+
+
 
 
 	@tag.command()
 	@commands.is_owner()
 	async def remove(self, ctx, *, tag_name: str = None):
 		if tag_name is None:
-			await ctx.send("`!tag delete <tag_name>`")
+			await ctx.send("`!tag remove <tag_name>`")
 			return
 		
-		else:
-			tags = await get_tags_data()
-			try:
-				the_tag_name = tags[str(tag_name)]["the_tag_name"]
-				get_tag_owner = tags[str(tag_name)]["tag_owner_id"]
-				tag_created_at = tags[str(tag_name)]["created_at"]
-				tag_owner = self.client.get_user(get_tag_owner)
+		results = collection.find({})
 
-			except KeyError:
-				await ctx.send("Tag does not exist!")
+		all_names = []
+
+		for result in results:
+			db_tag_name = result["the_tag_name"]
+			all_names.append(str(db_tag_name))
+
+		if not tag_name in all_names:
+			try:
+				tag_name = int(tag_name)
+			except ValueError:
+				await ctx.send(f"Tag `{tag_name}` does not exist!")
+				return
+
+			all_ids = []
+			get_ids = collection.find()
+			for id in get_ids:
+				all_ids.append(id['_id'])
+			
+			if not tag_name in all_ids:
+				await ctx.send("That tag does not exist!")
 				return
 			
 			else:
-			
-				del tags[str(tag_name)]
-
-				with open("tags.json", "w", encoding = "utf-8") as f:
-					json.dump(tags, f, ensure_ascii = False, indent = 4)
+				get_info = collection.find({"_id": tag_name})
+				for info in get_info:
+					the_tag_name = info['the_tag_name']
 				
-				em = discord.Embed(title="Tag Deleted", color=color.red)
-				em.add_field(name = "Name", value = the_tag_name)
-				em.add_field(name = "Owner", value = tag_owner)
-				em.set_footer(text=f"Tag created at • {tag_created_at}")
-
-				await ctx.send(embed=em)
+				collection.delete_one({"_id": tag_name})
+				await ctx.send(f"Tag `{the_tag_name}` has been removed from the database!")
 		
+		else:
+			collection.delete_one({"the_tag_name": tag_name})
+			await ctx.send(f"Tag `{the_tag_name}` has been removed from the database!")
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
-		tags = await get_tags_data()
-
-		if member.id == 374622847672254466:
-			return
-
-		for key in tags:
-			get_owner = tags[str(key)]["tag_owner_id"]
-			the_owner = self.client.get_user(get_owner)
-
-			if member.id == the_owner.id:
-				del tags[str(key)]
-
-				with open("tags.json", "w", encoding = "utf-8") as f:
-					json.dump(tags, f, ensure_ascii = False, indent = 4)
+		collection.delete_many({"tag_owner_id": member.id})
 
 
 	@create.error
@@ -454,15 +548,6 @@ class Tags(commands.Cog):
 	async def tag_error(self, ctx, error):
 		if isinstance(error, commands.TooManyArguments):
 			return
-
-
-
-async def get_tags_data():
-	with open("tags.json", "r") as f:
-		tags = json.load(f)
-	
-	return tags
-
 
 def setup(client):
 	client.add_cog(Tags(client))

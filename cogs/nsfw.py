@@ -4,17 +4,22 @@ import aiohttp
 import utils.colors as color
 from utils.helpers import NSFW
 from discord.ext.commands import Greedy
-from discord import Member
-import json
+from discord import Member 
 from utils.paginator import SimplePages
+import pymongo
+from pymongo import MongoClient
+import os
+
+DBKEY = os.getenv("MONGODBKEY")
+
+cluster = MongoClient(DBKEY)
+db = cluster["ViHillCornerDB"]
+collection = db["NSFW blocks"]
 
 class TagPageEntry:
 	def __init__(self, entry):
-		
-		with open("nsfw-blocks.json", "r") as f:
-			entries = json.load(f)
 
-		self.id = entries[entry]['user_id']
+		self.id = entry['_id']
 
 	def __str__(self):
 		return f'<@!{self.id}>\u2800•\u2800(`UserID:` {self.id})'
@@ -31,7 +36,6 @@ class NSFW(commands.Cog):
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
-
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.check(NSFW)
@@ -119,7 +123,10 @@ class NSFW(commands.Cog):
 		guild = self.client.get_guild(750160850077089853)
 		nsfwchannel = guild.get_channel(780374324598145055)
 
-		users = await get_nsfw_data()
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
 		if choice == "remove":
 			try:
@@ -130,7 +137,7 @@ class NSFW(commands.Cog):
 				return
 
 		elif choice == "add":
-			if str(user.id) in users:
+			if user.id in all_users:
 				await ctx.send("You are restricted from using that command, therefore your permissions have not been changed! {}".format(user.mention))
 				return
 
@@ -143,7 +150,6 @@ class NSFW(commands.Cog):
 	@nsfw.group()
 	@commands.has_role("Staff")
 	async def block(self, ctx, members : Greedy[Member]):
-		users = await get_nsfw_data()
 		guild = self.client.get_guild(750160850077089853)
 		nsfwchannel = guild.get_channel(780374324598145055)
 
@@ -158,24 +164,28 @@ class NSFW(commands.Cog):
 			blocked_list.append(a)
 			blocked_members = " | ".join(blocked_list)
 
-			users[str(member.id)] = {}
-			users[str(member.id)]["user_id"] = member.id
-			with open("nsfw-blocks.json", "w", encoding = 'utf-8') as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
-		
+			post = {"_id": member.id}
+			try:
+				collection.insert_one(post)
+			except pymongo.errors.DuplicateKeyError:
+				pass
+
 		await ctx.send(f"`{blocked_members}` have been blocked from seeing the nsfw channel.")
 
 	@nsfw.command()
 	@commands.has_role("Staff")
 	async def blocks(self, ctx):
-		entries = await get_nsfw_data()
+		entries = collection.find({})
 		p = TagPages(entries = entries, per_page = 7)
 		await p.start(ctx)
 
 	@nsfw.command()
 	@commands.has_role("Staff")
 	async def unblock(self, ctx, members : Greedy[Member]):
-		users = await get_nsfw_data()
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
 
 		blocked_list = []
 		for member in members:
@@ -184,13 +194,9 @@ class NSFW(commands.Cog):
 			blocked_list.append(a)
 			blocked_members = " | ".join(blocked_list)
 
-			try:
-				del users[str(member.id)]
-				with open("nsfw-blocks.json", "w", encoding = 'utf-8') as f:
-					json.dump(users, f, ensure_ascii = False, indent = 4)
-				await member.send("Your acces for using the `!nsfw me` command has ben re-approved.")
-			except KeyError:
-				pass
+			collection.delete_one({"_id": member.id})
+			await member.send("Your acces for using the `!nsfw me` command has ben re-approved.")
+			
 
 		await ctx.send(f"`{blocked_members}` have been unblocked from seeing the nsfw channel.")
 
@@ -230,28 +236,7 @@ class NSFW(commands.Cog):
 		if member.id == 374622847672254466:
 			return
 			
-		users = await get_nsfw_data()
-		try:
-			del users[str(member.id)]
-
-			with open("nsfw-blocks.json", "w", encoding="utf-8") as f:
-				json.dump(users, f, ensure_ascii = False, indent = 4)
-		except KeyError:
-			pass
-
-
-
-
-
-
-
-
-
-async def get_nsfw_data():
-	with open("nsfw-blocks.json", "r") as f:
-		users = json.load(f)
-	
-	return users
+		collection.delete_one({"_id": member.id})
 
 
 

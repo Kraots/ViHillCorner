@@ -237,7 +237,14 @@ class Intros(commands.Cog):
 									await introchannel.send(embed=em)
 									await ctx.channel.send("Intro added successfully. You can see in <#750160850593251449>")
 
-									post = {"_id": ctx.author.id, "name": name.content, "location": location.content, "age": agenumber, "gender": gender.content, "status": status, "interests": interests.content}
+									post = {"_id": ctx.author.id, 
+											"name": name.content,
+											"location": location.content,
+											"age": agenumber,
+											"gender": gender.content,
+											"status": status,
+											"interests": interests.content
+											}
 											
 									collection.insert_one(post)
 
