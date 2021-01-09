@@ -1,9 +1,19 @@
 import discord
-from discord.ext import commands
 import asyncio
 import utils.colors as color
 import re
 from utils.helpers import time_phaserr
+import pymongo
+from pymongo import MongoClient
+import os
+import datetime
+from discord.ext import commands, tasks
+from dateutil.relativedelta import relativedelta
+DBKEY = os.getenv("MONGODBKEY")
+
+cluster = MongoClient(DBKEY)
+db = cluster["ViHillCornerDB"]
+collection = db["Moderation Mutes"]
 
 time_regex = re.compile("(?:(\d{1,5})(h|s|m|d))+?")
 time_dict = {"h":3600, "s":1, "m":60, "d":86400}
@@ -27,8 +37,31 @@ class Moderation(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 		self.prefix = "!"
+		self.check_current_mutes.start()
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
+
+		# LOOP FOR MUTES
+	
+	@tasks.loop(seconds=30)
+	async def check_current_mutes(self):
+		await self.client.wait_until_ready()
+		currentTime = datetime.datetime.now()
+		results = collection.find({})
+		for result in results:
+			unmuteTime = result['mutedAt'] + relativedelta(seconds=result['muteDuration'])
+
+			if currentTime >= unmuteTime:
+				guild = self.client.get_guild(result['guildId'])
+				member = guild.get_member(result['_id'])
+
+				mute_role = guild.get_role(750465726069997658)
+
+				if mute_role in member.roles:
+					await member.remove_roles(mute_role)
+					await member.send("You have been unmuted in `ViHill Corner`.")
+				
+				collection.delete_one({"_id": member.id})
 
 	# SLOWMODE
 	@commands.command()
@@ -361,6 +394,7 @@ class Moderation(commands.Cog):
 
 		else:
 			for id in unmuted_members:
+				collection.delete_one({"_id": id.id})
 				msg="You were unmuted in `ViHill Corner`."
 				a = id
 				mem_list.append(a)
@@ -394,6 +428,7 @@ class Moderation(commands.Cog):
 	async def tempmute(self, ctx, member : discord.Member, *, time : TimeConverter = None):
 		"""Mutes a member for the specified time- time in 2d 10h 3m 2s format ex:
 		!mute @Someone 1d"""
+
 		guild = self.client.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 
@@ -414,6 +449,22 @@ class Moderation(commands.Cog):
 				await ctx.send("You need to specify time.")
 				return
 			else:
+				post = {
+						'_id': member.id,
+						'mutedAt': datetime.datetime.now(),
+						'muteDuration': time,
+						'mutedBy': ctx.author.id,
+						'guildId': ctx.guild.id,
+					}
+
+
+				try:
+					collection.insert_one(post)
+				except pymongo.errors.DuplicateKeyError:
+					await ctx.send("User is already muted!")
+					return
+
+
 				muted = guild.get_role(750465726069997658)
 				await member.add_roles(muted, reason=f"{ctx.author} ---> {reason_content}")
 				msg = ("You have been muted in `ViHill Corner`")
