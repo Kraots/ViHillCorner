@@ -130,8 +130,8 @@ class Help(commands.Cog):
 
 	@help.command()
 	async def cr(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!cr create\n!cr delete\n!cr edit color <new_color>\n!cr name <new_name>\n!cr share <user>\n!cr unrole <cr_id>```")
-		em.add_field(name="***Commands:***", value="• **create**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create your cr.\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your cr.\n\n• **edit color**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Edit your cr's color.\n\n• **edit name**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Edit your cr's name.\n\n• **share**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Share your cr with someone.\n\n• **unrole**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Remove a cr from your profile. To get the cr's ID type: `!role-id <role_name>`.")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!cr create\n!cr delete\n!cr edit color <new_color>\n!cr name <new_name>\n!cr share <user>\n!cr unrole <cr_id>\n!cr clean```")
+		em.add_field(name="***Commands:***", value="• **create**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create your cr.\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your cr.\n\n• **edit color**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Edit your cr's color.\n\n• **edit name**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Edit your cr's name.\n\n• **share**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Share your cr with someone.\n\n• **unrole**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Remove a cr from your profile. To get the cr's ID type: `!role-id <role_name>`.\n\n• **clean**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Remove all cr's that you don't own from your profile.")
 		em.add_field(name="***Requirements:***", value="• Level 40 +", inline=False)
 		await ctx.reply(embed=em)
 

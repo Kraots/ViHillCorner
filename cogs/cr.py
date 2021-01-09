@@ -279,6 +279,34 @@ class CustomRoles(commands.Cog):
 			await ctx.send("That is not a valid ID! Type: `!role-id <role_name>` to get the role's ID you want to remove from your profile.")
 			return
 
+	@cr.command()
+	async def clean(self, ctx):
+		all_cr = []
+		results = collection.find()
+		guild = self.client.get_guild(750160850077089853)
+		for result in results:
+			user = str(result['_id'])
+			if str(ctx.author.id) != user:
+				all_cr.append(result['CustomRoleName'])
+
+		try:
+			member_roles = []
+			for x in ctx.author.roles:
+				if not x.name in all_cr:
+					member_roles.append(x.id)
+
+			member_roles = set(member_roles)
+
+			Roles = []
+			for id in member_roles:
+				role = guild.get_role(id)
+				Roles.append(role)
+
+		except:
+			pass
+		
+		await ctx.author.edit(roles=Roles)
+		await ctx.send("Succesfully cleaned all the cr's on your profile.")
 
 	@cr.command()
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
