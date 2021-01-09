@@ -205,6 +205,7 @@ class MarryCommands(commands.Cog):
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
 		collection.delete_one({"_id": member.id})
+		collection.delete_one({'married_to': member.id})
 
 def setup(client):
 	client.add_cog(MarryCommands(client))
