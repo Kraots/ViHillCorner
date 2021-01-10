@@ -40,9 +40,9 @@ class Birthdays(commands.Cog):
 				bday_channel = guild.get_channel(797867811967467560)
 				user = guild.get_member(user)
 
-				em = discord.Embed(color=user.color, title=f"It's {user.name}'s birthday! Go wish them a happy birthday :tada: :tada:", description=f"They're birthday is on `{bdayDate.strftime('%Y/%m/%d')}`.")
+				em = discord.Embed(color=user.color, title=f"Happy birthday {user.name}!!! :tada: :tada:")
 
-				msg = await bday_channel.send(embed=em)
+				msg = await bday_channel.send(user.mention, embed=em)
 				await msg.add_reaction("🍰")
 				
 				new_birthday = bdayDate + relativedelta(years=1)
