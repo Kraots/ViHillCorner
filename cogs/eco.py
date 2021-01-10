@@ -549,25 +549,25 @@ class EcoCommands(commands.Cog):
 				collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
 				collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
-				await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
+				await ctx.send("You robbed **{}** and got `{:,}` coins!".format(member.display_name, earnings))
 
 			elif chance == 3:
 				collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
 				collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
-				await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
+				await ctx.send("You robbed **{}** and got `{:,}` coins!".format(member.display_name, earnings))
 
 			elif chance == 7:
 				collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
 				collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
-				await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
+				await ctx.send("You robbed **{}** and got `{:,}` coins!".format(member.display_name, earnings))
 
 			elif chance == 10:
 				collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
 				collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
-				await ctx.send("You robbed {} and got `{:,}` coins!".format(member.name, earnings))
+				await ctx.send("You robbed **{}** and got `{:,}` coins!".format(member.display_name, earnings))
 
 			else:
 				collection.update_one({"_id": author.id}, {"$inc":{"wallet": -350}})
