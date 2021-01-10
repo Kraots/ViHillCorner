@@ -132,7 +132,7 @@ class CustomRoles(commands.Cog):
 		
 		else:
 			crname = discord.utils.get(guild.roles, name=get_role)
-			em = discord.Embed(color=ctx.author.color, title="Custom Role Edited")
+			em = discord.Embed(title="Custom Role Edited")
 
 			if new_color == None:
 				await ctx.send("You must provide the new color!")
@@ -148,7 +148,8 @@ class CustomRoles(commands.Cog):
 				
 				try:
 					await crname.edit(color=discord.Color(int(new_color, 16)))
-					em.add_field(name="New Color", value=f"`{new_color}`")
+					em.add_field(name="New Color", value=f"`#{new_color[2:]}`")
+					em.color = crname.color
 					await ctx.send(embed=em)
 				
 				except ValueError:
@@ -175,7 +176,7 @@ class CustomRoles(commands.Cog):
 		
 		else:
 			crname = discord.utils.get(guild.roles, name=get_role)
-			em = discord.Embed(color=ctx.author.color, title="Custom Role Edited")
+			em = discord.Embed(title="Custom Role Edited")
 
 			if new_name == None:
 				await ctx.send("You must provide the new name!")
@@ -188,7 +189,7 @@ class CustomRoles(commands.Cog):
 			else:
 				collection.update_one({"_id": ctx.author.id}, {"$set":{"CustomRoleName": new_name}})
 				await crname.edit(name=new_name)
-				em.add_field(name="New Color", value=f"`{new_name}`")
+				em.color = crname.color
 				await ctx.send(embed=em)
 
 	@cr.command()
@@ -331,17 +332,18 @@ class CustomRoles(commands.Cog):
 			def check(message):
 				return message.author.id == usercheck and message.channel.id == channel.id
 
-			await ctx.reply("Are you sure you want to delete your custom role? `yes` | `no`")
+			crname = discord.utils.get(guild.roles, name=get_role)
+			await ctx.reply("Are you sure you want to delete your custom role (<@&{}>)? `yes` | `no`".format(crname.id))
 
 			try:
 
 				reply = await self.client.wait_for('message', timeout=30, check=check)
 				answer = reply.content
 				if answer.lower() == "no":
+					await ctx.send("Your custom role has not been deleted.")
 					return
 
 				elif answer.lower() == "yes":
-					crname = discord.utils.get(guild.roles, name=get_role)
 					await crname.delete()
 
 					collection.delete_one({"_id": ctx.author.id})
