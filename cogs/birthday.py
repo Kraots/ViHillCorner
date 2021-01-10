@@ -42,8 +42,8 @@ class Birthdays(commands.Cog):
 
 				em = discord.Embed(color=user.color, title=f"It's {user.name}'s birthday! Go wish them a happy birthday :tada: :tada:", description=f"They're birthday is on `{bdayDate.strftime('%Y/%m/%d')}`.")
 
-				await bday_channel.send(embed=em)
-				
+				msg = await bday_channel.send(embed=em)
+				await msg.add_reaction("🍰")
 				
 				new_birthday = bdayDate + relativedelta(years=1)
 				collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": new_birthday}})
