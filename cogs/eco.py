@@ -469,14 +469,19 @@ class EcoCommands(commands.Cog):
 			if amount is None:
 				await ctx.send('Please enter the amount you want to withdraw.')
 				return
-
-			amount = amount.replace(",", "")
-			amount = int(amount)
 			
 			results = collection.find({"_id": author.id})
 
 			for result in results:
 				bal = result["wallet"]
+
+			if amount.lower() == "all":
+				amount = bal
+			try:
+				amount = amount.replace(",", "")
+			except:
+				pass
+			amount = int(amount)
 
 			if amount > bal:
 				await ctx.send('You do not own that much money!')
