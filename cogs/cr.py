@@ -177,7 +177,7 @@ class CustomRoles(commands.Cog):
 		else:
 			crname = discord.utils.get(guild.roles, name=get_role)
 			em = discord.Embed(title="Custom Role Edited")
-
+			
 			if new_name == None:
 				await ctx.send("You must provide the new name!")
 				return
@@ -189,6 +189,7 @@ class CustomRoles(commands.Cog):
 			else:
 				collection.update_one({"_id": ctx.author.id}, {"$set":{"CustomRoleName": new_name}})
 				await crname.edit(name=new_name)
+				em.add_field(name="New Name", value=f"`{new_name}`")
 				em.color = crname.color
 				await ctx.send(embed=em)
 
