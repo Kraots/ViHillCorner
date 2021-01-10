@@ -98,7 +98,7 @@ class Snippets(commands.Cog):
 			await p.start(ctx)
 
 		else:
-			await ctx.send("`{}` has no snippets".format(member))
+			await ctx.send("`{}` has no snippets.".format(member))
 
 
 

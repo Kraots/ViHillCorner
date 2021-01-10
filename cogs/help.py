@@ -168,9 +168,9 @@ class Help(commands.Cog):
 
 	@help.command(aliases=['b-day', 'bday'])
 	async def birthday(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!birthday [user]\n!birthday set <day | month>\n!birthday remove```")
+		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!birthday [user]\n!birthday set month/day\n!birthday remove```")
 		embed.add_field(name="***Aliases:***", value="• b-day\n• bday", inline=False)
-		embed.add_field(name="***Commands:***", value="• **set**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set up your birthday.\n\n • **delete**\n\n\u2800\u2800***Aliases:***\n\n\u2800\u2800\u2800• **remove**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your birthday from the database.", inline=False)
+		embed.add_field(name="***Commands:***", value="• **set**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set up your birthday.\n**Example:**\n\u2800`!birthday set 04/27`\n\u2800`!birthday set 01/09`\n\u2800`!birthday set 04/24`\n\u2800`!birthday set 12/01`\n\n • **delete**\n\n\u2800\u2800***Aliases:***\n\n\u2800\u2800\u2800• **remove**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your birthday from the database.", inline=False)
 		embed.add_field(name="***Info:***", value="• See when someone's birthday is.")
 		await ctx.reply(embed=embed)
 

@@ -97,7 +97,7 @@ class Tags(commands.Cog):
 			await p.start(ctx)
 
 		else:
-			await ctx.send("`{}` has no tags".format(member))
+			await ctx.send("`{}` has no tags.".format(member))
 
 	@tag.command()
 	async def list(self, ctx, member: discord.Member = None):
@@ -114,7 +114,7 @@ class Tags(commands.Cog):
 			await p.start(ctx)
 
 		else:
-			await ctx.send("`{}` has no tags".format(member))
+			await ctx.send("`{}` has no tags.".format(member))
 
 
 	@tag.command()
