@@ -2,6 +2,15 @@ import discord
 from discord.ext import commands
 import asyncio
 import json
+import os
+import pymongo
+from pymongo import MongoClient
+import datetime
+DBKEY = os.getenv("MONGODBKEY")
+
+cluster = MongoClient(DBKEY)
+db = cluster["ViHillCornerDB"]
+collection = db["Moderation Mutes"]
 
 class CapsFilter(commands.Cog):
 
@@ -50,6 +59,19 @@ class CapsFilter(commands.Cog):
 							json.dump(users, f, ensure_ascii = False, indent = 4)
 
 						if "Staff" in [role.name for role in user.roles]:
+							post = {
+									'_id': user.id,
+									'mutedAt': datetime.datetime.now(),
+									'muteDuration': 840,
+									'guildId': message.guild.id,
+									}
+
+
+							try:
+								collection.insert_one(post)
+							except pymongo.errors.DuplicateKeyError:
+								return
+
 							await user.remove_roles(staff, mod)
 							await user.add_roles(muted)
 							msg1 = "You have been muted in `ViHill Corner`."
@@ -67,6 +89,19 @@ class CapsFilter(commands.Cog):
 								pass
 						
 						else:
+							post = {
+									'_id': user.id,
+									'mutedAt': datetime.datetime.now(),
+									'muteDuration': 840,
+									'guildId': message.guild.id,
+									}
+
+
+							try:
+								collection.insert_one(post)
+							except pymongo.errors.DuplicateKeyError:
+								return
+								
 							await user.add_roles(muted)
 							msg1 = "You have been muted in `ViHill Corner`."
 							em1 = discord.Embed(description=f"**Reason:** [Caps]({message.jump_url})")

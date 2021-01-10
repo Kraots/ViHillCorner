@@ -2,6 +2,15 @@ import discord
 from discord.ext import commands
 import json
 import asyncio
+import os
+import pymongo
+from pymongo import MongoClient
+import datetime
+DBKEY = os.getenv("MONGODBKEY")
+
+cluster = MongoClient(DBKEY)
+db = cluster["ViHillCornerDB"]
+collection = db["Moderation Mutes"]
 
 class RepeatedTextFilter(commands.Cog):
 
@@ -73,6 +82,18 @@ class RepeatedTextFilter(commands.Cog):
 						json.dump(users, f, ensure_ascii = False, indent = 4)
 
 					if "Staff" in [role.name for role in message.author.roles]:
+						post = {
+								'_id': user.id,
+								'mutedAt': datetime.datetime.now(),
+								'muteDuration': 840,
+								'guildId': message.guild.id,
+								}
+
+
+						try:
+							collection.insert_one(post)
+						except pymongo.errors.DuplicateKeyError:
+							return
 						await user.remove_roles(staff, mod)
 						await user.add_roles(muted)
 						msg1 = "You have been muted in `ViHill Corner`."
@@ -90,6 +111,18 @@ class RepeatedTextFilter(commands.Cog):
 							pass
 
 					else:
+						post = {
+								'_id': user.id,
+								'mutedAt': datetime.datetime.now(),
+								'muteDuration': 840,
+								'guildId': message.guild.id,
+								}
+
+
+						try:
+							collection.insert_one(post)
+						except pymongo.errors.DuplicateKeyError:
+							return
 						await user.add_roles(muted)
 						msg1 = "You have been muted in `ViHill Corner`."
 						em1 = discord.Embed(description=f"**Reason:** [Repeated text]({message.jump_url})")

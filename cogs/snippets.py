@@ -28,6 +28,19 @@ class SnippetPages(SimplePages):
 		converted = [SnippetPageEntry(entry) for entry in entries]
 		super().__init__(converted, per_page=per_page)
 
+class SnippetOwnerPageEntry:
+	def __init__(self, entry):
+
+		self.name = entry['_id']
+		self.created = entry['created_at']
+
+	def __str__(self):
+		return f'{self.name}\u2800•\u2800(`Created At:` **{self.created}**)'
+
+class SnippetOwnerPages(SimplePages):
+	def __init__(self, entries, *, per_page=12):
+		converted = [SnippetOwnerPageEntry(entry) for entry in entries]
+		super().__init__(converted, per_page=per_page)
 
 
 class Snippets(commands.Cog):
@@ -81,7 +94,7 @@ class Snippets(commands.Cog):
 		
 		if member.id in all_users:
 			entries = collection.find({"snippet_credits": member.id})
-			p = SnippetPages(entries = entries, per_page = 7)
+			p = SnippetOwnerPages(entries = entries, per_page = 7)
 			await p.start(ctx)
 
 		else:

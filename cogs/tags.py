@@ -23,7 +23,7 @@ class TagPageEntry:
 		self.id = entry['_id']
 
 	def __str__(self):
-		return f'{self.name}\u2800•\u2800(`ID:` {self.id})'
+		return f'{self.name}\u2800•\u2800(`ID:` **{self.id}**)'
 
 class TagPages(SimplePages):
 	def __init__(self, entries, *, per_page=12):

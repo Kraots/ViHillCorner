@@ -5,6 +5,15 @@ from secrets import choice
 import string
 import asyncio
 import json
+import os
+import pymongo
+from pymongo import MongoClient
+import datetime
+DBKEY = os.getenv("MONGODBKEY")
+
+cluster = MongoClient(DBKEY)
+db = cluster["ViHillCornerDB"]
+collection = db["Moderation Mutes"]
 
 bad_words = [
 				"nigga",
@@ -109,6 +118,18 @@ class FilterCog(commands.Cog):
 								json.dump(users, f, ensure_ascii = False, indent = 4)
 
 							if "Staff" in [role.name for role in message.author.roles]:
+								post = {
+										'_id': user.id,
+										'mutedAt': datetime.datetime.now(),
+										'muteDuration': 840,
+										'guildId': message.guild.id,
+										}
+
+
+								try:
+									collection.insert_one(post)
+								except pymongo.errors.DuplicateKeyError:
+									return
 								await message.author.add_roles(muted, reason="Bad Words")
 								await message.author.remove_roles(staff, mod)
 								msg1 = "You have been muted in `ViHill Corner`."
@@ -126,6 +147,18 @@ class FilterCog(commands.Cog):
 									pass
 
 							else:
+								post = {
+										'_id': user.id,
+										'mutedAt': datetime.datetime.now(),
+										'muteDuration': 840,
+										'guildId': message.guild.id,
+										}
+
+
+								try:
+									collection.insert_one(post)
+								except pymongo.errors.DuplicateKeyError:
+									return
 								await message.author.add_roles(muted, reason="Bad Words")
 								msg1 = "You have been muted in `ViHill Corner`."
 								em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
@@ -233,6 +266,18 @@ class FilterCog(commands.Cog):
 
 							
 							if "Staff" in [role.name for role in after.author.roles]:
+								post = {
+										'_id': user.id,
+										'mutedAt': datetime.datetime.now(),
+										'muteDuration': 840,
+										'guildId': after.guild.id,
+										}
+
+
+								try:
+									collection.insert_one(post)
+								except pymongo.errors.DuplicateKeyError:
+									return
 								
 								await after.author.add_roles(muted, reason="Bad Words")
 								await after.author.remove_roles(staff, mod)
@@ -251,7 +296,18 @@ class FilterCog(commands.Cog):
 									pass
 							
 							else:
-								print("started punishment for normal member")
+								post = {
+										'_id': user.id,
+										'mutedAt': datetime.datetime.now(),
+										'muteDuration': 840,
+										'guildId': after.guild.id,
+										}
+
+
+								try:
+									collection.insert_one(post)
+								except pymongo.errors.DuplicateKeyError:
+									return
 								await after.author.add_roles(muted, reason="Bad Words")
 								msg1 = "You have been muted in `ViHill Corner`."
 								em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
