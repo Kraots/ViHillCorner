@@ -528,7 +528,7 @@ class EcoCommands(commands.Cog):
 				user_bal = result["wallet"]
 
 			for result in get_author_bal:
-				author_bal = result["walet"]
+				author_bal = result["wallet"]
 
 			if author_bal < 350:
 				await ctx.send("You need `350` coins to rob someone!")
