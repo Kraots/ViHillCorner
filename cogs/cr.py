@@ -368,7 +368,7 @@ class CustomRoles(commands.Cog):
 		role = discord.utils.get(guild.roles, name=role_name)
 		
 		try:
-			await ctx.send(f"{role.name}'s role ID **-->** `{role.id}`")
+			await ctx.send(f"**{role.name}**'s role ID **-->** `{role.id}`")
 		except AttributeError:
 			await ctx.send("That is not a valid role!")
 
