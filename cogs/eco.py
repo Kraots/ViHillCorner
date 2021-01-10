@@ -194,7 +194,7 @@ class EcoCommands(commands.Cog):
 			collection.update_one({"_id": user.id}, {"$set":{"bank": amount}})
 			
 				
-			await ctx.send("Successfully added `{:,}` coins, and deposited them into the bank for `{}`!".format(amount, member.name))
+			await ctx.send("Successfully added `{:,}` coins, and deposited them into the bank for `{}`!".format(amount, member))
 
 			if ctx.author.id == kraots.id:
 				return
@@ -234,7 +234,7 @@ class EcoCommands(commands.Cog):
 			collection.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
 			
 				
-			await ctx.send("Successfully added `{:,}` coins to the wallet for `{}`!".format(amount, member.name))
+			await ctx.send("Successfully added `{:,}` coins to the wallet for `{}`!".format(amount, member))
 
 			if ctx.author.id == kraots.id:
 				return
@@ -271,7 +271,7 @@ class EcoCommands(commands.Cog):
 
 			collection.update_one({"_id": user.id}, {"$set":{"bank": amount}})
 
-			await ctx.send("Balance successfully set to `{:,}` coins in the bank for `{}`!".format(amount, member.name))
+			await ctx.send("Balance successfully set to `{:,}` coins in the bank for `{}`!".format(amount, member))
 			
 			if ctx.author.id == kraots.id:
 				return		
@@ -303,7 +303,7 @@ class EcoCommands(commands.Cog):
 			collection.update_one({"_id": user.id}, {"$set":{"wallet": 0}})
 			collection.update_one({"_id": user.id}, {"$set":{"bank": 0}})
 
-			await ctx.send(f"Reseted balance for `{member.name}`.")
+			await ctx.send(f"Reseted balance for `{member}`.")
 			
 			if ctx.author.id == kraots.id:
 				return
@@ -341,7 +341,7 @@ class EcoCommands(commands.Cog):
 
 			collection.update_one({"_id": user.id}, {"$set":{"wallet": amount}})
 
-			await ctx.send("Balance successfully set to `{:,}` coins in the wallet for `{}`!".format(amount, member.name))
+			await ctx.send("Balance successfully set to `{:,}` coins in the wallet for `{}`!".format(amount, member))
 			
 			if ctx.author.id == kraots.id:
 				return
@@ -1100,4 +1100,4 @@ class EcoCommands(commands.Cog):
 
 
 def setup (client):
-	client.add_cog(EcoCommands(client))
+	client.add_cog(EcoCommands(client))	
