@@ -83,6 +83,7 @@ class Birthdays(commands.Cog):
 				await ctx.send("User did not set their birthday!")
 
 
+
 	@birthday.command(aliases=['upcoming'])
 	async def top(self, ctx):
 		index = 0
@@ -100,8 +101,15 @@ class Birthdays(commands.Cog):
 
 		await ctx.send(embed=em)
 
+
+
 	@birthday.command(aliases=['add'])
-	async def set(self, ctx, *, bday):
+	@commands.cooldown(1, 10, commands.BucketType.user)
+	async def set(self, ctx, *, bday = None):
+		if bday is None:
+			await ctx.send("Please insert a birthday! Please type `!birthday set month/day`.\n**Example:**\n\u2800`!birthday set 01/16`")
+			ctx.command.reset_cooldown(ctx)
+			return
 		all_users = []
 		results = collection.find()
 		for result in results:
@@ -117,6 +125,12 @@ class Birthdays(commands.Cog):
 		except ValueError:
 			await ctx.send("That is not a valid date!\n**Valid Dates:**\n\u2800`-` 04/24\n\u2800`-` 01/09\n\u2800`-` 12/01\n\n**Example:**\n\u2800`!birthday set 04/27`")
 			return
+
+		dateNow = datetime.datetime.now().strftime("%Y/%m/%d")
+		dateNow = datetime.datetime.strptime(dateNow, "%Y/%m/%d")
+
+		if dateNow > birthday:
+			birthday = birthday + relativedelta(years=1)
 
 		if user.id in all_users:
 			collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": birthday}})
