@@ -240,92 +240,93 @@ class FilterCog(commands.Cog):
 				zalgos = zalgos or []
 			for word in words:
 				if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.content):
-					try:
-						await after.delete()
+					if not "shoe" in after.content.lower():
+						try:
+							await after.delete()
 
-						users = await get_warns_data()
-						
-						if str(user.id) in users:
-							users[str(user.id)]["warns"] += 1
-
-							with open("words-warns.json", "w", encoding="utf-8") as f:
-								json.dump(users, f, ensure_ascii = False, indent = 4)
-
-						else:
-							users[str(user.id)] = {}
-							users[str(user.id)]["warns"] = 0
-							with open("words-warns.json", "w", encoding="utf-8") as f:
-								json.dump(users, f, ensure_ascii = False, indent = 4)
-
-						total_warns = users[str(user.id)]["warns"]
-
-
-						if total_warns > 2:
-							del users[str(user.id)]
-							with open("words-warns.json", "w", encoding="utf-8") as f:
-								json.dump(users, f, ensure_ascii = False, indent = 4)
-
+							users = await get_warns_data()
 							
-							if "Staff" in [role.name for role in after.author.roles]:
-								post = {
-										'_id': user.id,
-										'mutedAt': datetime.datetime.now(),
-										'muteDuration': 840,
-										'guildId': after.guild.id,
-										}
+							if str(user.id) in users:
+								users[str(user.id)]["warns"] += 1
 
+								with open("words-warns.json", "w", encoding="utf-8") as f:
+									json.dump(users, f, ensure_ascii = False, indent = 4)
 
-								try:
-									collection.insert_one(post)
-								except pymongo.errors.DuplicateKeyError:
-									return
-								
-								await after.author.add_roles(muted, reason="Bad Words")
-								await after.author.remove_roles(staff, mod)
-								msg1 = "You have been muted in `ViHill Corner`."
-								em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-								await after.author.send(msg1, embed=em1)
-								msg2 = f"**{after.author}** has been muted."
-								em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-								await after.channel.send(msg2, embed=em2)
-								await asyncio.sleep(840)
-								if muted in user.roles:
-									await after.author.remove_roles(muted)
-									await after.author.add_roles(staff, muted)
-									await after.author.send("You have been unmuted in `ViHill Corner`")
-								else:
-									pass
-							
 							else:
-								post = {
-										'_id': user.id,
-										'mutedAt': datetime.datetime.now(),
-										'muteDuration': 840,
-										'guildId': after.guild.id,
-										}
+								users[str(user.id)] = {}
+								users[str(user.id)]["warns"] = 0
+								with open("words-warns.json", "w", encoding="utf-8") as f:
+									json.dump(users, f, ensure_ascii = False, indent = 4)
+
+							total_warns = users[str(user.id)]["warns"]
 
 
-								try:
-									collection.insert_one(post)
-								except pymongo.errors.DuplicateKeyError:
-									return
-								await after.author.add_roles(muted, reason="Bad Words")
-								msg1 = "You have been muted in `ViHill Corner`."
-								em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-								await after.author.send(msg1, embed=em1)
-								msg2 = f"**{after.author}** has been muted."
-								em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-								await after.channel.send(msg2, embed=em2)
-								await asyncio.sleep(840)
-								if muted in user.roles:
-									await after.author.remove_roles(muted)
-									await after.author.send("You have been unmuted in `ViHill Corner`")
+							if total_warns > 2:
+								del users[str(user.id)]
+								with open("words-warns.json", "w", encoding="utf-8") as f:
+									json.dump(users, f, ensure_ascii = False, indent = 4)
+
+								
+								if "Staff" in [role.name for role in after.author.roles]:
+									post = {
+											'_id': user.id,
+											'mutedAt': datetime.datetime.now(),
+											'muteDuration': 840,
+											'guildId': after.guild.id,
+											}
+
+
+									try:
+										collection.insert_one(post)
+									except pymongo.errors.DuplicateKeyError:
+										return
+									
+									await after.author.add_roles(muted, reason="Bad Words")
+									await after.author.remove_roles(staff, mod)
+									msg1 = "You have been muted in `ViHill Corner`."
+									em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+									await after.author.send(msg1, embed=em1)
+									msg2 = f"**{after.author}** has been muted."
+									em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+									await after.channel.send(msg2, embed=em2)
+									await asyncio.sleep(840)
+									if muted in user.roles:
+										await after.author.remove_roles(muted)
+										await after.author.add_roles(staff, muted)
+										await after.author.send("You have been unmuted in `ViHill Corner`")
+									else:
+										pass
+								
 								else:
-									pass
-						else:
-							return
-					except:
-						pass
+									post = {
+											'_id': user.id,
+											'mutedAt': datetime.datetime.now(),
+											'muteDuration': 840,
+											'guildId': after.guild.id,
+											}
+
+
+									try:
+										collection.insert_one(post)
+									except pymongo.errors.DuplicateKeyError:
+										return
+									await after.author.add_roles(muted, reason="Bad Words")
+									msg1 = "You have been muted in `ViHill Corner`."
+									em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+									await after.author.send(msg1, embed=em1)
+									msg2 = f"**{after.author}** has been muted."
+									em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+									await after.channel.send(msg2, embed=em2)
+									await asyncio.sleep(840)
+									if muted in user.roles:
+										await after.author.remove_roles(muted)
+										await after.author.send("You have been unmuted in `ViHill Corner`")
+									else:
+										pass
+							else:
+								return
+						except:
+							pass
 					
 				try:
 					if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.author.nick):
