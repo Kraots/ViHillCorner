@@ -35,46 +35,46 @@ class Birthdays(commands.Cog):
 			user = result['_id']
 
 			if result['region'] == "pacific time (us)":
-				currentTime = currentTime - relativedelta(hours = 10)
+				currentTime = currentTime + relativedelta(hours = 10)
 	
 			elif result['region'] == "mountain time (us)":
-				currentTime = currentTime - relativedelta(hours = 9)
+				currentTime = currentTime + relativedelta(hours = 9)
 	
 			elif result['region'] == "central time (us)":
-				currentTime = currentTime - relativedelta(hours = 8)
+				currentTime = currentTime + relativedelta(hours = 8)
 	
 			elif result['region'] == "eastern time (us)":
-				currentTime = currentTime - relativedelta(hours = 7)
+				currentTime = currentTime + relativedelta(hours = 7)
 	
 			elif result['region'] == "rio de janeiro, brazil":
-				currentTime = currentTime - relativedelta(hours = 5)
+				currentTime = currentTime + relativedelta(hours = 5)
 	
 			elif result['region'] == "london, united kingdom (utc)":
 				currentTime = currentTime
 
 			elif result['region'] == "berlin, germany":
-				currentTime = currentTime + relativedelta(hours = 3)
+				currentTime = currentTime - relativedelta(hours = 3)
 
 			elif result['region'] == "moscow, russian federation":
-				currentTime = currentTime + relativedelta(hours = 5)
+				currentTime = currentTime - relativedelta(hours = 5)
 
 			elif result['region'] == "dubai, united arab emirates":
-				currentTime = currentTime + relativedelta(hours = 6)
+				currentTime = currentTime - relativedelta(hours = 6)
 
 			elif result['region'] == "mumbai, india":
-				currentTime = currentTime + relativedelta(hours = 7, minutes = 30)
+				currentTime = currentTime - relativedelta(hours = 7, minutes = 30)
 
 			elif result['region'] == "singapore, singapore":
-				currentTime = currentTime + relativedelta(hours = 10)
+				currentTime = currentTime - relativedelta(hours = 10)
 
 			elif result['region'] == "tokyo, japan":
-				currentTime = currentTime + relativedelta(hours = 11)
+				currentTime = currentTime - relativedelta(hours = 11)
 
 			elif result['region'] == "sydney, australia":
-				currentTime = currentTime + relativedelta(hours = 13)
+				currentTime = currentTime - relativedelta(hours = 13)
 
 			elif result['region'] == "auckland, new zealand":
-				currentTime = currentTime + relativedelta(hours = 15)
+				currentTime = currentTime - relativedelta(hours = 15)
 
 
 			if currentTime >= bdayDate:
@@ -203,46 +203,46 @@ class Birthdays(commands.Cog):
 
 			if region == 1:
 				region = "pacific time (us)"
-				region_birthday = birthday - relativedelta(hours = 10)
+				region_birthday = birthday + relativedelta(hours = 10)
 			elif region == 2:
 				region = "mountain time (us)"
-				region_birthday = birthday - relativedelta(hours = 9)
+				region_birthday = birthday + relativedelta(hours = 9)
 			elif region == 3:
 				region = "central time (us)"
-				region_birthday = birthday - relativedelta(hours = 8)
+				region_birthday = birthday + relativedelta(hours = 8)
 			elif region == 4:
 				region = "eastern time (us)"
-				region_birthday = birthday - relativedelta(hours = 7)
+				region_birthday = birthday + relativedelta(hours = 7)
 			elif region == 5:
 				region = "rio de janeiro, brazil"
-				region_birthday = birthday - relativedelta(hours = 5)
+				region_birthday = birthday + relativedelta(hours = 5)
 			elif region == 6:
 				region = "london, united kingdom (utc)"
 				region_birthday = birthday
 			elif region == 7:
 				region = "berlin, germany"
-				region_birthday = birthday + relativedelta(hours = 3)
+				region_birthday = birthday - relativedelta(hours = 3)
 			elif region == 8:
 				region = "moscow, russian federation"
-				region_birthday = birthday + relativedelta(hours = 4)
+				region_birthday = birthday - relativedelta(hours = 4)
 			elif region == 9:
 				region = "dubai, united arab emirates"
-				region_birthday = birthday + relativedelta(hours = 6)
+				region_birthday = birthday - relativedelta(hours = 6)
 			elif region == 10:
 				region = "mumbai, india"
-				region_birthday = birthday + relativedelta(hours = 7, minutes = 30)
+				region_birthday = birthday - relativedelta(hours = 7, minutes = 30)
 			elif region == 11:
 				region = "singapore, singapore"
-				region_birthday = birthday + relativedelta(hours = 10)
+				region_birthday = birthday - relativedelta(hours = 10)
 			elif region == 12:
 				region = "tokyo, japan"
-				region_birthday = birthday + relativedelta(hours = 11)
+				region_birthday = birthday - relativedelta(hours = 11)
 			elif region == 13:
 				region = "sydney, australia"
-				region_birthday = birthday + relativedelta(hours = 13)
+				region_birthday = birthday - relativedelta(hours = 13)
 			elif region == 14:
 				region = "auckland, new zealand"
-				region_birthday = birthday + relativedelta(hours = 15)
+				region_birthday = birthday - relativedelta(hours = 15)
 
 
 			def format_date(dt1, dt2):
