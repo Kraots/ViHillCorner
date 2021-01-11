@@ -5,6 +5,7 @@ import os
 from utils import time
 import datetime
 from dateutil.relativedelta import relativedelta
+import asyncio
 
 DBKEY = os.getenv("MONGODBKEY")
 
@@ -33,7 +34,36 @@ class Birthdays(commands.Cog):
 			bdayDate = result['birthdaydate']
 			user = result['_id']
 
-			if currentTime == bdayDate:
+			if result['region'] == "pacific time (us)":
+				currentTime = currentTime - relativedelta(hours = 9)
+			elif result['region'] == "mountain time (us)":
+				currentTime = currentTime - relativedelta(hours = 8)
+			elif result['region'] == "central time (us)":
+				currentTime = currentTime - relativedelta(hours = 7)
+			elif result['region'] == "eastern time (us)":
+				currentTime = currentTime - relativedelta(hours = 6)
+			elif result['region'] == "rio de janeiro, brazil":
+				currentTime = currentTime - relativedelta(hours = 4)
+			elif result['region'] == "london, united kingdom (utc)":
+				currentTime = currentTime
+			elif result['region'] == "berlin, germany":
+				currentTime = currentTime + relativedelta(hours = 2)
+			elif result['region'] == "moscow, russian federation":
+				currentTime = currentTime + relativedelta(hours = 4)
+			elif result['region'] == "dubai, united arab emirates":
+				currentTime = currentTime + relativedelta(hours = 5)
+			elif result['region'] == "mumbai, india":
+				currentTime = currentTime + relativedelta(hours = 6, minutes = 30)
+			elif result['region'] == "singapore, singapore":
+				currentTime = currentTime + relativedelta(hours = 9)
+			elif result['region'] == "tokyo, japan":
+				currentTime = currentTime + relativedelta(hours = 10)
+			elif result['region'] == "sydney, australia":
+				currentTime = currentTime + relativedelta(hours = 12)
+			elif result['region'] == "auckland, new zealand":
+				currentTime = currentTime + relativedelta(hours = 14)
+
+			if currentTime >= bdayDate:
 
 				guild = self.client.get_guild(750160850077089853)
 				bday_channel = guild.get_channel(797867811967467560)
@@ -46,11 +76,6 @@ class Birthdays(commands.Cog):
 				
 				new_birthday = bdayDate + relativedelta(years=1)
 				collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": new_birthday}})
-
-			elif currentTime > bdayDate:
-				
-				new_birthday = bdayDate + relativedelta(years=1)
-				collection.update_one({"_id": user}, {"$set":{"birthdaydate": new_birthday}})
 			
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bday', 'b-day'])
@@ -132,23 +157,111 @@ class Birthdays(commands.Cog):
 		if dateNow > birthday:
 			birthday = birthday + relativedelta(years=1)
 
-		if user.id in all_users:
-			collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": birthday}})
+		msg = """What is your timezone from this list (approx.):
+
+`1` ->  **Pacific Time (US)** `UTC-8`
+`2` ->  **Mountain Time (US)** `UTC-7`
+`3` ->  **Central Time (US)** `UTC-6`
+`4` ->  **Eastern Time (US)** `UTC-5`
+`5` ->  **Rio de Janeiro, Brazil** `UTC-3`
+`6` ->  **London, United Kingdom (UTC)** `GMT`
+`7` ->  **Berlin, Germany** `UTC+1 / UTC+2`
+`8` ->  **Moscow, Russian Federation** `UTC+3`
+`9` ->  **Dubai, United Arab Emirates** `UTC+4`
+`10` ->   **Mumbai, India** `UTC+5:30`
+`11` ->   **Singapore, Singapore** `UTC+8`
+`12` ->   **Tokyo, Japan** `UTC+9`
+`13` ->   **Sydney, Australia** `UTC+11`
+`14` ->   **Auckland, New Zealand** `UTC+13`\n\n***Please enter just the number!***""" 
 		
-		else:
-			post = {
-					"_id": user.id,
-					"birthdaydate": birthday
-					}
-			collection.insert_one(post)
+		msg = await ctx.send(msg)
 
-		def format_date(dt):
-			if dt is None:
-				return 'N/A'
-			return f"`{time.human_timedelta(dt, accuracy=3)}` **({dt:%Y/%m/%d})**"
+		def check(message):
+			return message.author.id == ctx.author.id and message.channel.id == ctx.channel.id
+			try:
+				int(message.content)
+				return True
+			except ValueError:
+				return False
 
-		await ctx.message.delete()
-		await ctx.send(f"Birthday set!\nYour birthday is in {format_date(birthday)} {user.mention}")
+		try:
+			pre_region = await self.client.wait_for('message', timeout = 180, check = check)
+			region = int(pre_region.content)
+
+			if region == 1:
+				region = "pacific time (us)"
+				birthday = birthday - relativedelta(hours = 9)
+			elif region == 2:
+				region = "mountain time (us)"
+				birthday = birthday - relativedelta(hours = 8)
+			elif region == 3:
+				region = "central time (us)"
+				birthday = birthday - relativedelta(hours = 7)
+			elif region == 4:
+				region = "eastern time (us)"
+				birthday = birthday - relativedelta(hours = 6)
+			elif region == 5:
+				region = "rio de janeiro, brazil"
+				birthday = birthday - relativedelta(hours = 4)
+			elif region == 6:
+				region = "london, united kingdom (utc)"
+				birthday = birthday
+			elif region == 7:
+				region = "berlin, germany"
+				birthday = birthday + relativedelta(hours = 2)
+			elif region == 8:
+				region = "moscow, russian federation"
+				birthday = birthday + relativedelta(hours = 4)
+			elif region == 9:
+				region = "dubai, united arab emirates"
+				birthday = birthday + relativedelta(hours = 5)
+			elif region == 10:
+				region = "mumbai, india"
+				birthday = birthday + relativedelta(hours = 6, minutes = 30)
+			elif region == 11:
+				region = "singapore, singapore"
+				birthday = birthday + relativedelta(hours = 9)
+			elif region == 12:
+				region = "tokyo, japan"
+				birthday = birthday + relativedelta(hours = 10)
+			elif region == 13:
+				region = "sydney, australia"
+				birthday = birthday + relativedelta(hours = 12)
+			elif region == 14:
+				region = "auckland, new zealand"
+				birthday = birthday + relativedelta(hours = 14)
+
+
+			def format_date(dt):
+				if dt is None:
+					return 'N/A'
+				return f"`{time.human_timedelta(dt, accuracy=3)}` **({dt:%Y/%m/%d})**"
+
+
+			if user.id in all_users:
+				collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": birthday, "region": region}})
+				await ctx.message.delete()
+				await msg.delete()
+				await pre_region.delete()
+				await ctx.send(f"Birthday set!\nYour birthday is in {format_date(birthday)} {user.mention}")
+			
+			else:
+				post = {
+						"_id": user.id,
+						"birthdaydate": birthday,
+						"region": region
+						}
+				collection.insert_one(post)
+
+				await ctx.message.delete()
+				await msg.delete()
+				await pre_region.delete()
+				await ctx.send(f"Birthday set!\nYour birthday is in {format_date(birthday)} {user.mention}")
+
+
+
+		except asyncio.TimeoutError:
+			return
 
 
 
@@ -176,7 +289,10 @@ class Birthdays(commands.Cog):
 
 
 
-
+	@set.error
+	async def bday_set(self, ctx, error):
+		if isinstance(error, commands.errors.CommandOnCooldown):
+			await ctx.send(f"You are on cooldown! Please try again in `{str(error.retry_after)[:4]}` seconds.")
 
 
 
