@@ -40,6 +40,9 @@ class GlobalErrorHandler(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			return
 
+		elif isinstance(error, commands.errors.CheckFailure):
+			return
+
 		else:
 			get_error = "".join(format_exception(error, error, error.__traceback__))
 			pager = Pag(
