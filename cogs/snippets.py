@@ -266,7 +266,6 @@ class Snippets(commands.Cog):
 				if str(get_snippet_name.lower()) in all_names:
 					await ctx.send("That snippet already exists!")
 				else:
-					print(get_snippet_name)
 					get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
 					post = {"_id": get_snippet_name.lower(), 
 							"snippet_content": snippet_info,
@@ -275,7 +274,6 @@ class Snippets(commands.Cog):
 							"uses_count": 0
 							}
 					
-					print(post)
 
 					collection.insert_one(post)
 
