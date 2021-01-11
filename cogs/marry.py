@@ -33,13 +33,6 @@ class MarryCommands(commands.Cog):
 			await ctx.reply("You cannot marry yourself.")
 			return
 		
-		elif member.id == 374622847672254466:
-			await ctx.reply("no...")
-			return
-
-		elif ctx.author.id == 374622847672254466:
-			await ctx.reply("no... remember?-")
-			return
 
 		elif member.bot:
 			await ctx.reply("Sad kid u can't marry bots smh.")
@@ -153,11 +146,8 @@ class MarryCommands(commands.Cog):
 	
 		user = member
 
-		if user.id == 374622847672254466:
-			await ctx.reply("That user is not married, and has no interests in any relationships or what-so-ever related stuff, :wave:")
-			return
 		
-		elif user.bot:
+		if user.bot:
 			await ctx.reply("Bot's cannot marry u dumbo <:pepe_cringe:750755809700348166>")
 			return
 
