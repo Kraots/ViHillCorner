@@ -228,7 +228,9 @@ class CustomRoles(commands.Cog):
 				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
 			
 			except asyncio.TimeoutError:
-				msg.edit(f"{member.mention} Did not react in time.")
+				new_msg = f"{member.mention} Did not react in time."
+				await msg.edit(content=new_msg)
+				await msg.clear_reactions()
 				return
 			else:
 				if str(reaction.emoji) == '<:agree:797537027469082627>':
