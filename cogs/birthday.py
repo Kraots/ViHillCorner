@@ -258,7 +258,7 @@ class Birthdays(commands.Cog):
 			
 			else:
 				post = {
-						"_id": user.id,
+						"_id": ctx.author.id,
 						"birthdaydate": birthday,
 						"region": region,
 						"region_birthday": region_birthday
