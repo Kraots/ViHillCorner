@@ -10,10 +10,10 @@ class Metrics(commands.Cog):
 
 	def __init__(self, client):
 		self.client = client
-		self.prefix = ";;"
+		self.prefix = [";;", "!"]
 		self.process = psutil.Process()
 	async def cog_check(self, ctx):
-		return ctx.prefix == self.prefix
+		return ctx.prefix in self.prefix
 
 
 	@commands.command()
