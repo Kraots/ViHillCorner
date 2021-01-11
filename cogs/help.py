@@ -25,7 +25,7 @@ class Help(commands.Cog):
 			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `kick`, `ban`, `opban`, `unban`, `opunban`, `nsfw`, `slowmode`", inline=False)
 		
 		if ctx.author.id == 374622847672254466:
-			helpEm.add_field(name="Dev Commands", value="`load`, `unload`, `reload`, `reload all`, `unload all`, `load all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
+			helpEm.add_field(name="Dev Commands", value="`eval`, `load`, `unload`, `reload`, `reload all`, `unload all`, `load all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
 
 		await ctx.reply(embed=helpEm)
 	
