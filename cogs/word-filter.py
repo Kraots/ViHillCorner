@@ -66,6 +66,7 @@ zalgo_vars = ['\u030D', '\u030E', '\u0304', '\u0305', '\u033F',
 
 alphabet_list = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "", "]", "^", "_", "`", "{", "|", "}", "~"]
 
+ok_words = ["shoe", "whoever"]
 
 class FilterCog(commands.Cog):
 
@@ -92,7 +93,11 @@ class FilterCog(commands.Cog):
 				zalgos = zalgos or []
 			for word in words:
 				if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.content):
-					if not "shoe" in message.content.lower():
+					if "shoe" in message.content.lower():
+						return
+					elif "whoever" in message.content.lower():
+						return
+					else:
 						try:
 							await message.delete()
 
@@ -240,7 +245,11 @@ class FilterCog(commands.Cog):
 				zalgos = zalgos or []
 			for word in words:
 				if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.content):
-					if not "shoe" in after.content.lower():
+					if "shoe" in after.content.lower():
+						return
+					elif "whoever" in after.content.lower():
+						return
+					else:
 						try:
 							await after.delete()
 
