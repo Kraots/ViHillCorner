@@ -35,7 +35,7 @@ class GlobalErrorHandler(commands.Cog):
 			await ctx.send("You are missing an argument!")
 			return
 
-		elif isinstance(error, commands.errros.MemberNotFound):
+		elif isinstance(error, commands.errors.MemberNotFound):
 			return
 
 		else:
