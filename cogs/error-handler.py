@@ -36,6 +36,8 @@ class GlobalErrorHandler(commands.Cog):
 			return
 
 		elif isinstance(error, commands.errors.MemberNotFound):
+			await ctx.send("Member does not exist!")
+			ctx.command.reset_cooldown(ctx)
 			return
 
 		else:
