@@ -191,7 +191,7 @@ class EcoCommands(commands.Cog):
 
 			amount = int(amount)
 
-			collection.update_one({"_id": user.id}, {"$set":{"bank": amount}})
+			collection.update_one({"_id": user.id}, {"$inc":{"bank": amount}})
 			
 				
 			await ctx.send("Successfully added `{:,}` coins, and deposited them into the bank for `{}`!".format(amount, member))
