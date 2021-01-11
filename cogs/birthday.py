@@ -50,7 +50,7 @@ class Birthdays(commands.Cog):
 			elif currentTime > bdayDate:
 				
 				new_birthday = bdayDate + relativedelta(years=1)
-				collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": new_birthday}})
+				collection.update_one({"_id": user}, {"$set":{"birthdaydate": new_birthday}})
 			
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bday', 'b-day'])
