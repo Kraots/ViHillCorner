@@ -35,6 +35,9 @@ class GlobalErrorHandler(commands.Cog):
 			await ctx.send("You are missing an argument!")
 			return
 
+		elif isinstance(error, commands.errros.MemberNotFound):
+			return
+
 		else:
 			get_error = "".join(format_exception(error, error, error.__traceback__))
 			pager = Pag(
