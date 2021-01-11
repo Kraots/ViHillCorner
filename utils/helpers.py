@@ -5,6 +5,15 @@ import utils.colors as color
 from typing import Union
 from utils import time, formats
 import os, datetime
+from discord.ext.buttons import Paginator
+
+
+class Pag(Paginator):
+    async def teardown(self):
+        try:
+            await self.page.clear_reactions()
+        except discord.HTTPException:
+            pass
 
 def get_user_image(user: discord.User):
     if str(user.avatar_url_as(static_format='png'))[54:].startswith('a_'):
@@ -97,3 +106,9 @@ def NSFW(ctx):
 
 def BotChannels(ctx):
 	return ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016]
+
+def clean_code(content):
+	if content.startswith("```") and content.endswith("```"):
+		return "\n".join(content.split("\n")[1:])[:-3]
+	else:
+		return content

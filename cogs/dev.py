@@ -7,6 +7,11 @@ from discord import Member
 import os
 import sys
 import random
+from utils.helpers import clean_code, Pag
+import contextlib
+import io
+import textwrap
+from traceback import format_exception
 	
 def restart_program():
 	python = sys.executable
@@ -16,10 +21,7 @@ class developer(commands.Cog):
 
 	def __init__(self, client):
 		self.client = client
-		self.prefix = ";;"
 		self.ch_pr.start()
-	async def cog_check(self, ctx):
-		return ctx.prefix == self.prefix
 
 
 	@tasks.loop(seconds = 125)
@@ -37,6 +39,50 @@ class developer(commands.Cog):
 			await self.client.change_presence(status=discord.Status.dnd, activity=activity)
 
 			await asyncio.sleep(60)
+
+
+	@commands.command(aliases=['eval', 'evaluate', 'exec', 'execute'])
+	@commands.is_owner()
+	async def _eval(self, ctx, *, content = None):
+		if content is None:
+			await ctx.send("Please give code that you want to evaluate!")
+			return
+
+		code = clean_code(content)
+
+		local_variables = {
+			"discord": discord,
+			"commands": commands,
+			"_bot": self.client,
+			"_ctx": ctx,
+			"_channel": ctx.channel,
+			"_author": ctx.author,
+			"_guild": ctx.guild,
+			"_message": ctx.message
+		}
+
+		stdout = io.StringIO()
+
+		try:
+			with contextlib.redirect_stdout(stdout):
+				exec(
+					f"async def func():\n{textwrap.indent(code, '    ')}", local_variables,
+				)
+
+				obj = await local_variables["func"]()
+				result = f"{stdout.getvalue()}\n-- {obj}\n"
+		except Exception as e:
+			result = "".join(format_exception(e, e, e.__traceback__))
+
+		pager = Pag(
+			timeout=100,
+			entries=[result[i: i + 2000] for i in range(0, len(result), 2000)],
+			length=1,
+			prefix="```py\n",
+			suffix="```"
+		)
+
+		await pager.start(ctx)
 
 
 	@commands.command()

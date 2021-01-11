@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 import asyncio
-import utils.colors as color
+from utils.helpers import Pag
+from traceback import format_exception
 
 class GlobalErrorHandler(commands.Cog):
 
@@ -21,20 +22,31 @@ class GlobalErrorHandler(commands.Cog):
 		
 	
 		if isinstance(error, commands.NotOwner):
-			error = discord.Embed(title="ERROR", description="Command Error: You do not own this bot!", color=color.pink)
+			error = discord.Embed(title="ERROR", description="Command Error: You do not own this bot!")
 			
-			await ctx.channel.send(embed=error, delete_after=5)
-			await asyncio.sleep(4.5)
+			await ctx.channel.send(embed=error, delete_after=8)
+			await asyncio.sleep(7.5)
 			await ctx.message.delete()
+		
+		elif isinstance(error, commands.errors.CommandNotFound):
+			return
+		
+		elif isinstance(error, commands.errors.MissingRequiredArgument):
+			await ctx.send("You are missing an argument!")
+			return
 
-		elif isinstance(error, commands.errors.CommandInvokeError):
-			error = discord.Embed(title="___ERROR___", description=f'**OUTPUT:**\n\n```{str(error)}```', color=color.pink)
-			await ctx.channel.send(embed=error, delete_after=50)
-			await asyncio.sleep(49.5)
-			await ctx.message.delete()
-
-		elif isinstance(error, UnboundLocalError):
-			pass
+		else:
+			get_error = "".join(format_exception(error, error, error.__traceback__))
+			pager = Pag(
+			timeout=100,
+			entries=[get_error[i: i + 2000] for i in range(0, len(get_error), 2000)],
+			length=1,
+			title="___ERROR___",
+			prefix="```py\n",
+			suffix="```"
+			)
+			await pager.start(ctx)
+			
 			
 
 						# print(type(error))

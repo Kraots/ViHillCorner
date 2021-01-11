@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands, tasks
-import utils.colors as color
 from pymongo import MongoClient
 import os
 from utils import time
@@ -84,7 +83,22 @@ class Birthdays(commands.Cog):
 				await ctx.send("User did not set their birthday!")
 
 
+	@birthday.command(aliases=['upcoming'])
+	async def top(self, ctx):
+		index = 0
 
+		def format_date(dt):
+			return f"Birthday in  `{time.human_timedelta(dt, accuracy = 3)}` ( **{dt:%Y/%m/%d}** ) "
+
+		em = discord.Embed(color=discord.Color.blurple(), title="***Top `5` upcoming birthdays***\n _ _ ") 
+
+		results = collection.find().sort([("birthdaydate", 1)]).limit(5)
+		for result in results:
+			user = self.client.get_user(result['_id'])
+			index += 1
+			em.add_field(name=f"`{index}`. _ _ _ _ {user.name}", value=f"{format_date(result['birthdaydate'])}", inline = False) 
+
+		await ctx.send(embed=em)
 
 	@birthday.command(aliases=['add'])
 	async def set(self, ctx, *, bday):
