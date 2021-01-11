@@ -145,7 +145,6 @@ class MarryCommands(commands.Cog):
 			all_users.append(result['_id'])
 	
 		user = member
-
 		
 		if user.bot:
 			await ctx.reply("Bot's cannot marry u dumbo <:pepe_cringe:750755809700348166>")
