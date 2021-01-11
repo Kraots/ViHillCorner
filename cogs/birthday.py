@@ -31,37 +31,51 @@ class Birthdays(commands.Cog):
 		currentTime = datetime.datetime.strptime(get_time, "%Y/%m/%d")
 		results = collection.find({})
 		for result in results:
-			bdayDate = result['birthdaydate']
+			bdayDate = result['region_birthday']
 			user = result['_id']
 
 			if result['region'] == "pacific time (us)":
-				currentTime = currentTime - relativedelta(hours = 9)
+				currentTime = currentTime - relativedelta(hours = 10)
+	
 			elif result['region'] == "mountain time (us)":
-				currentTime = currentTime - relativedelta(hours = 8)
+				currentTime = currentTime - relativedelta(hours = 9)
+	
 			elif result['region'] == "central time (us)":
-				currentTime = currentTime - relativedelta(hours = 7)
+				currentTime = currentTime - relativedelta(hours = 8)
+	
 			elif result['region'] == "eastern time (us)":
-				currentTime = currentTime - relativedelta(hours = 6)
+				currentTime = currentTime - relativedelta(hours = 7)
+	
 			elif result['region'] == "rio de janeiro, brazil":
-				currentTime = currentTime - relativedelta(hours = 4)
+				currentTime = currentTime - relativedelta(hours = 5)
+	
 			elif result['region'] == "london, united kingdom (utc)":
 				currentTime = currentTime
+
 			elif result['region'] == "berlin, germany":
-				currentTime = currentTime + relativedelta(hours = 2)
+				currentTime = currentTime + relativedelta(hours = 3)
+
 			elif result['region'] == "moscow, russian federation":
-				currentTime = currentTime + relativedelta(hours = 4)
-			elif result['region'] == "dubai, united arab emirates":
 				currentTime = currentTime + relativedelta(hours = 5)
+
+			elif result['region'] == "dubai, united arab emirates":
+				currentTime = currentTime + relativedelta(hours = 6)
+
 			elif result['region'] == "mumbai, india":
-				currentTime = currentTime + relativedelta(hours = 6, minutes = 30)
+				currentTime = currentTime + relativedelta(hours = 7, minutes = 30)
+
 			elif result['region'] == "singapore, singapore":
-				currentTime = currentTime + relativedelta(hours = 9)
-			elif result['region'] == "tokyo, japan":
 				currentTime = currentTime + relativedelta(hours = 10)
+
+			elif result['region'] == "tokyo, japan":
+				currentTime = currentTime + relativedelta(hours = 11)
+
 			elif result['region'] == "sydney, australia":
-				currentTime = currentTime + relativedelta(hours = 12)
+				currentTime = currentTime + relativedelta(hours = 13)
+
 			elif result['region'] == "auckland, new zealand":
-				currentTime = currentTime + relativedelta(hours = 14)
+				currentTime = currentTime + relativedelta(hours = 15)
+
 
 			if currentTime >= bdayDate:
 
@@ -75,7 +89,7 @@ class Birthdays(commands.Cog):
 				await msg.add_reaction("🍰")
 				
 				new_birthday = bdayDate + relativedelta(years=1)
-				collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": new_birthday}})
+				collection.update_one({"_id": user.id}, {"$set":{"region_birthday": new_birthday}})
 			
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bday', 'b-day'])
@@ -93,13 +107,12 @@ class Birthdays(commands.Cog):
 			get_data = collection.find({"_id": user.id})
 			for data in get_data:
 				birthday = data['birthdaydate']
+				region_birthday = data['region_birthday']
 
-			def format_date(dt):
-				if dt is None:
-					return 'N/A'
-				return f"{user.mention}'s birthday is in `{time.human_timedelta(dt, accuracy=3)}` **({dt:%Y/%m/%d})**"
+			def format_date(dt1, dt2):
+				return f"{user.mention}'s birthday is in `{time.human_timedelta(dt1, accuracy=3)}` **({dt2:%Y/%m/%d})**"
 
-			await ctx.send(format_date(birthday))
+			await ctx.send(format_date(region_birthday, birthday))
 		
 		else:
 			if user.id == ctx.author.id:
@@ -113,8 +126,8 @@ class Birthdays(commands.Cog):
 	async def top(self, ctx):
 		index = 0
 
-		def format_date(dt):
-			return f"Birthday in  `{time.human_timedelta(dt, accuracy = 3)}` ( **{dt:%Y/%m/%d}** ) "
+		def format_date(dt1, dt2):
+			return f"Birthday in  `{time.human_timedelta(dt1, accuracy = 3)}` ( **{dt2:%Y/%m/%d}** ) "
 
 		em = discord.Embed(color=discord.Color.blurple(), title="***Top `5` upcoming birthdays***\n _ _ ") 
 
@@ -122,7 +135,7 @@ class Birthdays(commands.Cog):
 		for result in results:
 			user = self.client.get_user(result['_id'])
 			index += 1
-			em.add_field(name=f"`{index}`. _ _ _ _ {user.name}", value=f"{format_date(result['birthdaydate'])}", inline = False) 
+			em.add_field(name=f"`{index}`. _ _ _ _ {user.name}", value=f"{format_date(result['region_birthday'], result['birthdaydate'])}", inline = False) 
 
 		await ctx.send(embed=em)
 
@@ -190,73 +203,72 @@ class Birthdays(commands.Cog):
 
 			if region == 1:
 				region = "pacific time (us)"
-				birthday = birthday - relativedelta(hours = 9)
+				region_birthday = birthday - relativedelta(hours = 10)
 			elif region == 2:
 				region = "mountain time (us)"
-				birthday = birthday - relativedelta(hours = 8)
+				region_birthday = birthday - relativedelta(hours = 9)
 			elif region == 3:
 				region = "central time (us)"
-				birthday = birthday - relativedelta(hours = 7)
+				region_birthday = birthday - relativedelta(hours = 8)
 			elif region == 4:
 				region = "eastern time (us)"
-				birthday = birthday - relativedelta(hours = 6)
+				region_birthday = birthday - relativedelta(hours = 7)
 			elif region == 5:
 				region = "rio de janeiro, brazil"
-				birthday = birthday - relativedelta(hours = 4)
+				region_birthday = birthday - relativedelta(hours = 5)
 			elif region == 6:
 				region = "london, united kingdom (utc)"
-				birthday = birthday
+				region_birthday = birthday
 			elif region == 7:
 				region = "berlin, germany"
-				birthday = birthday + relativedelta(hours = 2)
+				region_birthday = birthday + relativedelta(hours = 3)
 			elif region == 8:
 				region = "moscow, russian federation"
-				birthday = birthday + relativedelta(hours = 4)
+				region_birthday = birthday + relativedelta(hours = 4)
 			elif region == 9:
 				region = "dubai, united arab emirates"
-				birthday = birthday + relativedelta(hours = 5)
+				region_birthday = birthday + relativedelta(hours = 6)
 			elif region == 10:
 				region = "mumbai, india"
-				birthday = birthday + relativedelta(hours = 6, minutes = 30)
+				region_birthday = birthday + relativedelta(hours = 7, minutes = 30)
 			elif region == 11:
 				region = "singapore, singapore"
-				birthday = birthday + relativedelta(hours = 9)
+				region_birthday = birthday + relativedelta(hours = 10)
 			elif region == 12:
 				region = "tokyo, japan"
-				birthday = birthday + relativedelta(hours = 10)
+				region_birthday = birthday + relativedelta(hours = 11)
 			elif region == 13:
 				region = "sydney, australia"
-				birthday = birthday + relativedelta(hours = 12)
+				region_birthday = birthday + relativedelta(hours = 13)
 			elif region == 14:
 				region = "auckland, new zealand"
-				birthday = birthday + relativedelta(hours = 14)
+				region_birthday = birthday + relativedelta(hours = 15)
 
 
-			def format_date(dt):
-				if dt is None:
-					return 'N/A'
-				return f"`{time.human_timedelta(dt, accuracy=3)}` **({dt:%Y/%m/%d})**"
+			def format_date(dt1, dt2):
+				return f"`{time.human_timedelta(dt1, accuracy=3)}` **({dt2:%Y/%m/%d})**"
 
 
 			if user.id in all_users:
-				collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": birthday, "region": region}})
+				collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": birthday, "region": region, "region_birthday": region_birthday}})
 				await ctx.message.delete()
 				await msg.delete()
 				await pre_region.delete()
-				await ctx.send(f"Birthday set!\nYour birthday is in {format_date(birthday)} {user.mention}")
+				await ctx.send(f"Birthday set!\nYour birthday is in {format_date(region_birthday, birthday)} {user.mention}")
 			
 			else:
 				post = {
 						"_id": user.id,
 						"birthdaydate": birthday,
-						"region": region
+						"region": region,
+						"region_birthday": region_birthday
 						}
 				collection.insert_one(post)
 
 				await ctx.message.delete()
 				await msg.delete()
 				await pre_region.delete()
-				await ctx.send(f"Birthday set!\nYour birthday is in {format_date(birthday)} {user.mention}")
+				await ctx.send(f"Birthday set!\nYour birthday is in {format_date(region_birthday, birthday)} {user.mention}")
 
 
 
