@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 import os
 import keep_alive
-import json
 
 token = os.environ.get('DISCORD_BOT_SECRET')
 
