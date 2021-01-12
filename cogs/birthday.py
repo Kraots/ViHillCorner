@@ -31,51 +31,9 @@ class Birthdays(commands.Cog):
 		currentTime = datetime.datetime.strptime(get_time, "%Y/%m/%d")
 		results = collection.find({})
 		for result in results:
+			preBday = result['birthdaydate']
 			bdayDate = result['region_birthday']
 			user = result['_id']
-
-			if result['region'] == "pacific time (us)":
-				currentTime = currentTime + relativedelta(hours = 10)
-	
-			elif result['region'] == "mountain time (us)":
-				currentTime = currentTime + relativedelta(hours = 9)
-	
-			elif result['region'] == "central time (us)":
-				currentTime = currentTime + relativedelta(hours = 8)
-	
-			elif result['region'] == "eastern time (us)":
-				currentTime = currentTime + relativedelta(hours = 7)
-	
-			elif result['region'] == "rio de janeiro, brazil":
-				currentTime = currentTime + relativedelta(hours = 5)
-	
-			elif result['region'] == "london, united kingdom (utc)":
-				currentTime = currentTime
-
-			elif result['region'] == "berlin, germany":
-				currentTime = currentTime - relativedelta(hours = 3)
-
-			elif result['region'] == "moscow, russian federation":
-				currentTime = currentTime - relativedelta(hours = 5)
-
-			elif result['region'] == "dubai, united arab emirates":
-				currentTime = currentTime - relativedelta(hours = 6)
-
-			elif result['region'] == "mumbai, india":
-				currentTime = currentTime - relativedelta(hours = 7, minutes = 30)
-
-			elif result['region'] == "singapore, singapore":
-				currentTime = currentTime - relativedelta(hours = 10)
-
-			elif result['region'] == "tokyo, japan":
-				currentTime = currentTime - relativedelta(hours = 11)
-
-			elif result['region'] == "sydney, australia":
-				currentTime = currentTime - relativedelta(hours = 13)
-
-			elif result['region'] == "auckland, new zealand":
-				currentTime = currentTime - relativedelta(hours = 15)
-
 
 			if currentTime >= bdayDate:
 
@@ -88,8 +46,11 @@ class Birthdays(commands.Cog):
 				msg = await bday_channel.send(user.mention, embed=em)
 				await msg.add_reaction("🍰")
 				
-				new_birthday = bdayDate + relativedelta(years=1)
-				collection.update_one({"_id": user.id}, {"$set":{"region_birthday": new_birthday}})
+				new_birthday = bdayDate + relativedelta(years = 1)
+				new_preBday = preBday + relativedelta(years = 1)
+				collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": new_preBday, "region_birthday": new_birthday}})
+			
+
 			
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bday', 'b-day'])
