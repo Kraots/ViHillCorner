@@ -24,7 +24,7 @@ class Birthdays(commands.Cog):
 		return ctx.prefix == self.prefix
 
 
-	@tasks.loop(seconds=30)
+	@tasks.loop(minutes=30)
 	async def check_bdays(self):
 		await self.client.wait_until_ready()
 		get_time = datetime.datetime.now().strftime("%Y/%m/%d")
