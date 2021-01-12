@@ -20,7 +20,12 @@ class UrbanDictionary(commands.Cog):
 	async def search(self, ctx, *args):
 		async with ctx.typing():
 			query = " ".join(args)
-			res = wolf.query(query)
+			try:
+				res = wolf.query(query)
+			except:
+				await ctx.send("Invalid query, what are you searching for!?!?!??!")
+				return
+
 			try:
 				result = next(res.results).text
 			except Exception:

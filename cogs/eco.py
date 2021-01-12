@@ -455,6 +455,10 @@ class EcoCommands(commands.Cog):
 				await ctx.send('You do not own that much money!')
 				return
 
+			elif bal < 1:
+				await ctx.send("You do not have that much money in your bank. Money in bank: `{:,}`".format(bal))
+				return
+
 			elif amount < 1:
 				await ctx.send('Invalid amount.')
 				return
@@ -502,8 +506,12 @@ class EcoCommands(commands.Cog):
 				await ctx.send('You do not own that much money!')
 				return
 
+			elif bal < 1:
+				await ctx.send("You do not have that much money in your wallet. Money in wallet: `{:,}`".format(bal))
+				return
+
 			elif amount < 1:
-				await ctx.send('Invalid amount.')
+				await ctx.send('Invalid amount. You cannot deposit **0** or **negative number** amount of coins.')
 				return
 
 			collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -amount}})
@@ -549,6 +557,10 @@ class EcoCommands(commands.Cog):
 
 			if amount > bal:
 				await ctx.send('You do not own that much money!')
+				return
+
+			elif bal < 100:
+				await ctx.send("You do not have that much money in your wallet. Money in wallet: `{:,}`".format(bal))
 				return
 
 			if amount < 100:

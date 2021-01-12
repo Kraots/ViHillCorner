@@ -27,8 +27,7 @@ class Birthdays(commands.Cog):
 	@tasks.loop(minutes=30)
 	async def check_bdays(self):
 		await self.client.wait_until_ready()
-		get_time = datetime.datetime.now().strftime("%Y/%m/%d")
-		currentTime = datetime.datetime.strptime(get_time, "%Y/%m/%d")
+		currentTime = datetime.datetime.utcnow()
 		results = collection.find({})
 		for result in results:
 			preBday = result['birthdaydate']
