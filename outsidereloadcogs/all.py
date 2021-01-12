@@ -6,7 +6,7 @@ import utils.colors as color
 class All(commands.Cog):
 	def __init__(self, client):
 		self.client = client
-		self.prefix = ['!', ';;']
+		self.prefix = ['!', '!!']
 	async def cog_check(self, ctx):
 		return ctx.prefix in self.prefix
 
