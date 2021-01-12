@@ -8,6 +8,9 @@ from utils.helpers import time_phaserr
 import pymongo
 from pymongo import MongoClient
 import os
+import datetime
+from dateutil.relativedelta import relativedelta
+from utils import time
 
 DBKEY = os.getenv("MONGODBKEY")
 
@@ -24,7 +27,51 @@ class EcoCommands(commands.Cog):
 		return ctx.prefix == self.prefix
 
 
+			# DAILY
+
+	@commands.command()
+	async def daily(self, ctx):
+		user = ctx.author
+		all_users = []
+		results = collection.find()
+		for result in results:
+			all_users.append(result['_id'])
+
+		if not user.id in all_users:
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			return
+		else:
+			dateNow = datetime.datetime.utcnow()
+			next_daily = datetime.datetime.utcnow() + relativedelta(days = 1)
+			get_daily = collection.find({"_id": user.id})
+
+			try:
+				for data in get_daily:
+					daily = data['daily']
+				
+				if dateNow < daily:
+					
+					def format_date(dt):
+						return f"{time.human_timedelta(dt, accuracy=3)}"
+
+					await ctx.send("You already claimed your daily for today! Please try again in `{}`.".format(format_date(daily)))
+					return
+				
+
+				elif dateNow >= daily:
+					collection.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
+					collection.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})	
+
+			except KeyError:
+				collection.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
+				collection.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})	
+			
+			
+			await ctx.send("Daily successfully claimed, `75,000` coins have been put into your wallet. Come back in **24 hours** for the next one.")	
+
+
 			# REGISTER
+
 
 	@commands.command()
 	async def register(self, ctx):
