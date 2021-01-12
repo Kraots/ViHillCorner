@@ -177,7 +177,7 @@ class Snippets(commands.Cog):
 					return
 				
 				elif snippet_name in nono_names:
-					await ctx.send("Those names are invalid! Reason: `They are used in other commands, actions, to be more specific.`")
+					await ctx.send("That names are invalid! Reason: `They are used in other commands, actions, to be more specific.`")
 					return
 
 			except asyncio.TimeoutError:
@@ -236,7 +236,7 @@ class Snippets(commands.Cog):
 				return
 
 			elif get_snippet_name.lower() in nono_names:
-					await ctx.send("Those names are invalid! Reason: `They are used in other commands, actions, to be more specific.`")
+					await ctx.send("That names are invalid! Reason: `They are used in other commands, actions, to be more specific.`")
 					return
 
 			def check(m):
