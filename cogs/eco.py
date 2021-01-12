@@ -94,7 +94,7 @@ class EcoCommands(commands.Cog):
 	async def register(self, ctx):
 		user = ctx.author
 
-		post = {"_id": user.id, "wallet": 0, "bank": 0}
+		post = {"_id": user.id, "wallet": 0, "bank": 0, "daily": datetime.datetime.utcnow()}
 
 		try:
 			collection.insert_one(post)
