@@ -15,9 +15,9 @@ class Snipe(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message_delete(self, message: discord.Message):
-		#if message.author.id == 374622847672254466:
-		#	return
-		if message.author.bot:
+		if message.author.id == 374622847672254466:
+			return
+		elif message.author.bot:
 			return
 		else:
 			snipes[message.channel.id] = message
