@@ -29,7 +29,7 @@ class EcoCommands(commands.Cog):
 
 			# DAILY
 
-	@commands.command()
+	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def daily(self, ctx):
 		user = ctx.author
 		all_users = []
@@ -69,6 +69,23 @@ class EcoCommands(commands.Cog):
 			
 			await ctx.send("Daily successfully claimed, `75,000` coins have been put into your wallet. Come back in **24 hours** for the next one.")	
 
+
+	@daily.group(invoke_without_command = True, case_insensitive = True, aliases=['reset'])
+	@commands.is_owner()
+	async def _reset(self, ctx, member: discord.Member = None):
+		if member is None:
+			member = ctx.author
+		
+		NewDaily = datetime.datetime.utcnow()
+		collection.update_one({"_id": member.id}, {"$set":{"daily": NewDaily}})
+		await ctx.send("Cooldown for the daily command has been reset for user `{}`.".format(member))
+
+	@_reset.command(aliases=['all', 'everyone'])
+	@commands.is_owner()
+	async def _all(self, ctx):
+		NewDaily = datetime.datetime.utcnow()
+		collection.update_many({}, {"$set":{"daily": NewDaily}})
+		await ctx.send("Cooldown for the daily command has been reset for everyone.")
 
 			# REGISTER
 
