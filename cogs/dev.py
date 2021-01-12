@@ -22,7 +22,7 @@ class developer(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 		self.ch_pr.start()
-		self.prefix = ['!!', '!']
+		self.prefix = ['!', ';;']
 	async def cog_check(self, ctx):
 		return ctx.prefix in self.prefix
 

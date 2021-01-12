@@ -29,11 +29,13 @@ class Nicks(commands.Cog):
           else:
               await ctx.reply("The nickname is too long. Please choose a nickname that's 32 characters or less!")
 
+
   @off.error
   async def nick_remove_error(self, ctx, error):
       if isinstance(error, commands.errors.CommandInvokeError):
           if ctx.author.id == 374622847672254466:
               await ctx.reply("Bots **do not** have permission to change guild owner's nickname!")
 
+			  
 def setup (client):
     client.add_cog(Nicks(client))
