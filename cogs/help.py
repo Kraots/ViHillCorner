@@ -33,7 +33,11 @@ class Help(commands.Cog):
 	async def rank(self, ctx):
 		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!rank [member]\n!rank leaderboard```")
 		em.add_field(name="***Commands***", value="\n• **leaderboard**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **lb**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See top `10` highest level members!", inline = False)
-		em.add_field(name="***Aliases:***", value="• **level**\n• **level**", inline = False)
+		em.add_field(name="***Aliases:***", value="• **level**\n• **lvl**", inline = False)
+		
+		if ctx.author.id == 374622847672254466:
+			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!rank set <lvl> <user>`\n\u2800***Info:***\n\u2800\u2800• Set a user's level.\n _ _")
+		
 		em.add_field(name="***Info:***", value="• Check your current level.", inline = False)
 		
 		await ctx.reply(embed=em)
