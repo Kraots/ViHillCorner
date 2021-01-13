@@ -33,10 +33,10 @@ class info(commands.Cog):
 			msg = await ctx.send(mentions, embed=sfw)
 		await msg.add_reaction('🗑️')
 
-	@commands.command(aliases=['lvl'])
+	@commands.command(aliases=['lvlinfo', 'levelinfo', 'lvl-info', 'level-info', 'howtolvl', 'howtolevel'])
 	@commands.has_any_role('Mod', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
-	async def level(self, ctx, members : Greedy[Member] = None):
-		lvl = discord.Embed(title="How to lvl up", description="You can level up in this server by chatting in any channel. Spamming or `XP farming` would result in level reset. \n\nTo check your rank, send `^rank` in <#750160851822182486>.", color=discord.Color.red())
+	async def level_info(self, ctx, members : Greedy[Member] = None):
+		lvl = discord.Embed(title="How to lvl up", description="You can level up in this server by chatting in any channel. Spamming or `XP farming` would result in level reset. \n\nTo check your rank, send `!rank` in <#750160851822182486>.", color=discord.Color.red())
 		mention_list = []
 
 		if members == None:
@@ -52,10 +52,10 @@ class info(commands.Cog):
 			msg = await ctx.send(mentions, embed=lvl)
 		await msg.add_reaction('🗑️')
 
-	@commands.command()
+	@commands.command(aliases=['rankinfo', 'rank-info', 'rankcheck'])
 	@commands.has_any_role('Mod', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
-	async def rank(self, ctx, members : Greedy[Member] = None):
-		rank = discord.Embed(title="How to check your rank", description="Send `^rank` in <#750160851822182486> to check your rank.", color=discord.Color.red())
+	async def rank_info(self, ctx, members : Greedy[Member] = None):
+		rank = discord.Embed(title="How to check your rank", description="Send `!rank` in <#750160851822182486> to check your rank.", color=discord.Color.red())
 		mention_list = []
 
 		if members == None:

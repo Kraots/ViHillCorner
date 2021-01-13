@@ -460,6 +460,8 @@ class Snippets(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
+		if member.id == 374622847672254466:
+			return
 		collection.delete_many({"snippet_credits": member.id})
 
 

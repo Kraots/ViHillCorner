@@ -78,11 +78,6 @@ class on_message(commands.Cog):
 				await kraots.send(embed=em)
 
 		if message.guild:
-		
-			if message.channel.id in [750160851822182486, 750160851822182487]:
-				if message.content.lower() in ["!rank", "!level", "!lvl"]:
-					await message.reply("`^rank` smh...")
-		
 
 			if message.author.id == kraots.id:
 				return
