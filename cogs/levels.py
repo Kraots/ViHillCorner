@@ -5,10 +5,10 @@ import os
 
 import utils.colors as color
 
-from pymongo import MongoClient
+import motor.motor_asyncio
 
 DBKEY = os.getenv("MONGODBLVLKEY")
-cluster = MongoClient(DBKEY)
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster['ViHillCornerDB']
 collection = db['Levels']
 
@@ -35,13 +35,13 @@ class LevelSystem(commands.Cog):
 			if message.channel.id != no_talk_channels:
 				if not message.author.bot:
 					guild = self.client.get_guild(750160850077089853)
-					stats = collection.find_one({"_id": message.author.id})
+					stats = await collection.find_one({"_id": message.author.id})
 					if stats is None:
 						newuser = {"_id": message.author.id, "xp": 0}
-						collection.insert_one(newuser)
+						await collection.insert_one(newuser)
 					else:
 						xp = stats['xp'] + 5
-						collection.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
+						await 	collection.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
 						lvl = 0
 						while True:
 							if xp < ((50*(lvl**2))+ (50*(lvl-1))):
@@ -75,7 +75,7 @@ class LevelSystem(commands.Cog):
 			member = ctx.author
 		
 		if ctx.channel.id in bot_channel:
-			stats = collection.find_one({"_id": member.id})
+			stats = await collection.find_one({"_id": member.id})
 			if stats is None:
 				if member.id == ctx.author.id:
 					await ctx.send("You haven't sent any messages, therefore you don't have a level.")
@@ -97,7 +97,7 @@ class LevelSystem(commands.Cog):
 				xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
 				boxes = int((xp/(200*((1/2)*lvl)))*20)
 				rankings = collection.find().sort('xp', -1)
-				for data in rankings:
+				for data in await rankings.to_list(100000000):
 					rank += 1
 					if stats['_id'] == data['_id']:
 						break
@@ -128,7 +128,7 @@ class LevelSystem(commands.Cog):
 			member = ctx.author
 
 		xp = ((50*((lvl-1)**2))+(50*(lvl-1))) - 5
-		collection.update_one({"_id": member.id}, {"$set":{"xp": xp}})
+		await collection.update_one({"_id": member.id}, {"$set":{"xp": xp}})
 		await ctx.send("Set level `{}` for **{}**.".format(lvl, member.display_name))
 
 
@@ -136,10 +136,10 @@ class LevelSystem(commands.Cog):
 	@rank.command(aliases=['lb', 'top'])
 	async def leaderboard(self, ctx):
 		if ctx.channel.id in bot_channel:
-			results = collection.find().sort([('xp', -1)]).limit(10)
+			results = collection.find().sort([('xp', -1)])
 			index = 0
 			em = discord.Embed(color=color.lightpink, title="Top 10 highest level people\n _ _")
-			for result in results:
+			for result in await results.to_list(10):
 				xp = result['xp']
 				user = result['_id']
 				user = self.client.get_user(user)
@@ -166,7 +166,7 @@ class LevelSystem(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		collection.delete_one({"_id": member.id})
+		await collection.delete_one({"_id": member.id})
 
 
 def setup(client):

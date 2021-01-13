@@ -1,12 +1,12 @@
 import discord
 from discord.ext import commands
 import asyncio
-from pymongo import MongoClient
+import motor.motor_asyncio
 import os
 
 DBKEY = os.getenv("MONGODBKEY")
 
-cluster = MongoClient(DBKEY)
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Custom Roles"]
 
@@ -38,15 +38,11 @@ class CustomRoles(commands.Cog):
 		channel = ctx.message.channel
 		usercheck = ctx.author.id
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-
+		results = await collection.find_one({"_id": user.id})
 		def check(message):
 			return message.author.id == usercheck and message.channel.id == channel.id
 
-		if ctx.author.id in all_users:
+		if results != None:
 			await ctx.send("You already have a custom role.")
 			return
 
@@ -97,7 +93,7 @@ class CustomRoles(commands.Cog):
 					await ctx.author.add_roles(newcr)
 
 					post = {"_id": user.id, "CustomRoleName": crname.content}
-					collection.insert_one(post)
+					await collection.insert_one(post)
 
 					positions = {
 						newcr: 65
@@ -115,83 +111,69 @@ class CustomRoles(commands.Cog):
 	async def color(self, ctx, new_color: str = None):
 		user = ctx.author
 		guild = self.client.get_guild(750160850077089853)
-
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
 		
-		resultss = collection.find({"_id": user.id})
+		results = await collection.find_one({"_id": user.id})
 
-		for info in resultss:
-			get_role = info['CustomRoleName']
-		
-		if not ctx.author.id in all_users:
+		if results is None:
 			await ctx.send("You must have a custom role to edit! Type: `!cr create` to create your custom role.")
+			return
+
+		get_role = results['CustomRoleName']
+	
+		crname = discord.utils.get(guild.roles, name=get_role)
+		em = discord.Embed(title="Custom Role Edited")
+
+		if new_color == None:
+			await ctx.send("You must provide the new color!")
 			return
 		
 		else:
-			crname = discord.utils.get(guild.roles, name=get_role)
-			em = discord.Embed(title="Custom Role Edited")
-
-			if new_color == None:
-				await ctx.send("You must provide the new color!")
+			if new_color.startswith("#"):
+				new_color = new_color.replace("#", "")
+				new_color = f"0x{new_color}"
+			else:
+				await ctx.send("Invalid Color Hex!\nExample: `#ffffff`")
 				return
 			
-			else:
-				if new_color.startswith("#"):
-					new_color = new_color.replace("#", "")
-					new_color = f"0x{new_color}"
-				else:
-					await ctx.send("Invalid Color Hex!\nExample: `#ffffff`")
-					return
-				
-				try:
-					await crname.edit(color=discord.Color(int(new_color, 16)))
-					em.add_field(name="New Color", value=f"`#{new_color[2:]}`")
-					em.color = crname.color
-					await ctx.send(embed=em)
-				
-				except ValueError:
-					await ctx.send("Invalid Color Hex!\nExample: `#ffffff`")
+			try:
+				await crname.edit(color=discord.Color(int(new_color, 16)))
+				em.add_field(name="New Color", value=f"`#{new_color[2:]}`")
+				em.color = crname.color
+				await ctx.send(embed=em)
+			
+			except ValueError:
+				await ctx.send("Invalid Color Hex!\nExample: `#ffffff`")
 
 	@edit.command()
 	async def name(self, ctx, *, new_name: str = None):
 		user = ctx.author
 		guild = self.client.get_guild(750160850077089853)
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-		
-		resultss = collection.find({"_id": user.id})
+		results = await collection.find_one({"_id": user.id})
 
-		for info in resultss:
-			get_role = info['CustomRoleName']
-		
-		if not ctx.author.id in all_users:
+		if results == None:
 			await ctx.send("You must have a custom role to edit! Type: `!cr create` to create your custom role.")
 			return
-		
-		else:
-			crname = discord.utils.get(guild.roles, name=get_role)
-			em = discord.Embed(title="Custom Role Edited")
-			
-			if new_name == None:
-				await ctx.send("You must provide the new name!")
-				return
-			
-			elif new_name.lower() in nono_list:
-				await ctx.send("You tried, but no, lol!")
-				return
 
-			else:
-				collection.update_one({"_id": ctx.author.id}, {"$set":{"CustomRoleName": new_name}})
-				await crname.edit(name=new_name)
-				em.add_field(name="New Name", value=f"`{new_name}`")
-				em.color = crname.color
-				await ctx.send(embed=em)
+		get_role = results['CustomRoleName']
+
+		crname = discord.utils.get(guild.roles, name=get_role)
+		em = discord.Embed(title="Custom Role Edited")
+		
+		if new_name == None:
+			await ctx.send("You must provide the new name!")
+			return
+		
+		elif new_name.lower() in nono_list:
+			await ctx.send("You tried, but no, lol!")
+			return
+
+		else:
+			await collection.update_one({"_id": ctx.author.id}, {"$set":{"CustomRoleName": new_name}})
+			await crname.edit(name=new_name)
+			em.add_field(name="New Name", value=f"`{new_name}`")
+			em.color = crname.color
+			await ctx.send(embed=em)
 
 	@cr.command()
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+")
@@ -202,49 +184,45 @@ class CustomRoles(commands.Cog):
 		user = ctx.author
 		guild = self.client.get_guild(750160850077089853)
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-		
-		resultss = collection.find({"_id": user.id})
+		results = await collection.find_one({"_id": user.id})
 
-		for info in resultss:
-			get_role = info['CustomRoleName']
-		
-		if ctx.author.id in all_users:
-			crname = discord.utils.get(guild.roles, name=get_role)
-			if crname in member.roles:
-				await ctx.send("You already shared your custom role with that user!")
-				return
-			msg = await ctx.send(f"{member.mention} Do you accept the role <@&{crname.id}> from {user.mention}?\n\n**Note:** Any changes made to the role by {user.mention} would apply to everyone holding the role.")
-			await msg.add_reaction('<:agree:797537027469082627>')
-			await msg.add_reaction('<:disagree:797537030980239411>')
-			
-			def check(reaction, user):
-				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
-			
-			try:
-				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
-			
-			except asyncio.TimeoutError:
-				new_msg = f"{member.mention} Did not react in time."
-				await msg.edit(content=new_msg)
-				await msg.clear_reactions()
-				return
-			else:
-				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					await member.add_roles(crname)
-					em = discord.Embed(color=user.color, title=f"{member} has accepted your role")
-					em.set_image(url="https://blog.hubspot.com/hubfs/giphy_1-1.gif")
-					await ctx.send(ctx.author.mention, embed=em)
-					return
-
-				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-					await ctx.send(f"**{member}** has denied your role {ctx.author.mention}")
-					return
-		else:
+		if results is None:
 			await ctx.send("You do not have a custom role to share!")
+			return
+
+		get_role = results['CustomRoleName']
+		
+		crname = discord.utils.get(guild.roles, name=get_role)
+		if crname in member.roles:
+			await ctx.send("You already shared your custom role with that user!")
+			return
+		msg = await ctx.send(f"{member.mention} Do you accept the role <@&{crname.id}> from {user.mention}?\n\n**Note:** Any changes made to the role by {user.mention} would apply to everyone holding the role.")
+		await msg.add_reaction('<:agree:797537027469082627>')
+		await msg.add_reaction('<:disagree:797537030980239411>')
+		
+		def check(reaction, user):
+			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
+		
+		try:
+			reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+		
+		except asyncio.TimeoutError:
+			new_msg = f"{member.mention} Did not react in time."
+			await msg.edit(content=new_msg)
+			await msg.clear_reactions()
+			return
+		else:
+			if str(reaction.emoji) == '<:agree:797537027469082627>':
+				await member.add_roles(crname)
+				em = discord.Embed(color=user.color, title=f"{member} has accepted your role")
+				em.set_image(url="https://blog.hubspot.com/hubfs/giphy_1-1.gif")
+				await ctx.send(ctx.author.mention, embed=em)
+				return
+
+			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+				await ctx.send(f"**{member}** has denied your role {ctx.author.mention}")
+				return
+
 
 
 
@@ -257,27 +235,20 @@ class CustomRoles(commands.Cog):
 		guild = self.client.get_guild(750160850077089853)
 		cr = guild.get_role(role)
 		
-		all_cr = []
-		results = collection.find()
-		for result in results:
-			all_cr.append(result['CustomRoleName'])
+		results = await collection.find_one({"CustomRoleName": cr.name})
+		if results is None:
+			await ctx.send("That is not a custom role!")
+			return
 		try:
-			if not cr.name in all_cr:
-				await ctx.send("That is not a custom role!")
+			owner = results['_id']
+
+			if ctx.author.id == owner:
+				await ctx.send("You cannot remove that custom role because you're the owner of it! To remove it please type: `!cr delete`")
 				return
 			
 			else:
-				get_data = collection.find({"CustomRoleName": cr.name})
-				for data in get_data:
-					owner = data['_id']
-				
-				if ctx.author.id == owner:
-					await ctx.send("You cannot remove that custom role because you're the owner of it! To remove it please type: `!cr delete`")
-					return
-				
-				else:
-					await ctx.author.remove_roles(cr)
-					await ctx.send(f"Removed the role <@&{cr.id}> from your profile.")
+				await ctx.author.remove_roles(cr)
+				await ctx.send(f"Removed the role <@&{cr.id}> from your profile.")
 		
 		except AttributeError:
 			await ctx.send("That is not a valid ID! Type: `!role-id <role_name>` to get the role's ID you want to remove from your profile.")
@@ -288,7 +259,7 @@ class CustomRoles(commands.Cog):
 		all_cr = []
 		results = collection.find()
 		guild = self.client.get_guild(750160850077089853)
-		for result in results:
+		for result in await results.to_list(999999999999):
 			user = str(result['_id'])
 			if str(ctx.author.id) != user:
 				all_cr.append(result['CustomRoleName'])
@@ -320,44 +291,38 @@ class CustomRoles(commands.Cog):
 		usercheck = ctx.author.id
 		guild = self.client.get_guild(750160850077089853)
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-		
-		resultss = collection.find({"_id": user.id})
+		results = await collection.find_one({"_id": user.id})
 
-		for info in resultss:
-			get_role = info['CustomRoleName']
-		
-		if ctx.author.id in all_users:
+		if results is None:
+			await ctx.send("You do not have a custom role! Type: `!cr create` to create your role!")
+			return
 
-			def check(message):
-				return message.author.id == usercheck and message.channel.id == channel.id
+		get_role = results['CustomRoleName']
 
-			crname = discord.utils.get(guild.roles, name=get_role)
-			await ctx.reply("Are you sure you want to delete your custom role (<@&{}>)? `yes` | `no`".format(crname.id))
+		def check(message):
+			return message.author.id == usercheck and message.channel.id == channel.id
 
-			try:
+		crname = discord.utils.get(guild.roles, name=get_role)
+		await ctx.reply("Are you sure you want to delete your custom role (<@&{}>)? `yes` | `no`".format(crname.id))
 
-				reply = await self.client.wait_for('message', timeout=30, check=check)
-				answer = reply.content
-				if answer.lower() == "no":
-					await ctx.send("Your custom role has not been deleted.")
-					return
+		try:
 
-				elif answer.lower() == "yes":
-					await crname.delete()
-
-					collection.delete_one({"_id": ctx.author.id})
-
-					await ctx.send("Succesfully deleted your custom role! {}".format(ctx.author.mention))
-
-			except asyncio.TimeoutError:
+			reply = await self.client.wait_for('message', timeout=30, check=check)
+			answer = reply.content
+			if answer.lower() == "no":
+				await ctx.send("Your custom role has not been deleted.")
 				return
 
-		else:
-			await ctx.send("You do not have a custom role! Type: `!cr create` to create your role!")
+			elif answer.lower() == "yes":
+				await crname.delete()
+
+				await collection.delete_one({"_id": ctx.author.id})
+
+				await ctx.send("Succesfully deleted your custom role! {}".format(ctx.author.mention))
+
+		except asyncio.TimeoutError:
+			return
+
 
 
 
@@ -408,12 +373,12 @@ class CustomRoles(commands.Cog):
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
 		guild = self.client.get_guild(750160850077089853)
-		results = collection.find({"_id": member.id})
-		for result in results:
-			get_role = result['CustomRoleName']
+		results = await collection.find_one({"_id": member.id})
+		if results != None:
+			get_role = results['CustomRoleName']
 			crname = discord.utils.get(guild.roles, name=get_role)
 			await crname.delete()
-		collection.delete_one({"_id": member.id})
+			await collection.delete_one({"_id": member.id})
 		
 
 

@@ -6,7 +6,7 @@ import utils.colors as color
 import asyncio
 from utils.helpers import time_phaserr
 import pymongo
-from pymongo import MongoClient
+import motor.motor_asyncio
 import os
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -14,7 +14,7 @@ from utils import time
 
 DBKEY = os.getenv("MONGODBKEY")
 
-cluster = MongoClient(DBKEY)
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Economy"]
 
@@ -32,22 +32,17 @@ class EcoCommands(commands.Cog):
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def daily(self, ctx):
 		user = ctx.author
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": user.id})
 
-		if not user.id in all_users:
+		if results == None:
 			await ctx.send("You are not registered! Type: `!register` to register.")
 			return
 		else:
 			dateNow = datetime.datetime.utcnow()
 			next_daily = datetime.datetime.utcnow() + relativedelta(days = 1)
-			get_daily = collection.find({"_id": user.id})
 
 			try:
-				for data in get_daily:
-					daily = data['daily']
+				daily = results['daily']
 				
 				if dateNow < daily:
 					
@@ -59,12 +54,12 @@ class EcoCommands(commands.Cog):
 				
 
 				elif dateNow >= daily:
-					collection.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
-					collection.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})	
+					await collection.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
+					await collection.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})	
 
 			except KeyError:
-				collection.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
-				collection.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})	
+				await collection.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
+				await collection.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})	
 			
 			
 			await ctx.send("Daily successfully claimed, `75,000` coins have been put into your wallet. Come back in **24 hours** for the next one.")	
@@ -76,15 +71,20 @@ class EcoCommands(commands.Cog):
 		if member is None:
 			member = ctx.author
 		
+		results = await collection.find_one({"_id": member.id})
+		if results == None:
+			await ctx.send("User not registered!")
+			return
+
 		NewDaily = datetime.datetime.utcnow()
-		collection.update_one({"_id": member.id}, {"$set":{"daily": NewDaily}})
+		await collection.update_one({"_id": member.id}, {"$set":{"daily": NewDaily}})
 		await ctx.send("Cooldown for the daily command has been reset for user `{}`.".format(member))
 
 	@_reset.command(aliases=['all', 'everyone'])
 	@commands.is_owner()
 	async def _all(self, ctx):
 		NewDaily = datetime.datetime.utcnow()
-		collection.update_many({}, {"$set":{"daily": NewDaily}})
+		await collection.update_many({}, {"$set":{"daily": NewDaily}})
 		await ctx.send("Cooldown for the daily command has been reset for everyone.")
 
 			# REGISTER
@@ -97,7 +97,7 @@ class EcoCommands(commands.Cog):
 		post = {"_id": user.id, "wallet": 0, "bank": 0, "daily": datetime.datetime.utcnow()}
 
 		try:
-			collection.insert_one(post)
+			await collection.insert_one(post)
 			await ctx.send("Succesfully registered!")
 
 		except pymongo.errors.DuplicateKeyError:
@@ -110,17 +110,13 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	async def unregister(self, ctx):
 		user = ctx.author
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-
-		if user.id in all_users:
-			collection.delete_one({"_id": user.id})
-			await ctx.send("Succesfully unregistered!")
-        
-		else:
+		results = await collection.find_one({"_id": user.id})
+		if results == None:
 			await ctx.send("You are not registered! Type: `!regiser` to register.")
+			return
+
+		await collection.delete_one({"_id": user.id})
+		await ctx.send("Succesfully unregistered!")
 		  
 		  
 		    # BALANCE
@@ -134,30 +130,28 @@ class EcoCommands(commands.Cog):
 
 		user = member
 		
-		results = collection.find({"_id": user.id})
-		all_accounts = collection.find({})
-
-		leader_board = {}
-
-		for all_results in all_accounts:
-			userr = self.client.get_user(all_results["_id"])
-			all_wallet_amt = all_results["wallet"]
-			all_bank_amt = all_results["bank"]
-			leader_board[userr] = all_wallet_amt + all_bank_amt
-
-		for result in results:
-			wallet_amt = result["wallet"]
-			bank_amt = result["bank"]
-
-		try:
-			total_amt = wallet_amt + bank_amt
-
-		except UnboundLocalError:
+		results = await collection.find_one({"_id": user.id})
+		if results == None:
 			if member.id == ctx.author.id:
 				await ctx.send("You are not registered! Type: `!register` to register.")
 			else:
 				await ctx.send("User is not registered!")
 			return
+
+		all_accounts = collection.find()
+
+		leader_board = {}
+
+		for all_results in await all_accounts.to_list(99999999999999999999999999):
+			userr = self.client.get_user(all_results["_id"])
+			all_wallet_amt = all_results["wallet"]
+			all_bank_amt = all_results["bank"]
+			leader_board[userr] = all_wallet_amt + all_bank_amt
+
+		wallet_amt = results["wallet"]
+		bank_amt = results["bank"]
+
+		total_amt = wallet_amt + bank_amt
 
 		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True)
 
@@ -189,12 +183,12 @@ class EcoCommands(commands.Cog):
 
 	@commands.command(aliases=['lb', 'baltop'])
 	async def leaderboard(self, ctx, x = 10):
-		results = collection.find({})
+		results = collection.find()
 		leader_board = {}
 
 		all_users = []
 
-		for result in results:
+		for result in await results.to_list(9999999999999):
 			user = self.client.get_user(result["_id"])  
 			leader_board[user] = result["wallet"] + result["bank"]  
 			all_users.append(result['_id'])
@@ -238,38 +232,32 @@ class EcoCommands(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-
-		if member.id in all_users:
-
-			if amount is None:
-				await ctx.send("Please specify the amount of money you want to add!")
-				return
-
-			user = member
-
-			amount = amount.replace(",", "")
-
-			amount = int(amount)
-
-			collection.update_one({"_id": user.id}, {"$inc":{"bank": amount}})
-			
-				
-			await ctx.send("Successfully added `{:,}` coins, and deposited them into the bank for `{}`!".format(amount, member))
-
-			if ctx.author.id == kraots.id:
-				return
-			else:
-				embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added `{:,}` coins to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
-		
-				await kraots.send(embed=embed)
-
-		else:
+		results = await collection.find_one({"_id": member.id})
+		if results == None:
 			await ctx.send("User not registered!")
 			return
+
+		if amount is None:
+			await ctx.send("Please specify the amount of money you want to add!")
+			return
+
+		user = member
+
+		amount = amount.replace(",", "")
+
+		amount = int(amount)
+
+		await collection.update_one({"_id": user.id}, {"$inc":{"bank": amount}})
+		
+			
+		await ctx.send("Successfully added `{:,}` coins, and deposited them into the bank for `{}`!".format(amount, member))
+
+		if ctx.author.id == kraots.id:
+			return
+		else:
+			embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added `{:,}` coins to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+	
+			await kraots.send(embed=embed)
 
 	@balance.command(aliases=['add-wallet'])
 	@commands.is_owner()
@@ -278,38 +266,33 @@ class EcoCommands(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-
-		if member.id in all_users:
-
-			if amount is None:
-				await ctx.send("Please specify the amount of money you want to add!")
-				return
-
-			user = member
-
-			amount = amount.replace(",", "")
-
-			amount = int(amount)
-
-			collection.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
-			
-				
-			await ctx.send("Successfully added `{:,}` coins to the wallet for `{}`!".format(amount, member))
-
-			if ctx.author.id == kraots.id:
-				return
-			else:
-				embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added `{:,}` coins to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
-		
-				await kraots.send(embed=embed)
-
-		else:
+		results = await collection.find_one({"_id": member.id})
+		if results == None:
 			await ctx.send("User not registered!")
 			return
+
+		if amount is None:
+			await ctx.send("Please specify the amount of money you want to add!")
+			return
+
+		user = member
+
+		amount = amount.replace(",", "")
+
+		amount = int(amount)
+
+		await collection.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
+		
+			
+		await ctx.send("Successfully added `{:,}` coins to the wallet for `{}`!".format(amount, member))
+
+		if ctx.author.id == kraots.id:
+			return
+		else:
+			embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added `{:,}` coins to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+	
+			await kraots.send(embed=embed)
+
 
 	@balance.command(aliases=['set-bank'])
 	@commands.is_owner()
@@ -318,35 +301,30 @@ class EcoCommands(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-
-		if member.id in all_users:
-			if amount is None:
-				await ctx.send("Please specify the amount of money you want to set!")
-				return
-
-			user = member
-			amount = amount.replace(",", "")
-			amount = int(amount)
-
-
-			collection.update_one({"_id": user.id}, {"$set":{"bank": amount}})
-
-			await ctx.send("Balance successfully set to `{:,}` coins in the bank for `{}`!".format(amount, member))
-			
-			if ctx.author.id == kraots.id:
-				return		
-			
-			else:
-				embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to `{:,}` coins in the bank for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
-				await kraots.send(embed=embed)
-		
-		else:
+		results = await collection.find_one({"_id": member.id})
+		if results == None:
 			await ctx.send("User not registered!")
 			return
+
+		if amount is None:
+			await ctx.send("Please specify the amount of money you want to set!")
+			return
+
+		user = member
+		amount = amount.replace(",", "")
+		amount = int(amount)
+
+
+		await collection.update_one({"_id": user.id}, {"$set":{"bank": amount}})
+
+		await ctx.send("Balance successfully set to `{:,}` coins in the bank for `{}`!".format(amount, member))
+		
+		if ctx.author.id == kraots.id:
+			return		
+		
+		else:
+			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to `{:,}` coins in the bank for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+			await kraots.send(embed=embed)
 
 	@balance.command()
 	@commands.is_owner()
@@ -355,30 +333,26 @@ class EcoCommands(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-
-		if member.id in all_users:
-
-			user = member
-
-			collection.update_one({"_id": user.id}, {"$set":{"wallet": 0}})
-			collection.update_one({"_id": user.id}, {"$set":{"bank": 0}})
-
-			await ctx.send(f"Reseted balance for `{member}`.")
-			
-			if ctx.author.id == kraots.id:
-				return
-		
-			else:
-				embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description=f"`{ctx.author}` reseted the balance for `{member}`.\n\n`{ctx.author.id}` - person who reseted the money\n`{member.id}` - person who got the money reseted back to 0")
-				await kraots.send(embed=embed)
-		
-		else:
+		results = await collection.find_one({"_id": member.id})
+		if results == None:
 			await ctx.send("User not registered!")
 			return
+
+
+		user = member
+
+		await collection.update_one({"_id": user.id}, {"$set":{"wallet": 0}})
+		await collection.update_one({"_id": user.id}, {"$set":{"bank": 0}})
+
+		await ctx.send(f"Reseted balance for `{member}`.")
+		
+		if ctx.author.id == kraots.id:
+			return
+	
+		else:
+			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description=f"`{ctx.author}` reseted the balance for `{member}`.\n\n`{ctx.author.id}` - person who reseted the money\n`{member.id}` - person who got the money reseted back to 0")
+			await kraots.send(embed=embed)
+	
 
 	@balance.command(aliases=['set-wallet'])
 	@commands.is_owner()
@@ -388,37 +362,31 @@ class EcoCommands(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-
-		if member.id in all_users:
-			if amount is None:
-				await ctx.send("Please specify the amount of money you want to set!")
-				return
-
-			user = member
-			
-			amount = amount.replace(",", "")
-			amount = int(amount)
-
-			collection.update_one({"_id": user.id}, {"$set":{"wallet": amount}})
-
-			await ctx.send("Balance successfully set to `{:,}` coins in the wallet for `{}`!".format(amount, member))
-			
-			if ctx.author.id == kraots.id:
-				return
-			
-			else:
-				embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to `{:,}` coins in the wallet for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
-			
-				await kraots.send(embed=embed)
-
-		else:
+		results = await collection.find_one({"_id": member.id})
+		if results == None:
 			await ctx.send("User not registered!")
 			return
 
+		if amount is None:
+			await ctx.send("Please specify the amount of money you want to set!")
+			return
+
+		user = member
+		
+		amount = amount.replace(",", "")
+		amount = int(amount)
+
+		await collection.update_one({"_id": user.id}, {"$set":{"wallet": amount}})
+
+		await ctx.send("Balance successfully set to `{:,}` coins in the wallet for `{}`!".format(amount, member))
+		
+		if ctx.author.id == kraots.id:
+			return
+		
+		else:
+			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to `{:,}` coins in the wallet for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+		
+			await kraots.send(embed=embed)
 
 
  			# WITHDRAW
@@ -426,21 +394,15 @@ class EcoCommands(commands.Cog):
 
 	@commands.group(aliases=['with'])
 	async def withdraw(self, ctx, amount = None):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 
-		if ctx.author.id in all_users:
+		if results != None:
 		
 			if amount is None:
 				await ctx.send('Please enter the amount you want to withdraw.')
 				return
-
-			results = collection.find({"_id": ctx.author.id})
-
-			for result in results:
-				bal = result["bank"]
+			
+			bal = results["bank"]
 
 			if amount.lower() == "all":
 				amount = bal
@@ -463,8 +425,8 @@ class EcoCommands(commands.Cog):
 				await ctx.send('Invalid amount.')
 				return
 
-			collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": amount}})
-			collection.update_one({"_id": ctx.author.id}, {"$inc":{"bank": -amount}})
+			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": amount}})
+			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"bank": -amount}})
 
 			await ctx.send("Successfully withdrew `{:,}` coins!".format(amount))
 
@@ -478,21 +440,16 @@ class EcoCommands(commands.Cog):
 
 	@commands.command(aliases=['dep'])
 	async def deposit(self, ctx, amount = None):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		
+		results = await collection.find_one({"_id": ctx.author.id})
 
-		if ctx.author.id in all_users:
+		if results != None:
 		
 			if amount is None:
 				await ctx.send('Please enter the amount you want to deposit.')
 				return
-		
-			results = collection.find({"_id": ctx.author.id})
-
-			for result in results:
-				bal = result["wallet"]
+			
+			bal = results["wallet"]
 
 			if amount.lower() == "all":
 				amount = bal
@@ -514,8 +471,8 @@ class EcoCommands(commands.Cog):
 				await ctx.send('Invalid amount. You cannot deposit **0** or **negative number** amount of coins.')
 				return
 
-			collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -amount}})
-			collection.update_one({"_id": ctx.author.id}, {"$inc":{"bank": amount}})
+			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -amount}})
+			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"bank": amount}})
 
 			await ctx.send("Successfully deposited `{:,}` coins!".format(amount))
 
@@ -529,12 +486,10 @@ class EcoCommands(commands.Cog):
 
 	@commands.command()
 	async def give(self, ctx, member : discord.Member, amount = None):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		
+		results = await collection.find_one({"_id": ctx.author.id})
 
-		if ctx.author.id in all_users:
+		if results != None:
 			user = member
 			author = ctx.author
 			
@@ -542,10 +497,7 @@ class EcoCommands(commands.Cog):
 				await ctx.send('Please enter the amount you want to withdraw.')
 				return
 			
-			results = collection.find({"_id": author.id})
-
-			for result in results:
-				bal = result["wallet"]
+			bal = results["wallet"]
 
 			if amount.lower() == "all":
 				amount = bal
@@ -567,8 +519,8 @@ class EcoCommands(commands.Cog):
 				await ctx.send('You cannot give less than `100` coins.')
 				return
 
-			collection.update_one({"_id": author.id}, {"$inc":{"wallet": -amount}})
-			collection.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
+			await collection.update_one({"_id": author.id}, {"$inc":{"wallet": -amount}})
+			await collection.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
 
 			await ctx.send("You gave `{:,}` coins to `{}`.".format(amount, member.name))
 
@@ -584,12 +536,9 @@ class EcoCommands(commands.Cog):
 	@commands.command(aliases=["steal"])
 	@commands.cooldown(1, 20, commands.BucketType.user)
 	async def rob(self, ctx, member : discord.Member = None):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 
-		if ctx.author.id in all_users:
+		if results != None:
 			if member is None:
 				await ctx.send("You must specify the user you want to mention, dumbass.")
 				ctx.command.reset_cooldown(ctx)
@@ -602,14 +551,11 @@ class EcoCommands(commands.Cog):
 			user = member
 			author = ctx.author
 			
-			get_user_bal = collection.find({"_id": user.id})
-			get_author_bal = collection.find({"_id": author.id})
+			get_user_bal = await collection.find_one({"_id": user.id})
 
-			for result in get_user_bal:
-				user_bal = result["wallet"]
+			user_bal = get_user_bal["wallet"]
 
-			for result in get_author_bal:
-				author_bal = result["wallet"]
+			author_bal = results["wallet"]
 
 			if author_bal < 350:
 				await ctx.send("You need `350` coins to rob someone!")
@@ -627,31 +573,31 @@ class EcoCommands(commands.Cog):
 
 
 			if chance == 1:
-				collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
-				collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
+				await collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
+				await collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
 				await ctx.send("You robbed **{}** and got `{:,}` coins!".format(member.display_name, earnings))
 
 			elif chance == 3:
-				collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
-				collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
+				await collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
+				await collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
 				await ctx.send("You robbed **{}** and got `{:,}` coins!".format(member.display_name, earnings))
 
 			elif chance == 7:
-				collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
-				collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
+				await collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
+				await collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
 				await ctx.send("You robbed **{}** and got `{:,}` coins!".format(member.display_name, earnings))
 
 			elif chance == 10:
-				collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
-				collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
+				await collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
+				await collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
 				await ctx.send("You robbed **{}** and got `{:,}` coins!".format(member.display_name, earnings))
 
 			else:
-				collection.update_one({"_id": author.id}, {"$inc":{"wallet": -350}})
+				await collection.update_one({"_id": author.id}, {"$inc":{"wallet": -350}})
 
 				await ctx.send(f"You failed in stealing from that person and you lost `350` coins")
 
@@ -666,21 +612,16 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 7, commands.BucketType.user)
 	async def slots(self, ctx, amount = None):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 
-		if ctx.author.id in all_users:
+		if results != None:
+
 			if amount is None:
 				await ctx.reply('Please enter the amount.')
 				ctx.command.reset_cooldown(ctx)
 				return
 
-			results = collection.find({"_id": ctx.author.id})
-			
-			for result in results:
-				bal = result["wallet"]
+			bal = results["wallet"]
 
 			if amount.lower() == "all":
 				amount = bal
@@ -721,7 +662,7 @@ class EcoCommands(commands.Cog):
 			if prefinal[0] == prefinal[1] == prefinal[2]:
 				earned = 2.5*amount
 
-				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
 				wallet_amt = bal + earned
 
@@ -745,7 +686,7 @@ class EcoCommands(commands.Cog):
 			elif prefinal[0] == prefinal[1] or prefinal[0] == prefinal[2] or prefinal[2] == prefinal[1]:
 				earned = amount
 
-				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
 				wallet_amt = bal + earned
 
@@ -767,7 +708,7 @@ class EcoCommands(commands.Cog):
 
 			else:
 
-				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -amount}})
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -amount}})
 				
 				wallet_amt = bal - amount
 			
@@ -798,17 +739,14 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 5, commands.BucketType.user)
 	async def beg(self, ctx):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 
-		if ctx.author.id in all_users:
+		if results != None:
 			earnings = randint(100, 500)
 
 			await ctx.send(f"Someone gave you `{earnings}` coins!!")
 
-			collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
+			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
 
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register.")
@@ -821,16 +759,13 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 3600, commands.BucketType.user)
 	async def work(self, ctx):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 
-		if ctx.author.id in all_users:
+		if results != None:
 
 			await ctx.send("You worked and got `5,000` coins. The money have been deposited into your bank!")
 
-			collection.update_one({"_id": ctx.author.id}, {"$inc":{"bank": 5000}})
+			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"bank": 5000}})
 		
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register.")
@@ -843,12 +778,9 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 15, commands.BucketType.user)
 	async def crime(self, ctx):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 
-		if ctx.author.id in all_users:
+		if results != None:
 
 			aaaa = randint(1, 7)
 			earnings = randint(500, 1500)
@@ -858,28 +790,28 @@ class EcoCommands(commands.Cog):
 			losts = randint(300, 700)
 
 			if aaaa == 2:
-				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
 
 				await ctx.send("<:weird:773538796087803934> you commited a bigger crime and got `{:,}` coins.".format(earnings))
 				return
 
 			if aaaa == 4:
-				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
 				await ctx.send("<:weird:773538796087803934> you commited a smaller crime and got `{:,}` coins.".format(earningss))
 				return
 
 			if aaaa == 6:
-				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
 				await ctx.send("<:weird:773538796087803934> you commited a medium crime and got `{:,}` coins.".format(earningsss))
 				return
 
 			if aaaa == 7:
-				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
 				await ctx.send("<:weird:773538796087803934> you commited a large crime and got `{:,}` coins.".format(earningssss))
 				return
 
 			else:
-				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
 				await ctx.send("You lost `{:,}` coins from your wallet.".format(losts))
 				return
 		
@@ -894,12 +826,9 @@ class EcoCommands(commands.Cog):
 	@commands.command(aliases=['guess'])
 	@commands.cooldown(1, 3, commands.BucketType.user)
 	async def gtn(self, ctx):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 
-		if ctx.author.id in all_users:
+		if results != None:
 			usercheck = ctx.author.id
 			await ctx.send('Pick a number between 1 and 10.')
 
@@ -927,11 +856,11 @@ class EcoCommands(commands.Cog):
 					
 
 				else:
-					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": win_amt}})
+					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": win_amt}})
 					await ctx.send(f'You guessed it! Good job! You got `{win_amt}` coins. The number was {number}.')
 					return
 			else:
-				collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -lost_amt}})
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -lost_amt}})
 				await ctx.send(f"You didn't get it and lost `{lost_amt}` coins. The number was `{number}`.")
 				return
 		else:
@@ -944,12 +873,9 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def ppsuck(self, ctx):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 
-		if ctx.author.id in all_users:
+		if results != None:
 			aaaa = randint(1, 7)
 			bbbb = randint(1, 100)
 			earnings = randint(800, 2500)
@@ -969,9 +895,10 @@ class EcoCommands(commands.Cog):
 				if aaaa == 1:
 					if ctx.author.id == 374622847672254466:
 						earned = kraotscheat1
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 					else:
 						earned = earnings
-						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
 					await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earned))
 					return
@@ -979,10 +906,10 @@ class EcoCommands(commands.Cog):
 				elif aaaa == 4:
 					if ctx.author.id == 374622847672254466:
 						earned = kraotscheat2
-						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 					else:
 						earned = earningss
-						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
 					await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earned))
 					return
@@ -990,10 +917,10 @@ class EcoCommands(commands.Cog):
 				elif aaaa == 6:
 					if ctx.author.id == 374622847672254466:
 						earned = kraotscheat3
-						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 					else:
 						earned = earningsss
-						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 					
 					await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earned))
 					return
@@ -1001,10 +928,10 @@ class EcoCommands(commands.Cog):
 				elif aaaa == 7:
 					if ctx.author.id == 374622847672254466:
 						earned = kraotscheat4
-						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 					else:
 						earned = earningssss
-						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
 					await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you `{:,}`".format(earned))
 					return
@@ -1012,16 +939,16 @@ class EcoCommands(commands.Cog):
 				elif bbbb == 1:
 					if ctx.author.id == 374622847672254466:
 						earned = kraotscheat5
-						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 					else:
 						earned = earningssssss
-						collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
 					await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got `{:,}` coins.".format(earned))
 					return
 
 				else:
-					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
+					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
 					await ctx.send("You did a fucking bad job at sucking and lost `{:,}` coins from your wallet.".format(losts))
 					return
 
@@ -1036,12 +963,9 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def race(self, ctx):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 
-		if ctx.author.id in all_users:
+		if results != None:
 			kraots = self.client.get_user(374622847672254466)
 
 			aaaa = randint(1, 7)
@@ -1056,32 +980,32 @@ class EcoCommands(commands.Cog):
 			try:
 
 				if aaaa == 1:
-					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
+					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
 					await ctx.send(":third_place: you won the race 3rd place an won: `{:,}` coins.".format(earnings))
 					return
 
 				elif aaaa == 4:
-					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
+					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
 					await ctx.send("U were close to lose the race by getting 5th place. You got a total of: `{:,}` coins.".format(earningss))
 					return
 
 				elif aaaa == 6:
-					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
+					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
 					await ctx.send("After winning on 4th place you got: `{:,}` coins.".format(earningsss))
 					return
 
 				elif aaaa == 7:
-					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
+					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
 					await ctx.send(":sparkles: :second_place: after winning on the 2nd place, you won: `{:,}` coins.".format(kraots.name, earningssss))
 					return
 
 				elif bbbb == 1:
-					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssssss}})
+					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssssss}})
 					await ctx.send(":sparkles: :first_place: :medal: :sparkles: after winning the race on the first place you won a total of: `{:,}` coins.".format(kraots.name, earningssssss))
 					return
 
 				else:
-					collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
+					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
 					await ctx.send("Sadly you lost the race, your lost consists of `{:,}` coins from your wallet.".format(losts))
 					return
 
@@ -1175,7 +1099,7 @@ class EcoCommands(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
-		collection.delete_one({"_id": member.id})
+		await collection.delete_one({"_id": member.id})
 
 
 

@@ -2,12 +2,12 @@ import discord
 from discord.ext import commands
 import asyncio
 from utils.helpers import BotChannels, time_phaserr
-from pymongo import MongoClient
+import motor.motor_asyncio
 import os
 
 DBKEY = os.getenv("MONGODBKEY")
 
-cluster = MongoClient(DBKEY)
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Intros"]
 
@@ -32,14 +32,9 @@ class Intros(commands.Cog):
 	@commands.cooldown(1, 360, commands.BucketType.user)
 	@commands.check(BotChannels)
 	async def intro(self, ctx):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 		
 		await ctx.message.delete()
-		
-		user = ctx.author
 
 		channel = ctx.message.channel
 		usercheck = ctx.author.id
@@ -66,7 +61,7 @@ class Intros(commands.Cog):
 			return message.content.lower() in status_pos and message.author.id == usercheck and message.channel.id == channel.id
 
 		
-		if user.id in all_users:
+		if results != None:
 			await ctx.send("You already have intro set, would you like to edit your intro? `yes` | `no`")
 			
 			try:
@@ -162,7 +157,7 @@ class Intros(commands.Cog):
 											await introchannel.send(embed=em)
 											await ctx.channel.send("Intro edited successfully. You can see in <#750160850593251449>")
 											
-											collection.update_one({"_id": ctx.author.id}, {"$set": {"name": name.content, "location": location.content, "age": agenumber, "gender": gender.content, "status": status, "interests": interests.content}})
+											await collection.update_one({"_id": ctx.author.id}, {"$set": {"name": name.content, "location": location.content, "age": agenumber, "gender": gender.content, "status": status, "interests": interests.content}})
 
 											return
 
@@ -256,7 +251,7 @@ class Intros(commands.Cog):
 											"interests": interests.content
 											}
 											
-									collection.insert_one(post)
+									await collection.insert_one(post)
 
 									return
 
@@ -264,12 +259,9 @@ class Intros(commands.Cog):
 
 	@intro.command(aliases=["remove"])
 	async def delete(self, ctx):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 
-		if ctx.author.id in all_users:
+		if results != None:
 			collection.delete_one({"_id": ctx.author.id})
 			await ctx.send("Intro deleted.")
 
@@ -284,23 +276,17 @@ class Intros(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": member.id})
 		
 		user = member
 
-		if user.id in all_users:
-			get_user = collection.find({"_id": user.id})
-
-			for info in get_user:
-				introname = info['name']
-				introlocation = info['location']
-				introage = info['age']
-				introgender = info['gender']
-				relationshipstatus = info['status']
-				introinterests = info['interests']
+		if results != None:
+			introname = results['name']
+			introlocation = results['location']
+			introage = results['age']
+			introgender = results['gender']
+			relationshipstatus = results['status']
+			introinterests = results['interests']
 
 			await ctx.message.delete()
 			em = discord.Embed(color=member.color)
@@ -329,7 +315,7 @@ class Intros(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		collection.delete_one({"_id": member.id})
+		await collection.delete_one({"_id": member.id})
 
 
 

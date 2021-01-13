@@ -5,12 +5,12 @@ import datetime
 from datetime import date
 import utils.colors as color
 from utils import time
-from pymongo import MongoClient
+import motor.motor_asyncio
 import os
 
 DBKEY = os.getenv("MONGODBKEY")
 
-cluster = MongoClient(DBKEY)
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Marry Data"]
 
@@ -41,21 +41,19 @@ class MarryCommands(commands.Cog):
 		else:
 			all_users = []
 			results = collection.find()
-			for result in results:
+			for result in await results.to_list(99999999999999999999999):
 				all_users.append(result['_id'])
-
-			if str(member.id) in all_users:
-				get_mem = collection.find({"_id": member.id})
-				for data in get_mem:
-					member_married_to = data["married_to"]
+			
+			if member.id in all_users:
+				get_mem = await collection.find_one({"_id": member.id})
+				member_married_to = get_mem["married_to"]
 				they_already_married_to = self.client.get_user(member_married_to)
 				await ctx.send("`{}` is already married to `{}`.".format(member.display_name, they_already_married_to.display_name))
 				return
 
-			elif str(ctx.author.id) in all_users:
-					get_auth = collection.find({"_id": member.id})
-					for info in get_auth:
-						author_married_to = info["married_to"]
+			elif ctx.author.id in all_users:
+					get_auth = await collection.find_one({"_id": ctx.author.id})
+					author_married_to = get_auth["married_to"]
 					author_already_married_to = self.client.get_user(author_married_to)
 					await ctx.send("You are already married to `{}`.".format(author_already_married_to.display_name))
 					
@@ -77,7 +75,7 @@ class MarryCommands(commands.Cog):
 						save_auth = {"_id": ctx.author.id, "married_to": member.id, "marry_date": married_since_save_time}
 						save_mem = {"_id": member.id, "married_to": ctx.author.id, "marry_date": married_since_save_time}
 						
-						collection.insert_many([save_auth, save_mem])
+						await collection.insert_many([save_auth, save_mem])
 
 						await ctx.send("`{}` married `{}`!!! :tada: :tada:".format(ctx.author.display_name, member.display_name))
 
@@ -94,19 +92,14 @@ class MarryCommands(commands.Cog):
 	async def divorce(self, ctx):
 		user = ctx.author
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": user.id})
 		
-		if not user.id in all_users:
+		if results == None:
 			await ctx.reply("You are not married to anyone.")
 			return
 		
 		else:
-			get_marry = collection.find({"_id": user.id})
-			for married in get_marry:
-				the_married_to_user = self.client.get_user(married['married_to'])
+			the_married_to_user = self.client.get_user(results['married_to'])
 
 			def check(m):
 				return m.author.id == user.id and m.channel.id == ctx.channel.id
@@ -120,8 +113,8 @@ class MarryCommands(commands.Cog):
 				if response == "yes":
 					auth = {"_id": ctx.author.id} 
 					mem = {"_id": the_married_to_user.id}
-					collection.delete_one(auth)
-					collection.delete_one(mem)
+					await collection.delete_one(auth)
+					await collection.delete_one(mem)
 					
 					await ctx.send("You divorced `{}`. :cry:".format(the_married_to_user.display_name))
 
@@ -139,10 +132,7 @@ class MarryCommands(commands.Cog):
 		if member == None:
 			member = ctx.author
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": member.id})
 	
 		user = member
 		
@@ -150,7 +140,7 @@ class MarryCommands(commands.Cog):
 			await ctx.reply("Bot's cannot marry u dumbo <:pepe_cringe:750755809700348166>")
 			return
 
-		elif not user.id in all_users:
+		elif results == None:
 			if user == ctx.author:
 				await ctx.reply("You are not married to anyone.\nType `!marry <user>` to marry to someone!")
 				return
@@ -160,10 +150,8 @@ class MarryCommands(commands.Cog):
 				return
 
 		else:
-			get_info = collection.find({"_id": user.id})
-			for data in get_info:
-				user_married_to = data["married_to"]
-				user_married_to_sincee = data["marry_date"]
+			user_married_to = results["married_to"]
+			user_married_to_sincee = results["marry_date"]
 
 			user_married_to_since = datetime.datetime.strptime(user_married_to_sincee, "%Y-%m-%d %H:%M")
 
@@ -193,8 +181,8 @@ class MarryCommands(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
-		collection.delete_one({"_id": member.id})
-		collection.delete_one({'married_to': member.id})
+		await collection.delete_one({"_id": member.id})
+		await collection.delete_one({'married_to': member.id})
 
 def setup(client):
 	client.add_cog(MarryCommands(client))

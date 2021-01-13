@@ -1,13 +1,12 @@
 import discord
 from discord.ext import commands
 from utils.paginator_v2 import WrappedPaginator, PaginatorEmbedInterface
-import pymongo
-from pymongo import MongoClient
+import motor.motor_asyncio
 import os
 
 DBKEY = os.getenv("MONGODBKEY")
 
-cluster = MongoClient(DBKEY)
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Reclist"]
 
@@ -21,17 +20,11 @@ class Reclist(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		all_users = []
-		resultss = collection.find()
-		for result in resultss:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": member.id})
 
 		user = member
-		if user.id in all_users:
-			results = collection.find({"_id": user.id})
-
-			for data in results:
-				alist = data['reclist']
+		if results != None:
+			alist = results['reclist']
 
 			for line in alist.splitlines():
 				final = alist.replace("\n", "\n`###`\u2800")
@@ -55,11 +48,12 @@ class Reclist(commands.Cog):
 	@reclist.command()
 	async def set(self, ctx, *, args):
 		user = ctx.author
-		try:
+		results = await collection.find_one({"_id": user.id})
+		if results == None:
 			post = {"_id": user.id, "reclist": f"`###`\u2800{args}"}
-			collection.insert_one(post)
-		except pymongo.errors.DuplicateKeyError:
-			collection.update_one({"_id": user.id}, {"$set":{"reclist": f"`###`\u2800{args}"}})
+			await collection.insert_one(post)
+		else:
+			await collection.update_one({"_id": user.id}, {"$set":{"reclist": f"`###`\u2800{args}"}})
 		await ctx.message.delete()
 		await ctx.send(f"Reclist set! {user.mention}")
 
@@ -70,20 +64,15 @@ class Reclist(commands.Cog):
 
 		user = ctx.author
 
-		all_users = []
-		resultss = collection.find()
-		for result in resultss:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": user.id})
 		
-		if not user.id in all_users:
+		if results == None:
 			post = {"_id": user.id, "reclist": f"`###`\u2800{args}"}
-			collection.insert_one(post)
+			await collection.insert_one(post)
 
 		else:
-			result = collection.find({"_id": user.id})
-			for data in result:
-				rec = data['reclist']
-			collection.update_one({"_id": user.id}, {"$set":{"reclist": f"{rec}\n{args}"}})
+			rec = results['reclist']
+			await collection.update_one({"_id": user.id}, {"$set":{"reclist": f"{rec}\n{args}"}})
 		
 		await ctx.message.delete()
 		await ctx.send("Succesfully added to your reclist! {}".format(user.mention))
@@ -92,16 +81,10 @@ class Reclist(commands.Cog):
 
 	@reclist.command()
 	async def raw(self, ctx):
-
-		all_users = []
-		resultss = collection.find()
-		for result in resultss:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 		
-		if ctx.author.id in all_users:
-			results = collection.find({"_id": ctx.author.id})
-			for data in results:
-				user_list = data['reclist']
+		if results != None:
+			user_list = results['reclist']
 
 			final = user_list[6:]
 
@@ -117,14 +100,10 @@ class Reclist(commands.Cog):
 
 	@reclist.command()
 	async def delete(self, ctx):
-
-		all_users = []
-		resultss = collection.find()
-		for result in resultss:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": ctx.author.id})
 		
-		if ctx.author.id in all_users:
-			collection.delete_one({"_id": ctx.author.id})
+		if results != None:
+			await collection.delete_one({"_id": ctx.author.id})
 		
 		else:
 			await ctx.send("You do not have a reclist! Type: `!reclist set <recommendations>` to set your reclist!")
@@ -137,13 +116,10 @@ class Reclist(commands.Cog):
 	@commands.is_owner()
 	async def remove(self, ctx, user : discord.Member):
 
-		all_users = []
-		resultss = collection.find()
-		for result in resultss:
-			all_users.append(result['_id'])
+		results = await collection.find_one({"_id": user.id})
 		
-		if user.id in all_users:
-			collection.delete_one({"_id": user.id})
+		if results != None:
+			await collection.delete_one({"_id": user.id})
 			await ctx.send("Succesfully deleted `{}`'s reclist!".format(user.display_name))
 		
 		else:
@@ -152,7 +128,7 @@ class Reclist(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
-		collection.delete_one({"_id": member.id})
+		await collection.delete_one({"_id": member.id})
 
 
 

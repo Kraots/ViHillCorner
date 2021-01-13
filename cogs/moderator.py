@@ -3,15 +3,14 @@ import asyncio
 import utils.colors as color
 import re
 from utils.helpers import time_phaserr
-import pymongo
-from pymongo import MongoClient
+import motor.motor_asyncio
 import os
 import datetime
 from discord.ext import commands, tasks
 from dateutil.relativedelta import relativedelta
 DBKEY = os.getenv("MONGODBKEY")
 
-cluster = MongoClient(DBKEY)
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Moderation Mutes"]
 
@@ -47,8 +46,8 @@ class Moderation(commands.Cog):
 	async def check_current_mutes(self):
 		await self.client.wait_until_ready()
 		currentTime = datetime.datetime.now()
-		results = collection.find({})
-		for result in results:
+		results = collection.find()
+		for result in await results.to_list(99999999999999999):
 			unmuteTime = result['mutedAt'] + relativedelta(seconds=result['muteDuration'])
 
 			if currentTime >= unmuteTime:
@@ -61,7 +60,7 @@ class Moderation(commands.Cog):
 					await member.remove_roles(mute_role)
 					await member.send("You have been unmuted in `ViHill Corner`.")
 				
-				collection.delete_one({"_id": member.id})
+				await collection.delete_one({"_id": member.id})
 
 	# SLOWMODE
 	@commands.command()
@@ -457,13 +456,11 @@ class Moderation(commands.Cog):
 						'guildId': ctx.guild.id,
 					}
 
-
 				try:
-					collection.insert_one(post)
-				except pymongo.errors.DuplicateKeyError:
+					await collection.insert_one(post)
+				except:
 					await ctx.send("User is already muted!")
 					return
-
 
 				muted = guild.get_role(750465726069997658)
 				await member.add_roles(muted, reason=f"{ctx.author} ---> {reason_content}")
@@ -489,6 +486,7 @@ class Moderation(commands.Cog):
 				await asyncio.sleep(time)
 				if muted in member.roles:
 					await member.remove_roles(muted)
+					await collection.delete_one({"_id": member.id})
 					try:
 						await member.send("You have been unmuted in `ViHill Corner`.")
 					except discord.HTTPException:

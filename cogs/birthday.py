@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands, tasks
-from pymongo import MongoClient
+import motor.motor_asyncio
 import os
 from utils import time
 import datetime
@@ -9,7 +9,7 @@ import asyncio
 
 DBKEY = os.getenv("MONGODBKEY")
 
-cluster = MongoClient(DBKEY)
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Birthdays"]
 
@@ -28,8 +28,8 @@ class Birthdays(commands.Cog):
 	async def check_bdays(self):
 		await self.client.wait_until_ready()
 		currentTime = datetime.datetime.utcnow()
-		results = collection.find({})
-		for result in results:
+		results = collection.find()
+		for result in await results.to_list(9999999999999999):
 			preBday = result['birthdaydate']
 			bdayDate = result['region_birthday']
 			user = result['_id']
@@ -47,7 +47,7 @@ class Birthdays(commands.Cog):
 				
 				new_birthday = bdayDate + relativedelta(years = 1)
 				new_preBday = preBday + relativedelta(years = 1)
-				collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": new_preBday, "region_birthday": new_birthday}})
+				await collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": new_preBday, "region_birthday": new_birthday}})
 			
 
 			
@@ -56,29 +56,23 @@ class Birthdays(commands.Cog):
 	async def birthday(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
 		user = member
+		results = await collection.find_one({"_id": user.id})
 
-		if user.id in all_users:
-
-			get_data = collection.find({"_id": user.id})
-			for data in get_data:
-				birthday = data['birthdaydate']
-				region_birthday = data['region_birthday']
-
-			def format_date(dt1, dt2):
-				return f"{user.mention}'s birthday is in `{time.human_timedelta(dt1, accuracy=3)}` **({dt2:%Y/%m/%d})**"
-
-			await ctx.send(format_date(region_birthday, birthday))
-		
-		else:
+		if results is None:
 			if user.id == ctx.author.id:
 				await ctx.send("You did not set your birthday! Type: `!birthday set month/day` to set your birthday.\n**Example:**\n\u2800`!birthday set 01/16`")
 			else:
 				await ctx.send("User did not set their birthday!")
+			return
+
+		birthday = results['birthdaydate']
+		region_birthday = results['region_birthday']
+
+		def format_date(dt1, dt2):
+			return f"{user.mention}'s birthday is in `{time.human_timedelta(dt1, accuracy=3)}` **({dt2:%Y/%m/%d})**"
+
+		await ctx.send(format_date(region_birthday, birthday))
 
 
 
@@ -91,8 +85,8 @@ class Birthdays(commands.Cog):
 
 		em = discord.Embed(color=discord.Color.blurple(), title="***Top `5` upcoming birthdays***\n _ _ ") 
 
-		results = collection.find().sort([("birthdaydate", 1)]).limit(5)
-		for result in results:
+		results = collection.find().sort([("birthdaydate", 1)])
+		for result in await results.to_list(5):
 			user = self.client.get_user(result['_id'])
 			index += 1
 			em.add_field(name=f"`{index}`. _ _ _ _ {user.name}", value=f"{format_date(result['region_birthday'], result['birthdaydate'])}", inline = False) 
@@ -108,12 +102,8 @@ class Birthdays(commands.Cog):
 			await ctx.send("Please insert a birthday! Please type `!birthday set month/day`.\n**Example:**\n\u2800`!birthday set 01/16`")
 			ctx.command.reset_cooldown(ctx)
 			return
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-
 		user = ctx.author
+		results = await collection.find_one({"_id": user.id})
 
 		z = datetime.datetime.utcnow().strftime('%Y')
 		pre = f'{z}/{bday}'
@@ -209,8 +199,8 @@ class Birthdays(commands.Cog):
 				return f"`{time.human_timedelta(dt1, accuracy=3)}` **({dt2:%Y/%m/%d})**"
 
 
-			if user.id in all_users:
-				collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": birthday, "region": region, "region_birthday": region_birthday}})
+			if results != None:
+				await collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": birthday, "region": region, "region_birthday": region_birthday}})
 				await ctx.message.delete()
 				await msg.delete()
 				await pre_region.delete()
@@ -223,7 +213,7 @@ class Birthdays(commands.Cog):
 						"region": region,
 						"region_birthday": region_birthday
 						}
-				collection.insert_one(post)
+				await collection.insert_one(post)
 
 				await ctx.message.delete()
 				await msg.delete()
@@ -239,13 +229,9 @@ class Birthdays(commands.Cog):
 
 	@birthday.command(aliases=['remove'])
 	async def delete(self, ctx):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-		
-		if ctx.author.id in all_users:
-			collection.delete_one({"_id": ctx.author.id})
+		results = await collection.find_one({"_id": ctx.author.id})
+		if results != None:
+			await collection.delete_one({"_id": ctx.author.id})
 			await ctx.send("Succesfully deleted your birthday from the list! {}".format(ctx.author.mention))
 
 		else:
@@ -258,7 +244,7 @@ class Birthdays(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		collection.delete_one({"_id": member.id})
+		await collection.delete_one({"_id": member.id})
 
 
 

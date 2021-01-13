@@ -3,12 +3,11 @@ from discord.ext import commands
 import json
 import asyncio
 import os
-import pymongo
-from pymongo import MongoClient
+import motor.motor_asyncio
 import datetime
 DBKEY = os.getenv("MONGODBKEY")
 
-cluster = MongoClient(DBKEY)
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Moderation Mutes"]
 
@@ -91,9 +90,10 @@ class RepeatedTextFilter(commands.Cog):
 
 
 						try:
-							collection.insert_one(post)
-						except pymongo.errors.DuplicateKeyError:
+							await collection.insert_one(post)
+						except:
 							return
+
 						await user.remove_roles(staff, mod)
 						await user.add_roles(muted)
 						msg1 = "You have been muted in `ViHill Corner`."
@@ -120,8 +120,8 @@ class RepeatedTextFilter(commands.Cog):
 
 
 						try:
-							collection.insert_one(post)
-						except pymongo.errors.DuplicateKeyError:
+							await collection.insert_one(post)
+						except:
 							return
 						await user.add_roles(muted)
 						msg1 = "You have been muted in `ViHill Corner`."
@@ -201,6 +201,18 @@ class SpamFilter(commands.Cog):
 							json.dump(users, f, ensure_ascii = False, indent = 4)
 
 						if "Staff" in [role.name for role in message.author.roles]:
+							post = {
+								'_id': user.id,
+								'mutedAt': datetime.datetime.now(),
+								'muteDuration': 840,
+								'guildId': message.guild.id,
+								}
+
+
+							try:
+								await collection.insert_one(post)
+							except:
+								return
 							await user.remove_roles(staff, mod)
 							await user.add_roles(muted)
 							msg1 = "You have been muted in `ViHill Corner`."
@@ -218,6 +230,18 @@ class SpamFilter(commands.Cog):
 								pass
 								
 						else:
+							post = {
+								'_id': user.id,
+								'mutedAt': datetime.datetime.now(),
+								'muteDuration': 840,
+								'guildId': message.guild.id,
+								}
+
+
+							try:
+								await collection.insert_one(post)
+							except:
+								return
 							await user.add_roles(muted)
 							msg1 = "You have been muted in `ViHill Corner`."
 							em1 = discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")

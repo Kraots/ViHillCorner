@@ -4,12 +4,11 @@ import re
 import asyncio
 import utils.colors as color
 import os
-import pymongo
-from pymongo import MongoClient
+import motor.motor_asyncio
 import datetime
 DBKEY = os.getenv("MONGODBKEY")
 
-cluster = MongoClient(DBKEY)
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Moderation Mutes"]
 
@@ -52,9 +51,9 @@ class InviteFilter(commands.Cog):
 
 
 					try:
-						collection.insert_one(post)
-					except pymongo.errors.DuplicateKeyError:
-						pass
+						await collection.insert_one(post)
+					except:
+						return
 					await asyncio.sleep(30)
 					await message.author.remove_roles(role)
 

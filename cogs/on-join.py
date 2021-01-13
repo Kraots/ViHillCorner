@@ -4,12 +4,12 @@ import utils.colors as color
 import asyncio
 from random import randint
 from utils import time
-from pymongo import MongoClient
+import motor.motor_asyncio
 import os
 
 DBKEY = os.getenv("MONGODBKEY")
 
-cluster = MongoClient(DBKEY)
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Intros"]
 
@@ -254,7 +254,7 @@ class on_join(commands.Cog):
 											"interests": interests.content
 											}
 											
-										collection.insert_one(post)
+										await collection.insert_one(post)
 
 										return
 

@@ -6,12 +6,11 @@ import string
 import asyncio
 import json
 import os
-import pymongo
-from pymongo import MongoClient
+import motor.motor_asyncio
 import datetime
 DBKEY = os.getenv("MONGODBKEY")
 
-cluster = MongoClient(DBKEY)
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Moderation Mutes"]
 
@@ -135,8 +134,8 @@ class FilterCog(commands.Cog):
 
 
 									try:
-										collection.insert_one(post)
-									except pymongo.errors.DuplicateKeyError:
+										await collection.insert_one(post)
+									except:
 										return
 									await message.author.add_roles(muted, reason="Bad Words")
 									await message.author.remove_roles(staff, mod)
@@ -164,8 +163,8 @@ class FilterCog(commands.Cog):
 
 
 									try:
-										collection.insert_one(post)
-									except pymongo.errors.DuplicateKeyError:
+										await collection.insert_one(post)
+									except:
 										return
 									await message.author.add_roles(muted, reason="Bad Words")
 									msg1 = "You have been muted in `ViHill Corner`."
@@ -288,8 +287,8 @@ class FilterCog(commands.Cog):
 
 
 									try:
-										collection.insert_one(post)
-									except pymongo.errors.DuplicateKeyError:
+										await collection.insert_one(post)
+									except:
 										return
 									
 									await after.author.add_roles(muted, reason="Bad Words")
@@ -318,8 +317,8 @@ class FilterCog(commands.Cog):
 
 
 									try:
-										collection.insert_one(post)
-									except pymongo.errors.DuplicateKeyError:
+										await collection.insert_one(post)
+									except:
 										return
 									await after.author.add_roles(muted, reason="Bad Words")
 									msg1 = "You have been muted in `ViHill Corner`."
