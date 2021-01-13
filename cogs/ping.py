@@ -22,7 +22,7 @@ class Ping(commands.Cog):
             start = time.time() * 1000
             msg = await ctx.reply(embed=botinfo)
             end = time.time() * 1000
-            botinfo = discord.Embed(title="Pong!", description=f"Avg. Latency: `{(round(self.client.latency * 1000, 2))}ms`\nRest: `{int(round(end-start, 0))}ms`", color=color.lightpink)
+            botinfo = discord.Embed(title="Pong!", description=f"Websocket Latency: `{(round(self.client.latency * 1000, 2))}ms`\nBot Latency: `{int(round(end-start, 0))}ms`\nResponse Time: `{(msg.created_at - ctx.message.created_at).total_seconds()/1000}` ms", color=color.lightpink)
             botinfo.set_footer(text="Online For: " + str(time_phaserr(int(time.time()-up))))
             await msg.edit(embed=botinfo)
 

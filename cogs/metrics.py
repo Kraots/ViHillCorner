@@ -28,7 +28,7 @@ class Metrics(commands.Cog):
 		msg = await ctx.reply(embed=metrics)
 		end = time.time() * 1000
 		metrics = discord.Embed(title="Metrics", color=color.inviscolor)
-		metrics.add_field(name="Ping:", value=f"Avg. Latency: `{(round(self.client.latency * 1000, 2))}ms`\nRest: `{int(round(end-start, 0))}ms`", inline=False)
+		metrics.add_field(name="Ping:", value=f"Websocket Latency: `{(round(self.client.latency * 1000, 2))}ms`\nBot Latency: `{int(round(end-start, 0))}ms`\nResponse Time: `{(msg.created_at - ctx.message.created_at).total_seconds()/1000}` ms", inline=False)
 		metrics.add_field(name="Memory Usage:", value=f" \n{memory_usage:.2f} MiB\n{cpu_usage:.2f}% CPU", inline=False)
 		metrics.add_field(name="Guilds:", value=guilds, inline=False)
 		metrics.add_field(name="Commands loaded:", value=f"{len([x.name for x in self.client.commands])}", inline=False)
