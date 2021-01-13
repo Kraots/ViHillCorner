@@ -18,9 +18,9 @@ class Help(commands.Cog):
 		helpEm = discord.Embed(description="To get help for a certain command type `!help <command_name>`", color=color.lightpink)
 		helpEm.set_footer(text='To get help for a certain command type `!help <command_name>`\n', icon_url=ctx.author.avatar_url)
 		helpEm.set_thumbnail(url=self.client.user.avatar_url)
-		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `ppsize`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`, `define`, `search`, `calculator`, `marry`, `marriedwho`, `divorce`, `scrs`, `tag`, `snippets`, `role-id`")
+		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `ppsize`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`, `define`, `search`, `calculator`, `marry`, `marriedwho`, `divorce`, `scrs`, `tag`, `snippets`, `role-id`, `rank`")
 		helpEm.add_field(name="Economy", value="`register`, `unregister` ,`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `race`, `ppsuck`, `daily`", inline=False)
-		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `level`, `rank`, `sfw`, `spam`, `english`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `serverinfo`, `vote`", inline=False)
+		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `sfw`, `spam`, `english`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `serverinfo`, `vote`", inline=False)
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
 			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `kick`, `ban`, `opban`, `unban`, `opunban`, `nsfw`, `slowmode`", inline=False)
 		
@@ -29,6 +29,15 @@ class Help(commands.Cog):
 
 		await ctx.reply(embed=helpEm)
 	
+	@help.command(aliases=['level', 'lvl'])
+	async def rank(self, ctx):
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!rank [member]\n!rank leaderboard```")
+		em.add_field(name="***Commands***", value="\n• **leaderboard**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **lb**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See top `10` highest level members!", inline = False)
+		em.add_field(name="***Aliases:***", value="• **level**\n• **level**", inline = False)
+		em.add_field(name="***Info:***", value="• Check your current level.", inline = False)
+		
+		await ctx.reply(embed=em)
+
 	@help.command(aliases=['role-id'])
 	async def _role_id(self, ctx):
 		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!role-id <role_name>```")

@@ -190,7 +190,11 @@ class on_join(commands.Cog):
 
 						try:
 							age = await self.client.wait_for('message', timeout= 180, check=checkk)
-							agenumber = int(age.content)
+							try:
+								agenumber = int(age.content)
+							except ValueError:
+								await channel.send("Must be number, do again.")
+								return
 
 							if agenumber > 44:
 								return

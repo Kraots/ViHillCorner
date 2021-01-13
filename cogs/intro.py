@@ -105,7 +105,12 @@ class Intros(commands.Cog):
 
 							try:
 								age = await self.client.wait_for('message', timeout= 180, check=checkk)
-								agenumber = int(age.content)
+								try:
+									agenumber = int(age.content)
+								except ValueError:
+									await ctx.send("Must be number, do again.")
+									ctx.command.reset_cooldown(ctx)
+									return
 
 								if agenumber > 44:
 									return
@@ -185,7 +190,12 @@ class Intros(commands.Cog):
 
 					try:
 						age = await self.client.wait_for('message', timeout= 180, check=checkk)
-						agenumber = int(age.content)
+						try:
+							agenumber = int(age.content)
+						except ValueError:
+							await ctx.send("Must be number, do again.")
+							ctx.command.reset_cooldown(ctx)
+							return
 
 						if agenumber > 44:
 							return
