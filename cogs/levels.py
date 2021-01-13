@@ -136,7 +136,7 @@ class LevelSystem(commands.Cog):
 		if ctx.channel.id in bot_channel:
 			results = collection.find().sort([('xp', -1)]).limit(10)
 			index = 0
-			em = discord.Embed(color=color.lightpink)
+			em = discord.Embed(color=color.lightpink, title="Top 10 highest level people\n _ _")
 			for result in results:
 				xp = result['xp']
 				user = result['_id']

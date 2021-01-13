@@ -201,7 +201,7 @@ class EcoCommands(commands.Cog):
 		
 		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True)  
 		
-		em = discord.Embed(title=f'Top {x} richest people', color=color.reds) 
+		em = discord.Embed(title=f'Top {x} richest people\n _ _', color=color.reds) 
 		
 		for index, (mem, amt) in enumerate(leader_board[:x], start=1): 
 			
