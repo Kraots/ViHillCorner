@@ -31,40 +31,41 @@ class LevelSystem(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message(self, message: discord.Message):
-		if message.channel.id != no_talk_channels:
-			if not message.author.bot:
-				guild = self.client.get_guild(750160850077089853)
-				stats = collection.find_one({"_id": message.author.id})
-				if stats is None:
-					newuser = {"_id": message.author.id, "xp": 0}
-					collection.insert_one(newuser)
-				else:
-					xp = stats['xp'] + 5
-					collection.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
-					lvl = 0
-					while True:
-						if xp < ((50*(lvl**2))+ (50*(lvl-1))):
-							break
-						lvl += 1
-					xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
-					if xp < 0:
-						lvl = lvl - 1
-						xp = stats['xp']
+		if message.guild:
+			if message.channel.id != no_talk_channels:
+				if not message.author.bot:
+					guild = self.client.get_guild(750160850077089853)
+					stats = collection.find_one({"_id": message.author.id})
+					if stats is None:
+						newuser = {"_id": message.author.id, "xp": 0}
+						collection.insert_one(newuser)
+					else:
+						xp = stats['xp'] + 5
+						collection.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
+						lvl = 0
+						while True:
+							if xp < ((50*(lvl**2))+ (50*(lvl-1))):
+								break
+							lvl += 1
 						xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
-					elif xp == 0:
-						for i in range(len(level)):
-							if lvl == lvlnum[i]:
-								lvlrole = level[i]
-								userroles = []
-								for x in message.author.roles:
-									if not x.id in level:
-										userroles.append(x.id)
-								userroles.append(lvlrole)
-								newroles = []
-								for role in userroles:
-									newrole = guild.get_role(role)
-									newroles.append(newrole)
-								await message.author.edit(roles=newroles)
+						if xp < 0:
+							lvl = lvl - 1
+							xp = stats['xp']
+							xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
+						elif xp == 0:
+							for i in range(len(level)):
+								if lvl == lvlnum[i]:
+									lvlrole = level[i]
+									userroles = []
+									for x in message.author.roles:
+										if not x.id in level:
+											userroles.append(x.id)
+									userroles.append(lvlrole)
+									newroles = []
+									for role in userroles:
+										newrole = guild.get_role(role)
+										newroles.append(newrole)
+									await message.author.edit(roles=newroles)
 
 
 
