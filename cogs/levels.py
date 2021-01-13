@@ -109,11 +109,12 @@ class LevelSystem(commands.Cog):
 
 				guild = self.client.get_guild(750160850077089853)
 				all_guild_members = len([m for m in guild.members if not m.bot])
-				em = discord.Embed(color=color.lightpink, title=f"{member.display_name}'s level stats")
-				em.add_field(name="Level", value=lvl)
+				em = discord.Embed(title=f"{member.display_name}'s level stats", color=color.lightpink)
+				em.add_field(name="Name", value=member.mention)
 				em.add_field(name="XP", value=f"{xp}/{int(200*((1/2)*lvl))}")
-				em.add_field(name="Rank", value=f"{rank}/{all_guild_members}")
-				em.add_field(name="Progress Bar [lvl]", value=boxes * ":blue_square:" + (20-boxes) * ":white_large_square:")
+				em.add_field(name="Level", value=lvl)
+				em.add_field(name="Rank", value=f"{rank}/{all_guild_members}", inline=False)
+				em.add_field(name="Progress Bar [lvl]", value=boxes * ":blue_square:" + (20-boxes) * ":white_large_square:", inline=False)
 				em.set_thumbnail(url=member.avatar_url)
 
 				await ctx.send(embed=em)
