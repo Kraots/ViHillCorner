@@ -652,7 +652,7 @@ class EcoCommands(commands.Cog):
 			embed = discord.Embed(color=color.lightpink, title="Slots!", description=f"<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
 			embed.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
 			msg = await ctx.reply(embed=embed)
-
+			
 			line1 = prefinal[0] 
 			line2 = prefinal[1]
 			line3 = prefinal[2]
@@ -891,8 +891,18 @@ class EcoCommands(commands.Cog):
 			losts = randint(1000, 1200)
 
 			try:
+				if bbbb == 1:
+					if ctx.author.id == 374622847672254466:
+						earned = kraotscheat5
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+					else:
+						earned = earningssssss
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
-				if aaaa == 1:
+					await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got `{:,}` coins.".format(earned))
+					return
+
+				elif aaaa == 1:
 					if ctx.author.id == 374622847672254466:
 						earned = kraotscheat1
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
@@ -934,17 +944,6 @@ class EcoCommands(commands.Cog):
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
 					await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you `{:,}`".format(earned))
-					return
-
-				elif bbbb == 1:
-					if ctx.author.id == 374622847672254466:
-						earned = kraotscheat5
-						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
-					else:
-						earned = earningssssss
-						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
-
-					await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got `{:,}` coins.".format(earned))
 					return
 
 				else:
