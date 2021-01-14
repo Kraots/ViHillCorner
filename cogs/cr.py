@@ -303,7 +303,7 @@ class CustomRoles(commands.Cog):
 			return message.author.id == usercheck and message.channel.id == channel.id
 
 		crname = discord.utils.get(guild.roles, name=get_role)
-		await ctx.reply("Are you sure you want to delete your custom role (<@&{}>)? `yes` | `no`".format(crname.id))
+		await ctx.send("Are you sure you want to delete your custom role (<@&{}>)? `yes` | `no`".format(crname.id))
 
 		try:
 

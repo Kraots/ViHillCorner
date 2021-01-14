@@ -177,7 +177,7 @@ class EcoCommands(commands.Cog):
 		em.add_field(name="Rank", value="`#{}`".format(index))
 		em.set_thumbnail(url=user.avatar_url)
 
-		await ctx.reply(embed=em)
+		await ctx.send(embed=em)
 
 			# LEADERBOARD
 
@@ -222,7 +222,7 @@ class EcoCommands(commands.Cog):
 					index2 += 1
 			em.add_field(name="_ _ \nYour place:", value=f"`#{index}`")
 			
-		await ctx.reply(embed=em)
+		await ctx.send(embed=em)
 
 
 	@balance.command(aliases=['add-bank'])
@@ -617,7 +617,7 @@ class EcoCommands(commands.Cog):
 		if results != None:
 
 			if amount is None:
-				await ctx.reply('Please enter the amount.')
+				await ctx.send('Please enter the amount.')
 				ctx.command.reset_cooldown(ctx)
 				return
 
@@ -632,12 +632,12 @@ class EcoCommands(commands.Cog):
 			amount = int(amount)
 
 			if amount > bal:
-				await ctx.reply('You do not own that much money!')
+				await ctx.send('You do not own that much money!')
 				ctx.command.reset_cooldown(ctx)
 				return
 
 			if amount < 300:
-				await ctx.reply('You must bet more than `300` coins.')
+				await ctx.send('You must bet more than `300` coins.')
 				ctx.command.reset_cooldown(ctx)
 				return
 
@@ -651,7 +651,7 @@ class EcoCommands(commands.Cog):
 
 			embed = discord.Embed(color=color.lightpink, title="Slots!", description=f"<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
 			embed.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
-			msg = await ctx.reply(embed=embed)
+			msg = await ctx.send(embed=embed)
 			
 			line1 = prefinal[0] 
 			line2 = prefinal[1]
@@ -848,11 +848,11 @@ class EcoCommands(commands.Cog):
 				msg = await self.client.wait_for('message', timeout= 30 , check=check)
 				attempt = int(msg.content)
 				if attempt > number:
-					await msg.reply('Try going lower.')
+					await msg.send('Try going lower.')
 					
 
 				elif attempt < number:
-					await msg.reply('Try going higher.')
+					await msg.send('Try going higher.')
 					
 
 				else:

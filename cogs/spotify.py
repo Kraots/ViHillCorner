@@ -38,7 +38,7 @@ class Spotify(commands.Cog):
                 m.add_field(name='Link to song:', value=f"[Click Here](https://open.spotify.com/track/{member.activities[0].track_id}?si=xrjyVAxhS1y5rNHLM_WRww)", inline=False)
                 m.set_thumbnail(url=member.activities[0].album_cover_url)
                 m.color = discord.Color.green()
-                await ctx.reply(embed=m)
+                await ctx.send(embed=m)
             
             elif isinstance(member.activities[1], discord.activity.Spotify):
                 diff = relativedelta(datetime.utcnow(), member.activities[1].created_at)
@@ -55,17 +55,17 @@ class Spotify(commands.Cog):
                 m.add_field(name='Link to song:', value=f"[Click Here](https://open.spotify.com/track/{member.activities[1].track_id}?si=xrjyVAxhS1y5rNHLM_WRww)", inline=False)
                 m.set_thumbnail(url=member.activities[1].album_cover_url)
                 m.color = discord.Color.green() 
-                await ctx.reply(embed=m)
+                await ctx.send(embed=m)
                 return
 
             else:
-                await ctx.reply("No spotify activity detected!")
+                await ctx.send("No spotify activity detected!")
             
 
     @spotify.error
     async def spotify_error(self, ctx, error):
         if isinstance(error, commands.errors.CommandInvokeError):
-                await ctx.reply("No spotify activity detected!")
+                await ctx.send("No spotify activity detected!")
 
 
 

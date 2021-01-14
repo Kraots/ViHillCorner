@@ -20,7 +20,7 @@ class Waifu(commands.Cog):
     embed.set_image(url=chosen_image)
     embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
 
-    await ctx.channel.send(embed=embed)
+    await ctx.send(embed=embed)
 
 
 def setup (client):

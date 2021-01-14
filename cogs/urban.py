@@ -23,7 +23,7 @@ class UrbanDictionary(commands.Cog):
 			except KeyError:
 				em = discord.Embed(color=color.red, title="Error", description="```Unable to find that word```", timestamp = ctx.message.created_at)
 				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
-				await ctx.reply(embed=em)
+				await ctx.send(embed=em)
 				return
 
 			embed = discord.Embed(color=color.lightpink, timestamp = ctx.message.created_at)
@@ -39,7 +39,7 @@ class UrbanDictionary(commands.Cog):
 			except KeyError:
 				pass
 			embed.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
-			await ctx.reply(embed=embed)
+			await ctx.send(embed=embed)
 
 
 

@@ -97,14 +97,14 @@ class developer(commands.Cog):
 		em.add_field(name="Rule 4", value="This is an English-speaking server, so please speak English to the best of your ability", inline=False)
 		em.add_field(name="Rule 5", value="No advertising of any kind, including in a server member’s DM.", inline=False)
 
-		await ctx.reply(embed=em)
+		await ctx.send(embed=em)
 
 
 	@commands.command()
 	@commands.is_owner()
 	async def mail(self, ctx, members : Greedy[Member]=None, *, args=None):
 		if members is None:
-			await ctx.reply("You must provide a user!")
+			await ctx.send("You must provide a user!")
 			return
 
 		if args is None:
@@ -130,7 +130,7 @@ class developer(commands.Cog):
 			await member.remove_roles(mod)
 
 			modmute = discord.Embed(color=color.red, description=f'Mod {member.mention} has been muted!')
-			await ctx.reply(embed=modmute)
+			await ctx.send(embed=modmute)
 
 
 	@commands.command()
@@ -147,7 +147,7 @@ class developer(commands.Cog):
 			await member.remove_roles(mute)
 		
 			modunmute = discord.Embed(color=color.red, description=f'Mod {member.mention} has been unmuted!')
-			await ctx.reply(embed=modunmute)
+			await ctx.send(embed=modunmute)
 
 	@commands.command()
 	@commands.is_owner()
@@ -161,7 +161,7 @@ class developer(commands.Cog):
 			await member.add_roles(mod)
 		
 			modunmute = discord.Embed(color=color.red, description=f'{member.mention} is now a mod!')
-			await ctx.reply(embed=modunmute)
+			await ctx.send(embed=modunmute)
 
 	@commands.command()
 	@commands.is_owner()
@@ -175,7 +175,7 @@ class developer(commands.Cog):
 			await member.remove_roles(mod)
 		
 			modunmute = discord.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')
-			await ctx.reply(embed=modunmute)
+			await ctx.send(embed=modunmute)
 
 	@commands.command()
 	@commands.is_owner()
@@ -186,7 +186,7 @@ class developer(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def restart(self, ctx):
-		await ctx.reply("*Restarting...*")
+		await ctx.send("*Restarting...*")
 		restart_program()
 	
 	
@@ -201,7 +201,7 @@ class developer(commands.Cog):
 		statuses.add_field(name="Idle:", value="!status idle\n   !status idle playing [custom status]\n  !;status idle listening [custom status]\n   !status idle watching [custom status]", inline=False)
 		statuses.add_field(name="Dnd:", value="!status dnd\n   !status dnd playing [custom status]\n   !status dnd listening [custom status]\n   !status dnd watching [custom status]", inline=False)
 		statuses.add_field(name="Offline:", value="!status offline", inline=False)
-		await ctx.reply(embed=statuses, delete_after=5)
+		await ctx.send(embed=statuses, delete_after=5)
 		await asyncio.sleep(4)
 		await ctx.message.delete()
 	
@@ -212,7 +212,7 @@ class developer(commands.Cog):
 	@commands.is_owner()
 	async def start(self, ctx):
 		self.ch_pr.start()
-		await ctx.reply("Started!", delete_after=7)
+		await ctx.send("Started!", delete_after=7)
 		await asyncio.sleep(7.5)
 		await ctx.message.delete()
 
@@ -222,7 +222,7 @@ class developer(commands.Cog):
 	@commands.is_owner()
 	async def stop(self, ctx):
 		self.ch_pr.cancel()
-		await ctx.reply("Stopped!", delete_after=7)
+		await ctx.send("Stopped!", delete_after=7)
 		await asyncio.sleep(7.5)
 		await ctx.message.delete()
 

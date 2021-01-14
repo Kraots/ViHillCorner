@@ -32,7 +32,7 @@ class Calculator(commands.Cog):
 			em.add_field(name="Result:", value=result, inline=False)
 			em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
 			
-			await ctx.reply(embed=em)
+			await ctx.send(embed=em)
 			return
 
 

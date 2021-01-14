@@ -44,7 +44,7 @@ class Fun(commands.Cog):
 			else:
 				embed1 = discord.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
 			
-			await ctx.reply(embed=embed1)
+			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
@@ -53,7 +53,7 @@ class Fun(commands.Cog):
 			else:
 				embed1 = discord.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
 			
-			await ctx.reply(embed=embed1)
+			await ctx.send(embed=embed1)
 
 		else:
 			if member.id == 374622847672254466:
@@ -61,7 +61,7 @@ class Fun(commands.Cog):
 			
 			else:
 				embed2 = discord.Embed(title='Gay rating machine', description=f'{member.name} is {gayrate}% gay :gay_pride_flag:', color=randomcolour)
-			await ctx.reply(embed=embed2)
+			await ctx.send(embed=embed2)
 
 	@commands.command()
 	async def simprate(self, ctx, member : discord.Member=None):
@@ -74,7 +74,7 @@ class Fun(commands.Cog):
 			else:
 				embed1 = discord.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
 			
-			await ctx.reply(embed=embed1)
+			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
@@ -82,14 +82,14 @@ class Fun(commands.Cog):
 			else:
 				embed1 = discord.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
 			
-			await ctx.reply(embed=embed1)
+			await ctx.send(embed=embed1)
 
 		else:
 			if member.id == 374622847672254466:
 				embed2 = discord.Embed(title='Simp rating machine', description=f'{member.name} is 0% simp ', color=randomcolour)
 			else:
 				embed2 = discord.Embed(title='Simp rating machine', description=f'{member.name} is {simprate}% simp ', color=randomcolour)
-			await ctx.reply(embed=embed2)
+			await ctx.send(embed=embed2)
 
 	@commands.command()
 	async def straightrate(self, ctx, member : discord.Member=None):
@@ -102,7 +102,7 @@ class Fun(commands.Cog):
 			else:
 				embed1 = discord.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
 			
-			await ctx.reply(embed=embed1)
+			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
@@ -110,7 +110,7 @@ class Fun(commands.Cog):
 			else:
 				embed1 = discord.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
 			
-			await ctx.reply(embed=embed1)
+			await ctx.send(embed=embed1)
 
 		else:
 			if member.id == 374622847672254466:
@@ -118,7 +118,7 @@ class Fun(commands.Cog):
 			else:
 				embed2 = discord.Embed(title='Straight rating machine', description=f'{member.name} is {simprate}% straight ', color=randomcolour)
 			
-			await ctx.reply(embed=embed2)
+			await ctx.send(embed=embed2)
 
 	@commands.command()
 	async def hornyrate(self, ctx, member : discord.Member=None):
@@ -131,7 +131,7 @@ class Fun(commands.Cog):
 			else:
 				embed1 = discord.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
 			
-			await ctx.reply(embed=embed1)
+			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
@@ -139,7 +139,7 @@ class Fun(commands.Cog):
 			else:
 				embed1 = discord.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
 			
-			await ctx.reply(embed=embed1)
+			await ctx.send(embed=embed1)
 
 		else:
 			if member.id == 374622847672254466:
@@ -147,7 +147,7 @@ class Fun(commands.Cog):
 			
 			else:
 				embed2 = discord.Embed(title='Horny rating machine', description=f'{member.name} is {simprate}% horny ', color=randomcolour)
-			await ctx.reply(embed=embed2)
+			await ctx.send(embed=embed2)
 
 	@commands.command()
 	async def boomerrate(self, ctx, member : discord.Member=None):
@@ -161,7 +161,7 @@ class Fun(commands.Cog):
 			else:
 				embed1 = discord.Embed(title='Boomer rating machine', description=f'You are {simprate}% boomer ', color=randomcolour)
 			
-			await ctx.reply(embed=embed1)
+			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
@@ -170,7 +170,7 @@ class Fun(commands.Cog):
 			else:
 				embed1 = discord.Embed(title='Boomer rating machine', description=f'You are {simprate}% boomer ', color=randomcolour)
 			
-			await ctx.reply(embed=embed1)
+			await ctx.send(embed=embed1)
 
 		else:
 			if member.id == 374622847672254466:
@@ -178,7 +178,7 @@ class Fun(commands.Cog):
 
 			else:	
 				embed2 = discord.Embed(title='Boomer rating machine', description=f'{member.name} is {simprate}% boomer ', color=randomcolour)
-			await ctx.reply(embed=embed2)
+			await ctx.send(embed=embed2)
 
 	@commands.command(aliases=['8ball'])
 	async def _8ball(self, ctx, *, question):
@@ -420,7 +420,7 @@ class Fun(commands.Cog):
 					"don't tell anyone but of course >///<"
 
 					]
-		await ctx.reply(f':8ball:** | {ctx.author.name} asked:** {question}\n<:blank:788666214318735360>** | Answer:** {random.choice(responses)}')
+		await ctx.send(f':8ball:** | {ctx.author.name} asked:** {question}\n<:blank:788666214318735360>** | Answer:** {random.choice(responses)}')
 
 
 
@@ -475,7 +475,7 @@ class Fun(commands.Cog):
 	@vampify.error
 	async def vampify_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandOnCooldown):
-			await ctx.reply(f"You're on cooldown, try again in {time_phaserr(error.retry_after)}.")
+			await ctx.send(f"You're on cooldown, try again in {time_phaserr(error.retry_after)}.")
 		elif isinstance(error, commands.MissingRequiredArgument):
 			ctx.command.reset_cooldown(ctx)
 
@@ -483,7 +483,7 @@ class Fun(commands.Cog):
 	@clapify.error
 	async def clapify_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandOnCooldown):
-			await ctx.reply(f"You're on cooldown, try again in {time_phaserr(error.retry_after)}.")
+			await ctx.send(f"You're on cooldown, try again in {time_phaserr(error.retry_after)}.")
 		elif isinstance(error, commands.MissingRequiredArgument):
 			ctx.command.reset_cooldown(ctx)
 

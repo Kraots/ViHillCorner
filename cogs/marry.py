@@ -26,16 +26,16 @@ class MarryCommands(commands.Cog):
 	@commands.command()
 	async def marry(self, ctx, member : discord.Member = None):
 		if member == None:
-			await ctx.reply("You must specifiy the user u want to marry.")
+			await ctx.send("You must specifiy the user u want to marry.")
 			return
 
 		elif member == ctx.author:
-			await ctx.reply("You cannot marry yourself.")
+			await ctx.send("You cannot marry yourself.")
 			return
 		
 
 		elif member.bot:
-			await ctx.reply("Sad kid u can't marry bots smh.")
+			await ctx.send("Sad kid u can't marry bots smh.")
 			return
 
 		else:
@@ -95,7 +95,7 @@ class MarryCommands(commands.Cog):
 		results = await collection.find_one({"_id": user.id})
 		
 		if results == None:
-			await ctx.reply("You are not married to anyone.")
+			await ctx.send("You are not married to anyone.")
 			return
 		
 		else:
@@ -104,7 +104,7 @@ class MarryCommands(commands.Cog):
 			def check(m):
 				return m.author.id == user.id and m.channel.id == ctx.channel.id
 
-			await ctx.reply("Are you sure you want to divorce `{}` ? `yes` | `no`".format(the_married_to_user.display_name))
+			await ctx.send("Are you sure you want to divorce `{}` ? `yes` | `no`".format(the_married_to_user.display_name))
 			
 			try:
 				rresponse = await self.client.wait_for('message', timeout = 180, check=check)
@@ -137,16 +137,16 @@ class MarryCommands(commands.Cog):
 		user = member
 		
 		if user.bot:
-			await ctx.reply("Bot's cannot marry u dumbo <:pepe_cringe:750755809700348166>")
+			await ctx.send("Bot's cannot marry u dumbo <:pepe_cringe:750755809700348166>")
 			return
 
 		elif results == None:
 			if user == ctx.author:
-				await ctx.reply("You are not married to anyone.\nType `!marry <user>` to marry to someone!")
+				await ctx.send("You are not married to anyone.\nType `!marry <user>` to marry to someone!")
 				return
 
 			else:
-				await ctx.reply("`{}` is not married to anyone.".format(user.display_name))
+				await ctx.send("`{}` is not married to anyone.".format(user.display_name))
 				return
 
 		else:
@@ -166,7 +166,7 @@ class MarryCommands(commands.Cog):
 				em = discord.Embed(color=color.lightpink, title="You are married to `{}` :tada: :tada:".format(the_married_to_user.display_name))
 				em.add_field(name="_ _ \nMarried since:", value="`{}`".format(format_date(user_married_to_since)), inline=False)
 				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
-				await ctx.reply(embed=em)
+				await ctx.send(embed=em)
 			else:
 				def format_date(dt):
 					if dt is None:
@@ -176,7 +176,7 @@ class MarryCommands(commands.Cog):
 				em = discord.Embed(color=color.lightpink, title="`{}` is married to `{}` :tada: :tada:".format(user.display_name, the_married_to_user.display_name))
 				em.add_field(name=" _ _ \nMarried since:", value="`{}`".format(format_date(user_married_to_since)), inline=False)
 				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
-				await ctx.reply(embed=em)
+				await ctx.send(embed=em)
 
 
 	@commands.Cog.listener()

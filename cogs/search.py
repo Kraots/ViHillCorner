@@ -29,7 +29,7 @@ class UrbanDictionary(commands.Cog):
 			try:
 				result = next(res.results).text
 			except Exception:
-				await ctx.reply("Failed.")
+				await ctx.send("Failed.")
 				return
 
 			em = discord.Embed(color=color.lightpink)
@@ -37,7 +37,7 @@ class UrbanDictionary(commands.Cog):
 			em.add_field(name="Result:", value=result, inline=False)
 			em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
 			
-			await ctx.reply(embed=em)
+			await ctx.send(embed=em)
 			return
 
 
