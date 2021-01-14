@@ -26,7 +26,6 @@ class developer(commands.Cog):
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 
-
 	@tasks.loop(seconds = 125)
 	async def ch_pr(self):
 		await self.client.wait_until_ready()
