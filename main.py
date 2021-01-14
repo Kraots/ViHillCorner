@@ -2,6 +2,7 @@
 import discord
 from discord.ext import commands
 import os
+import keep_alive
 
 token = os.environ.get('DISCORD_BOT_SECRET')
 
@@ -24,4 +25,5 @@ for filename in os.listdir('./outsidereloadcogs'):
 
 
 # RUN
+keep_alive.keep_alive()
 client.run(token)
