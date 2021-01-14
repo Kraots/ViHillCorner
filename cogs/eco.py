@@ -844,25 +844,34 @@ class EcoCommands(commands.Cog):
 				except ValueError:
 					return False
 			
+			index = 0
+			
 			for guess in range(0,3):
 				msg = await self.client.wait_for('message', timeout= 30 , check=check)
 				attempt = int(msg.content)
 				if attempt > number:
-					await msg.send('Try going lower.')
-					
+					index += 1
+					if index == 3:
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -lost_amt}})
+						await msg.reply(content=f"You didn't get it and lost `{lost_amt}` coins. The number was `{number}`.")
+						return
+					await msg.reply('Try going lower.')
+
 
 				elif attempt < number:
-					await msg.send('Try going higher.')
+					index += 1
+					if index == 3:
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -lost_amt}})
+						await msg.reply(content=f"You didn't get it and lost `{lost_amt}` coins. The number was `{number}`.")
+						return
+					await msg.reply('Try going higher.')
+
 					
 
 				else:
 					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": win_amt}})
-					await ctx.send(f'You guessed it! Good job! You got `{win_amt}` coins. The number was {number}.')
+					await msg.reply(f'You guessed it! Good job! You got `{win_amt}` coins. The number was `{number}`.')
 					return
-			else:
-				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -lost_amt}})
-				await ctx.send(f"You didn't get it and lost `{lost_amt}` coins. The number was `{number}`.")
-				return
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register.")
 			ctx.command.reset_cooldown(ctx)
