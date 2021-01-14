@@ -218,6 +218,8 @@ class actions(commands.Cog):
 
 			else:
 				for member in members:
+					if member.id == 374622847672254466:
+						member = ctx.author
 					a = member.mention
 			
 					mention_list.append(a)
@@ -337,7 +339,9 @@ class actions(commands.Cog):
 				msg = await ctx.send(embed=version)
 
 			else:
-				for member in members:
+				for member in members:	
+					if member.id == 374622847672254466:
+						member = ctx.author
 					a = member.mention
 			
 					mention_list.append(a)
@@ -358,6 +362,8 @@ class actions(commands.Cog):
 
 			else:
 				for member in members:
+					if member.id == 374622847672254466:
+						member = ctx.author
 					a = member.mention
 			
 					mention_list.append(a)
