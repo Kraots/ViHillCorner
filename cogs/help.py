@@ -18,7 +18,7 @@ class Help(commands.Cog):
 		helpEm = discord.Embed(description="To get help for a certain command type `!help <command_name>`", color=color.lightpink)
 		helpEm.set_footer(text='To get help for a certain command type `!help <command_name>`\n', icon_url=ctx.author.avatar_url)
 		helpEm.set_thumbnail(url=self.client.user.avatar_url)
-		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `ppsize`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`, `define`, `search`, `calculator`, `marry`, `marriedwho`, `divorce`, `scrs`, `tag`, `snippets`, `role-id`, `rank`")
+		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `ppsize`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`, `define`, `search`, `calculator`, `marry`, `marriedwho`, `divorce`, `scrs`, `tag`, `snippets`, `role-id`, `rank`, `remind`")
 		helpEm.add_field(name="Economy", value="`register`, `unregister` ,`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `race`, `ppsuck`, `daily`", inline=False)
 		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `sfw`, `spam`, `english`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `serverinfo`, `vote`", inline=False)
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
@@ -29,6 +29,15 @@ class Help(commands.Cog):
 
 		await ctx.send(embed=helpEm)
 	
+	@help.command(aliases=['reminder'])
+	async def remind(self, ctx):
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!reminder <when> [what]\n!remind list\n!remind cancel <remind ID>\n!remind clear```")
+		em.add_field(name="***Commands***", value="\n• **list**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get a list of your `10` upcoming reminders!\n\n• **cancel**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **remove**\n\u2800\u2800\u2800• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your reminder by it's ID.\n\n• **clear**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Clear all your reminders!", inline = False)
+		em.add_field(name="***Info:***", value="• Set a reminder.", inline = False)
+
+		await ctx.send(embed=em)
+
+
 	@help.command(aliases=['level', 'lvl'])
 	async def rank(self, ctx):
 		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!rank [member]\n!rank leaderboard```")

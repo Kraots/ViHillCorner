@@ -37,11 +37,11 @@ class LevelSystem(commands.Cog):
 					guild = self.client.get_guild(750160850077089853)
 					stats = await collection.find_one({"_id": message.author.id})
 					if stats is None:
-						newuser = {"_id": message.author.id, "xp": 0}
+						newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0}
 						await collection.insert_one(newuser)
 					else:
 						xp = stats['xp'] + 5
-						await 	collection.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
+						await collection.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
 						lvl = 0
 						while True:
 							if xp < ((50*(lvl**2))+ (50*(lvl-1))):

@@ -62,21 +62,22 @@ class Moderation(commands.Cog):
 				
 				await collection.delete_one({"_id": member.id})
 
+
 	# SLOWMODE
 	@commands.command()
 	@commands.has_role('Staff')
-	async def slowmode(self, ctx, *, time : TimeConverter):
+	async def slowmode(self, ctx, *, how_much: TimeConverter):
 		guild = self.client.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 		await ctx.message.delete()
 
-		if time:
-			await ctx.channel.edit(slowmode_delay=time)
-			await ctx.author.send(f'Set slowmode for <#{ctx.channel.id}> to {time_phaserr(time)} !')
+		if how_much:
+			await ctx.channel.edit(slowmode_delay=how_much)
+			await ctx.author.send(f'Set slowmode for <#{ctx.channel.id}> to {time_phaserr(how_much)} !')
 			
 			em = discord.Embed(color=color.reds, title="___SLOWMODE___", timestamp = ctx.message.created_at)
 			em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-			em.add_field(name="Action", value=f"`Set slowmode to {time_phaserr(time)}`", inline=False)
+			em.add_field(name="Action", value=f"`Set slowmode to {time_phaserr(how_much)}`", inline=False)
 			em.add_field(name="Channel", value=f"<#{ctx.channel.id}>",inline=False)
 
 			await log_channel.send(embed=em)
