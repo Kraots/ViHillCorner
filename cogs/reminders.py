@@ -46,18 +46,21 @@ class RemindersClass(commands.Cog):
 		
 		await collection.insert_one(post)
 		delta = time.human_timedelta(when.dt, accuracy=3)
-		await ctx.send(f"Alright {ctx.author.mention}, in {delta}: {when.arg}")
+		await ctx.send(f"Alright {ctx.author.mention}, in **{delta}**: {when.arg}")
 	
 	@remind.command()
 	async def list(self, ctx):
 		results = collection.find({"userID": ctx.author.id}).sort([("remindWhen", 1)])
 		em = discord.Embed(color=color.lightpink, title="Reminders")
+		index = 0
 		for result in await results.to_list(10):
+			index += 1
 			shorten = textwrap.shorten(result['remindWhat'], width=320)
 			em.add_field(name=f"(ID)`{result['_id']}`: In {time.human_timedelta(result['remindWhen'])}", value=shorten, inline=False)
 		if len(em) < 12:
 			await ctx.send("No currently running reminders.")
 			return
+		em.set_footer(text="You have %s reminders." % (index))
 		await ctx.send(embed=em)
 	
 	@remind.command(aliases=['delete', 'cancel'], ignore_extra = False)
@@ -103,11 +106,13 @@ class RemindersClass(commands.Cog):
 			if currentTime >= expireDate:
 				guild = self.client.get_guild(750160850077089853)
 				remindChannel = guild.get_channel(channelID)
-				msg = f"<@!{user}>, {time.human_timedelta(remindedWhen)}: {remindWhat}\n\n{remindUrl}"
+				msg = f"<@!{user}>, **{time.human_timedelta(remindedWhen)}**: {remindWhat}\n\n{remindUrl}"
 				await remindChannel.send(msg)
 				await collection.delete_one({"_id": remindID})
 
-	
+	@commands.Cog.listener()
+	async def on_member_remove(self, member):
+		await collection.delete_many({"userID": member.id})
 	
 	@remind.error
 	async def remind_error(self, ctx, error):
