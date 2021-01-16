@@ -16,7 +16,13 @@ class NameFilter(commands.Cog):
 			pass
 		
 		if message.guild:
-
+			
+			try:
+				for x in message.content.lower():
+					if x not in allowed_letters:
+						await message.delete()
+			except:
+				pass
 			new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(9)])
 			user_name = str(message.author.name).lower()
 			try:
