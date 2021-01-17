@@ -5,6 +5,9 @@ import os
 import utils.colors as color
 import datetime
 from dateutil.relativedelta import relativedelta
+from utils import time
+
+BotChannels = [750160851822182486, 750160851822182487, 752164200222163016]
 
 DBKEY = os.getenv("MONGODBLVLKEY")
 
@@ -19,7 +22,7 @@ class MessageTop(commands.Cog):
 		self.weekly_reset.start()
 		self.prefix = "!"
 	def cog_check(self, ctx):
-		return ctx.prefix == self.prefix
+		return ctx.prefix == self.prefix and ctx.channel.id in BotChannels
 
 	@tasks.loop(minutes=1)
 	async def weekly_reset(self):
@@ -37,10 +40,18 @@ class MessageTop(commands.Cog):
 
 	@commands.command(aliases=['msg-top', 'top-msg'])
 	async def top(self, ctx):
-		results = collection.find().sort([("messages_count", -1)])
+		
+		def format_time(dt):
+			return time.human_timedelta(dt)
+
+		data = await collection.find_one({"_id": 374622847672254466})
+
 		em = discord.Embed(color=color.lightpink)
+		
 		index = 0
 		guild = self.client.get_guild(750160850077089853)
+		
+		results = collection.find().sort([("messages_count", -1)])
 		for result in await results.to_list(15):
 			if result['messages_count'] != 0:
 				index += 1
@@ -50,7 +61,7 @@ class MessageTop(commands.Cog):
 				else:
 					em.add_field(name="`#%s`\u2800%s" % (index, mem.name), value="`%s` messages" % (result['messages_count']), inline=False)
 		em.title = "Top `%s` most active members this week" % (index)
-		em.set_footer(text="Requested by: %s" % (ctx.author), icon_url=ctx.author.avatar_url)
+		em.set_footer(text="Resets in %s" % (format_time(data['weekly_reset'])), icon_url=ctx.author.avatar_url)
 
 		await ctx.send(embed = em)
 
