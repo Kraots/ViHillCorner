@@ -53,14 +53,21 @@ class RemindersClass(commands.Cog):
 		results = collection.find({"userID": ctx.author.id}).sort([("remindWhen", 1)])
 		em = discord.Embed(color=color.lightpink, title="Reminders")
 		index = 0
+		total_reminders = 0
+		z = collection.find({"userID": ctx.author.id}).sort([("remindWhen", 1)])
+		
+		for x in await z.to_list(9999999999999):
+			total_reminders += 1
+
 		for result in await results.to_list(10):
 			index += 1
 			shorten = textwrap.shorten(result['remindWhat'], width=320)
 			em.add_field(name=f"(ID)`{result['_id']}`: In {time.human_timedelta(result['remindWhen'])}", value=shorten, inline=False)
+		
 		if len(em) < 12:
 			await ctx.send("No currently running reminders.")
 			return
-		em.set_footer(text="You have %s reminders." % (index))
+		em.set_footer(text="Showing %s/%s reminders." % (index, total_reminders))
 		await ctx.send(embed=em)
 	
 	@remind.command(aliases=['delete', 'cancel'], ignore_extra = False)
