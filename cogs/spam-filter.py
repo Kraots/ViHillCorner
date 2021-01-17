@@ -25,6 +25,12 @@ class RepeatedTextFilter(commands.Cog):
 			return
 
 		else:
+			if message.channel.id == 750160851822182484:
+				if message.content.lower().startswith("!meme"):
+					return
+				if message.content.lower().startswith("pls meme"):
+					return
+
 			user = message.author
 			users = await get_repeated_text_warns_data()
 

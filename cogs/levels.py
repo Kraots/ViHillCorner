@@ -39,12 +39,12 @@ class LevelSystem(commands.Cog):
 					if stats is None:
 						newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0}
 						await collection.insert_one(newuser)
-					else:
-						xp = stats['xp'] + 5
-						await collection.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
+					else:						
+						await collection.update_one({"_id": message.author.id}, {"$inc": {"messages_count": 1}})
+						xp = stats['xp']
 						lvl = 0
 						while True:
-							if xp < ((50*(lvl**2))+ (50*(lvl-1))):
+							if xp < ((50 * (lvl ** 2)) + (50 * (lvl - 1))):
 								break
 							lvl += 1
 						xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
@@ -52,20 +52,37 @@ class LevelSystem(commands.Cog):
 							lvl = lvl - 1
 							xp = stats['xp']
 							xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
-						elif xp == 0:
-							for i in range(len(level)):
-								if lvl == lvlnum[i]:
-									lvlrole = level[i]
-									userroles = []
-									for x in message.author.roles:
-										if not x.id in level:
-											userroles.append(x.id)
-									userroles.append(lvlrole)
-									newroles = []
-									for role in userroles:
-										newrole = guild.get_role(role)
-										newroles.append(newrole)
-									await message.author.edit(roles=newroles)
+						if lvl == 150:
+							return
+						
+						else:
+
+							xp = stats['xp'] + 5
+							await collection.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
+							lvl = 0
+							while True:
+								if xp < ((50*(lvl**2))+ (50*(lvl-1))):
+									break
+								lvl += 1
+							xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
+							if xp < 0:
+								lvl = lvl - 1
+								xp = stats['xp']
+								xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
+							elif xp == 0:
+								for i in range(len(level)):
+									if lvl == lvlnum[i]:
+										lvlrole = level[i]
+										userroles = []
+										for x in message.author.roles:
+											if not x.id in level:
+												userroles.append(x.id)
+										userroles.append(lvlrole)
+										newroles = []
+										for role in userroles:
+											newrole = guild.get_role(role)
+											newroles.append(newrole)
+										await message.author.edit(roles=newroles)
 
 
 
@@ -110,12 +127,22 @@ class LevelSystem(commands.Cog):
 
 				guild = self.client.get_guild(750160850077089853)
 				all_guild_members = len([m for m in guild.members if not m.bot])
+				
 				em = discord.Embed(title=f"{member.display_name}'s level stats", color=color.lightpink)
 				em.add_field(name="Name", value=member.mention)
-				em.add_field(name="XP", value=f"{xp}/{int(200*((1/2)*lvl))}")
-				em.add_field(name="Level", value=lvl)
-				em.add_field(name="Rank", value=f"{rank}/{all_guild_members}", inline=False)
-				em.add_field(name="Progress Bar [lvl]", value=boxes * ":blue_square:" + (20-boxes) * ":white_large_square:", inline=False)
+				
+				if lvl == 150:
+					lvl = "150(MAX)"
+					em.add_field(name="XP", value="MAX")
+					em.add_field(name="Level", value=lvl)
+					em.add_field(name="Rank", value=f"{rank}/{all_guild_members}", inline=False)
+					em.add_field(name="Progress Bar [lvl]", value=20 * ":blue_square:", inline=False)
+				else:
+					em.add_field(name="XP", value=f"{xp}/{int(200*((1/2)*lvl))}")
+					em.add_field(name="Level", value=lvl)
+					em.add_field(name="Rank", value=f"{rank}/{all_guild_members}", inline=False)
+					em.add_field(name="Progress Bar [lvl]", value=boxes * ":blue_square:" + (20-boxes) * ":white_large_square:", inline=False)
+				
 				em.set_thumbnail(url=member.avatar_url)
 
 				await ctx.send(embed=em)
@@ -157,6 +184,8 @@ class LevelSystem(commands.Cog):
 					xp = result['xp']
 				
 				index += 1
+				if lvl == 150:
+					lvl = "150(MAX)"
 				em.add_field(name=f"`#{index}` **-->** {user.display_name}", value=f"Level: `{lvl}`\nTotal XP: `{result['xp']}`", inline=False)
 			
 			await ctx.send(embed=em)
