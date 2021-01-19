@@ -10,6 +10,8 @@ import motor.motor_asyncio
 import datetime
 DBKEY = os.getenv("MONGODBKEY")
 
+no_mute_these = [630914591655854080, 374622847672254466]
+
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Moderation Mutes"]
@@ -76,6 +78,8 @@ class FilterCog(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message(self,message):
+		if message.author.id in no_mute_these:
+			return
 		guild = self.client.get_guild(750160850077089853)
 		if message.guild:
 			staff = guild.get_role(754676705741766757)
@@ -228,6 +232,8 @@ class FilterCog(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message_edit(self,before,after):
+		if after.author.id in no_mute_these:
+			return
 		guild = self.client.get_guild(750160850077089853)
 		staff = guild.get_role(754676705741766757)
 		if after.guild:

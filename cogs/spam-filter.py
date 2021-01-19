@@ -5,6 +5,8 @@ import asyncio
 import os
 import motor.motor_asyncio
 import datetime
+no_mute_these = [630914591655854080, 374622847672254466]
+
 DBKEY = os.getenv("MONGODBKEY")
 
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
@@ -18,10 +20,9 @@ class RepeatedTextFilter(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message(self, message : discord.Message):
-		if message.author.bot:
+		if message.author.id in no_mute_these:
 			return
-		
-		if message.author.id == 374622847672254466:
+		if message.author.bot:
 			return
 
 		else:
@@ -156,9 +157,9 @@ class SpamFilter(commands.Cog):
 	
 	@commands.Cog.listener()
 	async def on_message(self, message: discord.Message):
-		if message.author.bot :
+		if message.author.id in no_mute_these:
 			return
-		if message.author.id == 374622847672254466:
+		if message.author.bot :
 			return
 		
 		else:

@@ -6,6 +6,8 @@ import utils.colors as color
 import os
 import motor.motor_asyncio
 import datetime
+no_mute_these = [630914591655854080, 374622847672254466]
+
 DBKEY = os.getenv("MONGODBKEY")
 
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
@@ -22,6 +24,8 @@ class InviteFilter(commands.Cog):
 	@commands.Cog.listener()
 	@commands.guild_only()
 	async def on_message(self, message: discord.Message):
+		if message.author.id in no_mute_these:
+			return
 		guild = self.client.get_guild(750160850077089853)
 		if message.guild:
 			use_this = message.content.lower()

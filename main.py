@@ -13,7 +13,6 @@ client = commands.Bot(command_prefix=('!', ';'), case_insensitive=True, intents=
 client.remove_command("help")
 client.load_extension("jishaku")
 
-
 # COGS
 for filename in os.listdir('./cogs'):
   if filename.endswith('.py'):
