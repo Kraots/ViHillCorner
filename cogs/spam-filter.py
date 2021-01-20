@@ -6,6 +6,7 @@ import os
 import motor.motor_asyncio
 import datetime
 no_mute_these = [630914591655854080, 374622847672254466]
+ignored_channels = [790310516266500098, 780374324598145055, 750160851822182487, 750160851822182486, 750160852006469807, 750160852006469810, 790309304422629386, 750160852006469806]
 
 DBKEY = os.getenv("MONGODBKEY")
 
@@ -41,13 +42,7 @@ class RepeatedTextFilter(commands.Cog):
 			mod = guild.get_role(750162714407600228)
 
 			if message.guild:
-				if message.channel.id == 750160852006469807:
-					return
-				elif message.channel.id == 750160851822182486:
-					return
-				elif message.channel.id == 750160851822182487:
-					return
-				elif message.channel.id == 780374324598145055:
+				if message.channel.id in ignored_channels:
 					return
 
 
@@ -172,13 +167,7 @@ class SpamFilter(commands.Cog):
 			mod = guild.get_role(750162714407600228)
 
 			if message.guild:
-				if message.channel.id == 750160852006469807:
-					return
-				elif message.channel.id == 750160851822182486:
-					return
-				elif message.channel.id == 750160851822182487:
-					return
-				elif message.channel.id == 780374324598145055:
+				if message.channel.id in ignored_channels:
 					return
 				
 				else:

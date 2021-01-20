@@ -954,11 +954,11 @@ class EcoCommands(commands.Cog):
 						earned = kraotscheat2
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 						if ctx.author.id == 630914591655854080:
-							await ctx.send("You did so good at peeing insides `Kraot`'s mouth he was very happy that he even licked your juicy pussy clean. You got: `{}` :smiling_imp:".format(earned))
+							await ctx.send("You did so good at peeing insides `Kraot`'s mouth he was very happy that he even licked your juicy pussy clean. You got: `{:,}` :smiling_imp:".format(earned))
 							return
 
 						elif ctx.author.id == 374622847672254466:
-							await ctx.send("You licked `Mina`'s pussy and she enjoyed that much her warm cum went right inside your mouth. You got: `{}` :smiling_imp:".format(earned))
+							await ctx.send("You licked `Mina`'s pussy and she enjoyed that much her warm cum went right inside your mouth. You got: `{:,}` :smiling_imp:".format(earned))
 							return
 
 					else:
@@ -973,11 +973,11 @@ class EcoCommands(commands.Cog):
 						earned = kraotscheat3
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 						if ctx.author.id == 630914591655854080:
-							await ctx.send("You fucked with `Kraots` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: `{}` :smiling_imp:".format(earned))
+							await ctx.send("You fucked with `Kraots` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: `{:,}` :smiling_imp:".format(earned))
 							return
 
 						elif ctx.author.id == 374622847672254466:
-							await ctx.send("You fucked with `Mina` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: `{}` :smiling_imp:".format(earned))
+							await ctx.send("You fucked with `Mina` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: `{:,}` :smiling_imp:".format(earned))
 							return
 					else:
 						earned = earningsss
