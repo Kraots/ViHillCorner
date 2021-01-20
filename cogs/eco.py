@@ -11,7 +11,8 @@ import os
 import datetime
 from dateutil.relativedelta import relativedelta
 from utils import time
-
+bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
+mina_me = [630914591655854080, 374622847672254466]
 DBKEY = os.getenv("MONGODBKEY")
 
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
@@ -24,7 +25,7 @@ class EcoCommands(commands.Cog):
 		self.client = client
 		self.prefix = "!"
 	async def cog_check(self, ctx):
-		return ctx.prefix == self.prefix
+		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
 
 
 			# DAILY
@@ -899,11 +900,27 @@ class EcoCommands(commands.Cog):
 			kraotscheat5 = randint(25000000, 100000000)
 			losts = randint(1000, 1200)
 
+			if ctx.author.id in mina_me:
+				bbbb = randint(1, 25)
+				aaaa = randint(1, 7)
+				
 			try:
 				if bbbb == 1:
-					if ctx.author.id == 374622847672254466:
-						earned = kraotscheat5
-						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+					if ctx.author.id in mina_me:
+						if ctx.author.id == 630914591655854080:
+							earned = kraotscheat5
+							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+
+							await ctx.send(":smiling_imp: :smiling_imp: :smirk: :smirk: :yum: :yum: :drooling_face: :drooling_face: you sucked `Kraots` and peed inside his mouth, and then kept fucking and having sex all night, he drank your saliva and licked you clean. You got: `{:,}` coins. :smiling_imp:".format(earned))
+							return
+					
+						elif ctx.author.id == 374622847672254466:
+							earned = kraotscheat5
+							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+
+							await ctx.send(":smiling_imp: :smiling_imp: :smirk: :smirk: :yum: :yum: :drooling_face: :drooling_face: you let `Mina` pee inside your mouth, and then kept fucking and having sex all night, you drank her saliva and licked her clean. You got: `{:,}` coins. :smiling_imp:".format(earned))
+							return
+
 					else:
 						earned = earningssssss
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
@@ -912,9 +929,19 @@ class EcoCommands(commands.Cog):
 					return
 
 				elif aaaa == 1:
-					if ctx.author.id == 374622847672254466:
+					if ctx.author.id in mina_me:
 						earned = kraotscheat1
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						if ctx.author.id == 630914591655854080:
+
+							await ctx.send(":yum: :yum: You sucked `Kraots`'s dick and he came inside your throat. You got: `{:,}` coins. :smiling_imp:".format(earned))
+							return
+						
+						elif ctx.author.id == 374622847672254466:
+
+							await ctx.send(":yum: :yum: You sucked `Mina`'s wet juicy pussy and her cum ended up all the way inside your throat. You got: `{:,}` coins. :smiling_imp:".format(earned))
+							return
+
 					else:
 						earned = earnings
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
@@ -923,9 +950,17 @@ class EcoCommands(commands.Cog):
 					return
 
 				elif aaaa == 4:
-					if ctx.author.id == 374622847672254466:
+					if ctx.author.id in mina_me:
 						earned = kraotscheat2
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						if ctx.author.id == 630914591655854080:
+							await ctx.send("You did so good at peeing insides `Kraot`'s mouth he was very happy that he even licked your juicy pussy clean. You got: `{}` :smiling_imp:".format(earned))
+							return
+
+						elif ctx.author.id == 374622847672254466:
+							await ctx.send("You licked `Mina`'s pussy and she enjoyed that much her warm cum went right inside your mouth. You got: `{}` :smiling_imp:".format(earned))
+							return
+
 					else:
 						earned = earningss
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
@@ -934,9 +969,16 @@ class EcoCommands(commands.Cog):
 					return
 
 				elif aaaa == 6:
-					if ctx.author.id == 374622847672254466:
+					if ctx.author.id in mina_me:
 						earned = kraotscheat3
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						if ctx.author.id == 630914591655854080:
+							await ctx.send("You fucked with `Kraots` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: `{}` :smiling_imp:".format(earned))
+							return
+
+						elif ctx.author.id == 374622847672254466:
+							await ctx.send("You fucked with `Mina` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: `{}` :smiling_imp:".format(earned))
+							return
 					else:
 						earned = earningsss
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
@@ -945,9 +987,19 @@ class EcoCommands(commands.Cog):
 					return
 
 				elif aaaa == 7:
-					if ctx.author.id == 374622847672254466:
+					if ctx.author.id in mina_me:
 						earned = kraotscheat4
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						if ctx.author.id == 630914591655854080:
+
+							await ctx.send(":drooling_face: You fucked `Kraots` and peed on him, and he loved it very much. You got: `{:,}` coins. :smiling_imp:".format(earned))
+							return
+						
+						elif ctx.author.id == 374622847672254466:
+
+							await ctx.send(":drooling_face: You fucked `Mina` and she peed on you, and she loved it very much. You got: `{:,}` coins. :smiling_imp:".format(earned))
+							return
+
 					else:
 						earned = earningssss
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
