@@ -189,13 +189,14 @@ class FilterCog(commands.Cog):
 							pass
 					
 				try:
-					if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.author.nick):
-						try:
-							await message.author.edit(nick=new_nick)
-							await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-						except:
-							pass
-
+					if message.author.nick:
+						if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.author.nick):
+							try:
+								await message.author.edit(nick=new_nick)
+								await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+							except:
+								pass
+				
 					elif re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.author.name):
 						try:
 							await message.author.edit(nick=new_nick)
