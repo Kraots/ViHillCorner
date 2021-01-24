@@ -8,6 +8,7 @@ import os
 import datetime
 from discord.ext import commands, tasks
 from dateutil.relativedelta import relativedelta
+from utils import time
 DBKEY = os.getenv("MONGODBKEY")
 
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
@@ -425,12 +426,15 @@ class Moderation(commands.Cog):
 
 	@commands.command()
 	@commands.has_role("Staff")
-	async def tempmute(self, ctx, member : discord.Member, *, time : TimeConverter = None):
+	async def tempmute(self, ctx, member : discord.Member, *, muted_time : TimeConverter = None):
 		"""Mutes a member for the specified time- time in 2d 10h 3m 2s format ex:
 		!mute @Someone 1d"""
 
 		guild = self.client.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
+		
+		def format_time(dt):
+			return time.human_timedelta(dt, accuracy = 3)
 
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
@@ -452,7 +456,7 @@ class Moderation(commands.Cog):
 				post = {
 						'_id': member.id,
 						'mutedAt': datetime.datetime.now(),
-						'muteDuration': time,
+						'muteDuration': muted_time,
 						'mutedBy': ctx.author.id,
 						'guildId': ctx.guild.id,
 					}
@@ -463,28 +467,30 @@ class Moderation(commands.Cog):
 					await ctx.send("User is already muted!")
 					return
 
+				muted_for = datetime.datetime.utcnow() + relativedelta(seconds = muted_time)
+
 				muted = guild.get_role(750465726069997658)
 				await member.add_roles(muted, reason=f"{ctx.author} ---> {reason_content}")
 				msg = ("You have been muted in `ViHill Corner`")
-				em = discord.Embed(description=f"Time: `{time_phaserr(time)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=color.inviscolor)
+				em = discord.Embed(description=f"Time: `{format_time(muted_for)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=color.inviscolor)
 				try:
 					await member.send(msg, embed = em)
 				except discord.HTTPException:
 					pass
 
 
-				unban = discord.Embed(description= f'{member.mention} has been temporarily muted. \n\nTime: `{time_phaserr(time)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**' , color=color.red)
+				unban = discord.Embed(description= f'{member.mention} has been temporarily muted. \n\nTime: `{format_time(muted_for)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**' , color=color.red)
 				
 				await ctx.send(embed=unban)
 
 				log = discord.Embed(color=color.reds, title="___Mute___", timestamp = ctx.message.created_at)
 				log.add_field(name="Member", value=f"`{member}`", inline=False)
 				log.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-				log.add_field(name="Time", value=f"`{time_phaserr(time)}`", inline=False)
+				log.add_field(name="Time", value=f"`{format_time(muted_for)}`", inline=False)
 				log.add_field(name="Reason", value=f"**[{reason_content}]({ctx.message.jump_url})**", inline=False)
 				await log_channel.send(embed=log)
 
-				await asyncio.sleep(time)
+				await asyncio.sleep(muted_time)
 				if muted in member.roles:
 					await member.remove_roles(muted)
 					await collection.delete_one({"_id": member.id})
