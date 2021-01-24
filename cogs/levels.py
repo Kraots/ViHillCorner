@@ -56,8 +56,12 @@ class LevelSystem(commands.Cog):
 							return
 						
 						else:
-
-							xp = stats['xp'] + 5
+							server_booster = guild.get_role(759475712867565629)
+							if server_booster in message.author.roles:
+								xp = stats['xp'] + 15
+							else:
+								xp = stats['xp'] + 5
+							
 							await collection.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
 							lvl = 0
 							while True:
