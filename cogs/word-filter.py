@@ -102,6 +102,8 @@ class FilterCog(commands.Cog):
 						return
 					elif "whoever" in message.content.lower():
 						return
+					elif "mustard" in message.content.lower():
+						return
 					else:
 						try:
 							await message.delete()
@@ -256,6 +258,8 @@ class FilterCog(commands.Cog):
 					if "shoe" in after.content.lower():
 						return
 					elif "whoever" in after.content.lower():
+						return
+					elif "mustard" in message.content.lower():
 						return
 					else:
 						try:
