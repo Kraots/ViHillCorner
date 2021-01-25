@@ -87,6 +87,44 @@ class MarryCommands(commands.Cog):
 					await ctx.send("`{}` did not answer in time!".format(member.display_name))
 					return
 
+	@commands.command()	
+	async def divorce(self, ctx):
+		user = ctx.author	
+
+		results = await collection.find_one({"_id": user.id})	
+
+		if results == None:	
+			await ctx.send("You are not married to anyone.")	
+			return	
+
+		else:	
+			the_married_to_user = self.client.get_user(results['married_to'])	
+
+			def check(m):	
+				return m.author.id == user.id and m.channel.id == ctx.channel.id	
+
+			await ctx.send("Are you sure you want to divorce `{}` ? `yes` | `no`".format(the_married_to_user.display_name))	
+
+			try:	
+				rresponse = await self.client.wait_for('message', timeout = 180, check=check)	
+				response = rresponse.content.lower()	
+
+				if response == "yes":	
+					auth = {"_id": ctx.author.id} 	
+					mem = {"_id": the_married_to_user.id}	
+					await collection.delete_one(auth)	
+					await collection.delete_one(mem)	
+
+					await ctx.send("You divorced `{}`. :cry:".format(the_married_to_user.display_name))	
+
+				elif response == "no":	
+					await ctx.send("You did not divorce that person :D")	
+					return	
+
+			except asyncio.TimeoutError:	
+				await ctx.send("Did not give answer in time :/")	
+				return
+
 	@commands.command()
 	async def marriedwho(self, ctx, member : discord.Member = None):
 		if member == None:
