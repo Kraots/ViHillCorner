@@ -103,6 +103,9 @@ class command(commands.Cog):
 		if member is None:
 			member = ctx.author
 
+		if member.id == 374622847672254466 and not ctx.author.id == 374622847672254466:
+			return
+			
 		avatar = discord.Embed(title=f"{member.name}", url=f"{member.avatar_url}", color=color.blue)
 		avatar.set_image(url=member.avatar_url)
 		avatar.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
