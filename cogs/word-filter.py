@@ -253,7 +253,7 @@ class FilterCog(commands.Cog):
 						return
 					elif "whoever" in after.content.lower():
 						return
-					elif "mustard" in message.content.lower():
+					elif "mustard" in after.content.lower():
 						return
 					else:
 						try:
