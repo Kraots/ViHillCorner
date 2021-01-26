@@ -171,28 +171,28 @@ class Birthdays(commands.Cog):
 				region_birthday = birthday
 			elif region == 7:
 				region = "berlin, germany"
-				region_birthday = birthday - relativedelta(hours = 3)
+				region_birthday = birthday + relativedelta(hours = 3)
 			elif region == 8:
 				region = "moscow, russian federation"
-				region_birthday = birthday - relativedelta(hours = 4)
+				region_birthday = birthday + relativedelta(hours = 4)
 			elif region == 9:
 				region = "dubai, united arab emirates"
-				region_birthday = birthday - relativedelta(hours = 6)
+				region_birthday = birthday + relativedelta(hours = 6)
 			elif region == 10:
 				region = "mumbai, india"
-				region_birthday = birthday - relativedelta(hours = 7, minutes = 30)
+				region_birthday = birthday + relativedelta(hours = 7, minutes = 30)
 			elif region == 11:
 				region = "singapore, singapore"
-				region_birthday = birthday - relativedelta(hours = 10)
+				region_birthday = birthday + relativedelta(hours = 10)
 			elif region == 12:
 				region = "tokyo, japan"
-				region_birthday = birthday - relativedelta(hours = 11)
+				region_birthday = birthday + relativedelta(hours = 11)
 			elif region == 13:
 				region = "sydney, australia"
-				region_birthday = birthday - relativedelta(hours = 13)
+				region_birthday = birthday + relativedelta(hours = 13)
 			elif region == 14:
 				region = "auckland, new zealand"
-				region_birthday = birthday - relativedelta(hours = 15)
+				region_birthday = birthday + relativedelta(hours = 15)
 
 
 			def format_date(dt1, dt2):
