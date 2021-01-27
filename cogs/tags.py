@@ -35,6 +35,9 @@ class Tags(commands.Cog):
 	
 	def __init__(self, client):
 		self.client = client
+		self.prefix = "!"
+	async def cog_check(self, ctx):
+		return ctx.prefix == self.prefix
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra = False)
 	async def tag(self, ctx, *, tag_name: str = None):
