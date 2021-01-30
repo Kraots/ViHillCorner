@@ -12,6 +12,7 @@ DBKEY = os.getenv("MONGODBKEY")
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Intros"]
+mutes_collection = db['Moderation Mutes']
 
 positive_messages=["yes",
 				   "sure",
@@ -130,8 +131,13 @@ class on_join(commands.Cog):
 			elif choice == 19:
 				await member.add_roles(color19)
 
-			
-			
+			results = await mutes_collection.find_one({'_id': member.id})
+			if results != None:
+				guild = self.client.get_guild(750160850077089853)
+
+				mute_role = guild.get_role(750465726069997658)
+				await member.add_roles(mute_role)
+
 			user = member
 			
 			

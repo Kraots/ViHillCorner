@@ -75,6 +75,9 @@ class on_message(commands.Cog):
 			em = discord.Embed(title=f'{message.author}:', description=f'{message.content}', color=color.inviscolor, timestamp=message.created_at)
 			em.set_footer(text=f'User ID: {message.author.id}')
 
+			if message.attachments:
+				em.set_image(url=message.attachments[0].proxy_url)
+
 			if message.author is kraots:
 				return
 
