@@ -34,6 +34,8 @@ class Snipe(commands.Cog):
 		embed = discord.Embed(description= msg.content, color=msg.author.color, timestamp=msg.created_at)
 		embed.set_author(name=msg.author, icon_url=msg.author.avatar_url)
 		embed.set_footer(text="Deleted in `{}`".format(msg.channel))
+		if msg.attachments:
+			embed.set_image(url=msg.attachments[0].proxy_url)
 		await ctx.send(embed=embed)
 
 

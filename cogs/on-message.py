@@ -31,6 +31,8 @@ class on_message(commands.Cog):
 				embedd = discord.Embed(color=color.red, description=f'[Message]({message.jump_url}) deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=msg.created_at)
 				embedd.set_author(name=f'{message.author}', icon_url=f'{message.author.avatar_url}')
 				embedd.set_footer(text=f'User ID: {message.author.id}')
+				if message.attachments:
+					embedd.set_image(url=message.attachments[0].proxy_url)
 				
 				await asyncio.sleep(0.5)
 				await msg.edit(embed=embedd)

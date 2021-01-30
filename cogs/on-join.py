@@ -243,7 +243,7 @@ class on_join(commands.Cog):
 										em.add_field(name="Relationship Status", value=status, inline=True)
 										em.add_field(name="Interests", value=interests.content, inline=False)
 										await introchannel.send(embed=em)
-										await member.send("Intro added successfully.")
+										await member.send("Intro added successfully. You can see it in <#750160850593251449>")
 
 										post = {"_id": member.id, 
 											"name": name.content,
