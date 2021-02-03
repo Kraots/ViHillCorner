@@ -142,7 +142,7 @@ class command(commands.Cog):
 	async def up(self, ctx):
 		guild = self.client.get_guild(750160850077089853)
 		member_count = len([m for m in guild.members if not m.bot])
-		await ctx.send(f'Members left untill the server can apply for the *discord partership program:* \n\n`{500 - member_count}`')
+		await ctx.send(f'Members left untill the server can apply for the *discord partnership program:* \n\n`{500 - member_count}`')
 
 
 
