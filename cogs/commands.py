@@ -105,6 +105,8 @@ class command(commands.Cog):
 
 		if member.id == 374622847672254466 and not ctx.author.id == 374622847672254466:
 			return
+		elif member.id == 630914591655854080 and not ctx.author.id == 630914591655854080:
+			return
 			
 		avatar = discord.Embed(title=f"{member.name}", url=f"{member.avatar_url}", color=color.blue)
 		avatar.set_image(url=member.avatar_url)

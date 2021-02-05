@@ -399,6 +399,10 @@ class Moderation(commands.Cog):
 
 		else:
 			for id in unmuted_members:
+				if id.id in [302420848441294849, 747329236695777340]:
+					if not ctx.author.id == 374622847672254466:
+						await ctx.send("%s cannot be unmuted ;)))))" % (id.mention))
+						return
 				collection.delete_one({"_id": id.id})
 				msg="You were unmuted in `ViHill Corner`."
 				a = id
@@ -410,13 +414,13 @@ class Moderation(commands.Cog):
 					pass
 				await id.remove_roles(muted, reason="{} ---> Unmute".format(ctx.author))
 
-		ban = discord.Embed(description=f"The user(s) have been unmuted!" , color=discord.Color.red())
+		ban = discord.Embed(description="The user(s) have been unmuted!" , color=discord.Color.red())
 
 		await ctx.channel.send(embed=ban)
 
 		em = discord.Embed(color=color.reds, title="___UNMUTE___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
-		em.add_field(name="Action", value=f"`Used the unmute command.`", inline=False)	
+		em.add_field(name="Action", value="`Used the unmute command.`", inline=False)	
 		try:
 			em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)	
 		except UnboundLocalError:
