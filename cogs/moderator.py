@@ -52,20 +52,19 @@ class Moderation(commands.Cog):
 			unmuteTime = result['mutedAt'] + relativedelta(seconds=result['muteDuration'])
 
 			if currentTime >= unmuteTime:
-				try:
-					guild = self.client.get_guild(result['guildId'])
-					member = guild.get_member(result['_id'])
+				guild = self.client.get_guild(result['guildId'])
+				member = guild.get_member(result['_id'])
 
-					mute_role = guild.get_role(750465726069997658)
-
+				mute_role = guild.get_role(750465726069997658)
+				
+				if member != None:
 					if mute_role in member.roles:
 						await member.remove_roles(mute_role)
 						await member.send("You have been unmuted in `ViHill Corner`.")
-				
-				except:
-					pass	
-				
-				await collection.delete_one({"_id": member.id})
+					
+					await collection.delete_one({"_id": member.id})
+				else:
+					await collection.delete_one({"_id": result['_id']})
 
 
 	# SLOWMODE
