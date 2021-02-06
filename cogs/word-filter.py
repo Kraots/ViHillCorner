@@ -104,6 +104,11 @@ class FilterCog(commands.Cog):
 						return
 					elif "mustard" in message.content.lower():
 						return
+					elif "nigeria" in message.content.lower():
+						return
+					elif "nigerian" in message.content.lower():
+						return
+
 					else:
 						try:
 							await message.delete()
@@ -254,6 +259,10 @@ class FilterCog(commands.Cog):
 					elif "whoever" in after.content.lower():
 						return
 					elif "mustard" in after.content.lower():
+						return
+					elif "nigeria" in after.content.lower():
+						return
+					elif "nigerian" in after.content.lower():
 						return
 					else:
 						try:
