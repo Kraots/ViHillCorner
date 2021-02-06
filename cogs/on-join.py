@@ -199,7 +199,7 @@ class on_join(commands.Cog):
 							try:
 								agenumber = int(age.content)
 							except ValueError:
-								await channel.send("Must be number, do again.")
+								await channel.send("Must be number, please go in a bots channel and type `!intro` to try again.")
 								return
 
 							if agenumber > 44:
