@@ -57,8 +57,11 @@ class LevelSystem(commands.Cog):
 						
 						else:
 							server_booster = guild.get_role(759475712867565629)
+							staff = guild.get_role(754676705741766757)
 							if server_booster in message.author.roles:
 								xp = stats['xp'] + 15
+							elif staff in message.author.roles:
+								xp = stats['xp'] + 30
 							else:
 								xp = stats['xp'] + 5
 							
