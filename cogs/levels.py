@@ -157,6 +157,7 @@ class LevelSystem(commands.Cog):
 
 
 	@rank.command()
+	@commands.is_owner()
 	async def set(self, ctx, lvl: int,  member: discord.Member = None):
 		if member is None:
 			member = ctx.author
