@@ -169,6 +169,7 @@ class on_join(commands.Cog):
 				answer = await self.client.wait_for('message', timeout= 360, check=newmember)
 				if answer.content.lower() == "no":
 					await member.send("Alrighty, you can do your intro later by typing `!intro` in a `bots only` channel. Enjoy your stay! :wave:")
+					return
 			except asyncio.TimeoutError:
 				return
 
