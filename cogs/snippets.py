@@ -164,6 +164,12 @@ class Snippets(commands.Cog):
 			try:
 				presnippet_name = await self.client.wait_for('message', timeout = 60, check=check)
 				snippet_name = presnippet_name.content.lower()
+				for x in ['kraots', 'carrots', 'carots', 'carot', 'carrot']:
+					if x in snippet_name:
+						if not ctx.author.id in [630914591655854080, 374622847672254466]:
+							await ctx.send("You cannot do that anymore hoe ;))")
+							return
+
 				if len(snippet_name) >= 35:
 					await ctx.send("Snippet's name cannot be that long! Max is: `35`")
 					return
@@ -222,7 +228,12 @@ class Snippets(commands.Cog):
 						await ctx.send("Snippet Added!")
 
 		else:
-			
+			for x in ['kraots', 'carrots', 'carots', 'carot', 'carrot']:
+				if x in get_snippet_name.lower():
+					if not ctx.author.id in [630914591655854080, 374622847672254466]:
+						await ctx.send("You cannot do that anymore hoe ;))")
+						return
+
 			if len(get_snippet_name) >= 35:
 					await ctx.send("Snippet's name cannot be that long! Max is: `35`")
 					return
