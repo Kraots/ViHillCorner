@@ -65,13 +65,6 @@ class command(commands.Cog):
 			embed.add_field(name='Join Date:', value=f"{user} **--->** {format_date(kraots_joined)}")
 			await ctx.send(embed=embed)
 
-		elif user.id == 630914591655854080:
-			x = "2020-09-30 12:12"
-			mina_joined = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
-			embed = discord.Embed(color=color.lightpink)
-			embed.add_field(name='Join Date:', value=f"{user} **--->** {format_date(mina_joined)}")
-			await ctx.send(embed=embed)
-
 		else:
 			embed = discord.Embed(color=color.lightpink)
 			embed.add_field(name='Join Date:', value=f"{user} **--->** {format_date(getattr(user, 'joined_at', None))}")
