@@ -305,6 +305,7 @@ class Intros(commands.Cog):
 				await ctx.send("You do not have an intro!")
 				ctx.command.reset_cooldown(ctx)
 				return
+				
 			else:
 				await ctx.send("User does not have an intro!")
 				ctx.command.reset_cooldown(ctx)
