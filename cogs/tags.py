@@ -455,6 +455,9 @@ class Tags(commands.Cog):
 								collection.delete_one({"_id": tag_name})
 								
 								await ctx.send("Tag `{}` deleted succesfully!".format(the_tag_name))
+							else:
+								await ctx.send("That is not a valid form of reply.")
+								return
 						
 						except asyncio.TimeoutError:
 							await ctx.send("Time expired!")
@@ -487,6 +490,9 @@ class Tags(commands.Cog):
 						collection.delete_one({"the_tag_name": the_tag_name.lower()})
 						
 						await ctx.send("Tag deleted succesfully.")
+					else:
+						await ctx.send("That is not a valid form of reply.")
+						return
 				
 				except asyncio.TimeoutError:
 					await ctx.send("Time expired!")

@@ -326,9 +326,24 @@ class Snippets(commands.Cog):
 						return
 
 					else:
-						collection.delete_one({"_id": snippet_name})
+						await ctx.send("Are you sure you want to delete `%s`? `yes` | `no` %s" % (snippet_name, ctx.author.mention))
+						try:
+							reply = await self.client.wait_for('message', check=check, timeout=90)
+							reply = reply.content
+							if reply == "yes":
+								collection.delete_one({"_id": snippet_name})
 
-						await ctx.send(f"`{snippet_name}` deleted succesfully!")
+								await ctx.send(f"`{snippet_name}` deleted succesfully!")
+								return
+							elif reply == "no":
+								await ctx.send("Snippet was not deleted.")
+								return
+							else:
+								await ctx.send("That is not a valid form of reply.")
+								return
+						
+						except asyncio.TimeoutError:
+							return
 				
 		else:
 			all_snippets = []
@@ -350,9 +365,24 @@ class Snippets(commands.Cog):
 					await ctx.send("You do not own this snippet!")
 					return
 			else:
-				collection.delete_one({"_id": get_snippet_name.lower()})
+				await ctx.send("Are you sure you want to delete `%s`? `yes` | `no` %s" % (get_snippet_name, ctx.author.mention))
+				try:
+					reply = await self.client.wait_for('message', check=check, timeout=90)
+					reply = reply.content
+					if reply == "yes":
+						collection.delete_one({"_id": get_snippet_name})
 
-				await ctx.send(f"`{get_snippet_name}` deleted succesfully!")
+						await ctx.send(f"`{get_snippet_name}` deleted succesfully!")
+						return
+					elif reply == "no":
+						await ctx.send("Snippet was not deleted.")
+						return
+					else:
+						await ctx.send("That is not a valid form of reply.")
+						return
+				
+				except asyncio.TimeoutError:
+					return
 
 
 	@snippet.command()
