@@ -93,7 +93,7 @@ class Moderation(commands.Cog):
 
 			em = discord.Embed(color=color.reds, title="___SLOWMODE___", timestamp = ctx.message.created_at)
 			em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-			em.add_field(name="Action", value=f"`Disabled slowmode`", inline=False)
+			em.add_field(name="Action", value="`Disabled slowmode`", inline=False)
 			em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
 			
 			await log_channel.send(embed=em)
@@ -114,6 +114,7 @@ class Moderation(commands.Cog):
 	@commands.has_role('Staff')
 	async def kick(self, ctx):
 		guild = self.client.get_guild(750160850077089853)
+		staff = guild.get_role(754676705741766757)
 		log_channel = guild.get_channel(788377362739494943)
 		mem_list = []
 		
@@ -148,14 +149,15 @@ class Moderation(commands.Cog):
 			else:
 				for id in kicked_members:
 						a = id
-						mem_list.append(a)
-						mem_list_final = " | ".join(str(id) for id in mem_list)
+						if not staff in a.roles:
+							mem_list.append(a)
+							mem_list_final = " | ".join(str(id) for id in mem_list)
 
-						try:
-							await id.send("You have been kicked from `ViHill Corner!`")
-						except discord.HTTPException:
-							pass
-						await guild.kick(id, reason=f"{ctx.author} ---> {kicked_reason}")
+							try:
+								await id.send("You have been kicked from `ViHill Corner!`")
+							except discord.HTTPException:
+								pass
+							await guild.kick(id, reason=f"{ctx.author} ---> {kicked_reason}")
 
 		ban = discord.Embed(description=f"The user(s) have been kicked from the server.\n**Reason:** **[{kicked_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
 
@@ -163,7 +165,7 @@ class Moderation(commands.Cog):
 
 		em = discord.Embed(color=color.reds, title="___KICK___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
-		em.add_field(name="Action", value=f"`Used the kick command.`", inline=False)	
+		em.add_field(name="Action", value="`Used the kick command.`", inline=False)	
 		try:
 			em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)
 		except UnboundLocalError:
@@ -180,9 +182,11 @@ class Moderation(commands.Cog):
 	async def opban(self, ctx, member: int):
 		guild = self.client.get_guild(750160850077089853)
 		get_member = await self.client.fetch_user(member)
-		await guild.ban(get_member)
-		em = discord.Embed(color=discord.Color.red(), description=f"`{get_member}` was banned succesfully.")
-		await ctx.send(embed=em)
+		staff = guild.get_role(754676705741766757)
+		if not staff in get_member.roles:
+			await guild.ban(get_member)
+			em = discord.Embed(color=discord.Color.red(), description=f"`{get_member}` was banned succesfully.")
+			await ctx.send(embed=em)
 
 
 		# OP UNBAN
@@ -203,6 +207,7 @@ class Moderation(commands.Cog):
 	async def ban(self, ctx):
 		guild = self.client.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
+		staff = guild.get_role(754676705741766757)
 		mem_list = []
 		reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/m3Zyaj5Vc4")
 		reasonn.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
@@ -239,13 +244,14 @@ class Moderation(commands.Cog):
 			else:
 				for id in banned_members:
 					a = id
-					mem_list.append(a)
-					mem_list_final = " | ".join(str(id) for id in mem_list)
-					try:
-						await id.send(msg, embed=reasonn)
-					except discord.HTTPException:
-						pass
-					await guild.ban(id, reason=f"{ctx.author} --->{banned_reason}")
+					if not staff in a.roles:
+						mem_list.append(a)
+						mem_list_final = " | ".join(str(id) for id in mem_list)
+						try:
+							await id.send(msg, embed=reasonn)
+						except discord.HTTPException:
+							pass
+						await guild.ban(id, reason=f"{ctx.author} --->{banned_reason}")
 
 		ban = discord.Embed(description=f"The user(s) have been banned from the server.\n**Reason:** **[{banned_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
 
@@ -253,7 +259,7 @@ class Moderation(commands.Cog):
 
 		em = discord.Embed(color=color.reds, title="___BAN___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
-		em.add_field(name="Action", value=f"`Used the ban command.`", inline=False)	
+		em.add_field(name="Action", value="`Used the ban command.`", inline=False)	
 		try:
 			em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)	
 		except UnboundLocalError:
@@ -282,7 +288,7 @@ class Moderation(commands.Cog):
 
 		em = discord.Embed(color=color.reds, title="___UNBAN___", timestamp = ctx.message.created_at)
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-		em.add_field(name="Action", value=f"`Used the unban command`", inline=False)
+		em.add_field(name="Action", value="`Used the unban command`", inline=False)
 		try:
 			em.add_field(name="Member", value=f"`{member}`", inline=False)
 		except UnboundLocalError:
@@ -312,6 +318,7 @@ class Moderation(commands.Cog):
 		log_channel = guild.get_channel(788377362739494943)
 		mem_list = []
 		muted = guild.get_role(750465726069997658)
+		staff = guild.get_role(754676705741766757)
 		
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
@@ -343,16 +350,17 @@ class Moderation(commands.Cog):
 			
 			else:
 				for id in muted_members:
-					mute = discord.Embed(description=f'**Reason:** **[{mute_reason}]({ctx.message.jump_url}).**', color=color.inviscolor)
-					msg="You were muted in `ViHill Corner`."
-					a = id
-					mem_list.append(a)
-					mem_list_final = " | ".join(str(id) for id in mem_list)
-					try:
-						await id.send(msg, embed=mute)
-					except discord.HTTPException:
-						pass
-					await id.add_roles(muted, reason=f"{ctx.author} ---> {mute_reason}")
+					if not staff in id.roles:
+						mute = discord.Embed(description=f'**Reason:** **[{mute_reason}]({ctx.message.jump_url}).**', color=color.inviscolor)
+						msg="You were muted in `ViHill Corner`."
+						a = id
+						mem_list.append(a)
+						mem_list_final = " | ".join(str(id) for id in mem_list)
+						try:
+							await id.send(msg, embed=mute)
+						except discord.HTTPException:
+							pass
+						await id.add_roles(muted, reason=f"{ctx.author} ---> {mute_reason}")
 
 		ban = discord.Embed(description=f"The user(s) have been muted!\n**Reason:** **[{mute_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
 
@@ -360,7 +368,7 @@ class Moderation(commands.Cog):
 
 		em = discord.Embed(color=color.reds, title="___MUTE___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
-		em.add_field(name="Action", value=f"`Used the mute command.`", inline=False)	
+		em.add_field(name="Action", value="`Used the mute command.`", inline=False)	
 		try:
 			em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)	
 		except UnboundLocalError:
@@ -380,6 +388,7 @@ class Moderation(commands.Cog):
 		log_channel = guild.get_channel(788377362739494943)
 		mem_list = []
 		muted = guild.get_role(750465726069997658)
+		staff = guild.get_role(754676705741766757)
 		
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
@@ -402,16 +411,17 @@ class Moderation(commands.Cog):
 					if not ctx.author.id == 374622847672254466:
 						await ctx.send("%s cannot be unmuted ;)))))" % (id.mention))
 						return
-				collection.delete_one({"_id": id.id})
-				msg="You were unmuted in `ViHill Corner`."
-				a = id
-				mem_list.append(a)
-				mem_list_final = " | ".join(str(id) for id in mem_list)
-				try:
-					await id.send(msg)
-				except discord.HTTPException:
-					pass
-				await id.remove_roles(muted, reason="{} ---> Unmute".format(ctx.author))
+				if not staff in id.roles:
+					collection.delete_one({"_id": id.id})
+					msg="You were unmuted in `ViHill Corner`."
+					a = id
+					mem_list.append(a)
+					mem_list_final = " | ".join(str(id) for id in mem_list)
+					try:
+						await id.send(msg)
+					except discord.HTTPException:
+						pass
+					await id.remove_roles(muted, reason="{} ---> Unmute".format(ctx.author))
 
 		ban = discord.Embed(description="The user(s) have been unmuted!" , color=discord.Color.red())
 
@@ -439,74 +449,82 @@ class Moderation(commands.Cog):
 
 		guild = self.client.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
-		
-		def format_time(dt):
-			return time.human_timedelta(dt, accuracy = 3)
+		staff = guild.get_role(754676705741766757)
 
-		def check(m):
-			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
-		
-		await ctx.send("What's the reason?")
-		try:
-			get_reason = await self.client.wait_for('message', timeout=180, check=check)
-			reason_content = get_reason.content
+		if not staff in member.roles:
+			
+			def format_time(dt):
+				return time.human_timedelta(dt, accuracy = 3)
 
-		except asyncio.TimeoutError:
-			return
-		
-		else:
+			def check(m):
+				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+			
+			await ctx.send("What's the reason?")
+			try:
+				get_reason = await self.client.wait_for('message', timeout=180, check=check)
+				reason_content = get_reason.content
 
-			if time is None:
-				await ctx.send("You need to specify time.")
+			except asyncio.TimeoutError:
 				return
+			
 			else:
-				post = {
-						'_id': member.id,
-						'mutedAt': datetime.datetime.now(),
-						'muteDuration': muted_time,
-						'mutedBy': ctx.author.id,
-						'guildId': ctx.guild.id,
-					}
 
-				try:
-					await collection.insert_one(post)
-				except:
-					await ctx.send("User is already muted!")
+				if time is None:
+					await ctx.send("You need to specify time.")
 					return
+				else:
+					post = {
+							'_id': member.id,
+							'mutedAt': datetime.datetime.now(),
+							'muteDuration': muted_time,
+							'mutedBy': ctx.author.id,
+							'guildId': ctx.guild.id,
+						}
 
-				muted_for = datetime.datetime.utcnow() + relativedelta(seconds = muted_time)
-
-				muted = guild.get_role(750465726069997658)
-				await member.add_roles(muted, reason=f"{ctx.author} ---> {reason_content}")
-				msg = ("You have been muted in `ViHill Corner`")
-				em = discord.Embed(description=f"Time: `{format_time(muted_for)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=color.inviscolor)
-				try:
-					await member.send(msg, embed = em)
-				except discord.HTTPException:
-					pass
-
-
-				unban = discord.Embed(description= f'{member.mention} has been temporarily muted. \n\nTime: `{format_time(muted_for)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**' , color=color.red)
-				
-				await ctx.send(embed=unban)
-
-				log = discord.Embed(color=color.reds, title="___Mute___", timestamp = ctx.message.created_at)
-				log.add_field(name="Member", value=f"`{member}`", inline=False)
-				log.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-				log.add_field(name="Time", value=f"`{format_time(muted_for)}`", inline=False)
-				log.add_field(name="Reason", value=f"**[{reason_content}]({ctx.message.jump_url})**", inline=False)
-				await log_channel.send(embed=log)
-
-				await asyncio.sleep(muted_time)
-				if muted in member.roles:
-					await member.remove_roles(muted)
-					await collection.delete_one({"_id": member.id})
 					try:
-						await member.send("You have been unmuted in `ViHill Corner`.")
+						await collection.insert_one(post)
+					except:
+						await ctx.send("User is already muted!")
+						return
+
+					muted_for = datetime.datetime.utcnow() + relativedelta(seconds = muted_time)
+
+					muted = guild.get_role(750465726069997658)
+					await member.add_roles(muted, reason=f"{ctx.author} ---> {reason_content}")
+					msg = ("You have been muted in `ViHill Corner`")
+					em = discord.Embed(description=f"Time: `{format_time(muted_for)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=color.inviscolor)
+					try:
+						await member.send(msg, embed = em)
 					except discord.HTTPException:
 						pass
-				else:
-					pass
+
+
+					unban = discord.Embed(description= f'{member.mention} has been temporarily muted. \n\nTime: `{format_time(muted_for)}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**' , color=color.red)
+					
+					await ctx.send(embed=unban)
+
+					log = discord.Embed(color=color.reds, title="___Mute___", timestamp = ctx.message.created_at)
+					log.add_field(name="Member", value=f"`{member}`", inline=False)
+					log.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+					log.add_field(name="Time", value=f"`{format_time(muted_for)}`", inline=False)
+					log.add_field(name="Reason", value=f"**[{reason_content}]({ctx.message.jump_url})**", inline=False)
+					await log_channel.send(embed=log)
+
+					await asyncio.sleep(muted_time)
+					if muted in member.roles:
+						await member.remove_roles(muted)
+						await collection.delete_one({"_id": member.id})
+						try:
+							await member.send("You have been unmuted in `ViHill Corner`.")
+						except discord.HTTPException:
+							pass
+					else:
+						pass
+
+		else:
+			await ctx.send("You can't mute mods or take any moderator action against them.")
+			return
+
 
 		# CLEAR  /  PURGE
 
@@ -521,7 +539,7 @@ class Moderation(commands.Cog):
 
 			em = discord.Embed(color=color.reds, title="___PURGE / CLEAR___", timestamp = ctx.message.created_at)
 			em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-			em.add_field(name="Action", value=f"`Used the clear / purge command`", inline=False)
+			em.add_field(name="Action", value="`Used the clear / purge command`", inline=False)
 			em.add_field(name="Amount", value=f"`{amount}` messages", inline=False)
 			em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
 
