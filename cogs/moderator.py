@@ -389,6 +389,9 @@ class Moderation(commands.Cog):
 		mem_list = []
 		muted = guild.get_role(750465726069997658)
 		staff = guild.get_role(754676705741766757)
+		total_failures = 0
+		failed_users = []
+		unmute_succes = 0
 		
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
@@ -411,21 +414,44 @@ class Moderation(commands.Cog):
 					if not ctx.author.id == 374622847672254466:
 						await ctx.send("%s cannot be unmuted ;)))))" % (id.mention))
 						return
+				
+				total_failures += 1
+				
+				result = await collection.find_one({'_id': id.id})
+				
+
+				if result != None:
+					user = guild.get_member(id.id)
+					if total_failures >= 2:
+						failed_users.append(user)
+					elif total_failures == 1:
+						await ctx.send("That user is muted by a filter. (`%s`)" % (user))
+						return
+				
 				if not staff in id.roles:
-					collection.delete_one({"_id": id.id})
-					msg="You were unmuted in `ViHill Corner`."
-					a = id
-					mem_list.append(a)
-					mem_list_final = " | ".join(str(id) for id in mem_list)
-					try:
-						await id.send(msg)
-					except discord.HTTPException:
-						pass
-					await id.remove_roles(muted, reason="{} ---> Unmute".format(ctx.author))
+					if not id in failed_users:
+						collection.delete_one({"_id": id.id})
+						msg="You were unmuted in `ViHill Corner`."
+						a = id
+						mem_list.append(a)
+						mem_list_final = " | ".join(str(id) for id in mem_list)
+						try:
+							await id.send(msg)
+						except discord.HTTPException:
+							pass
+						await id.remove_roles(muted, reason="{} ---> Unmute".format(ctx.author))
+						unmute_succes += 1
 
-		ban = discord.Embed(description="The user(s) have been unmuted!" , color=discord.Color.red())
+		if total_failures >= 2:
+			total_failed_users = ", ".join(failed_users)
+			await ctx.send("Some of the users you tried to unmute were muted by a filter (`%s`). The others have been unmuted however." % (total_failed_users))
 
-		await ctx.channel.send(embed=ban)
+		elif not unmute_succes < 1:
+			succes_unmute = discord.Embed(description="The user(s) have been unmuted!" , color=discord.Color.red())
+			await ctx.send(embed=succes_unmute)
+		
+		else:
+			await ctx.send("Failed to unmute. Probably because they were never muted.")
 
 		em = discord.Embed(color=color.reds, title="___UNMUTE___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
