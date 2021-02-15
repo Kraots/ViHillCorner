@@ -430,7 +430,7 @@ class Moderation(commands.Cog):
 				
 				if not staff in id.roles:
 					if not id in failed_users:
-						collection.delete_one({"_id": id.id})
+						await collection.delete_one({"_id": id.id})
 						msg="You were unmuted in `ViHill Corner`."
 						a = id
 						mem_list.append(a)
