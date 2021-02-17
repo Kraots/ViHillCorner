@@ -142,7 +142,7 @@ class MarryCommands(commands.Cog):
 			return
 		
 		elif user.id == 374622847672254466:
-			await ctx.send("That user is not married to anyone, he doesn't want to have anything to do with these stuff anymore anyway. But he's ok, dw. :smile:")
+			await ctx.send("That user is not married to anyone, he doesn't want to have anything to do with these stuff anymore anyway.")
 			return
 
 		elif results == None:
