@@ -6,7 +6,6 @@ from utils import time
 import datetime
 from dateutil.relativedelta import relativedelta
 import asyncio
-
 DBKEY = os.getenv("MONGODBKEY")
 
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
