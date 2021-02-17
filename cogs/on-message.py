@@ -86,16 +86,6 @@ class on_message(commands.Cog):
 
 		if message.guild:
 			
-			twil = message.guild.get_member(747329236695777340)
-			if message.author.id == twil.id:
-				try:
-					if twil.nick != "xxtwilightxx the second horniest":
-						await twil.edit(nick="xxtwilightxx the second horniest")
-						await message.channel.send("Nope, it's `xxtwilightxx the second horniest` :smirk: ")
-				except:
-					await twil.edit(nick="xxtwilightxx the second horniest")
-					await message.channel.send("Nope, it's `xxtwilightxx the second horniest` :smirk: ")
-
 			if message.author.id == kraots.id:
 				return
 
