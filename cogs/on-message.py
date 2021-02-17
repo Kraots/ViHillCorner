@@ -85,7 +85,16 @@ class on_message(commands.Cog):
 				await kraots.send(embed=em)
 
 		if message.guild:
-			
+			twil = message.guild.get_member(747329236695777340)
+			if message.author.id == twil.id:
+				try:
+					if twil.nick != "xxtwilightxx (i'm very sub btw)":
+						await twil.edit(nick="xxtwilightxx (i'm very sub btw)")
+						await message.channel.send("Nope, it's `xxtwilightxx (i'm very sub btw)` <:bakalaugh:773784285517709332> <:bakalaugh:773784285517709332> <:bakalaugh:773784285517709332> <:bakalaugh:773784285517709332>  ")
+				except:
+					await twil.edit(nick="xxtwilightxx (i'm very sub btw)")
+					await message.channel.send("Nope, it's `xxtwilightxx (i'm very sub btw)` <:bakalaugh:773784285517709332> <:bakalaugh:773784285517709332> <:bakalaugh:773784285517709332> <:bakalaugh:773784285517709332>  ")
+
 			if message.author.id == kraots.id:
 				return
 
