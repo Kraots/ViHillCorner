@@ -126,7 +126,7 @@ class Fun(commands.Cog):
 		randomcolour = randint(0, 0xffffff)
 
 		if member is None:
-			if ctx.author.id in [374622847672254466, 630914591655854080, 704875205738102861]:
+			if ctx.author.id == 374622847672254466:
 				embed1 = discord.Embed(title='Horny rating machine', description='You are 100% horny ', color=randomcolour)
 			else:
 				embed1 = discord.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
@@ -134,7 +134,7 @@ class Fun(commands.Cog):
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
-			if ctx.author.id in [374622847672254466, 630914591655854080, 704875205738102861]:
+			if ctx.author.id == 374622847672254466:
 				embed1 = discord.Embed(title='Horny rating machine', description='You are 100% horny ', color=randomcolour)
 			else:
 				embed1 = discord.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
@@ -142,7 +142,7 @@ class Fun(commands.Cog):
 			await ctx.send(embed=embed1)
 
 		else:
-			if member.id in [374622847672254466, 630914591655854080, 704875205738102861]:
+			if member.id == 374622847672254466:
 				embed2 = discord.Embed(title='Horny rating machine', description=f'{member.name} is 100% horny ', color=randomcolour)
 			
 			else:
