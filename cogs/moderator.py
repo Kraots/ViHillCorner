@@ -72,7 +72,7 @@ class Moderation(commands.Cog):
 			unmuteTime = result2['mutedAt'] + relativedelta(seconds=result2['muteDuration'])
 
 			if currentTime >= unmuteTime:
-				guild = self.client.get_guild(result['guildId'])
+				guild = self.client.get_guild(result2['guildId'])
 				member = guild.get_member(result2['_id'])
 
 				mute_role = guild.get_role(750465726069997658)
