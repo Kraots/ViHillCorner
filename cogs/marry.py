@@ -33,7 +33,7 @@ class MarryCommands(commands.Cog):
 			await ctx.send("You cannot marry yourself.")
 			return
 		
-		elif member.id == 374622847672254466:
+		elif member.id == 374622847672254466 and ctx.author.id != 374622847672254466:
 			await ctx.send("That user does not want this. Please stop.")
 			return
 
@@ -141,7 +141,7 @@ class MarryCommands(commands.Cog):
 			await ctx.send("Bot's cannot marry u dumbo <:pepe_cringe:750755809700348166>")
 			return
 		
-		elif user.id == 374622847672254466:
+		elif user.id == 374622847672254466 and ctx.author.id != 374622847672254466:
 			await ctx.send("That user is not married to anyone, he doesn't want to have anything to do with these stuff anymore anyway.")
 			return
 

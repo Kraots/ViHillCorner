@@ -76,7 +76,7 @@ class LevelSystem(commands.Cog):
 								lvl = lvl - 1
 								xp = stats['xp']
 								xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
-							elif xp == 0:
+							elif xp >= 0:
 								for i in range(len(level)):
 									if lvl == lvlnum[i]:
 										lvlrole = level[i]
