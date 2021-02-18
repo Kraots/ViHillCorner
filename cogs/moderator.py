@@ -445,7 +445,7 @@ class Moderation(commands.Cog):
 					if total_failures >= 2:
 						failed_users.append(user)
 					elif total_failures == 1:
-						if not ctx.author.id != 374622847672254466:
+						if ctx.author.id != 374622847672254466:
 							await ctx.send("That user is muted by a filter. (`%s`)" % (user))
 							return
 				
