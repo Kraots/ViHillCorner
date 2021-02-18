@@ -39,7 +39,7 @@ class Fun(commands.Cog):
 
 		if member is None:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Gay rating machine', description=f'You are 0% gay :gay_pride_flag:', color=randomcolour)
+				embed1 = discord.Embed(title='Gay rating machine', description='You are 0% gay :gay_pride_flag:', color=randomcolour)
 
 			else:
 				embed1 = discord.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
@@ -48,7 +48,7 @@ class Fun(commands.Cog):
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Gay rating machine', description=f'You are 0% gay :gay_pride_flag:', color=randomcolour)
+				embed1 = discord.Embed(title='Gay rating machine', description='You are 0% gay :gay_pride_flag:', color=randomcolour)
 
 			else:
 				embed1 = discord.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
@@ -70,7 +70,7 @@ class Fun(commands.Cog):
 
 		if member is None:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Simp rating machine', description=f'You are 0% simp ', color=randomcolour)
+				embed1 = discord.Embed(title='Simp rating machine', description='You are 0% simp ', color=randomcolour)
 			else:
 				embed1 = discord.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
 			
@@ -78,7 +78,7 @@ class Fun(commands.Cog):
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Simp rating machine', description=f'You are 0% simp ', color=randomcolour)
+				embed1 = discord.Embed(title='Simp rating machine', description='You are 0% simp ', color=randomcolour)
 			else:
 				embed1 = discord.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
 			
@@ -98,7 +98,7 @@ class Fun(commands.Cog):
 
 		if member is None:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Straight rating machine', description=f'You are 100% straight ', color=randomcolour)
+				embed1 = discord.Embed(title='Straight rating machine', description='You are 100% straight ', color=randomcolour)
 			else:
 				embed1 = discord.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
 			
@@ -106,7 +106,7 @@ class Fun(commands.Cog):
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Straight rating machine', description=f'You are 100% straight ', color=randomcolour)
+				embed1 = discord.Embed(title='Straight rating machine', description='You are 100% straight ', color=randomcolour)
 			else:
 				embed1 = discord.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
 			
@@ -126,23 +126,23 @@ class Fun(commands.Cog):
 		randomcolour = randint(0, 0xffffff)
 
 		if member is None:
-			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Horny rating machine', description=f'You are 100% horny ', color=randomcolour)
+			if ctx.author.id in [374622847672254466, 630914591655854080, 704875205738102861]:
+				embed1 = discord.Embed(title='Horny rating machine', description='You are 100% horny ', color=randomcolour)
 			else:
 				embed1 = discord.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
-			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Horny rating machine', description=f'You are 100% horny ', color=randomcolour)
+			if ctx.author.id in [374622847672254466, 630914591655854080, 704875205738102861]:
+				embed1 = discord.Embed(title='Horny rating machine', description='You are 100% horny ', color=randomcolour)
 			else:
 				embed1 = discord.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		else:
-			if member.id == 374622847672254466:
+			if member.id in [374622847672254466, 630914591655854080, 704875205738102861]:
 				embed2 = discord.Embed(title='Horny rating machine', description=f'{member.name} is 100% horny ', color=randomcolour)
 			
 			else:
@@ -156,7 +156,7 @@ class Fun(commands.Cog):
 
 		if member is None:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Boomer rating machine', description=f'You are 0% boomer ', color=randomcolour)
+				embed1 = discord.Embed(title='Boomer rating machine', description='You are 0% boomer ', color=randomcolour)
 
 			else:
 				embed1 = discord.Embed(title='Boomer rating machine', description=f'You are {simprate}% boomer ', color=randomcolour)
@@ -165,7 +165,7 @@ class Fun(commands.Cog):
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Boomer rating machine', description=f'You are 0% boomer ', color=randomcolour)
+				embed1 = discord.Embed(title='Boomer rating machine', description='You are 0% boomer ', color=randomcolour)
 
 			else:
 				embed1 = discord.Embed(title='Boomer rating machine', description=f'You are {simprate}% boomer ', color=randomcolour)
