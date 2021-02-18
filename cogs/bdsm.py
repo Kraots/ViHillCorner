@@ -21,7 +21,7 @@ class BdsmResults(commands.Cog):
 
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def bdsm(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="BDSM commands:	", description="`!bdsm results <member>` - send the bdsm results of the specified member. \n`!bdsm set` - set your bdsm result by sending the screenshot of your results. \n`!bdsm test` - take the test, duh.")
+		em = discord.Embed(color=color.lightpink, title="BDSM commands:	", description="`!bdsm results <member>` - send the bdsm results of the specified member. \n`!bdsm set` - set your bdsm result by sending the screenshot of your results. \n`!bdsm remove` - remove your bdsm results. \n`!bdsm test` - take the test, duh.")
 		await ctx.send(embed=em)
 	
 	@bdsm.command()
@@ -70,9 +70,47 @@ class BdsmResults(commands.Cog):
 		else:
 			await ctx.send("That user did not set their bdsm results.")
 
+	@bdsm.command(aliases=['delete'])
+	async def remove(self, ctx):
+		user = ctx.author
+		
+		def check(m):
+			return m.author == ctx.author and m.channel == ctx.channel
+		
+		await ctx.send("Are you sure you want to remove your bdsm results? `yes` | `no` %s" % (user.mention))
+		hasBdsm = await collection.find_one({'_id': user.id})
+
+		if hasBdsm != None:
+			try:
+				raw_reply = await self.client.wait_for('message', timeout=180, check=check)
+				reply = raw_reply.content.lower()
+				
+				if reply == "yes":
+					await collection.delete_one({'_id': user.id})
+					await ctx.send("Succesfully removed your bdsm results. %s" % (user.mention))
+					return
+				
+				elif reply == "no":
+					await ctx.send("Okay, your bdsm results have not been removed. %s" % (user.mention))
+					return
+				
+				else:
+					await ctx.send("Invalid form of reply, please type the command again, but this time only reply with `yes` or `no`.")
+					return
+			
+			except asyncio.TimeoutError:
+				await ctx.send("Time expired. %s" % (user.mention))
+				return
+		else:
+			await ctx.send("There are no bdsm results to delete, you don't have them set. To set your bdsm results type `!bdsm set`, and then send the screenshot of your results. %s" % (user.mention))
+
 	@bdsm.command()
 	async def test(self, ctx):
 		await ctx.send("Click the link below to take your bdsm test: \nhttps://bdsmtest.org")
+
+	@commands.Cog.listener()
+	async def on_member_remove(self, member):
+		await collection.delete_one({'_id': member.id})
 
 def setup (client):
 	client.add_cog(BdsmResults(client))

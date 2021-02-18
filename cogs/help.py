@@ -32,7 +32,7 @@ class Help(commands.Cog):
 	@help.command()
 	async def bdsm(self, ctx):
 		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!bdsm set\n!bdsm results <member>\n!bdsm test```")
-		em.add_field(name="***Info:***", value="`!bdsm results <member>` - send the bdsm results of the specified member. \n`!bdsm set` - set your bdsm result by sending the screenshot of your results. \n`!bdsm test` - take the test, duh.", inline=False)
+		em.add_field(name="***Info:***", value="`!bdsm results <member>` - send the bdsm results of the specified member. \n`!bdsm set` - set your bdsm result by sending the screenshot of your results. \n`!bdsm remove` - remove your bdsm results. \n`!bdsm test` - take the test, duh.", inline=False)
 		await ctx.send(embed=em)
 
 	@help.command(aliases=['msg-top', 'top-msg'])
