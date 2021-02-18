@@ -14,6 +14,7 @@ DBKEY = os.getenv("MONGODBKEY")
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Moderation Mutes"]
+collection2 = db['Filter Mutes']
 
 time_regex = re.compile("(?:(\d{1,5})(h|s|m|d))+?")
 time_dict = {"h":3600, "s":1, "m":60, "d":86400}
@@ -48,6 +49,7 @@ class Moderation(commands.Cog):
 		await self.client.wait_until_ready()
 		currentTime = datetime.datetime.now()
 		results = collection.find()
+		results2 = collection2.find()
 		for result in await results.to_list(99999999999999999):
 			unmuteTime = result['mutedAt'] + relativedelta(seconds=result['muteDuration'])
 
@@ -65,6 +67,24 @@ class Moderation(commands.Cog):
 					await collection.delete_one({"_id": member.id})
 				else:
 					await collection.delete_one({"_id": result['_id']})
+
+		for result2 in await results2.to_list(99999999999999999):
+			unmuteTime = result2['mutedAt'] + relativedelta(seconds=result2['muteDuration'])
+
+			if currentTime >= unmuteTime:
+				guild = self.client.get_guild(result['guildId'])
+				member = guild.get_member(result2['_id'])
+
+				mute_role = guild.get_role(750465726069997658)
+				
+				if member != None:
+					if mute_role in member.roles:
+						await member.remove_roles(mute_role)
+						await member.send("You have been unmuted in `ViHill Corner`.")
+					
+					await collection.delete_one({"_id": member.id})
+				else:
+					await collection.delete_one({"_id": result2['_id']})
 
 
 	# SLOWMODE
@@ -417,7 +437,7 @@ class Moderation(commands.Cog):
 				
 				total_failures += 1
 				
-				result = await collection.find_one({'_id': id.id})
+				result = await collection2.find_one({'_id': id.id})
 				
 
 				if result != None:

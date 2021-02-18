@@ -14,7 +14,7 @@ no_mute_these = [374622847672254466, 751724369683677275]
 
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
-collection = db["Moderation Mutes"]
+collection = db["Filter Mutes"]
 
 bad_words = [
 				"nigga",

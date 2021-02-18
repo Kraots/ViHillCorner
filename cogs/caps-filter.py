@@ -12,7 +12,7 @@ DBKEY = os.getenv("MONGODBKEY")
 
 cluster = MongoClient(DBKEY)
 db = cluster["ViHillCornerDB"]
-collection = db["Moderation Mutes"]
+collection = db["Filter Mutes"]
 
 class CapsFilter(commands.Cog):
 

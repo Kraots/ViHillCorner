@@ -12,7 +12,7 @@ DBKEY = os.getenv("MONGODBKEY")
 
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
-collection = db["Moderation Mutes"]
+collection = db["Filter Mutes"]
 
 class RepeatedTextFilter(commands.Cog):
 
