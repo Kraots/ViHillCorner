@@ -103,7 +103,7 @@ class command(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		if member.id == 374622847672254466 and not ctx.author.id == 374622847672254466:
+		if member.id in [374622847672254466, 704875205738102861] and not ctx.author.id == [374622847672254466, 704875205738102861]:
 			return
 		#elif member.id == <ID> and not ctx.author.id in [630914591655854080, 374622847672254466]:
 		#	return
