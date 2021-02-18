@@ -28,7 +28,7 @@ class info(commands.Cog):
 				a = member.mention
 		
 				mention_list.append(a)
-				mentions = f" ".join(mention_list)
+				mentions = " ".join(mention_list)
 			
 			msg = await ctx.send(mentions, embed=sfw)
 		await msg.add_reaction('🗑️')
@@ -47,7 +47,7 @@ class info(commands.Cog):
 				a = member.mention
 		
 				mention_list.append(a)
-				mentions = f" ".join(mention_list)
+				mentions = " ".join(mention_list)
 			
 			msg = await ctx.send(mentions, embed=lvl)
 		await msg.add_reaction('🗑️')
@@ -66,7 +66,7 @@ class info(commands.Cog):
 				a = member.mention
 		
 				mention_list.append(a)
-				mentions = f" ".join(mention_list)
+				mentions = " ".join(mention_list)
 			
 			msg = await ctx.send(mentions, embed=rank)
 		await msg.add_reaction('🗑️')
@@ -85,7 +85,7 @@ class info(commands.Cog):
 				a = member.mention
 		
 				mention_list.append(a)
-				mentions = f" ".join(mention_list)
+				mentions = " ".join(mention_list)
 			
 			msg = await ctx.send(mentions, embed=em)
 		await msg.add_reaction('🗑️')
@@ -105,7 +105,7 @@ class info(commands.Cog):
 				a = member.mention
 		
 				mention_list.append(a)
-				mentions = f" ".join(mention_list)
+				mentions = " ".join(mention_list)
 			
 			msg = await ctx.send(mentions, embed=em)
 		await msg.add_reaction('🗑️')
@@ -125,7 +125,7 @@ class info(commands.Cog):
 				a = member.mention
 		
 				mention_list.append(a)
-				mentions = f" ".join(mention_list)
+				mentions = " ".join(mention_list)
 			
 			msg = await ctx.send(mentions, embed=em)
 		await msg.add_reaction('🗑️')
@@ -145,7 +145,7 @@ class info(commands.Cog):
 				a = member.mention
 		
 				mention_list.append(a)
-				mentions = f" ".join(mention_list)
+				mentions = " ".join(mention_list)
 			
 			msg = await ctx.send(mentions, embed=em)
 		await msg.add_reaction('🗑️')
@@ -164,7 +164,7 @@ class info(commands.Cog):
 				a = member.mention
 		
 				mention_list.append(a)
-				mentions = f" ".join(mention_list)
+				mentions = " ".join(mention_list)
 			
 			msg = await ctx.send(mentions, embed=em)
 		await msg.add_reaction('🗑️')
