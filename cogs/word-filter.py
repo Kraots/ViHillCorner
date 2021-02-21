@@ -24,22 +24,7 @@ bad_words = [
 				"niggas",
 				"niggers",
 				"nigges",
-				"nigge",
-				"tard",
-				"commie",
-				"T-bagger",
-				"faggot",
-				"dyke",
-				"fatso",
-				"druggie",
-				"whore",
-				"handicapped",
-				"hoe",
-				"wheelchair-bound",
-				"slut",
-				"cunt",
-				"hœ",
-				"høe"
+				"nigge"
 				]
 
 zalgo_vars = ['\u030D', '\u030E', '\u0304', '\u0305', '\u033F',
