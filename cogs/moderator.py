@@ -202,11 +202,9 @@ class Moderation(commands.Cog):
 	async def opban(self, ctx, member: int):
 		guild = self.client.get_guild(750160850077089853)
 		get_member = await self.client.fetch_user(member)
-		staff = guild.get_role(754676705741766757)
-		if not staff in get_member.roles:
-			await guild.ban(get_member)
-			em = discord.Embed(color=discord.Color.red(), description=f"`{get_member}` was banned succesfully.")
-			await ctx.send(embed=em)
+		await guild.ban(get_member)
+		em = discord.Embed(color=discord.Color.red(), description=f"`{get_member}` was banned succesfully.")
+		await ctx.send(embed=em)
 
 
 		# OP UNBAN
