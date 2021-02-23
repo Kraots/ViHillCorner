@@ -82,9 +82,9 @@ class Moderation(commands.Cog):
 						await member.remove_roles(mute_role)
 						await member.send("You have been unmuted in `ViHill Corner`.")
 					
-					await collection.delete_one({"_id": member.id})
+					await collection2.delete_one({"_id": member.id})
 				else:
-					await collection.delete_one({"_id": result2['_id']})
+					await collection2.delete_one({"_id": result2['_id']})
 
 
 	# SLOWMODE
