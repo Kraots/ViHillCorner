@@ -435,10 +435,20 @@ class Moderation(commands.Cog):
 				
 				total_failures += 1
 				
-				result = await collection2.find_one({'_id': id.id})
+				result = await collection.find_one({'id':id.id})
+				resultt = await collection2.find_one({'_id': id.id})
 				
 
 				if result != None:
+					user = guild.get_member(id.id)
+					if total_failures >= 2:
+						failed_users.append(user)
+					elif total_failures == 1:
+						if ctx.author.id != 374622847672254466:
+							await ctx.send("That user is muted by a filter. (`%s`)" % (user))
+							return
+				
+				elif resultt != None:
 					user = guild.get_member(id.id)
 					if total_failures >= 2:
 						failed_users.append(user)
