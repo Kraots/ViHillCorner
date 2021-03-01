@@ -12,6 +12,9 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from utils import time
 bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
+
+almond_me = [704875205738102861, 374622847672254466]
+
 DBKEY = os.getenv("MONGODBKEY")
 
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
@@ -879,6 +882,7 @@ class EcoCommands(commands.Cog):
 
 
                 # PP SUCK (credigs : PANDIE)
+	
 	@commands.command()
 	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def ppsuck(self, ctx):
@@ -888,44 +892,120 @@ class EcoCommands(commands.Cog):
 			aaaa = randint(1, 7)
 			bbbb = randint(1, 100)
 			earnings = randint(800, 2500)
+			kraotscheat1 = randint(10000, 100000)
 			earningss = randint(300, 620)
+			kraotscheat2 = randint(250000, 500000)
 			earningsss = randint(600, 1200)
+			kraotscheat3 = randint(500000, 1000000)
 			earningssss = randint(20000, 150000)
+			kraotscheat4 = randint(1000000, 10000000)
 			earningssssss = randint(500000, 5000000)
+			kraotscheat5 = randint(25000000, 100000000)
 			losts = randint(1000, 1200)
 				
+			if ctx.author.id in almond_me:	
+				bbbb = randint(1, 25)	
+				aaaa = randint(1, 7)
+
 			try:
 				if bbbb == 1:
-					earned = earningssssss
-					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+					if ctx.author.id in almond_me:
+						if ctx.author.id == 630914591655854080:
+							earned = kraotscheat5
+							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
 
-					await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got `{:,}` coins.".format(earned))
-					return
+							await ctx.send(":smiling_imp: :smiling_imp: :smirk: :smirk: :yum: :yum: :drooling_face: :drooling_face: you sucked `Kraots` and peed inside his mouth, and then kept fucking and having sex all night, he drank your saliva and licked you clean. You got: `{:,}` coins. :smiling_imp:".format(earned))	
+							return	
+
+						elif ctx.author.id == 374622847672254466:	
+							earned = kraotscheat5	
+							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
+
+							await ctx.send(":smiling_imp: :smiling_imp: :smirk: :smirk: :yum: :yum: :drooling_face: :drooling_face: you let `Almond` pee inside your mouth, and then kept fucking and having sex all night, you drank her saliva and licked her clean. You got: `{:,}` coins. :smiling_imp:".format(earned))	
+							return
+
+						else:	
+							earned = earningssssss	
+							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
+
+						await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got `{:,}` coins.".format(earned))
+						return
 
 				elif aaaa == 1:
-					earned = earnings
-					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+					if ctx.author.id in almond_me:
+						earned = kraotscheat1
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						if ctx.author.id == 630914591655854080:	
 
-					await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earned))
-					return
+							await ctx.send(":yum: :yum: You sucked `Kraots`'s dick and he came inside your throat. You got: `{:,}` coins. :smiling_imp:".format(earned))	
+							return	
+
+						elif ctx.author.id == 374622847672254466:	
+
+							await ctx.send(":yum: :yum: You sucked `Almond`'s wet juicy pussy and her cum ended up all the way inside your throat. You got: `{:,}` coins. :smiling_imp:".format(earned))	
+							return	
+
+						else:	
+							earned = earnings	
+							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+
+						await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earned))
+						return
 
 				elif aaaa == 4:
-					earned = earningss
-					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+					if ctx.author.id in almond_me:
+						earned = kraotscheat2	
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						if ctx.author.id == 630914591655854080:	
+							await ctx.send("You did so good at peeing insides `Kraot`'s mouth he was very happy that he even licked your juicy pussy clean. You got: `{:,}` :smiling_imp:".format(earned))	
+							return	
 
-					await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earned))
-					return
+						elif ctx.author.id == 374622847672254466:	
+							await ctx.send("You licked `Almond`'s pussy and she enjoyed that much her warm cum went right inside your mouth. You got: `{:,}` :smiling_imp:".format(earned))	
+							return	
+
+						else:	
+							earned = earningss	
+							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+
+						await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earned))
+						return
 
 				elif aaaa == 6:
-					earned = earningsss
-					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+					if ctx.author.id in almond_me:
+						earned = kraotscheat3
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
+						if ctx.author.id == 630914591655854080:	
+							await ctx.send("You fucked with `Kraots` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: `{:,}` :smiling_imp:".format(earned))	
+							return	
+
+						elif ctx.author.id == 374622847672254466:	
+							await ctx.send("You fucked with `Almond` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: `{:,}` :smiling_imp:".format(earned))	
+							return	
+						else:	
+							earned = earningsss	
+							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 				
 					await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earned))
 					return
 
 				elif aaaa == 7:
-					earned = earningssss
-					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+					if ctx.author.id in almond_me:
+						earned = kraotscheat4
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
+						if ctx.author.id == 630914591655854080:	
+
+							await ctx.send(":drooling_face: You fucked `Kraots` and peed on him, and he loved it very much. You got: `{:,}` coins. :smiling_imp:".format(earned))	
+							return	
+
+						elif ctx.author.id == 374622847672254466:	
+
+							await ctx.send(":drooling_face: You fucked `Almond` and she peed on you, and she loved it very much. You got: `{:,}` coins. :smiling_imp:".format(earned))	
+							return	
+
+						else:	
+							earned = earningssss	
+							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
 					await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you `{:,}`".format(earned))
 					return
