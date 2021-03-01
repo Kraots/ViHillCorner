@@ -910,7 +910,7 @@ class EcoCommands(commands.Cog):
 			try:
 				if bbbb == 1:
 					if ctx.author.id in almond_me:
-						if ctx.author.id == 630914591655854080:
+						if ctx.author.id == 704875205738102861:
 							earned = kraotscheat5
 							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
 
@@ -935,7 +935,7 @@ class EcoCommands(commands.Cog):
 					if ctx.author.id in almond_me:
 						earned = kraotscheat1
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
-						if ctx.author.id == 630914591655854080:	
+						if ctx.author.id == 704875205738102861:	
 
 							await ctx.send(":yum: :yum: You sucked `Kraots`'s dick and he came inside your throat. You got: `{:,}` coins. :smiling_imp:".format(earned))	
 							return	
@@ -956,7 +956,7 @@ class EcoCommands(commands.Cog):
 					if ctx.author.id in almond_me:
 						earned = kraotscheat2	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
-						if ctx.author.id == 630914591655854080:	
+						if ctx.author.id == 704875205738102861:	
 							await ctx.send("You did so good at peeing insides `Kraot`'s mouth he was very happy that he even licked your juicy pussy clean. You got: `{:,}` :smiling_imp:".format(earned))	
 							return	
 
@@ -975,7 +975,7 @@ class EcoCommands(commands.Cog):
 					if ctx.author.id in almond_me:
 						earned = kraotscheat3
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
-						if ctx.author.id == 630914591655854080:	
+						if ctx.author.id == 704875205738102861:	
 							await ctx.send("You fucked with `Kraots` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: `{:,}` :smiling_imp:".format(earned))	
 							return	
 
@@ -993,7 +993,7 @@ class EcoCommands(commands.Cog):
 					if ctx.author.id in almond_me:
 						earned = kraotscheat4
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
-						if ctx.author.id == 630914591655854080:	
+						if ctx.author.id == 704875205738102861:	
 
 							await ctx.send(":drooling_face: You fucked `Kraots` and peed on him, and he loved it very much. You got: `{:,}` coins. :smiling_imp:".format(earned))	
 							return	
