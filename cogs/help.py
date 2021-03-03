@@ -31,7 +31,7 @@ class Help(commands.Cog):
 	
 	@help.command(aliases=['number', 'random', 'rn', 'randomnr'])
 	async def randomnumber(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!randomnumber [number1] [number2] [number3]```")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!randomnumber [num1] [num2] [num3]```")
 		em.add_field(name="***Aliases:***", value="• **number**\n• **random**\n• **rn**\n• **randomnr**", inline=False)
 		em.add_field(name="***Info:***", value="If you don't provide any number, the bot will give a random number between `0` and the `largest positive integer supported by the machine`.\n\nIf you provide only one number, then the bot will give a random number between `0` and `your chosen number (num1)`.\n\nIf you provide two numbers only, then the bot will give you a random number between `your first number (num1)` and `your second number (num2)`.\n\nIf you provide all three numbers, then the bot will give a random number between `your first number (num1)` and `your second number (num2)`, that is not `your third number (num3)`, this can be used if you want a random number between 2 numbers that is not a specific one, here's some examples:\n• `10 15 13 - will give a number between 10 and 15 that is not 13`\n• `0 10 5 - will give a number between 0 and 10 that is not 5`\n• `20 100 50 - will give a number between 20 and 100 that is not 50`\n• `10 20 15 - will give a number between 10 and 20 that is not 15`", inline=False)
 		await ctx.send(embed=em)
