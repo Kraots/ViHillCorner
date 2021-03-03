@@ -6,6 +6,8 @@ import utils.colors as color
 from utils import time
 from typing import Union
 import datetime
+import random
+import sys
 
 nono_list = ["pornhub.com", "hentaiheaven.com", "nhentai.net", "hanime.tv", "xvideos.com", "hentai.com", "hentai.net"]
 
@@ -146,6 +148,31 @@ class command(commands.Cog):
 		member_count = len([m for m in guild.members if not m.bot])
 		await ctx.send(f'Members left untill the server can apply for the *discord partnership program:* \n\n`{500 - member_count}`')
 
+	@commands.command(aliases=['randomnr', 'randomnumber', 'random', 'rn'])
+	async def number(self, ctx, num1: int = None, num2: int = None, num3: int = None):
+		if num1 == None and num2 == None:
+			number = random.randint(0, sys.maxsize)
+			await ctx.send("Random number between `0` and the largest positive integer supported by the machine is: \n`%s`" % (number))
+			return
+
+		elif num2 == None:
+			number = random.randint(0, num1)
+			await ctx.send("Random number from `0` to `%s`: \n`%s`" % (num1,number))
+			return
+		
+		elif num3 == None:
+			number = random.randint(num1,num2)
+			await ctx.send("Random number between `%s` and `%s`: \n`%s`" % (num1,num2,number))
+			return
+		
+		else:
+			while True:
+				number = random.randint(num1,num2)
+				if number != num3:
+					await ctx.send("Random number between `%s` and `%s` that is not `%s`: \n`%s`" % (num1,num2,num3,number))
+					return
+				else:
+					pass
 
 
 def setup (client):
