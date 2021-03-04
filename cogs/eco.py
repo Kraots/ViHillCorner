@@ -890,15 +890,10 @@ class EcoCommands(commands.Cog):
 			aaaa = randint(1, 7)
 			bbbb = randint(1, 100)
 			earnings = randint(800, 2500)
-			kraotscheat1 = randint(10000, 100000)
 			earningss = randint(300, 620)
-			kraotscheat2 = randint(250000, 500000)
 			earningsss = randint(600, 1200)
-			kraotscheat3 = randint(500000, 1000000)
 			earningssss = randint(20000, 150000)
-			kraotscheat4 = randint(1000000, 10000000)
 			earningssssss = randint(500000, 5000000)
-			kraotscheat5 = randint(25000000, 100000000)
 			losts = randint(1000, 1200)
 
 			try:
