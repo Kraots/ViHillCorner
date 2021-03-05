@@ -428,7 +428,7 @@ class Moderation(commands.Cog):
 
 		else:
 			for id in unmuted_members:
-				if id.id in [302420848441294849, 747329236695777340]:
+				if id.id == 747329236695777340:
 					if not ctx.author.id == 374622847672254466:
 						await ctx.send("%s cannot be unmuted ;)))))" % (id.mention))
 						return
