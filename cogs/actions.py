@@ -218,7 +218,7 @@ class actions(commands.Cog):
 
 			else:
 				for member in members:
-					if member.id == 374622847672254466:
+					if ctx.author.id == 747329236695777340:
 						member = ctx.author
 					a = member.mention
 			
@@ -362,7 +362,7 @@ class actions(commands.Cog):
 
 			else:
 				for member in members:
-					if member.id == 374622847672254466:
+					if ctx.author.id == 747329236695777340:
 						member = ctx.author
 					a = member.mention
 			
