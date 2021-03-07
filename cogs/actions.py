@@ -68,7 +68,7 @@ class actions(commands.Cog):
 				a = member.mention
 		
 				mention_list.append(a)
-				mentions = f" ".join(mention_list)
+				mentions = " ".join(mention_list)
 			
 			msg = await ctx.send(mentions, embed=em)
 		await msg.add_reaction('<:hanako_hug:773540181897642036>')
@@ -88,7 +88,7 @@ class actions(commands.Cog):
 				a = member.mention
 		
 				mention_list.append(a)
-				mentions = f" ".join(mention_list)
+				mentions = " ".join(mention_list)
 			
 			msg = await ctx.send(mentions, embed=version)
 		await msg.add_reaction('<:hug:750751796317913218>')
@@ -108,7 +108,7 @@ class actions(commands.Cog):
 				a = member.mention
 		
 				mention_list.append(a)
-				mentions = f" ".join(mention_list)
+				mentions = " ".join(mention_list)
 			
 			msg = await ctx.send(mentions, embed=version)
 		await msg.add_reaction('🗑️')
@@ -129,7 +129,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
@@ -150,7 +150,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
@@ -223,7 +223,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
@@ -243,7 +243,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('<:kanna_pat:750757139001245806>')
@@ -263,7 +263,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
@@ -283,7 +283,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
@@ -303,7 +303,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
@@ -323,7 +323,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
@@ -345,7 +345,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
@@ -367,7 +367,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
@@ -398,7 +398,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
@@ -418,7 +418,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
@@ -438,7 +438,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
@@ -479,7 +479,7 @@ class actions(commands.Cog):
 					a = member.mention
 			
 					mention_list.append(a)
-					mentions = f" ".join(mention_list)
+					mentions = " ".join(mention_list)
 				
 				msg = await ctx.send(mentions, embed=version)
 			await msg.add_reaction('🗑️')
