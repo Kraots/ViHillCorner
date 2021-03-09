@@ -18,7 +18,7 @@ class Help(commands.Cog):
 		helpEm = discord.Embed(description="To get help for a certain command type `!help <command_name>`", color=color.lightpink)
 		helpEm.set_footer(text='To get help for a certain command type `!help <command_name>`\n', icon_url=ctx.author.avatar_url)
 		helpEm.set_thumbnail(url=self.client.user.avatar_url)
-		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `ppsize`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`, `define`, `search`, `calculator`, `marry`, `marriedwho`, `divorce`, `scrs`, `tag`, `snippets`, `role-id`, `rank`, `remind`, `top`, `bdsm`, `randomnumber`")
+		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `ppsize`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`, `define`, `search`, `calculator`, `marry`, `marriedwho`, `divorce`, `scrs`, `tag`, `snippets`, `role-id`, `rank`, `remind`, `top`, `bdsm`, `randomnumber`, `multiplier`")
 		helpEm.add_field(name="Economy", value="`register`, `unregister` ,`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `race`, `ppsuck`, `daily`", inline=False)
 		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `sfw`, `spam`, `english`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `serverinfo`, `vote`", inline=False)
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
@@ -29,6 +29,16 @@ class Help(commands.Cog):
 
 		await ctx.send(embed=helpEm)
 	
+	@help.command(aliases=['multiplier'])
+	async def multipliers(self, ctx):
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!multiplier```")
+		em.add_field(name="***Info:***", value="• Shows the multipliers for the next groups: **Staff/Mods, Server Boosters, Members**.", inline = False)
+
+		if ctx.author.id == 374622847672254466:
+			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!multiplier set <group> <multiplier>`\n\u2800***Info:***\n\u2800\u2800• Set the multiplier for a group. Groups:\n\u2800\u2800\u2800\u2800 • **Mod/Staff**\n\u2800\u2800\u2800\u2800 • **Boosters**\n\u2800\u2800\u2800\u2800 • **Members** \n\u2800\u2800`!multiplier reset <group>` \n\u2800***Info:***\n\u2800\u2800• Reset the multiplier for a group. Groups:\n\u2800\u2800\u2800\u2800 • **Mod/Staff**\n\u2800\u2800\u2800\u2800 • **Boosters**\n\u2800\u2800\u2800\u2800 • **Members** \n _ _")
+
+		await ctx.send(embed=em)
+
 	@help.command(aliases=['number', 'random', 'rn', 'randomnr'])
 	async def randomnumber(self, ctx):
 		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!randomnumber [num1] [num2] [num3]```")
