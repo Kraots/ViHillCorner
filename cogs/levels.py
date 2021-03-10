@@ -145,6 +145,8 @@ class LevelSystem(commands.Cog):
 				em = discord.Embed(title=f"{member.display_name}'s level stats", color=color.lightpink)
 				em.add_field(name="Name", value=member.mention)
 				
+
+
 				if lvl == 500:
 					lvl = "500(MAX)"
 					em.add_field(name="XP", value="MAX")
@@ -152,7 +154,12 @@ class LevelSystem(commands.Cog):
 					em.add_field(name="Rank", value=f"{rank}/{all_guild_members}", inline=False)
 					em.add_field(name="Progress Bar [lvl]", value=20 * ":blue_square:", inline=False)
 				else:
-					em.add_field(name="XP", value=f"{xp}/{int(200*((1/2)*lvl))}")
+					if str(xp).endswith(".0"):
+						x = str(xp).replace(".0", "")
+					else:
+						x = xp
+
+					em.add_field(name="XP", value=f"{x}/{int(200*((1/2)*lvl))}")
 					em.add_field(name="Level", value=lvl)
 					em.add_field(name="Rank", value=f"{rank}/{all_guild_members}", inline=False)
 					em.add_field(name="Progress Bar [lvl]", value=boxes * ":blue_square:" + (20-boxes) * ":white_large_square:", inline=False)
@@ -199,9 +206,17 @@ class LevelSystem(commands.Cog):
 					xp = result['xp']
 				
 				index += 1
+				f = result['xp']
 				if lvl == 500:
 					lvl = "500(MAX)"
-				em.add_field(name=f"`#{index}` **-->** {user.display_name}", value=f"Level: `{lvl}`\nTotal XP: `{result['xp']}`", inline=False)
+				
+				if str(f).endswith(".0"):
+					f = str(f).replace(".0", "")
+				else:
+					f = f
+				
+
+				em.add_field(name=f"`#{index}` **-->** {user.display_name}", value=f"Level: `{lvl}`\nTotal XP: `{f}`", inline=False)
 			
 			await ctx.send(embed=em)
 
