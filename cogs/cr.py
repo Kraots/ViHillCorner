@@ -4,6 +4,7 @@ import asyncio
 import motor.motor_asyncio
 import os
 import datetime
+from utils import time
 
 DBKEY = os.getenv("MONGODBKEY")
 
@@ -219,7 +220,7 @@ class CustomRoles(commands.Cog):
 			return
 		else:
 			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				await collection.update_one({'_id': user.id}, {'$inc':{'shares': 1}})
+				await collection.update_one({'roleID': crname.id}, {'$inc':{'shares': 1}})
 				await member.add_roles(crname)
 				em = discord.Embed(color=user.color, title=f"{member} has accepted your role")
 				em.set_image(url="https://blog.hubspot.com/hubfs/giphy_1-1.gif")
@@ -248,14 +249,18 @@ class CustomRoles(commands.Cog):
 			if guildRole in m.roles:
 				index += 1
 		roleOwner = ctx.guild.get_member(result['_id'])
+		
+		def format_date(dt):
+				if dt is None:
+					return 'N/A'
+				return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-		createdAt = createdAt.strftime("%Y-%m-%d %H:%M")
 		em = discord.Embed(color=guildRole.color, title="Role Info About `%s`" % (roleName))
 		em.add_field(name="Custom Role Owner", value=roleOwner, inline=False)
 		em.add_field(name="Hex Code", value=guildRole.color, inline=False)
 		em.add_field(name="People That Have The Role", value=index, inline=False)
 		em.add_field(name="Total Role Shares", value=shares, inline = False)
-		em.set_footer(text="Created at: %s (UTC)" % (createdAt))
+		em.add_field(name="Created At", value="%s" % (format_date(createdAt)), inline=False)
 
 		await ctx.send(embed=em)
 
@@ -394,7 +399,11 @@ class CustomRoles(commands.Cog):
 			await ctx.send("That is not a role id! To get the role's ID please type `!role-id <role_name>`")
 			return
 
-
+	@_info.error
+	async def info_error(self, ctx, error):
+		if isinstance(error, commands.errors.BadArgument):
+			await ctx.send("That is not a role id! To get the role's ID please type `!role-id <role_name>`")
+			return
 
 
 
