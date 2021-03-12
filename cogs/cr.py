@@ -3,6 +3,7 @@ from discord.ext import commands
 import asyncio
 import motor.motor_asyncio
 import os
+import datetime
 
 DBKEY = os.getenv("MONGODBKEY")
 
@@ -92,11 +93,16 @@ class CustomRoles(commands.Cog):
 
 					await ctx.author.add_roles(newcr)
 
-					post = {"_id": user.id, "CustomRoleName": crname.content}
+					post = {"_id": user.id,
+							"CustomRoleName": crname.content,
+							"roleID": newcr.id,
+							"shares": 0,
+							"createdAt": datetime.datetime.utcnow()
+							}
 					await collection.insert_one(post)
 
 					positions = {
-						newcr: 65
+						newcr: 125
 					}
 					await guild.edit_role_positions(positions=positions)
 
@@ -213,6 +219,7 @@ class CustomRoles(commands.Cog):
 			return
 		else:
 			if str(reaction.emoji) == '<:agree:797537027469082627>':
+				await collection.update_one({'_id': user.id}, {'$inc':{'shares': 1}})
 				await member.add_roles(crname)
 				em = discord.Embed(color=user.color, title=f"{member} has accepted your role")
 				em.set_image(url="https://blog.hubspot.com/hubfs/giphy_1-1.gif")
@@ -224,13 +231,39 @@ class CustomRoles(commands.Cog):
 				return
 
 
+	@cr.command(aliases=['info'])
+	async def _info(self, ctx, *, role: int = None):
+		if role == None:
+			await ctx.send("You must give the role ID, to get it use `!role-id <role_name>`")
+			return
+		
+		result = await collection.find_one({'roleID': role})
 
+		createdAt = result['createdAt']
+		shares = result['shares']
+		roleName = result['CustomRoleName']
+		index = 0
+		guildRole = ctx.guild.get_role(role)
+		for m in ctx.guild.members:
+			if guildRole in m.roles:
+				index += 1
+		roleOwner = ctx.guild.get_member(result['_id'])
+
+		createdAt = createdAt.strftime("%Y-%m-%d %H:%M")
+		em = discord.Embed(color=guildRole.color, title="Role Info About `%s`" % (roleName))
+		em.add_field(name="Custom Role Owner", value=roleOwner, inline=False)
+		em.add_field(name="Hex Code", value=guildRole.color, inline=False)
+		em.add_field(name="People That Have The Role", value=index, inline=False)
+		em.add_field(name="Total Role Shares", value=shares, inline = False)
+		em.set_footer(text="Created at: %s (UTC)" % (createdAt))
+
+		await ctx.send(embed=em)
 
 
 	@cr.command()
 	async def unrole(self, ctx, *, role : int = None):
-		if role is None:
-			await ctx.send("You must specfiy the role you want to unrole!")
+		if role == None:
+			await ctx.send("You must give the role ID, to get it use `!role-id <role_name>`")
 			return
 		guild = self.client.get_guild(750160850077089853)
 		cr = guild.get_role(role)
