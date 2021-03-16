@@ -1008,6 +1008,10 @@ class EcoCommands(commands.Cog):
 					await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you `{:,}`".format(earned))
 					return
 
+				else:
+					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
+					await ctx.send("You did a fucking bad job at sucking and lost `{:,}` coins from your wallet.".format(losts))
+					
 			except:
 				ctx.command.reset_cooldown(ctx)
 				return
