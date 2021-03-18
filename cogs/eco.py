@@ -1075,7 +1075,7 @@ class EcoCommands(commands.Cog):
 
 
 	@commands.command(aliases=['rps', 'rockpaperscissors', 'rock-paper-scissors'])
-	@commands.cooldown(1, 20, commands.BucketType.user)
+	@commands.cooldown(1, 15, commands.BucketType.user)
 	async def _rps(self, ctx):
 		user = ctx.author
 		results = await collection.find_one({"_id": user.id})
@@ -1092,6 +1092,7 @@ class EcoCommands(commands.Cog):
 			user_rps = user_rps.content.lower()
 			if not user_rps in rps:
 				await ctx.send("You can only choose from `rock`/`paper`/`scissors`. Type the command again. %s" % (user.mention))
+				ctx.command.reset_cooldown(ctx)
 				return
 		except asyncio.TimeoutError:
 			await ctx.send("You ran out of time. %s" % (user.mention))
@@ -1109,6 +1110,7 @@ class EcoCommands(commands.Cog):
 					return
 				elif bot_rps == "rock":
 					await ctx.send("We both chose `rock`. Nothing happened, your balance stays the same. %s" % (user.mention))
+					ctx.command.reset_cooldown(ctx)
 					return
 			
 			
@@ -1123,6 +1125,7 @@ class EcoCommands(commands.Cog):
 					return
 				elif bot_rps == "paper":
 					await ctx.send("We both chose `paper`. Nothing happened, your balance stays the same. %s" % (user.mention))
+					ctx.command.reset_cooldown(ctx)
 					return
 			
 			elif user_rps == "scissors":
@@ -1136,6 +1139,7 @@ class EcoCommands(commands.Cog):
 					return
 				elif bot_rps == "scissors":
 					await ctx.send("We both chose `scissors`. Nothing happened, your balance stays the same. %s" % (user.mention))
+					ctx.command.reset_cooldown(ctx)
 					return
 
 	@_rps.error
