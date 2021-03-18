@@ -682,7 +682,7 @@ class EcoCommands(commands.Cog):
 				await msg.edit(embed=em)
 				
 
-				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of **{:,}** <:carrots:822122757654577183>  and won **{:,}** <:carrots:822122757654577183> . \nNow in wallet: **{:,}**.".formant(line1, line2, line3, final, amount, earned, wallet_amt))
+				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of **{:,}** <:carrots:822122757654577183>  and won **{:,}** <:carrots:822122757654577183> . \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".formant(line1, line2, line3, final, amount, earned, wallet_amt))
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=winembed)
 
@@ -705,7 +705,7 @@ class EcoCommands(commands.Cog):
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
-				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou won **{:,}** <:carrots:822122757654577183> . \nNow in wallet: **{:,}**.".format(final, amount, wallet_amt))
+				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou won **{:,}** <:carrots:822122757654577183> . \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(final, amount, wallet_amt))
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=winembed)
 
@@ -727,7 +727,7 @@ class EcoCommands(commands.Cog):
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
-				lostembed = discord.Embed(color=color.red, title="LOST!", description="{}\n\nYou bet a total amount of **{:,}** <:carrots:822122757654577183>  but you lost them! :c\nNow in wallet: **{:,}**.".format(final, amount, wallet_amt))
+				lostembed = discord.Embed(color=color.red, title="LOST!", description="{}\n\nYou bet a total amount of **{:,}** <:carrots:822122757654577183>  but you lost them! :c\nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(final, amount, wallet_amt))
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=lostembed)
 
