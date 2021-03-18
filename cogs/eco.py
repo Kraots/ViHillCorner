@@ -1028,7 +1028,6 @@ class EcoCommands(commands.Cog):
 		results = await collection.find_one({"_id": ctx.author.id})
 
 		if results != None:
-			kraots = self.client.get_user(374622847672254466)
 
 			aaaa = randint(1, 7)
 			bbbb = randint(1, 100)
@@ -1039,41 +1038,36 @@ class EcoCommands(commands.Cog):
 			earningssssss = randint(500000, 5000000)
 			losts = randint(1000, 1200)
 
-			try:
-
-				if aaaa == 1:
-					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
-					await ctx.send(":third_place: you won the race 3rd place an won: **{:,}** <:carrots:822122757654577183> .".format(earnings))
-					return
-
-				elif aaaa == 4:
-					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
-					await ctx.send("U were close to lose the race by getting 5th place. You got a total of: **{:,}** <:carrots:822122757654577183> .".format(earningss))
-					return
-
-				elif aaaa == 6:
-					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
-					await ctx.send("After winning on 4th place you got: **{:,}** <:carrots:822122757654577183> .".format(earningsss))
-					return
-
-				elif aaaa == 7:
-					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
-					await ctx.send(":sparkles: :second_place: after winning on the 2nd place, you won: **{:,}** <:carrots:822122757654577183> .".format(kraots.name, earningssss))
-					return
-
-				elif bbbb == 1:
-					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssssss}})
-					await ctx.send(":sparkles: :first_place: :medal: :sparkles: after winning the race on the first place you won a total of: **{:,}** <:carrots:822122757654577183> .".format(kraots.name, earningssssss))
-					return
-
-				else:
-					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
-					await ctx.send("Sadly you lost the race, your lost consists of **{:,}** <:carrots:822122757654577183>  from your wallet.".format(losts))
-					return
-
-			except:
-				ctx.command.reset_cooldown(ctx)
+			if aaaa == 1:
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
+				await ctx.send(":third_place: you won the race 3rd place an won: **{:,}** <:carrots:822122757654577183> .".format(earnings))
 				return
+
+			elif aaaa == 4:
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
+				await ctx.send("U were close to lose the race by getting 5th place. You got a total of: **{:,}** <:carrots:822122757654577183> .".format(earningss))
+				return
+
+			elif aaaa == 6:
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
+				await ctx.send("After winning on 4th place you got: **{:,}** <:carrots:822122757654577183> .".format(earningsss))
+				return
+
+			elif aaaa == 7:
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
+				await ctx.send(":sparkles: :second_place: after winning on the 2nd place, you won: **{:,}** <:carrots:822122757654577183> .".format(earningssss))
+				return
+
+			elif bbbb == 1:
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssssss}})
+				await ctx.send(":sparkles: :first_place: :medal: :sparkles: after winning the race on the first place you won a total of: **{:,}** <:carrots:822122757654577183> .".format(earningssssss))
+				return
+
+			else:
+				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
+				await ctx.send("Sadly you lost the race, your lost consists of **{:,}** <:carrots:822122757654577183>  from your wallet.".format(losts))
+				return
+
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register.")
 			ctx.command.reset_cooldown(ctx)
@@ -1081,6 +1075,7 @@ class EcoCommands(commands.Cog):
 
 
 	@commands.command(aliases=['rps', 'rockpaperscissors', 'rock-paper-scissors'])
+	@commands.cooldown(1, 20, commands.BucketType.user)
 	async def _rps(self, ctx):
 		user = ctx.author
 		results = await collection.find_one({"_id": user.id})
@@ -1096,7 +1091,6 @@ class EcoCommands(commands.Cog):
 			user_rps = 	await self.client.wait_for('message', timeout= 60, check=check)
 			user_rps = user_rps.content.lower()
 			if not user_rps in rps:
-				await ctx.send(user_rps)
 				await ctx.send("You can only choose from `rock`/`paper`/`scissors`. Type the command again. %s" % (user.mention))
 				return
 		except asyncio.TimeoutError:
@@ -1144,42 +1138,47 @@ class EcoCommands(commands.Cog):
 					await ctx.send("We both chose `scissors`. Nothing happened, your balance stays the same. %s" % (user.mention))
 					return
 
+	@_rps.error
+	async def rps_error(self, ctx, error):
+		if isinstance(error, commands.CommandOnCooldown):
+				msg = f"Please wait: **{time_phaserr(error.retry_after)}** before playing rps again."
+				await ctx.channel.send(msg)
 
 	@race.error
 	async def race_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f"You cannot race that fast! Please wait: {time_phaserr(error.retry_after)}."
+				msg = f"You cannot race that fast! Please wait: **{time_phaserr(error.retry_after)}**."
 				await ctx.channel.send(msg)
 
 	@ppsuck.error
 	async def ppsuck_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f"OK OK CHILLE, IK U WANT TO SUCK ON SOMETHING BUT PLEASE WAIT {time_phaserr(error.retry_after)}."
+				msg = f"OK OK CHILLE, IK U WANT TO SUCK ON SOMETHING BUT PLEASE WAIT **{time_phaserr(error.retry_after)}**."
 				await ctx.channel.send(msg)
 
 	@gtn.error
 	async def gtn_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f"You've already played the game, come back in {time_phaserr(error.retry_after)}."
+				msg = f"You've already played the game, come back in **{time_phaserr(error.retry_after)}**."
 				await ctx.channel.send(msg)
 
 	@crime.error
 	async def crime_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f'You can commit crimes again in {time_phaserr(error.retry_after)}.'
+				msg = f'You can commit crimes again in **{time_phaserr(error.retry_after)}**.'
 				await ctx.channel.send(msg)
 
 
 	@work.error
 	async def work_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f'You can work again in {time_phaserr(error.retry_after)}.'
+				msg = f'You can work again in **{time_phaserr(error.retry_after)}**.'
 				await ctx.channel.send(msg)
 
 	@beg.error
 	async def beg_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f'You can have more <:carrots:822122757654577183>  in {time_phaserr(error.retry_after)}.'
+				msg = f'You can have more <:carrots:822122757654577183>  in **{time_phaserr(error.retry_after)}**.'
 				await ctx.channel.send(msg)
 
 
@@ -1187,14 +1186,14 @@ class EcoCommands(commands.Cog):
 	@rob.error
 	async def steal_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f'You can steal more in {time_phaserr(error.retry_after)}.'
+				msg = f'You can steal more in **{time_phaserr(error.retry_after)}**.'
 				await ctx.channel.send(msg)
 
 
 	@slots.error
 	async def slots_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f'You can bet your money in the slots machine in {time_phaserr(error.retry_after)}.'
+				msg = f'You can bet your money in the slots machine in **{time_phaserr(error.retry_after)}**.'
 				await ctx.channel.send(msg)
 
 		elif isinstance(error, commands.errors.MissingRequiredArgument):
