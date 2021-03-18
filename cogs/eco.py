@@ -13,6 +13,8 @@ from dateutil.relativedelta import relativedelta
 from utils import time
 bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
 
+rps = ['rock', 'paper', 'scissors']
+
 mila_carrots = [653611679082348544, 374622847672254466]
 
 DBKEY = os.getenv("MONGODBKEY")
@@ -1078,7 +1080,64 @@ class EcoCommands(commands.Cog):
 			return
 
 
+	@commands.command(aliases=['rps', 'rockpaperscissors', 'rock-paper-scissors'])
+	async def _rps(self, ctx):
+		user = ctx.author
+		def check(m):
+			return m.author == ctx.author and m.channel == ctx.channel
+		bot_rps = random.choice(rps)
+		earned = randint(5000, 15000)
+		await ctx.send("Please choose between `rock`/`paper`/`scissors`. You have **60** seconds to give your answer. %s" % (user.mention))
+		try:
+			user_rps = 	await self.client.wait_for('message', timeout= 60, check=check)
+			user_rps = user_rps.content.lower()
+			if not user_rps in bot_rps:
+				await ctx.send("You can only choose from `rock`/`paper`/`scissors`. Type the command again. %s" % (user.mention))
+				return
+		except asyncio.TimeoutError:
+			await ctx.send("You ran out of time. %s" % (user.mention))
+			return
+		else:
 
+			if user_rps == "rock":
+				if bot_rps == "paper":
+					await ctx.send("You chose `rock`, and i chose `paper`. You lost **325** coins. %s" % (user.mention))
+					await collection.update_one({'_id': user.id}, {'$inc':{'wallet': -325}})
+					return
+				elif bot_rps == "scissors":
+					await ctx.send("You chose `rock`, and i chose `scissors`. You won **{:,}** coins. {}".format(earned, user.mention))
+					await collection.update_one({'_id': user.id}, {'$inc':{'wallet': earned}})
+					return
+				elif bot_rps == "rock":
+					await ctx.send("We both chose `rock`. Nothing happened, your balance stays the same. %s" % (user.mention))
+					return
+			
+			
+			elif user_rps == "paper":
+				if bot_rps == "scissors":
+					await ctx.send("You chose `paper`, and i chose `scissors`. You lost **325** coins. %s" % (user.mention))
+					await collection.update_one({'_id': user.id}, {'$inc':{'wallet': -325}})
+					return
+				elif bot_rps == "rock":
+					await ctx.send("You chose `paper`, and i chose `rock`. You won **{:,}** coins. {}".format(earned, user.mention))
+					await collection.update_one({'_id': user.id}, {'$inc':{'wallet': earned}})
+					return
+				elif bot_rps == "paper":
+					await ctx.send("We both chose `paper`. Nothing happened, your balance stays the same. %s" % (user.mention))
+					return
+			
+			elif user_rps == "scissors":
+				if bot_rps == "rock":
+					await ctx.send("You chose `scissors`, and i chose `rock`. You lost **325** coins. %s" % (user.mention))
+					await collection.update_one({'_id': user.id}, {'$inc':{'wallet': -325}})
+					return
+				elif bot_rps == "paper":
+					await ctx.send("You chose `scissors`, and i chose `paper`. You won **{:,}** coins. {}".format(earned, user.mention))
+					await collection.update_one({'_id': user.id}, {'$inc':{'wallet': earned}})
+					return
+				elif bot_rps == "scissors":
+					await ctx.send("We both chose `scissors`. Nothing happened, your balance stays the same. %s" % (user.mention))
+					return
 
 
 	@race.error
