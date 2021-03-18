@@ -67,7 +67,7 @@ class EcoCommands(commands.Cog):
 				await collection.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})	
 			
 			
-			await ctx.send("Daily successfully claimed, `75,000` coins have been put into your wallet. Come back in **24 hours** for the next one.")	
+			await ctx.send("Daily successfully claimed, `75,000` <:carrots:822122757654577183>  have been put into your wallet. Come back in **24 hours** for the next one.")	
 
 
 	@daily.group(invoke_without_command = True, case_insensitive = True, aliases=['reset'])
@@ -176,9 +176,9 @@ class EcoCommands(commands.Cog):
 
 
 		em = discord.Embed(title=f"{member.name}'s balance", color=color.lightpink)
-		em.add_field(name="Wallet Balance", value="`{:,}` coins".format(wallet_amt), inline=False)
-		em.add_field(name="Bank Balance", value="`{:,}` coins".format(bank_amt), inline=False)
-		em.add_field(name="Total Balance", value="`{:,}` coins".format(total_amt))
+		em.add_field(name="Wallet Balance", value="**{:,}** <:carrots:822122757654577183> ".format(wallet_amt), inline=False)
+		em.add_field(name="Bank Balance", value="**{:,}** <:carrots:822122757654577183> ".format(bank_amt), inline=False)
+		em.add_field(name="Total Balance", value="**{:,}** <:carrots:822122757654577183> ".format(total_amt))
 		em.add_field(name="Rank", value="`#{}`".format(index))
 		em.set_thumbnail(url=user.avatar_url)
 
@@ -206,7 +206,7 @@ class EcoCommands(commands.Cog):
 			
 			name = mem.name
 
-			em.add_field(name=f"{index}.   {name}", value="`{:,}` coins".format(amt), inline=False)
+			em.add_field(name=f"{index}.   {name}", value="**{:,}** <:carrots:822122757654577183> ".format(amt), inline=False)
 			if index == x:
 				break
 			
@@ -255,12 +255,12 @@ class EcoCommands(commands.Cog):
 		await collection.update_one({"_id": user.id}, {"$inc":{"bank": amount}})
 		
 			
-		await ctx.send("Successfully added `{:,}` coins, and deposited them into the bank for `{}`!".format(amount, member))
+		await ctx.send("Successfully added **{:,}** <:carrots:822122757654577183> , and deposited them into the bank for `{}`!".format(amount, member))
 
 		if ctx.author.id == kraots.id:
 			return
 		else:
-			embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added `{:,}` coins to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+			embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added **{:,}** <:carrots:822122757654577183>  to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
 	
 			await kraots.send(embed=embed)
 
@@ -289,12 +289,12 @@ class EcoCommands(commands.Cog):
 		await collection.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
 		
 			
-		await ctx.send("Successfully added `{:,}` coins to the wallet for `{}`!".format(amount, member))
+		await ctx.send("Successfully added **{:,}** <:carrots:822122757654577183>  to the wallet for `{}`!".format(amount, member))
 
 		if ctx.author.id == kraots.id:
 			return
 		else:
-			embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added `{:,}` coins to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+			embed = discord.Embed(color=color.lightpink, title="BALANCE ADD", description="`{}` added **{:,}** <:carrots:822122757654577183>  to `{}`.\n\n`{}` - person who added the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
 	
 			await kraots.send(embed=embed)
 
@@ -322,13 +322,13 @@ class EcoCommands(commands.Cog):
 
 		await collection.update_one({"_id": user.id}, {"$set":{"bank": amount}})
 
-		await ctx.send("Balance successfully set to `{:,}` coins in the bank for `{}`!".format(amount, member))
+		await ctx.send("Balance successfully set to **{:,}** <:carrots:822122757654577183>  in the bank for `{}`!".format(amount, member))
 		
 		if ctx.author.id == kraots.id:
 			return		
 		
 		else:
-			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to `{:,}` coins in the bank for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to **{:,}** <:carrots:822122757654577183>  in the bank for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
 			await kraots.send(embed=embed)
 
 	@balance.command()
@@ -383,13 +383,13 @@ class EcoCommands(commands.Cog):
 
 		await collection.update_one({"_id": user.id}, {"$set":{"wallet": amount}})
 
-		await ctx.send("Balance successfully set to `{:,}` coins in the wallet for `{}`!".format(amount, member))
+		await ctx.send("Balance successfully set to **{:,}** <:carrots:822122757654577183>  in the wallet for `{}`!".format(amount, member))
 		
 		if ctx.author.id == kraots.id:
 			return
 		
 		else:
-			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to `{:,}` coins in the wallet for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
+			embed = discord.Embed(color=color.lightpink, title="BALANCE SET", description="`{}` set balance to **{:,}** <:carrots:822122757654577183>  in the wallet for `{}`.\n\n`{}` - person who set the money\n`{}` - person who got the money".format(ctx.author, amount, member, ctx.author.id, member.id))
 		
 			await kraots.send(embed=embed)
 
@@ -423,7 +423,7 @@ class EcoCommands(commands.Cog):
 				return
 
 			elif bal < 1:
-				await ctx.send("You do not have that much money in your bank. Money in bank: `{:,}`".format(bal))
+				await ctx.send("You do not have that much money in your bank. Money in bank: **{:,}**".format(bal))
 				return
 
 			elif amount < 1:
@@ -433,7 +433,7 @@ class EcoCommands(commands.Cog):
 			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": amount}})
 			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"bank": -amount}})
 
-			await ctx.send("Successfully withdrew `{:,}` coins!".format(amount))
+			await ctx.send("Successfully withdrew **{:,}** <:carrots:822122757654577183> !".format(amount))
 
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register.")
@@ -469,17 +469,17 @@ class EcoCommands(commands.Cog):
 				return
 
 			elif bal < 1:
-				await ctx.send("You do not have that much money in your wallet. Money in wallet: `{:,}`".format(bal))
+				await ctx.send("You do not have that much money in your wallet. Money in wallet: **{:,}**".format(bal))
 				return
 
 			elif amount < 1:
-				await ctx.send('Invalid amount. You cannot deposit **0** or **negative number** amount of coins.')
+				await ctx.send('Invalid amount. You cannot deposit **0** or **negative number** amount of <:carrots:822122757654577183> .')
 				return
 
 			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -amount}})
 			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"bank": amount}})
 
-			await ctx.send("Successfully deposited `{:,}` coins!".format(amount))
+			await ctx.send("Successfully deposited **{:,}** <:carrots:822122757654577183> !".format(amount))
 
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register.")
@@ -517,17 +517,17 @@ class EcoCommands(commands.Cog):
 				return
 
 			elif bal < 100:
-				await ctx.send("You do not have that much money in your wallet. Money in wallet: `{:,}`".format(bal))
+				await ctx.send("You do not have that much money in your wallet. Money in wallet: **{:,}**".format(bal))
 				return
 
 			if amount < 100:
-				await ctx.send('You cannot give less than `100` coins.')
+				await ctx.send('You cannot give less than `100` <:carrots:822122757654577183> .')
 				return
 
 			await collection.update_one({"_id": author.id}, {"$inc":{"wallet": -amount}})
 			await collection.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
 
-			await ctx.send("You gave `{:,}` coins to `{}`.".format(amount, member.name))
+			await ctx.send("You gave **{:,}** <:carrots:822122757654577183>  to `{}`.".format(amount, member.name))
 
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register.")
@@ -563,12 +563,12 @@ class EcoCommands(commands.Cog):
 			author_bal = results["wallet"]
 
 			if author_bal < 350:
-				await ctx.send("You need `350` coins to rob someone!")
+				await ctx.send("You need `350` <:carrots:822122757654577183>  to rob someone!")
 				ctx.command.reset_cooldown(ctx)
 				return
 
 			if user_bal < 250:
-				await ctx.send('The user must have at least `250` coins!')
+				await ctx.send('The user must have at least `250` <:carrots:822122757654577183> !')
 				ctx.command.reset_cooldown(ctx)
 				return
 
@@ -581,30 +581,30 @@ class EcoCommands(commands.Cog):
 				await collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
 				await collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
-				await ctx.send("You robbed **{}** and got `{:,}` coins!".format(member.display_name, earnings))
+				await ctx.send("You robbed **{}** and got **{:,}** <:carrots:822122757654577183> !".format(member.display_name, earnings))
 
 			elif chance == 3:
 				await collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
 				await collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
-				await ctx.send("You robbed **{}** and got `{:,}` coins!".format(member.display_name, earnings))
+				await ctx.send("You robbed **{}** and got **{:,}** <:carrots:822122757654577183> !".format(member.display_name, earnings))
 
 			elif chance == 7:
 				await collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
 				await collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
-				await ctx.send("You robbed **{}** and got `{:,}` coins!".format(member.display_name, earnings))
+				await ctx.send("You robbed **{}** and got **{:,}** <:carrots:822122757654577183> !".format(member.display_name, earnings))
 
 			elif chance == 10:
 				await collection.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
 				await collection.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
 
-				await ctx.send("You robbed **{}** and got `{:,}` coins!".format(member.display_name, earnings))
+				await ctx.send("You robbed **{}** and got **{:,}** <:carrots:822122757654577183> !".format(member.display_name, earnings))
 
 			else:
 				await collection.update_one({"_id": author.id}, {"$inc":{"wallet": -350}})
 
-				await ctx.send(f"You failed in stealing from that person and you lost `350` coins")
+				await ctx.send(f"You failed in stealing from that person and you lost `350` <:carrots:822122757654577183> ")
 
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register.")
@@ -642,7 +642,7 @@ class EcoCommands(commands.Cog):
 				return
 
 			if amount < 300:
-				await ctx.send('You must bet more than `300` coins.')
+				await ctx.send('You must bet more than `300` <:carrots:822122757654577183> .')
 				ctx.command.reset_cooldown(ctx)
 				return
 
@@ -682,7 +682,7 @@ class EcoCommands(commands.Cog):
 				await msg.edit(embed=em)
 				
 
-				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of `{:,}` coins and won `{:,}` coins. \nNow in wallet: `{:,}`.".formant(line1, line2, line3, final, amount, earned, wallet_amt))
+				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of **{:,}** <:carrots:822122757654577183>  and won **{:,}** <:carrots:822122757654577183> . \nNow in wallet: **{:,}**.".formant(line1, line2, line3, final, amount, earned, wallet_amt))
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=winembed)
 
@@ -705,7 +705,7 @@ class EcoCommands(commands.Cog):
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
-				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou won `{:,}` coins. \nNow in wallet: `{:,}`.".format(final, amount, wallet_amt))
+				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou won **{:,}** <:carrots:822122757654577183> . \nNow in wallet: **{:,}**.".format(final, amount, wallet_amt))
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=winembed)
 
@@ -727,7 +727,7 @@ class EcoCommands(commands.Cog):
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
-				lostembed = discord.Embed(color=color.red, title="LOST!", description="{}\n\nYou bet a total amount of `{:,}` coins but you lost them! :c\nNow in wallet: `{:,}`.".format(final, amount, wallet_amt))
+				lostembed = discord.Embed(color=color.red, title="LOST!", description="{}\n\nYou bet a total amount of **{:,}** <:carrots:822122757654577183>  but you lost them! :c\nNow in wallet: **{:,}**.".format(final, amount, wallet_amt))
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=lostembed)
 
@@ -749,7 +749,7 @@ class EcoCommands(commands.Cog):
 		if results != None:
 			earnings = randint(100, 500)
 
-			await ctx.send(f"Someone gave you `{earnings}` coins!!")
+			await ctx.send(f"Someone gave you **{earnings}** <:carrots:822122757654577183> !!")
 
 			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
 
@@ -768,7 +768,7 @@ class EcoCommands(commands.Cog):
 
 		if results != None:
 
-			await ctx.send("You worked and got `5,000` coins. The money have been deposited into your bank!")
+			await ctx.send("You worked and got **5,000** <:carrots:822122757654577183> . The money have been deposited into your bank!")
 
 			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"bank": 5000}})
 		
@@ -797,27 +797,27 @@ class EcoCommands(commands.Cog):
 			if aaaa == 2:
 				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
 
-				await ctx.send("<:weird:773538796087803934> you commited a bigger crime and got `{:,}` coins.".format(earnings))
+				await ctx.send("<:weird:773538796087803934> you commited a bigger crime and got **{:,}** <:carrots:822122757654577183> .".format(earnings))
 				return
 
 			if aaaa == 4:
 				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
-				await ctx.send("<:weird:773538796087803934> you commited a smaller crime and got `{:,}` coins.".format(earningss))
+				await ctx.send("<:weird:773538796087803934> you commited a smaller crime and got **{:,}** <:carrots:822122757654577183> .".format(earningss))
 				return
 
 			if aaaa == 6:
 				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
-				await ctx.send("<:weird:773538796087803934> you commited a medium crime and got `{:,}` coins.".format(earningsss))
+				await ctx.send("<:weird:773538796087803934> you commited a medium crime and got **{:,}** <:carrots:822122757654577183> .".format(earningsss))
 				return
 
 			if aaaa == 7:
 				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
-				await ctx.send("<:weird:773538796087803934> you commited a large crime and got `{:,}` coins.".format(earningssss))
+				await ctx.send("<:weird:773538796087803934> you commited a large crime and got **{:,}** <:carrots:822122757654577183> .".format(earningssss))
 				return
 
 			else:
 				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
-				await ctx.send("You lost `{:,}` coins from your wallet.".format(losts))
+				await ctx.send("You lost **{:,}** <:carrots:822122757654577183>  from your wallet.".format(losts))
 				return
 		
 		else:
@@ -858,7 +858,7 @@ class EcoCommands(commands.Cog):
 					index += 1
 					if index == 3:
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -lost_amt}})
-						await msg.reply(content=f"You didn't get it and lost `{lost_amt}` coins. The number was `{number}`.")
+						await msg.reply(content=f"You didn't get it and lost **{lost_amt}** <:carrots:822122757654577183> . The number was **{number}**.")
 						return
 					await msg.reply('Try going lower.')
 
@@ -867,7 +867,7 @@ class EcoCommands(commands.Cog):
 					index += 1
 					if index == 3:
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -lost_amt}})
-						await msg.reply(content=f"You didn't get it and lost `{lost_amt}` coins. The number was `{number}`.")
+						await msg.reply(content=f"You didn't get it and lost **{lost_amt}** <:carrots:822122757654577183> . The number was **{number}**.")
 						return
 					await msg.reply('Try going higher.')
 
@@ -875,7 +875,7 @@ class EcoCommands(commands.Cog):
 
 				else:
 					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": win_amt}})
-					await msg.reply(f'You guessed it! Good job! You got `{win_amt}` coins. The number was `{number}`.')
+					await msg.reply(f'You guessed it! Good job! You got **{win_amt}** <:carrots:822122757654577183> . The number was **{number}**.')
 					return
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register.")
@@ -916,21 +916,21 @@ class EcoCommands(commands.Cog):
 							earned = kraotscheat5
 							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
 
-							await ctx.send(":smiling_imp: :smiling_imp: :smirk: :smirk: :yum: :yum: :drooling_face: :drooling_face: you sucked `Kraots` and peed inside his mouth, and then kept fucking and having sex all night, he drank your saliva and licked you clean. You got: `{:,}` coins. :smiling_imp:".format(earned))	
+							await ctx.send(":smiling_imp: :smiling_imp: :smirk: :smirk: :yum: :yum: :drooling_face: :drooling_face: you sucked `Kraots` and peed inside his mouth, and then kept fucking and having sex all night, he drank your saliva and licked you clean. You got: **{:,}** <:carrots:822122757654577183>. :smiling_imp:".format(earned))	
 							return	
 
 						elif ctx.author.id == 374622847672254466:	
 							earned = kraotscheat5	
 							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
 
-							await ctx.send(":smiling_imp: :smiling_imp: :smirk: :smirk: :yum: :yum: :drooling_face: :drooling_face: you let `Mila` pee inside your mouth, and then kept fucking and having sex all night, you drank her saliva and licked her clean. You got: `{:,}` coins. :smiling_imp:".format(earned))	
+							await ctx.send(":smiling_imp: :smiling_imp: :smirk: :smirk: :yum: :yum: :drooling_face: :drooling_face: you let `Mila` pee inside your mouth, and then kept fucking and having sex all night, you drank her saliva and licked her clean. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
 							return
 
 					else:	
 						earned = earningssssss	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
 
-						await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got `{:,}` coins.".format(earned))
+						await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got **{:,}** <:carrots:822122757654577183> .".format(earned))
 						return
 						
 				elif aaaa == 1:
@@ -938,19 +938,19 @@ class EcoCommands(commands.Cog):
 						earned = kraotscheat1
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 						if ctx.author.id == 653611679082348544:
-							await ctx.send(":yum: :yum: You sucked `Kraots`'s dick and he came inside your throat. You got: `{:,}` coins. :smiling_imp:".format(earned))	
+							await ctx.send(":yum: :yum: You sucked `Kraots`'s dick and he came inside your throat. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
 							return	
 
 						elif ctx.author.id == 374622847672254466:	
 
-							await ctx.send(":yum: :yum: You sucked `Mila`'s wet juicy pussy and her cum ended up all the way inside your throat. You got: `{:,}` coins. :smiling_imp:".format(earned))	
+							await ctx.send(":yum: :yum: You sucked `Mila`'s wet juicy pussy and her cum ended up all the way inside your throat. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
 							return	
 						
 					else:	
 						earned = earnings	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
-					await ctx.send(":yum: you sucked ur dad's pp and got `{:,}` coins.".format(earned))
+					await ctx.send(":yum: you sucked ur dad's pp and got **{:,}** <:carrots:822122757654577183> .".format(earned))
 					return
 
 				elif aaaa == 4:
@@ -958,18 +958,18 @@ class EcoCommands(commands.Cog):
 						earned = kraotscheat2	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 						if ctx.author.id == 653611679082348544:	
-							await ctx.send("You did so good at peeing insides `Kraot`'s mouth he was very happy that he even licked your juicy pussy clean. You got: `{:,}` :smiling_imp:".format(earned))	
+							await ctx.send("You did so good at peeing insides `Kraot`'s mouth he was very happy that he even licked your juicy pussy clean. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
 							return	
 
 						elif ctx.author.id == 374622847672254466:	
-							await ctx.send("You licked `Mila`'s pussy and she enjoyed that much her warm cum went right inside your mouth. You got: `{:,}` :smiling_imp:".format(earned))	
+							await ctx.send("You licked `Mila`'s pussy and she enjoyed that much her warm cum went right inside your mouth. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
 							return	
 
 					else:	
 						earned = earningss	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
-					await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got `{:,}` coins.".format(earned))
+					await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got **{:,}** <:carrots:822122757654577183> .".format(earned))
 					return
 				
 				elif aaaa == 6:
@@ -977,17 +977,17 @@ class EcoCommands(commands.Cog):
 						earned = kraotscheat3
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
 						if ctx.author.id == 653611679082348544:	
-							await ctx.send("You fucked with `Kraots` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: `{:,}` :smiling_imp:".format(earned))	
+							await ctx.send("You fucked with `Kraots` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
 							return	
 
 						elif ctx.author.id == 374622847672254466:	
-							await ctx.send("You fucked with `Mila` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: `{:,}` :smiling_imp:".format(earned))	
+							await ctx.send("You fucked with `Mila` all night long, and at the end you both fell asleep naked while cuddling in the bed. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
 							return	
 					else:	
 						earned = earningsss	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 					
-					await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got `{:,}` coins.".format(earned))
+					await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got **{:,}** <:carrots:822122757654577183> .".format(earned))
 					return
 				
 				elif aaaa == 7:
@@ -996,23 +996,23 @@ class EcoCommands(commands.Cog):
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
 						if ctx.author.id == 653611679082348544:	
 
-							await ctx.send(":drooling_face: You fucked `Kraots` and peed on him, and he loved it very much. You got: `{:,}` coins. :smiling_imp:".format(earned))	
+							await ctx.send(":drooling_face: You fucked `Kraots` and peed on him, and he loved it very much. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
 							return	
 
 						elif ctx.author.id == 374622847672254466:	
 
-							await ctx.send(":drooling_face: You fucked `Mila` and she peed on you, and she loved it very much. You got: `{:,}` coins. :smiling_imp:".format(earned))	
+							await ctx.send(":drooling_face: You fucked `Mila` and she peed on you, and she loved it very much. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
 							return	
 
 					else:	
 						earned = earningssss	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
-					await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you `{:,}`".format(earned))
+					await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you **{:,}** <:carrots:822122757654577183>".format(earned))
 					return
 
 				else:
 					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
-					await ctx.send("You did a fucking bad job at sucking and lost `{:,}` coins from your wallet.".format(losts))
+					await ctx.send("You did a fucking bad job at sucking and lost **{:,}** <:carrots:822122757654577183>  from your wallet.".format(losts))
 					
 			except:
 				ctx.command.reset_cooldown(ctx)
@@ -1043,32 +1043,32 @@ class EcoCommands(commands.Cog):
 
 				if aaaa == 1:
 					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
-					await ctx.send(":third_place: you won the race 3rd place an won: `{:,}` coins.".format(earnings))
+					await ctx.send(":third_place: you won the race 3rd place an won: **{:,}** <:carrots:822122757654577183> .".format(earnings))
 					return
 
 				elif aaaa == 4:
 					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
-					await ctx.send("U were close to lose the race by getting 5th place. You got a total of: `{:,}` coins.".format(earningss))
+					await ctx.send("U were close to lose the race by getting 5th place. You got a total of: **{:,}** <:carrots:822122757654577183> .".format(earningss))
 					return
 
 				elif aaaa == 6:
 					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
-					await ctx.send("After winning on 4th place you got: `{:,}` coins.".format(earningsss))
+					await ctx.send("After winning on 4th place you got: **{:,}** <:carrots:822122757654577183> .".format(earningsss))
 					return
 
 				elif aaaa == 7:
 					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
-					await ctx.send(":sparkles: :second_place: after winning on the 2nd place, you won: `{:,}` coins.".format(kraots.name, earningssss))
+					await ctx.send(":sparkles: :second_place: after winning on the 2nd place, you won: **{:,}** <:carrots:822122757654577183> .".format(kraots.name, earningssss))
 					return
 
 				elif bbbb == 1:
 					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssssss}})
-					await ctx.send(":sparkles: :first_place: :medal: :sparkles: after winning the race on the first place you won a total of: `{:,}` coins.".format(kraots.name, earningssssss))
+					await ctx.send(":sparkles: :first_place: :medal: :sparkles: after winning the race on the first place you won a total of: **{:,}** <:carrots:822122757654577183> .".format(kraots.name, earningssssss))
 					return
 
 				else:
 					await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
-					await ctx.send("Sadly you lost the race, your lost consists of `{:,}` coins from your wallet.".format(losts))
+					await ctx.send("Sadly you lost the race, your lost consists of **{:,}** <:carrots:822122757654577183>  from your wallet.".format(losts))
 					return
 
 			except:
@@ -1106,11 +1106,11 @@ class EcoCommands(commands.Cog):
 
 			if user_rps == "rock":
 				if bot_rps == "paper":
-					await ctx.send("You chose `rock`, and i chose `paper`. You lost **325** coins. %s" % (user.mention))
+					await ctx.send("You chose `rock`, and i chose `paper`. You lost **325** <:carrots:822122757654577183> . %s" % (user.mention))
 					await collection.update_one({'_id': user.id}, {'$inc':{'wallet': -325}})
 					return
 				elif bot_rps == "scissors":
-					await ctx.send("You chose `rock`, and i chose `scissors`. You won **{:,}** coins. {}".format(earned, user.mention))
+					await ctx.send("You chose `rock`, and i chose `scissors`. You won **{:,}** <:carrots:822122757654577183> . {}".format(earned, user.mention))
 					await collection.update_one({'_id': user.id}, {'$inc':{'wallet': earned}})
 					return
 				elif bot_rps == "rock":
@@ -1120,11 +1120,11 @@ class EcoCommands(commands.Cog):
 			
 			elif user_rps == "paper":
 				if bot_rps == "scissors":
-					await ctx.send("You chose `paper`, and i chose `scissors`. You lost **325** coins. %s" % (user.mention))
+					await ctx.send("You chose `paper`, and i chose `scissors`. You lost **325** <:carrots:822122757654577183> . %s" % (user.mention))
 					await collection.update_one({'_id': user.id}, {'$inc':{'wallet': -325}})
 					return
 				elif bot_rps == "rock":
-					await ctx.send("You chose `paper`, and i chose `rock`. You won **{:,}** coins. {}".format(earned, user.mention))
+					await ctx.send("You chose `paper`, and i chose `rock`. You won **{:,}** <:carrots:822122757654577183> . {}".format(earned, user.mention))
 					await collection.update_one({'_id': user.id}, {'$inc':{'wallet': earned}})
 					return
 				elif bot_rps == "paper":
@@ -1133,11 +1133,11 @@ class EcoCommands(commands.Cog):
 			
 			elif user_rps == "scissors":
 				if bot_rps == "rock":
-					await ctx.send("You chose `scissors`, and i chose `rock`. You lost **325** coins. %s" % (user.mention))
+					await ctx.send("You chose `scissors`, and i chose `rock`. You lost **325** <:carrots:822122757654577183> . %s" % (user.mention))
 					await collection.update_one({'_id': user.id}, {'$inc':{'wallet': -325}})
 					return
 				elif bot_rps == "paper":
-					await ctx.send("You chose `scissors`, and i chose `paper`. You won **{:,}** coins. {}".format(earned, user.mention))
+					await ctx.send("You chose `scissors`, and i chose `paper`. You won **{:,}** <:carrots:822122757654577183> . {}".format(earned, user.mention))
 					await collection.update_one({'_id': user.id}, {'$inc':{'wallet': earned}})
 					return
 				elif bot_rps == "scissors":
@@ -1179,7 +1179,7 @@ class EcoCommands(commands.Cog):
 	@beg.error
 	async def beg_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f'You can have more coins in {time_phaserr(error.retry_after)}.'
+				msg = f'You can have more <:carrots:822122757654577183>  in {time_phaserr(error.retry_after)}.'
 				await ctx.channel.send(msg)
 
 
