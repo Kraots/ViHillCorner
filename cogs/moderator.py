@@ -369,6 +369,18 @@ class Moderation(commands.Cog):
 			else:
 				for id in muted_members:
 					if not staff in id.roles:
+						post = {
+							'_id': id.id,
+							'mutedAt': datetime.datetime.now(),
+							'mutedBy': ctx.author.id,
+							'guildId': ctx.guild.id,
+						}
+
+						try:
+							await collection.insert_one(post)
+						except:
+							await ctx.send("User is already muted!")
+							return
 						mute = discord.Embed(description=f'**Reason:** **[{mute_reason}]({ctx.message.jump_url}).**', color=color.inviscolor)
 						msg="You were muted in `ViHill Corner`."
 						a = id
@@ -433,18 +445,18 @@ class Moderation(commands.Cog):
 						await ctx.send("%s cannot be unmuted ;)))))" % (id.mention))
 						return
 				
-				total_failures += 1
-				
-				result = await collection.find_one({'id':id.id})
+				result = await collection.find_one({'_id':id.id})
 				resultt = await collection2.find_one({'_id': id.id})
 
 				mutedBy = result['mutedBy']
 
-				if mutedBy == 374622847672254466:
-					await ctx.send("Carrots muted that user, therefore, you cannot unmute them. >;D")
+				if mutedBy == 374622847672254466 and ctx.author.id != 374622847672254466:
+					user = guild.get_member(id.id)
+					await ctx.send("Carrots muted that user (`%s`), therefore, you cannot unmute them. >;D" % (user))
 					return
 				
 				if resultt != None:
+					total_failures += 1
 					user = guild.get_member(id.id)
 					if total_failures >= 2:
 						failed_users.append(user)
@@ -604,10 +616,10 @@ class Moderation(commands.Cog):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.send("Invalid User!")
 
-	@unmute.error
-	async def unmute_error(self, ctx, error):
-		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid User!")
+#	@unmute.error
+#	async def unmute_error(self, ctx, error):
+#		if isinstance(error, commands.errors.CommandInvokeError):
+#			await ctx.send("Invalid User!")
 
 
 def setup (client):
