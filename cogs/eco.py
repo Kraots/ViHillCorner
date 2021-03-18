@@ -1083,6 +1083,10 @@ class EcoCommands(commands.Cog):
 	@commands.command(aliases=['rps', 'rockpaperscissors', 'rock-paper-scissors'])
 	async def _rps(self, ctx):
 		user = ctx.author
+		results = await collection.find_one({"_id": user.id})
+		if results == None:
+			await ctx.send("You are not registered! Type: `!register` to register.")
+			return
 		def check(m):
 			return m.author == ctx.author and m.channel == ctx.channel
 		bot_rps = random.choice(rps)
@@ -1091,7 +1095,8 @@ class EcoCommands(commands.Cog):
 		try:
 			user_rps = 	await self.client.wait_for('message', timeout= 60, check=check)
 			user_rps = user_rps.content.lower()
-			if not user_rps in bot_rps:
+			if not user_rps in rps:
+				await ctx.send(user_rps)
 				await ctx.send("You can only choose from `rock`/`paper`/`scissors`. Type the command again. %s" % (user.mention))
 				return
 		except asyncio.TimeoutError:
