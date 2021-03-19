@@ -10,7 +10,7 @@ import motor.motor_asyncio
 import datetime
 DBKEY = os.getenv("MONGODBKEY")
 
-no_mute_these = [374622847672254466, 751724369683677275]
+no_mute_these = [374622847672254466, 751724369683677275, 653611679082348544]
 
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
