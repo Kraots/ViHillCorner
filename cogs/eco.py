@@ -905,9 +905,9 @@ class EcoCommands(commands.Cog):
 			kraotscheat5 = randint(25000000, 100000000)
 			losts = randint(1000, 1200)
 
-			if ctx.author.id in gf_carrots:	
-				bbbb = randint(1, 25)	
-				aaaa = randint(1, 7)
+			#if ctx.author.id in gf_carrots:	
+			#	bbbb = randint(1, 25)	
+				#aaaa = randint(1, 7)
 
 			try:
 				if bbbb == 1:
