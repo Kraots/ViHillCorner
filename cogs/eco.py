@@ -910,7 +910,7 @@ class EcoCommands(commands.Cog):
 			#	aaaa = randint(1, 7)
 
 			try:
-			#	if bbbb == 1:
+				if bbbb == 1:
 			#		if ctx.author.id in gf_carrots:
 			#			if ctx.author.id == GF_ID:
 			#				earned = kraotscheat5
