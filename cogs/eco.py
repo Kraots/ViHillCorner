@@ -617,9 +617,6 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 7, commands.BucketType.user)
 	async def slots(self, ctx, amount = None):
-		if ctx.author.id != 374622847672254466:
-			await ctx.send("This command is currently under debugging. Try again later. %s" % (ctx.author.mention))
-			return
 		results = await collection.find_one({"_id": ctx.author.id})
 
 		if results != None:
