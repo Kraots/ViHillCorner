@@ -10,6 +10,7 @@ DBKEY = os.getenv('MONGODBLVLKEY')
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster['ViHillCornerDB']
 collection = db['bdsm results']
+collection2 = db['Confesscord Restrictions']
 
 class BdsmResults(commands.Cog):
 
@@ -113,6 +114,7 @@ class BdsmResults(commands.Cog):
 		if member.id == 374622847672254466:
 			return
 		await collection.delete_one({'_id': member.id})
+		await collection2.delete_one({'_id': member.id})
 
 def setup (client):
 	client.add_cog(BdsmResults(client))
