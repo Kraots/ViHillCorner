@@ -604,7 +604,7 @@ class EcoCommands(commands.Cog):
 			else:
 				await collection.update_one({"_id": author.id}, {"$inc":{"wallet": -350}})
 
-				await ctx.send(f"You failed in stealing from that person and you lost `350` <:carrots:822122757654577183> ")
+				await ctx.send("You failed in stealing from that person and you lost `350` <:carrots:822122757654577183> ")
 
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register.")
@@ -617,6 +617,9 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 7, commands.BucketType.user)
 	async def slots(self, ctx, amount = None):
+		if ctx.author.id != 374622847672254466:
+			await ctx.send("This command is currently under debugging. Try again later. %s" % (ctx.author.mention))
+			return
 		results = await collection.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -654,8 +657,7 @@ class EcoCommands(commands.Cog):
 
 				final = "\u2800┃\u2800".join(prefinal)
 
-			embed = discord.Embed(color=color.lightpink, title="Slots!", description=f"<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
-			embed.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
+			embed = discord.Embed(color=color.lightpink, title="Slots!", description="<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
 			msg = await ctx.send(embed=embed)
 			
 			line1 = prefinal[0] 
@@ -672,17 +674,15 @@ class EcoCommands(commands.Cog):
 				wallet_amt = bal + earned
 
 				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
-				em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
 				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
-				em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 				
-
-				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of **{:,}** <:carrots:822122757654577183>  and won **{:,}** <:carrots:822122757654577183> . \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".formant(line1, line2, line3, final, amount, earned, wallet_amt))
+				print("Reached final edit")
+				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of **{:,}** <:carrots:822122757654577183>  and won **{:,}** <:carrots:822122757654577183> . \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(line1, line2, line3, amount, earned, wallet_amt))
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=winembed)
 
@@ -696,12 +696,10 @@ class EcoCommands(commands.Cog):
 				wallet_amt = bal + earned
 
 				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
-				em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
 				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
-				em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
@@ -718,12 +716,10 @@ class EcoCommands(commands.Cog):
 				wallet_amt = bal - amount
 			
 				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
-				em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
 				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
-				em.set_footer(text= "If it gliches then you won with 3rd in a row, if it does happen we apologize for the inconvenience")
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
