@@ -448,12 +448,12 @@ class Moderation(commands.Cog):
 				result = await collection.find_one({'_id':id.id})
 				resultt = await collection2.find_one({'_id': id.id})
 
-				mutedBy = result['mutedBy']
-
-				if mutedBy == 374622847672254466 and ctx.author.id != 374622847672254466:
-					user = guild.get_member(id.id)
-					await ctx.send("Carrots muted that user (`%s`), therefore, you cannot unmute them. >;D" % (user))
-					return
+				if result != None:
+					mutedBy = result['mutedBy']
+					if mutedBy == 374622847672254466 and ctx.author.id != 374622847672254466:
+						user = guild.get_member(id.id)
+						await ctx.send("Carrots muted that user (`%s`), therefore, you cannot unmute them. >;D" % (user))
+						return
 				
 				if resultt != None:
 					total_failures += 1
