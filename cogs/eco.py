@@ -541,6 +541,10 @@ class EcoCommands(commands.Cog):
 	@commands.command(aliases=["steal"])
 	@commands.cooldown(1, 20, commands.BucketType.user)
 	async def rob(self, ctx, member : discord.Member = None):
+		if member is None:
+			await ctx.send("You must specify the person you want to rob/steal from.")
+			ctx.command.reset_cooldown(ctx)
+			return
 		results = await collection.find_one({"_id": ctx.author.id})
 
 		if results != None:
