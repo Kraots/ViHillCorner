@@ -371,6 +371,7 @@ class Moderation(commands.Cog):
 					if not staff in id.roles:
 						post = {
 							'_id': id.id,
+							'muteDuration': None,
 							'mutedAt': datetime.datetime.now(),
 							'mutedBy': ctx.author.id,
 							'guildId': ctx.guild.id,

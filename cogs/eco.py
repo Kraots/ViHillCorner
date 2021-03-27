@@ -660,8 +660,8 @@ class EcoCommands(commands.Cog):
 
 			embed = discord.Embed(color=color.lightpink, title="Slots!", description="<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
 			msg = await ctx.send(embed=embed)
-			
-			line1 = prefinal[0] 
+
+			line1 = prefinal[0]
 			line2 = prefinal[1]
 			line3 = prefinal[2]
 
