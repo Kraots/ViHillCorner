@@ -8,6 +8,10 @@ class ImagesChannel(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message(self, message : discord.Message):
+		staff = message.guild.get_role(754676705741766757)
+		if staff in message.author.roles:
+			return
+			
 		if message.channel.id == 790310516266500098:
 			try:
 				allow_this = message.attachments[0].url
