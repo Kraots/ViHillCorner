@@ -8,7 +8,8 @@ class ImagesChannel(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message(self, message : discord.Message):
-		staff = message.guild.get_role(754676705741766757)
+		guild = self.client.get_guild(750160850077089853)
+		staff = guild.get_role(754676705741766757)
 		if staff in message.author.roles:
 			return
 			
