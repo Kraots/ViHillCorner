@@ -66,6 +66,13 @@ class command(commands.Cog):
 			embed = discord.Embed(color=color.lightpink)
 			embed.add_field(name='Join Date:', value=f"{user} **--->** {format_date(kraots_joined)}")
 			await ctx.send(embed=embed)
+		
+		elif user.id == 374622847672254466:
+			x = "2020-09-30 12:12"
+			twil_joined = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
+			embed = discord.Embed(color=color.lightpink)
+			embed.add_field(name='Join Date:', value=f"{user} **--->** {format_date(twil_joined)}")
+			await ctx.send(embed=embed)
 
 		else:
 			embed = discord.Embed(color=color.lightpink)
