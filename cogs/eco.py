@@ -15,7 +15,7 @@ bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
 
 rps = ['rock', 'paper', 'scissors']
 
-#gf_carrots = [GF_ID, 374622847672254466]
+gf_carrots = [822755470422442044, 374622847672254466]
 
 DBKEY = os.getenv("MONGODBKEY")
 
@@ -902,27 +902,27 @@ class EcoCommands(commands.Cog):
 			kraotscheat5 = randint(25000000, 100000000)
 			losts = randint(1000, 1200)
 
-			#if ctx.author.id in gf_carrots:	
-			#	bbbb = randint(1, 25)	
-			#	aaaa = randint(1, 7)
+			if ctx.author.id in gf_carrots:	
+				bbbb = randint(1, 25)	
+				aaaa = randint(1, 7)
 
 			try:
 				if bbbb == 1:
-			#		if ctx.author.id in gf_carrots:
-			#			if ctx.author.id == GF_ID:
-			#				earned = kraotscheat5
-			#				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
+					if ctx.author.id in gf_carrots:
+						if ctx.author.id == 822755470422442044:
+							earned = kraotscheat5
+							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
 
-			#				await ctx.send(":smiling_imp: :smiling_imp: :smirk: :smirk: :yum: :yum: :drooling_face: :drooling_face: you sucked `Kraots` and peed inside his mouth, and then kept fucking and having sex all night, he drank your saliva and licked you clean. Then he kept fucking your holes until you started to bleed but he still kept moving until you passed out, you woke up and u were bleeding his cum out of every hole and they were hurting you so badly you couldn't move for months. You got: **{:,}** <:carrots:822122757654577183>. :smiling_imp:".format(earned))	
-			#				return	
+							await ctx.send(":smiling_imp: :smiling_imp: :smirk: :smirk: :yum: :yum: :drooling_face: :drooling_face: you sucked `Kraots` and peed inside his mouth, and then kept fucking and having sex all night, he drank your saliva and licked you clean. Then he kept fucking your holes until you started to bleed but he still kept moving until you passed out, you woke up and u were bleeding his cum out of every hole and they were hurting you so badly you couldn't move for months. You got: **{:,}** <:carrots:822122757654577183>. :smiling_imp:".format(earned))	
+							return	
 
-			#			elif ctx.author.id == 374622847672254466:	
-			#				earned = kraotscheat5	
-			#				await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
+						elif ctx.author.id == 374622847672254466:	
+							earned = kraotscheat5	
+							await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
 
-			#				await ctx.send(":smiling_imp: :smiling_imp: :smirk: :smirk: :yum: :yum: :drooling_face: :drooling_face: you let `GF_NAME` pee inside your mouth, and then kept fucking and having sex all night, you drank her saliva and licked her clean. Then you kept fucking her holes until she started to bleed but you still kept moving until she passed out, she woke up and she were bleeding your cum out of every hole and they were hurting her so badly she couldn't move for months. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
-			#				return
-			#		else:
+							await ctx.send(":smiling_imp: :smiling_imp: :smirk: :smirk: :yum: :yum: :drooling_face: :drooling_face: you let `Melaina` pee inside your mouth, and then kept fucking and having sex all night, you drank her saliva and licked her clean. Then you kept fucking her holes until she started to bleed but you still kept moving until she passed out, she woke up and she were bleeding your cum out of every hole and they were hurting her so badly she couldn't move for months. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
+							return
+					else:
 						earned = earningssssss	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
 
@@ -930,19 +930,19 @@ class EcoCommands(commands.Cog):
 						return
 						
 				elif aaaa == 1:
-			#		if ctx.author.id in gf_carrots:
-			#			earned = kraotscheat1
-			#			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
-			#			if ctx.author.id == GF_ID:
-			#				await ctx.send(":yum: :yum: You sucked `Kraots`'s dick and he came deep inside your throat and you choked on his cum and passed out with his dick in your mouth, tied up above the ground upside down. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
-			#				return	
+					if ctx.author.id in gf_carrots:
+						earned = kraotscheat1
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						if ctx.author.id == 822755470422442044:
+							await ctx.send(":yum: :yum: You sucked `Kraots`'s dick and he came deep inside your throat and you choked on his cum and passed out with his dick in your mouth, tied up above the ground upside down. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
+							return	
 
-			#			elif ctx.author.id == 374622847672254466:	
+						elif ctx.author.id == 374622847672254466:	
 
-			#				await ctx.send(":yum: :yum: You sucked `GF_NAME`'s wet juicy pussy and her cum ended up all the way inside your throat and you choked on it and passed out with her pussy in your mouth. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
-			#				return	
+							await ctx.send(":yum: :yum: You sucked `Melaina`'s wet juicy pussy and her cum ended up all the way inside your throat and you choked on it and passed out with her pussy in your mouth. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
+							return	
 						
-			#		else:	
+					else:	
 						earned = earnings	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
@@ -950,18 +950,18 @@ class EcoCommands(commands.Cog):
 						return
 
 				elif aaaa == 4:
-			#		if ctx.author.id in gf_carrots:
-			#			earned = kraotscheat2	
-			#			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
-			#			if ctx.author.id == GF_ID:	
-			#				await ctx.send("You did so good at peeing insides `Kraot`'s mouth that after he drank it he was very happy and then he even licked your juicy pussy very clean and then he put his tongue inside your pee hole and you started to cum right in his throat. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
-			#				return	
+					if ctx.author.id in gf_carrots:
+						earned = kraotscheat2	
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+						if ctx.author.id == 822755470422442044:	
+							await ctx.send("You did so good at peeing insides `Kraot`'s mouth that after he drank it he was very happy and then he even licked your juicy pussy very clean and then he put his tongue inside your pee hole and you started to cum right in his throat. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
+							return	
 
-			#			elif ctx.author.id == 374622847672254466:	
-			#				await ctx.send("You let `GF_NAME` pee right in your mouth and drank it and then you kept putting your tongue inside her pee hole and then she started to cum right in your throat. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
-			#				return	
+						elif ctx.author.id == 374622847672254466:	
+							await ctx.send("You let `Melaina` pee right in your mouth and drank it and then you kept putting your tongue inside her pee hole and then she started to cum right in your throat. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
+							return	
 
-			#		else:	
+					else:	
 						earned = earningss	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
@@ -969,17 +969,17 @@ class EcoCommands(commands.Cog):
 						return
 				
 				elif aaaa == 6:
-			#		if ctx.author.id in gf_carrots:
-			#			earned = kraotscheat3
-			#			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
-			#			if ctx.author.id == GF_ID:	
-			#				await ctx.send("You fucked with `Kraots` all night long, and at the end you both fell asleep naked while cuddling in the bed with his dick inside your vagina while you were peeing on his hard warm dick. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
-			#				return	
+					if ctx.author.id in gf_carrots:
+						earned = kraotscheat3
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
+						if ctx.author.id == 822755470422442044:	
+							await ctx.send("You fucked with `Kraots` all night long, and at the end you both fell asleep naked while cuddling in the bed with his dick inside your vagina while you were peeing on his hard warm dick. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
+							return	
 
-			#			elif ctx.author.id == 374622847672254466:	
-			#				await ctx.send("You fucked with `GF_NAME` all night long, and at the end you both fell asleep naked while cuddling in the bed with your dick inside her vagina and while she was peeing on your hard warm dick. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
-			#				return	
-			#		else:	
+						elif ctx.author.id == 374622847672254466:	
+							await ctx.send("You fucked with `Melaina` all night long, and at the end you both fell asleep naked while cuddling in the bed with your dick inside her vagina and while she was peeing on your hard warm dick. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
+							return	
+					else:	
 						earned = earningsss	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 					
@@ -987,20 +987,20 @@ class EcoCommands(commands.Cog):
 						return
 				
 				elif aaaa == 7:
-			#		if ctx.author.id in gf_carrots:
-			#			earned = kraotscheat4
-			#			await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
-			#			if ctx.author.id == GF_ID:	
+					if ctx.author.id in gf_carrots:
+						earned = kraotscheat4
+						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
+						if ctx.author.id == 822755470422442044:	
 
-			#				await ctx.send(":drooling_face: You fucked `Kraots` and peed on him, and he loved it very much that he tied you up and then fucked you in every way possible and came in your throat and in your ass and all his cum got deep inside your tummy and you could feel his warm cum inside your belly. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
-			#				return	
+							await ctx.send(":drooling_face: You fucked `Kraots` and peed on him, and he loved it very much that he tied you up and then fucked you in every way possible and came in your throat and in your ass and all his cum got deep inside your tummy and you could feel his warm cum inside your belly. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
+							return	
 
-			#			elif ctx.author.id == 374622847672254466:	
+						elif ctx.author.id == 374622847672254466:	
 
-			#				await ctx.send(":drooling_face: You fucked `GF_NAME` and she peed on you, and she loved it very much, then you tied her up and then fucked her in every way possible and came in her throat and in her ass and all your cum got deep inside her tummy and she could feel your warm cum inside her belly. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
-			#				return
+							await ctx.send(":drooling_face: You fucked `Melaina` and she peed on you, and she loved it very much, then you tied her up and then fucked her in every way possible and came in her throat and in her ass and all your cum got deep inside her tummy and she could feel your warm cum inside her belly. You got: **{:,}** <:carrots:822122757654577183> . :smiling_imp:".format(earned))	
+							return
 
-			#		else:	
+					else:	
 						earned = earningssss	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 						await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you **{:,}** <:carrots:822122757654577183>".format(earned))
