@@ -6,7 +6,7 @@ import os
 import pymongo
 from pymongo import MongoClient
 import datetime
-no_mute_these = [374622847672254466, 822755470422442044]
+no_mute_these = [374622847672254466]
 
 DBKEY = os.getenv("MONGODBKEY")
 
