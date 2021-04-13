@@ -954,7 +954,7 @@ class EcoCommands(commands.Cog):
 						earned = kraotscheat2	
 						await collection.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 						if ctx.author.id == 822755470422442044:	
-							await ctx.send("You did so good at peeing insides `Kraots`'s mouth that after he drank it he was very happy and then he even licked your juicy pussy very clean and then he put his tongue inside your pee hole and you started to cum right in his throat. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
+							await ctx.send("You did so good at peeing insides `Kraot`'s mouth that after he drank it he was very happy and then he even licked your juicy pussy very clean and then he put his tongue inside your pee hole and you started to cum right in his throat. You got: **{:,}** <:carrots:822122757654577183> :smiling_imp:".format(earned))	
 							return	
 
 						elif ctx.author.id == 374622847672254466:	
