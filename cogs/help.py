@@ -36,7 +36,7 @@ class Help(commands.Cog):
 		em.add_field(name="***Info:***", value="• Shows the multipliers for the next groups: **Staff/Mods, Server Boosters, Members**.", inline = False)
 
 		if ctx.author.id == 374622847672254466:
-			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!multiplier set <group> <multiplier>`\n\u2800***Info:***\n\u2800\u2800• Set the multiplier for a group. Groups:\n\u2800\u2800\u2800\u2800 • **Mod/Staff**\n\u2800\u2800\u2800\u2800 • **Boosters**\n\u2800\u2800\u2800\u2800 • **Members** \n\u2800\u2800`!multiplier reset <group>` \n\u2800***Info:***\n\u2800\u2800• Reset the multiplier for a group. Groups:\n\u2800\u2800\u2800\u2800 • **Mod/Staff**\n\u2800\u2800\u2800\u2800 • **Boosters**\n\u2800\u2800\u2800\u2800 • **Members**\n\u2800\u2800\u2800\u2800 • **all** - to reset for every group \n _ _")
+			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!multiplier set <group> <multiplier>`\n\u2800***Info:***\n\u2800\u2800• Set the multiplier for a group. Groups:\n\u2800\u2800\u2800\u2800 • **Mod/Staff**\n\u2800\u2800\u2800\u2800 • **Boosters**\n\u2800\u2800\u2800\u2800 • **Members**\n\u2800\u2800\u2800\u2800 • **all** - to set for every group \n\u2800\u2800`!multiplier reset <group>` \n\u2800***Info:***\n\u2800\u2800• Reset the multiplier for a group. Groups:\n\u2800\u2800\u2800\u2800 • **Mod/Staff**\n\u2800\u2800\u2800\u2800 • **Boosters**\n\u2800\u2800\u2800\u2800 • **Members**\n\u2800\u2800\u2800\u2800 • **all** - to reset for every group \n _ _")
 
 		await ctx.send(embed=em)
 
