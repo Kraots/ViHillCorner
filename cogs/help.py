@@ -59,6 +59,9 @@ class Help(commands.Cog):
 		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!top```")
 		em.add_field(name="***Aliases:***", value="• **msg-top**\n• **top-msg**", inline=False)
 		em.add_field(name="***Info:***", value="See top ~`15` most active members.", inline=False)
+
+		if ctx.author.id == 374622847672254466:
+			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!top reset <user>`\n\u2800***Info:***\n\u2800\u2800• Reset a user's weekly messages count.\n _ _")
 		
 		await ctx.send(embed=em)
 

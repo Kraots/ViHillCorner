@@ -242,7 +242,7 @@ class LevelSystem(commands.Cog):
 	@commands.is_owner()
 	async def _set(self, ctx, group : str = None, multiplier : float = None):
 		if group == None:
-			await ctx.send("You must specify which group you want to set the multiplier for.\nGroups:\n\u2800 • **Mod/Staff**\n\u2800 • **Boosters**\n\u2800 • **Members**\n\u2800 **Kraots**")
+			await ctx.send("You must specify which group you want to set the multiplier for.\nGroups:\n\u2800 • **Mod/Staff**\n\u2800 • **Boosters**\n\u2800 • **Members**\n\u2800 • **Kraots**\n\u2800 • **all**")
 			return
 		
 		elif multiplier == None:
@@ -280,12 +280,19 @@ class LevelSystem(commands.Cog):
 				await collection.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': multiplier}})
 				await ctx.send("Set the multiplier for Kraots to **%s**." % (x))
 				return
+			
+			elif group == "all":
+				await collection.update_one({'_id':374622847672254466}, {'$set':{'mod xp multiplier': multiplier}})
+				await collection.update_one({'_id':374622847672254466}, {'$set':{'booster xp multiplier': multiplier}})
+				await collection.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': multiplier}})
+				await collection.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': multiplier}})
+				await ctx.send("Set the multiplier for every group to **%s**." % (multiplier))
 
 	@multiplier.command()
 	@commands.is_owner()
 	async def reset(self, ctx, group : str = None):
 		if group == None:
-			await ctx.send("You must specify which group you want to reset the multiplier for.\nGroups:\n\u2800 • **Mod/Staff**\n\u2800 • **Boosters**\n\u2800 • **Members**")
+			await ctx.send("You must specify which group you want to reset the multiplier for.\nGroups:\n\u2800 • **Mod/Staff**\n\u2800 • **Boosters**\n\u2800 • **Members**\n\u2800 • **Kraots**\n\u2800 • **all**")
 			return
 		
 		else:

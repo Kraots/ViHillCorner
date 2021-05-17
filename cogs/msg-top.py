@@ -67,6 +67,7 @@ class MessageTop(commands.Cog):
 		await ctx.send(embed = em)
 	
 	@top.command(aliases = ['reset'])
+	@commands.is_owner()
 	async def __reset(self, ctx, member: discord.Member):
 		def check(message):
 			return message.author == ctx.author and message.channel == ctx.channel
