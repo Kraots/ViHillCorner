@@ -286,7 +286,7 @@ class LevelSystem(commands.Cog):
 				await collection.update_one({'_id':374622847672254466}, {'$set':{'booster xp multiplier': multiplier}})
 				await collection.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': multiplier}})
 				await collection.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': multiplier}})
-				await ctx.send("Set the multiplier for every group to **%s**." % (multiplier))
+				await ctx.send("Set the multiplier for every group to **%s**." % (x))
 
 	@multiplier.command()
 	@commands.is_owner()
