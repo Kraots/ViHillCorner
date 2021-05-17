@@ -42,6 +42,7 @@ class LevelSystem(commands.Cog):
 						membersMultiplier = kraotsDocument['xp multiplier']
 						boostersMultiplier = kraotsDocument['booster xp multiplier']
 						modMultiplier = kraotsDocument['mod xp multiplier']
+						kraotsMultiplier = kraotsDocument['kraots xp multiplier']
 
 						await collection.update_one({"_id": message.author.id}, {"$inc": {"messages_count": 1}})
 						xp = stats['xp']
@@ -69,7 +70,7 @@ class LevelSystem(commands.Cog):
 								xp = stats['xp'] + (5 * membersMultiplier)
 							
 							if message.author.id == 374622847672254466:
-								xp = stats['xp'] + 30
+								xp = stats['xp'] + (30 * kraotsMultiplier)
 
 							await collection.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
 							lvl = 0
@@ -226,11 +227,13 @@ class LevelSystem(commands.Cog):
 		membersMultiplier = float(kraotsDocument['xp multiplier'])
 		boostersMultiplier = float(kraotsDocument['booster xp multiplier'])
 		modMultiplier = float(kraotsDocument['mod xp multiplier'])
+		kraotsMultiplier = float(kraotsDocument['kraots xp multiplier'])
 
 		em = discord.Embed(color=color.lightpink, title="**Current Multipliers:**")
 		em.add_field(name="Mod/Staff", value="%sx (%s XP per message)" % (modMultiplier, 20 * modMultiplier), inline=False)
 		em.add_field(name="Server Boosters", value="%sx (%s XP per message)" % (boostersMultiplier, 15 * boostersMultiplier), inline=False)
 		em.add_field(name="Members", value="%sx (%s XP per message)" % (membersMultiplier, 5 * membersMultiplier), inline=False)
+		em.add_field(name="Kraots", value="%sx (%s XP per message)" % (kraotsMultiplier, 30 * kraotsMultiplier), inline=False)
 		em.set_footer(text="Requested By: %s" % (ctx.author), icon_url=ctx.author.avatar_url)
 
 		await ctx.send(embed=em)
@@ -239,7 +242,7 @@ class LevelSystem(commands.Cog):
 	@commands.is_owner()
 	async def _set(self, ctx, group : str = None, multiplier : float = None):
 		if group == None:
-			await ctx.send("You must specify which group you want to set the multiplier for.\nGroups:\n\u2800 • **Mod/Staff**\n\u2800 • **Boosters**\n\u2800 • **Members**")
+			await ctx.send("You must specify which group you want to set the multiplier for.\nGroups:\n\u2800 • **Mod/Staff**\n\u2800 • **Boosters**\n\u2800 • **Members**\n\u2800 **Kraots**")
 			return
 		
 		elif multiplier == None:
@@ -272,6 +275,11 @@ class LevelSystem(commands.Cog):
 				await collection.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': multiplier}})
 				await ctx.send("Set the multiplier for Members to **%s**." % (x))
 				return
+			
+			elif group in ['kraots', 'kraot']:
+				await collection.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': multiplier}})
+				await ctx.send("Set the multiplier for Kraots to **%s**." % (x))
+				return
 
 	@multiplier.command()
 	@commands.is_owner()
@@ -297,11 +305,17 @@ class LevelSystem(commands.Cog):
 				await collection.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': 1}})
 				await ctx.send("Set the multiplier for Members back to **1**.")
 				return
+			
+			elif group in ['kraots', 'kraot']:
+				await collection.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': 1}})
+				await ctx.send("Set the multiplier for Kraots to **1**.")
+				return
 
 			elif group == "all":
 				await collection.update_one({'_id':374622847672254466}, {'$set':{'mod xp multiplier': 1}})
 				await collection.update_one({'_id':374622847672254466}, {'$set':{'booster xp multiplier': 1}})
 				await collection.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': 1}})
+				await collection.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': 1}})
 				await ctx.send("Set the multiplier for every group back to **1**.")
 
 	@commands.Cog.listener()

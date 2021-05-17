@@ -6,6 +6,7 @@ import utils.colors as color
 import datetime
 from dateutil.relativedelta import relativedelta
 from utils import time
+import asyncio
 
 BotChannels = [750160851822182486, 750160851822182487, 752164200222163016]
 
@@ -38,7 +39,7 @@ class MessageTop(commands.Cog):
 			await collection.update_one({'_id': 374622847672254466}, {'$set':{'weekly_reset': x}})
 
 
-	@commands.command(aliases=['msg-top', 'top-msg'])
+	@commands.group(invoke_without_command = True, case_insensitive = True, aliases=['msg-top', 'top-msg'])
 	async def top(self, ctx):
 		
 		def format_time(dt):
@@ -64,6 +65,23 @@ class MessageTop(commands.Cog):
 		em.set_footer(text="Resets in %s" % (format_time(data['weekly_reset'])), icon_url=ctx.author.avatar_url)
 
 		await ctx.send(embed = em)
+	
+	@top.command(aliases = ['reset'])
+	async def __reset(self, ctx, member: discord.Member):
+		def check(message):
+			return message.author == ctx.author and message.channel == ctx.channel
+		
+		await ctx.send("Are you sure you want to reset the message count for this week for member %s? `yes` | `no`" % (member.mention))
+		try:
+			answer = await self.client.wait_for('message', timeout = 180, check=check)
+			answer = answer.content.lower()
+			if answer in ['no', 'cancel']:
+				await ctx.send("Command to reset the message count for user `%s` has been canceled." % (member))
+			elif answer == "yes":
+				await collection.update_one({'_id': member.id}, {'$set':{'messages_count': 0}})
+				await ctx.send('The message count for this week for member **%s** has been reset successfully.' % (member))
+		except asyncio.TimeoutError:
+			return
 
 def setup(client):
 	client.add_cog(MessageTop(client))
