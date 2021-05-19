@@ -9,6 +9,7 @@ from utils.paginator import SimplePages
 import pymongo
 from pymongo import MongoClient
 import os
+import hmtai
 
 DBKEY = os.getenv("MONGODBKEY")
 
@@ -36,86 +37,39 @@ class NSFW(commands.Cog):
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
-
+	
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.check(NSFW)
-	async def nsfw(self, ctx):
-		await ctx.send('`!nsfw hentai` | `!nsfw yuri` | `!nsfw tentacle` | `!nsfw real` | `!nsfw yiff`')
+	async def nsfw(self, ctx, nsfwType: str = None):
+		if nsfwType is None:
+			em = discord.Embed(title="Here are all the available nsfw categories:", description="**ass** • **bdsm** • **cum** • **manga/doujin** • **femdom** • **hentai** • **masturbation** • **ero** • **orgy** • **yuri** • **pantsu/panties** • **glasses** • **cuckold** • **blowjob/bj** • **foot** • **thighs** • **vagina** • **ahegao** • **uniform** • **tentacles**", color=color.lightpink)
+			await ctx.send(embed=em)
+			return
 
-	@nsfw.command()
-	@commands.check(NSFW)
-	async def hentai(self, ctx):
-		async with aiohttp.ClientSession() as cs:
-			async with cs.get("https://www.reddit.com/r/hentai/random/.json") as r:
-				res = await r.json()
-				EntryPoint = res[0]['data']['children'] [0]['data']           
-				imgUrl = EntryPoint['url']
-				Title = EntryPoint['title']
+		nsfwType = nsfwType.lower()
+		if nsfwType == 'tentacle':
+			nsfwType = 'tentacles'
+		elif nsfwType in ['doujin', 'doujins']:
+			nsfwType = 'manga'
+		elif nsfwType in ['vagina', 'vag']:
+			nsfwType = 'pussy'
+		elif nsfwType == 'pantsu':
+			nsfwType = 'panties'
+		elif nsfwType == 'bj':
+			nsfwType = 'blowjob'
+		elif nsfwType == 'feet':
+			nsfwType = 'foot'
+		
+		elif nsfwType == 'gangbang':
+			await ctx.send("This category is not supported.")
+			return
+		result = hmtai.useHM(version='v2', category=nsfwType)
+		
+		em = discord.Embed(timestamp=ctx.message.created_at, color=color.pastel)
+		em.set_image(url=result)
+		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+		await ctx.send(embed=em)
 
-				embed = discord.Embed(title=Title, url=imgUrl, timestamp=ctx.message.created_at, color=color.pastel)
-				embed.set_image(url=imgUrl)
-				embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-				await ctx.channel.send(embed=embed)
-
-	@nsfw.command()
-	@commands.check(NSFW)
-	async def yuri(self, ctx):
-		async with aiohttp.ClientSession() as cs:
-			async with cs.get("https://www.reddit.com/r/yuri/random/.json") as r:
-				res = await r.json()
-				imgUrl = res[0]['data']['children'] [0]['data']
-				linkUrl = imgUrl['url']
-				titleUrl = imgUrl['title']
-
-				embed = discord.Embed(title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at, color=color.pastel)
-				embed.set_image(url=linkUrl)
-				embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-				await ctx.channel.send(embed=embed)
-
-	@nsfw.command(aliases=['tentacles'])
-	@commands.check(NSFW)
-	async def tentacle(self, ctx):
-		async with aiohttp.ClientSession() as cs:
-			async with cs.get("https://www.reddit.com/r/Tentai/random/.json") as r:
-				res = await r.json()
-				imgUrl = res[0]['data']['children'] [0]['data']
-				linkUrl = imgUrl['url']
-				titleUrl = imgUrl['title']
-
-				embed = discord.Embed(title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at, color=color.pastel)
-				embed.set_image(url=linkUrl)
-				embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-				await ctx.channel.send(embed=embed)
-
-	@nsfw.command()
-	@commands.check(NSFW)
-	async def real(self, ctx):
-		async with aiohttp.ClientSession() as cs:
-			async with cs.get("https://www.reddit.com/r/pornpics/random/.json") as r:
-				res = await r.json()
-				imgUrl = res[0]['data']['children'] [0]['data']
-				linkUrl = imgUrl['url']
-				titleUrl = imgUrl['title']
-
-				embed = discord.Embed(title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at, color=color.pastel)
-				embed.set_image(url=linkUrl)
-				embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-				await ctx.channel.send(embed=embed)
-
-	@nsfw.command()
-	@commands.check(NSFW)
-	async def yiff(self, ctx):
-		async with aiohttp.ClientSession() as cs:
-			async with cs.get("https://www.reddit.com/r/yiff/random.json") as r:
-				res = await r.json()
-				imgUrl = res[0]['data']['children'] [0]['data']
-				linkUrl = imgUrl['url']
-				titleUrl = imgUrl['title']
-
-				embed = discord.Embed(title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at, color=color.pastel)
-				embed.set_image(url=linkUrl)
-				embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-				await ctx.channel.send(embed=embed)
 
 	@nsfw.command()
 	async def me(self, ctx, choice : str):
@@ -175,9 +129,12 @@ class NSFW(commands.Cog):
 	@nsfw.command()
 	@commands.has_role("Staff")
 	async def blocks(self, ctx):
-		entries = collection.find({})
-		p = TagPages(entries = entries, per_page = 7)
-		await p.start(ctx)
+		try:
+			entries = collection.find({})
+			p = TagPages(entries = entries, per_page = 7)
+			await p.start(ctx)
+		except:
+			await ctx.send("There are no members whose acces has been restricted.")
 
 	@nsfw.command()
 	@commands.has_role("Staff")
@@ -211,25 +168,7 @@ class NSFW(commands.Cog):
 
 				msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
 				await ctx.channel.send(msg)
-
-	@hentai.error
-	async def hentai_error(self, ctx, error):
-		if isinstance(error, commands.CheckFailure):
-			msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
-			await ctx.channel.send(msg)
-
-	@yuri.error
-	async def yuri_error(self, ctx, error):
-		if isinstance(error, commands.CheckFailure):
-			msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
-			await ctx.channel.send(msg)
-
-	@tentacle.error
-	async def tentacle_error(self, ctx, error):
-		if isinstance(error, commands.CheckFailure):
-			msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
-			await ctx.channel.send(msg)
-
+	
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):

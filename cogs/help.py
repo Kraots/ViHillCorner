@@ -478,7 +478,7 @@ class Help(commands.Cog):
 		else:
 
 			em = discord.Embed(color=color.lightpink, title='***Usage:***', description='```CSS\n!nsfw <category>```')
-			em.add_field(name="***Categories:***", value="• **`yuri`**\n• **`hentai`**\n• **`tentacle`**\n• **`real`**\n• **`yiff`**", inline=False)
+			em.add_field(name="***Categories:***", value="Just type `!nsfw` in the nsfw channel to get the list of categories.", inline=False)
 			em.add_field(name="***Commands:***", value="• **me**\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800• `!nsfw me add`\n\u2800\u2800\u2800• `!nsfw me remove`\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Toggle wether you see the nsfw channel or not.\n _ _ ")
 			em.set_footer(text="USE ONLY IN THE NSFW CHANNEL", icon_url=ctx.author.avatar_url)
 			await ctx.send(embed=em)
