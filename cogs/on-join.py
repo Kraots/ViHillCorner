@@ -176,10 +176,10 @@ class on_join(commands.Cog):
 
 				answer = await self.client.wait_for('message', timeout= 360, check=newmember)
 				if answer.content.lower() == "no":
-					await member.send("Alrighty, you can do your intro later by typing `!intro` in a `bots only` channel. Enjoy your stay! :wave:")
+					await member.send("Alrighty, you can do your intro later by typing `!intro` in a `bots only` channel (in the server). Enjoy your stay! :wave:")
 					return
 			except asyncio.TimeoutError:
-				return
+				await channel.send("The time that you had to answer has expired. However if you wish to do your intro please go to a `bots only` channel (in the server) and type `!intro`. Enjoy your stay! :wave:")
 
 			else:
 
@@ -208,7 +208,7 @@ class on_join(commands.Cog):
 							try:
 								agenumber = int(age.content)
 							except ValueError:
-								await channel.send("Must be number, please go in a bots channel and type `!intro` to try again.")
+								await channel.send("Must be number, please go in a `bots only` channel (in the server) and type `!intro` to try again.")
 								return
 
 							if agenumber > 44:
