@@ -27,6 +27,14 @@ bad_words = [
 				"nigge"
 				]
 
+bad_words_names_edition = [ "nigga",
+							"nigger",
+							"niggas",
+							"niggers",
+							"nigges",
+							"nigge"
+							]
+
 zalgo_vars = ['\u030D', '\u030E', '\u0304', '\u0305', '\u033F',
            '\u0311', '\u0306', '\u0310', '\u0352', '\u0357',
            '\u0351', '\u0307', '\u0308', '\u030A', '\u0342',
@@ -75,12 +83,15 @@ class FilterCog(commands.Cog):
 			new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
 			words = None
 			zalgos = None
+			wordss = None
 			try:
 				words = bad_words
 				zalgos = zalgo_vars
+				wordss = bad_words_names_edition
 			except	:
 				words = words or []
 				zalgos = zalgos or []
+				wordss = wordss or []
 			for word in words:
 				if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.content):
 					if "shoe" in message.content.lower():
@@ -173,24 +184,6 @@ class FilterCog(commands.Cog):
 								return
 						except:
 							pass
-					
-				try:
-					if message.author.nick:
-						if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.author.nick):
-							try:
-								await message.author.edit(nick=new_nick)
-								await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-							except:
-								pass
-				
-					elif re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', message.author.name):
-						try:
-							await message.author.edit(nick=new_nick)
-							await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-						except:
-							pass
-				except:
-					pass
 			for zalgo in zalgos:
 				try:
 					if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', message.author.nick):
@@ -215,6 +208,24 @@ class FilterCog(commands.Cog):
 							pass
 				except:
 					pass
+			for wordd in wordss:
+				try:
+					if message.author.nick:
+						if re.search(r'(?i)(\b' + r'+\W*'.join(wordd) + f'|{wordd})', message.author.nick):
+							try:
+								await message.author.edit(nick=new_nick)
+								await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+							except:
+								pass
+				
+					elif re.search(r'(?i)(\b' + r'+\W*'.join(wordd) + f'|{wordd})', message.author.name):
+						try:
+							await message.author.edit(nick=new_nick)
+							await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+						except:
+							pass
+				except:
+					pass
 			
 
 	@commands.Cog.listener()
@@ -231,12 +242,15 @@ class FilterCog(commands.Cog):
 			new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
 			words = None
 			zalgos = None
+			bad_words_names_edition = None
 			try:
 				words = bad_words
 				zalgos = zalgo_vars
-			except	:
+				wordss = bad_words_names_edition
+			except:
 				words = words or []
 				zalgos = zalgos or []
+				wordss = wordss or []
 			for word in words:
 				if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.content):
 					if "shoe" in after.content.lower():
@@ -330,23 +344,6 @@ class FilterCog(commands.Cog):
 								return
 						except:
 							pass
-					
-				try:
-					if re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.author.nick):
-						try:
-							await after.author.edit(nick=new_nick)
-							await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-						except:
-							pass
-
-					elif re.search(r'(?i)(\b' + r'+\W*'.join(word) + f'|{word})', after.author.name):
-						try:
-							await after.author.edit(nick=new_nick)
-							await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-						except:
-							pass
-				except:
-					pass
 			for zalgo in zalgos:
 				try:
 					if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', after.author.nick):
@@ -367,6 +364,23 @@ class FilterCog(commands.Cog):
 						try:
 							await after.delete()
 							await after.author.send("Zalgo not allowed.")
+						except:
+							pass
+				except:
+					pass
+			for wordd in wordss:
+				try:
+					if re.search(r'(?i)(\b' + r'+\W*'.join(wordd) + f'|{wordd})', after.author.nick):
+						try:
+							await after.author.edit(nick=new_nick)
+							await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+						except:
+							pass
+
+					elif re.search(r'(?i)(\b' + r'+\W*'.join(wordd) + f'|{wordd})', after.author.name):
+						try:
+							await after.author.edit(nick=new_nick)
+							await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 						except:
 							pass
 				except:
