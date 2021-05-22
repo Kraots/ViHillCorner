@@ -32,11 +32,19 @@ class BdsmResults(commands.Cog):
 		
 		await ctx.send("Please send the screenshot of your BDSM results. %s" % (ctx.author.mention))
 		
+		hasBdsm = await collection.find_one({'_id': ctx.author.id})
+
 		try:
 			raw_result = await self.client.wait_for('message', check=check, timeout=180)
 		
 			try:
 				BDSMresult = raw_result.attachments[0].url
+
+				if hasBdsm != None:
+					await collection.update_one({'_id': ctx.author.id}, {'$set':{'BDSMresult': BDSMresult}})
+					await collection.update_one({'_id': ctx.author.id}, {'$set':{'timestamp': datetime.datetime.utcnow()}})
+					await ctx.send("Succesfully updated your bdsm result. To check your bdsm results or others, you can type `!bdsm results <member>`.")
+					return
 				
 				post = {'_id': ctx.author.id,
 						'BDSMresult': BDSMresult,
