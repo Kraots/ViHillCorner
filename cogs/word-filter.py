@@ -242,7 +242,7 @@ class FilterCog(commands.Cog):
 			new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
 			words = None
 			zalgos = None
-			bad_words_names_edition = None
+			wordss = None
 			try:
 				words = bad_words
 				zalgos = zalgo_vars
