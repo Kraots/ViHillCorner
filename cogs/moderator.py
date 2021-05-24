@@ -196,10 +196,10 @@ class Moderation(commands.Cog):
 		await log_channel.send(embed=em)
 
 
-			# OP BAN
+			# ID BAN
 
 	@commands.command()
-	async def opban(self, ctx, member: int):
+	async def idban(self, ctx, member: int):
 		guild = self.client.get_guild(750160850077089853)
 		get_member = await self.client.fetch_user(member)
 		await guild.ban(get_member)
@@ -207,10 +207,10 @@ class Moderation(commands.Cog):
 		await ctx.send(embed=em)
 
 
-		# OP UNBAN
+		# ID UNBAN
 
 	@commands.command()
-	async def opunban(self, ctx, member: int):
+	async def idunban(self, ctx, member: int):
 		guild = self.client.get_guild(750160850077089853)
 		get_member = await self.client.fetch_user(member)
 		await guild.unban(get_member)

@@ -22,7 +22,7 @@ class Help(commands.Cog):
 		helpEm.add_field(name="Economy", value="`register`, `unregister` ,`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `race`, `ppsuck`, `daily`, `rock-paper-scissors`", inline=False)
 		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `sfw`, `spam`, `english`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `serverinfo`, `vote`", inline=False)
 		if "Staff" in [role.name for role in ctx.message.author.roles]:
-			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `kick`, `ban`, `opban`, `unban`, `opunban`, `nsfw`, `slowmode`", inline=False)
+			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `kick`, `ban`, `idban`, `unban`, `idunban`, `nsfw`, `slowmode`", inline=False)
 		
 		if ctx.author.id == 374622847672254466:
 			helpEm.add_field(name="Dev Commands", value="`eval`, `load`, `unload`, `reload`, `reload all`, `unload all`, `load all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
@@ -138,15 +138,15 @@ class Help(commands.Cog):
 		await ctx.send(embed=em)
 
 	@help.command()
-	async def opban(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="**Usage:**", description="```CSS\n!opban <user>```")
+	async def idban(self, ctx):
+		em = discord.Embed(color=color.lightpink, title="**Usage:**", description="```CSS\n!idban <user>```")
 		em.add_field(name="***Info:***", value="• Bans a user that is **not** in the server.")
 		await ctx.send(embed=em)
 
 
 	@help.command()
-	async def opunban(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="**Usage:**", description="```CSS\n!opunban <user>```")
+	async def idunban(self, ctx):
+		em = discord.Embed(color=color.lightpink, title="**Usage:**", description="```CSS\n!idunban <user>```")
 		em.add_field(name="***Info:***", value="• Unbans a user that is **not** in the ban appeal server or the server itself.")
 		await ctx.send(embed=em)
 
