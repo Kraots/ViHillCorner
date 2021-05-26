@@ -17,7 +17,7 @@ addd = """
 ╭・Exclusive bots
 ﹕・Lots of fun channels
 ﹕・Lots of emotes
-﹕・Reaction roles
+﹕・Intros (Instead of reaction roles :D)
 ﹕・Not that active unless there's someone to start the convo, then there's a 80% chance it'll be active
 ╰・Horny Peeps (mostly 1 but ok)
 
