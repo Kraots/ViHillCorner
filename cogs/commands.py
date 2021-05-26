@@ -9,6 +9,22 @@ import datetime
 import random
 import sys
 
+addd = """
+୨୧ VIHILL CORNER ୨୧
+♥︎ Your chance to meet and chat with awesome people ♥︎
+
+♡︎ What we offer ♡︎:
+╭・Exclusive bots
+﹕・Lots of fun channels
+﹕・Lots of emotes
+﹕・Reaction roles
+﹕・Not that active unless there's someone to start the convo, then there's a 80% chance it'll be active
+╰・Horny Peeps (mostly 1 but ok)
+
+♥︎ server link: https://discord.gg/Uf2kA8q ♥︎
+° . · . ✧ °  .  ₊˚ˑ˚₊ . ° ✧ . · .°
+"""
+
 nono_list = ["pornhub.com", "hentaiheaven.com", "nhentai.net", "hanime.tv", "xvideos.com", "hentai.com", "hentai.net"]
 
 class command(commands.Cog):
@@ -134,7 +150,7 @@ class command(commands.Cog):
 	@commands.command(aliases=['ad'])
 	async def serverad(self, ctx):
 		await ctx.message.delete()
-		ad = discord.Embed(color=color.lightpink, title="Here's the ad to the server:", description="**__ViHill Corner__**\nViHill Corner is mainly for talking & meeting new people!\n\n**!! WARNING !!**\nIf you can't stand horny and lewd messages it's for the best to avoid this server as this is something done on a daily basis. Same if you cannot stand the r slur along with other slurs as they're used quite often as well.\n\nOtherwise you're more than welcomed, as long as you can be active there will be someone else to join in the convo with you 80% of the time... Probably...\n\n\nhttps://discord.gg/Uf2kA8q")
+		ad = discord.Embed(color=color.lightpink, title="Here's the ad to the server:", description=addd)
 		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
 		await ctx.send(embed=ad)
@@ -142,7 +158,7 @@ class command(commands.Cog):
 	@commands.command(aliases=["ra"])
 	async def rawad(self, ctx):
 		await ctx.message.delete()
-		ad = discord.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```**__ViHill Corner__**\nViHill Corner is mainly for talking & meeting new people!\n\n**!! WARNING !!**\nIf you can't stand horny and lewd messages it's for the best to avoid this server as this is something done on a daily basis. Same if you cannot stand the r slur along with other slurs as they're used quite often as well.\n\nOtherwise you're more than welcomed, as long as you can be active there will be someone else to join in the convo with you 80% of the time... Probably...\n\n\nhttps://discord.gg/Uf2kA8q```")
+		ad = discord.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```%s```" % (addd))
 		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
 		await ctx.send(embed=ad)
