@@ -29,6 +29,7 @@ class LevelSystem(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message(self, message: discord.Message):
+		if message.guild:
 			if not message.channel.id in no_talk_channels:
 				if not message.author.bot:
 					guild = self.client.get_guild(750160850077089853)

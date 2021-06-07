@@ -429,6 +429,10 @@ class Help(commands.Cog):
 	async def suggest(self, ctx):
 		suggest = discord.Embed(title="***Usage:***", description="```CSS\n!suggest <suggestion>```", color=color.lightpink)
 		suggest.add_field(name="***Info:***", value="• Make a suggestion in <#750160850593251454>\n• There is 1 minute cooldown between each suggestion per user.", inline=False)
+
+		if ctx.author.id == 374622847672254466:
+			suggest.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800```CSS\n!suggest block <members>\n!suggest unblock <members>\n!suggest blocks```\n\u2800***Info***:\n\u2800\u2800• Block / Unblock people from using the `!suggest <suggestion>` command , or get paginated list of all blocked users.", inline=False)
+
 		await ctx.send(embed=suggest)
 
 	@help.command()
