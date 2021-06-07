@@ -6,6 +6,7 @@ import os
 import utils.colors as color
 import textwrap
 import datetime
+import asyncio
 
 DBKEY = os.getenv("MONGODBKEY")
 
@@ -75,9 +76,33 @@ class RemindersClass(commands.Cog):
 		results = await collection.find_one({"_id": id})
 		if results != None:
 			if results['userID'] == ctx.author.id:
-				await collection.delete_one({"_id": id})
-				await ctx.send("Succesfully canceled the reminder.")
-				return
+				def check(reaction, user):
+					return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
+				msg = await ctx.send("Are you sure you want to cancel that reminder? %s" % (ctx.author.mention))
+				await msg.add_reaction('<:agree:797537027469082627>')
+				await msg.add_reaction('<:disagree:797537030980239411>')
+				try:
+					reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
+				except asyncio.TimeoutError:
+					new_msg = f"{ctx.author.mention} Did not react in time."
+					await msg.edit(content=new_msg)
+					await msg.clear_reactions()
+					return
+				
+				else:
+					if str(reaction.emoji) == '<:agree:797537027469082627>':
+						await collection.delete_one({"_id": id})
+						e = "Succesfully canceled the reminder. %s" % (ctx.author.mention)
+						await msg.edit(content=e)
+						await msg.clear_reactions()
+						return
+					
+					elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+						e = "Reminder has not been canceled. %s" % (ctx.author.mention)
+						await msg.edit(content=e)
+						await msg.clear_reactions()
+						return
 			else:
 				await ctx.send("That reminder is not yours!")
 				return
@@ -89,9 +114,33 @@ class RemindersClass(commands.Cog):
 	async def clear(self, ctx):
 		results = await collection.find_one({"userID": ctx.author.id})
 		if results != None:
-			await collection.delete_many({"userID": ctx.author.id})
-			await ctx.send("Succesfully cleared all your reminders.")
-			return
+			def check(reaction, user):
+				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
+			msg = await ctx.send("Are you sure you want to clear your reminders? %s" % (ctx.author.mention))
+			await msg.add_reaction('<:agree:797537027469082627>')
+			await msg.add_reaction('<:disagree:797537030980239411>')
+			try:
+				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
+			except asyncio.TimeoutError:
+				new_msg = f"{ctx.author.mention} Did not react in time."
+				await msg.edit(content=new_msg)
+				await msg.clear_reactions()
+				return
+			
+			else:
+				if str(reaction.emoji) == '<:agree:797537027469082627>':
+					await collection.delete_many({"userID": ctx.author.id})
+					e = "Succesfully cleared all your reminders. %s" % (ctx.author.mention)
+					await msg.edit(content=e)
+					await msg.clear_reactions()
+					return
+				
+				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+					e = "Reminders have not been cleared. %s" % (ctx.author.mention)
+					await msg.edit(content=e)
+					await msg.clear_reactions()
+					return
 		else:
 			await ctx.send("No currently running reminders.")
 
