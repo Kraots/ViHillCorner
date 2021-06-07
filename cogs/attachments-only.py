@@ -23,13 +23,14 @@ class ImagesChannel(commands.Cog):
 				await message.author.send("You can only send images / videos in this channel.")
 			except UnboundLocalError:
 				pass
-			try:
-				if message.content == allow_this:
-					return
-				else:
-					return
-			except UnboundLocalError:
-				pass
+			else:
+				try:
+					if message.content == allow_this:
+						return
+					else:
+						return
+				except UnboundLocalError:
+					pass
 		
 		elif message.channel.id == 790309304422629386:
 			try:
@@ -39,13 +40,14 @@ class ImagesChannel(commands.Cog):
 				await message.author.send("You cannot send text in this channel.")
 			except UnboundLocalError:
 				pass
-			try:
-				if message.content == allow_this:
-					return
-				else:
-					return
-			except UnboundLocalError:
-							pass
+			else:
+				try:
+					if message.content == allow_this:
+						return
+					else:
+						return
+				except UnboundLocalError:
+								pass
 
 		elif message.channel.id == 750160852006469810:
 			try:
@@ -56,13 +58,14 @@ class ImagesChannel(commands.Cog):
 			except UnboundLocalError:
 				pass
 
-			try:	
-				if message.content == allow_this:
-					return
-				else:
-					return
-			except UnboundLocalError:
-				pass
+			else:
+				try:	
+					if message.content == allow_this:
+						return
+					else:
+						return
+				except UnboundLocalError:
+					pass
 
 		elif message.channel.id == 750160852006469806:
 			try:
@@ -72,10 +75,11 @@ class ImagesChannel(commands.Cog):
 				await message.author.send("You cannot send text in this channel.")
 			except UnboundLocalError:
 				pass
-			if message.content == allow_this:
-				return
 			else:
-				return
+				if message.content == allow_this:
+					return
+				else:
+					return
 
 		elif message.channel.id == 790309648213213205:
 			try:
@@ -85,13 +89,14 @@ class ImagesChannel(commands.Cog):
 				await message.author.send("You cannot send text in this channel.")
 			except UnboundLocalError:
 				pass
-			try:
-				if message.content == allow_this:
-					return
-				else:
-					return
-			except UnboundLocalError:
-				pass
+			else:
+				try:
+					if message.content == allow_this:
+						return
+					else:
+						return
+				except UnboundLocalError:
+					pass
 
 		else:
 			return
