@@ -337,29 +337,37 @@ class CustomRoles(commands.Cog):
 
 		get_role = results['CustomRoleName']
 
-		def check(message):
-			return message.author.id == usercheck and message.channel.id == channel.id
+		def check(reaction, user):
+				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
 
 		crname = discord.utils.get(guild.roles, name=get_role)
-		await ctx.send("Are you sure you want to delete your custom role (<@&{}>)? `yes` | `no`".format(crname.id))
-
+		msg = await ctx.send("Are you sure you want to delete your custom role (<@&{}>)?".format(crname.id))
+		await msg.add_reaction('<:agree:797537027469082627>')
+		await msg.add_reaction('<:disagree:797537030980239411>')
+		
 		try:
-
-			reply = await self.client.wait_for('message', timeout=30, check=check)
-			answer = reply.content
-			if answer.lower() == "no":
-				await ctx.send("Your custom role has not been deleted.")
-				return
-
-			elif answer.lower() == "yes":
-				await crname.delete()
-
-				await collection.delete_one({"_id": ctx.author.id})
-
-				await ctx.send("Succesfully deleted your custom role! {}".format(ctx.author.mention))
+				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
 
 		except asyncio.TimeoutError:
+			new_msg = f"{ctx.author.mention} Did not react in time."
+			await msg.edit(content=new_msg)
+			await msg.clear_reactions()
 			return
+
+		else:
+			if str(reaction.emoji) == '<:disagree:797537030980239411>':
+				e = "Your custom role has not been deleted. %s" % (ctx.author.mention)
+				await msg.edit(content=e)
+				await msg.clear_reactions()
+				return
+
+			elif str(reaction.emoji) == '<:agree:797537027469082627>':
+				await crname.delete()
+				await collection.delete_one({"_id": ctx.author.id})
+				e = "Succesfully deleted your custom role! {}".format(ctx.author.mention)
+				await msg.edit(content=e)
+				await msg.clear_reactions()
+				return
 
 
 

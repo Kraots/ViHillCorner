@@ -54,29 +54,41 @@ class Intros(commands.Cog):
 			except ValueError:
 				return False
 
-		def alreadyhas(message):
-			return message.author.id == usercheck and message.channel.id == channel.id
+		def alreadyhas(reaction, user):
+			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
 
 		def status_reply(message):
 			return message.content.lower() in status_pos and message.author.id == usercheck and message.channel.id == channel.id
 
 		
 		if results != None:
-			await ctx.send("You already have intro set, would you like to edit your intro? `yes` | `no`")
-			
+			msg = await ctx.send("You already have intro set, would you like to edit your intro? %s" % (ctx.author.mention))
+			await msg.add_reaction('<:agree:797537027469082627>')
+			await msg.add_reaction('<:disagree:797537030980239411>')
+
 			try:
-				ahem = await self.client.wait_for('message', timeout= 15, check=alreadyhas)
-				if ahem.content.lower() == "no":
-					await ctx.send("Canceled.")
-					ctx.command.reset_cooldown(ctx)
-					return
+				reaction, user = await self.client.wait_for('reaction_add', check=alreadyhas, timeout=30)
 
 			except asyncio.TimeoutError:
+				new_msg = f"{ctx.author.mention} Did not react in time."
+				await msg.edit(content=new_msg)
+				await msg.clear_reactions()
 				return
-
+			
 			else:
-				if ahem.content.lower() == "yes":
+				if str(reaction.emoji) == '<:disagree:797537030980239411>':
+					e = "Canceled. %s" % (ctx.author.mention)
+					ctx.command.reset_cooldown(ctx)
+					await msg.edit(content=e)
+					await msg.clear_reactions()
+					return
 
+				elif str(reaction.emoji) == '<:agree:797537027469082627>':
+					await msg.delete()
+					try:
+						intro_id = results['intro_id']
+					except:
+						pass
 
 					await channel.send("What's your name? {}".format(ctx.author.mention))
 
@@ -145,7 +157,6 @@ class Intros(commands.Cog):
 
 										else:
 											em = discord.Embed(color=ctx.author.color)
-											em = discord.Embed(color=ctx.author.color)
 											em.set_author(name=ctx.author, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
 											em.set_thumbnail(url=ctx.author.avatar_url)
 											em.add_field(name="Name", value=name.content, inline=True)
@@ -154,10 +165,17 @@ class Intros(commands.Cog):
 											em.add_field(name="Gender", value=gender.content, inline=False)
 											em.add_field(name="Relationship Status", value=status, inline=True)
 											em.add_field(name="Interests", value=interests.content, inline=False)
-											await introchannel.send(embed=em)
-											await ctx.channel.send("Intro edited successfully. You can see in <#750160850593251449>")
+											intro_message = await introchannel.send(embed=em)
+
+											await collection.update_one({"_id": ctx.author.id}, {"$set": {"name": name.content, "location": location.content, "age": agenumber, "gender": gender.content, "status": status, "interests": interests.content, "intro_id": intro_message.id}})
 											
-											await collection.update_one({"_id": ctx.author.id}, {"$set": {"name": name.content, "location": location.content, "age": agenumber, "gender": gender.content, "status": status, "interests": interests.content}})
+											try:
+												intro_message = await introchannel.fetch_message(intro_id)
+												await intro_message.delete()
+											except:
+												pass
+
+											await ctx.send("Intro edited successfully. You can see in <#750160850593251449> %s" % (ctx.author.mention))
 
 											return
 
@@ -239,7 +257,7 @@ class Intros(commands.Cog):
 									em.add_field(name="Gender", value=gender.content, inline=False)
 									em.add_field(name="Relationship Status", value=status, inline=True)
 									em.add_field(name="Interests", value=interests.content, inline=False)
-									await introchannel.send(embed=em)
+									intro_msg = await introchannel.send(embed=em)
 									await ctx.channel.send("Intro added successfully. You can see in <#750160850593251449>")
 
 									post = {"_id": ctx.author.id, 
@@ -248,7 +266,8 @@ class Intros(commands.Cog):
 											"age": agenumber,
 											"gender": gender.content,
 											"status": status,
-											"interests": interests.content
+											"interests": interests.content,
+											"intro_id": intro_msg.id
 											}
 											
 									await collection.insert_one(post)
@@ -262,8 +281,40 @@ class Intros(commands.Cog):
 		results = await collection.find_one({"_id": ctx.author.id})
 
 		if results != None:
-			collection.delete_one({"_id": ctx.author.id})
-			await ctx.send("Intro deleted.")
+			def check(reaction, user):
+				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
+			msg = await ctx.send("Are you sure you want to delete your intro? %s" % (ctx.author.mention))
+			await msg.add_reaction('<:agree:797537027469082627>')
+			await msg.add_reaction('<:disagree:797537030980239411>')
+			try:
+				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
+			except asyncio.TimeoutError:
+				new_msg = f"{ctx.author.mention} Did not react in time."
+				await msg.edit(content=new_msg)
+				await msg.clear_reactions()
+				return
+			
+			else:
+				if str(reaction.emoji) == '<:agree:797537027469082627>':
+					await collection.delete_one({"_id": ctx.author.id})
+					try:
+						intro_id = results['intro_id']
+						channel = ctx.guild.get_channel(750160850593251449)
+						intro_message = await channel.fetch_message(intro_id)
+						await intro_message.delete()
+					except:
+						pass
+					e = "Intro deleted. %s" % (ctx.author.mention)
+					await msg.edit(content=e)
+					await msg.clear_reactions()
+					return
+				
+				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+					e = "Intro has not been deleted. %s" % (ctx.author.mention)
+					await msg.edit(content=e)
+					await msg.clear_reactions()
+					return
 
 		else:
 			await ctx.send("You do not have an intro!")
