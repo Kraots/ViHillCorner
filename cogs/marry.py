@@ -58,16 +58,24 @@ class MarryCommands(commands.Cog):
 					
 
 			else:
-				def message_check(m):
-					return m.author.id == member.id and m.channel.id == ctx.channel.id
+				def check(reaction, user):
+					return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
 
-				await ctx.send("{} do you want to marry {}? `yes` | `no`".format(member.mention, ctx.author.mention))
+				msg = await ctx.send("{} do you want to marry {}?".format(member.mention, ctx.author.mention))
+				await msg.add_reaction('<:agree:797537027469082627>')
+				await msg.add_reaction('<:disagree:797537030980239411>')
 
 				try:
-					rresponse = await self.client.wait_for('message', timeout=180, check=message_check)
-					response = rresponse.content.lower()
+					reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
 
-					if response == "yes":
+				except asyncio.TimeoutError:
+					new_msg = f"{ctx.author.mention} Did not react in time."
+					await msg.edit(content=new_msg)
+					await msg.clear_reactions()
+					return
+				
+				else:
+					if str(reaction.emoji) == '<:agree:797537027469082627>':
 						
 						married_since_save_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M")
 
@@ -77,14 +85,18 @@ class MarryCommands(commands.Cog):
 						await collection.insert_many([save_auth, save_mem])
 
 						await ctx.send("`{}` married `{}`!!! :tada: :tada:".format(ctx.author.display_name, member.display_name))
+						e = "`{}` married `{}`!!! :tada: :tada:".format(ctx.author.display_name, member.display_name)
+						await msg.edit(content=e)
+						await msg.clear_reactions()
 
-					elif response == "no":
-						await ctx.send("`{}` does not want to marry with you. :pensive: :fist:".format(member.display_name))
 
-				
-				except asyncio.TimeoutError:
-					await ctx.send("`{}` did not answer in time!".format(member.display_name))
-					return
+					elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+						await ctx.send("`{}` does not want to marry with you. {} :pensive: :fist:".format(member.display_name, ctx.author.mention))
+						e = "`{}` does not want to marry with you. {} :pensive: :fist:".format(member.display_name, ctx.author.mention)
+						await msg.edit(content=e)
+						await msg.clear_reactions()
+
+
 
 	@commands.command()	
 	async def divorce(self, ctx):
@@ -99,30 +111,38 @@ class MarryCommands(commands.Cog):
 		else:	
 			the_married_to_user = self.client.get_user(results['married_to'])	
 
-			def check(m):	
-				return m.author.id == user.id and m.channel.id == ctx.channel.id	
+			def check(reaction, user):
+				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id	
 
-			await ctx.send("Are you sure you want to divorce `{}` ? `yes` | `no`".format(the_married_to_user.display_name))	
+			msg = await ctx.send("Are you sure you want to divorce `{}`?".format(the_married_to_user.display_name))	
+			await msg.add_reaction('<:agree:797537027469082627>')
+			await msg.add_reaction('<:disagree:797537030980239411>')
 
-			try:	
-				rresponse = await self.client.wait_for('message', timeout = 180, check=check)	
-				response = rresponse.content.lower()	
+			try:
+				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
 
-				if response == "yes":	
+			except asyncio.TimeoutError:
+				new_msg = f"{ctx.author.mention} Did not react in time."
+				await msg.edit(content=new_msg)
+				await msg.clear_reactions()
+				return
+			
+			else:
+				if str(reaction.emoji) == '<:agree:797537027469082627>':
 					auth = {"_id": ctx.author.id} 	
 					mem = {"_id": the_married_to_user.id}	
 					await collection.delete_one(auth)	
 					await collection.delete_one(mem)	
 
-					await ctx.send("You divorced `{}`. :cry:".format(the_married_to_user.display_name))	
+					e = "You divorced `{}`. :cry:".format(the_married_to_user.display_name)
+					await msg.edit(content=e)
+					await msg.clear_reactions()
 
-				elif response == "no":	
-					await ctx.send("You did not divorce that person :D")	
-					return	
 
-			except asyncio.TimeoutError:	
-				await ctx.send("Did not give answer in time :/")	
-				return
+				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+					e = "You did not divorce that person :D %s" % (user.mention)
+					await msg.edit(content=e)
+					await msg.clear_reactions()
 
 	@commands.command()
 	async def marriedwho(self, ctx, member : discord.Member = None):
