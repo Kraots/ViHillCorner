@@ -441,27 +441,37 @@ class Tags(commands.Cog):
 						await ctx.send("You do not own this tag, therefore, you cannot delete it.")
 						return
 					else:
-						await ctx.send("Are you sure you want to delete the tag `{}` ? `yes` | `no`".format(the_tag_name))
+						msg = await ctx.send("Are you sure you want to delete the tag `{}` ? {}".format(the_tag_name, ctx.author.mention))
 					
-						def check(m):
-							return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+						def check(reaction, user):
+							return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
+						
+						await msg.add_reaction('<:agree:797537027469082627>')
+						await msg.add_reaction('<:disagree:797537030980239411>')
 						
 						try:
-							response = await self.client.wait_for('message', timeout=60, check=check)
-							if response.content.lower() == "no":
-								await ctx.send("Tag has not been deleted.")
+							reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
+						except asyncio.TimeoutError:
+							new_msg = f"{ctx.author.mention} Did not react in time."
+							await msg.edit(content=new_msg)
+							await msg.clear_reactions()
+							return
+						
+						else:
+							if str(reaction.emoji) == '<:disagree:797537030980239411>':
+								e = "Tag has not been deleted. %s" % (ctx.author.mention)
+								await msg.edit(content=e)
+								await msg.clear_reactions()
+								return
 							
-							elif response.content.lower() == "yes":
+							elif str(reaction.emoji) == '<:agree:797537027469082627>':
 								collection.delete_one({"_id": tag_name})
 								
-								await ctx.send("Tag `{}` deleted succesfully!".format(the_tag_name))
-							else:
-								await ctx.send("That is not a valid form of reply.")
+								e = "Tag `{}` deleted succesfully! {}".format(the_tag_name, ctx.author.mention)
+								await msg.edit(content=e)
+								await msg.clear_reactions()
 								return
-						
-						except asyncio.TimeoutError:
-							await ctx.send("Time expired!")
-							return
 					return
 			
 			else:
@@ -476,27 +486,37 @@ class Tags(commands.Cog):
 				return
 			
 			else:
-				await ctx.send("Are you sure you want to delete the tag `{}` ? `yes` | `no`".format(the_tag_name))
+				msg = await ctx.send("Are you sure you want to delete the tag `{}` ?".format(the_tag_name))
 				
-				def check(m):
-					return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+				def check(reaction, user):
+					return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
+				
+				await msg.add_reaction('<:agree:797537027469082627>')
+				await msg.add_reaction('<:disagree:797537030980239411>')
 				
 				try:
-					response = await self.client.wait_for('message', timeout=60, check=check)
-					if response.content.lower() == "no":
-						await ctx.send("Tag has not been deleted.")
+					reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
+				except asyncio.TimeoutError:
+					new_msg = f"{ctx.author.mention} Did not react in time."
+					await msg.edit(content=new_msg)
+					await msg.clear_reactions()
+					return
+				
+				else:
+					if str(reaction.emoji) == '<:disagree:797537030980239411>':
+						e = "Tag has not been deleted. %s" % (ctx.author.mention)
+						await msg.edit(content=e)
+						await msg.clear_reactions()
+						return
 					
-					elif response.content.lower() == "yes":
+					elif str(reaction.emoji) == '<:agree:797537027469082627>':
 						collection.delete_one({"the_tag_name": the_tag_name.lower()})
 						
-						await ctx.send("Tag deleted succesfully.")
-					else:
-						await ctx.send("That is not a valid form of reply.")
+						e = "Tag deleted succesfully. %s" % (ctx.author.mention)
+						await msg.edit(content=e)
+						await msg.clear_reactions()
 						return
-				
-				except asyncio.TimeoutError:
-					await ctx.send("Time expired!")
-					return
 
 
 
