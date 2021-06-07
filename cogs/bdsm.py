@@ -104,13 +104,15 @@ class BdsmResults(commands.Cog):
 			else:
 				if str(reaction.emoji) == '<:agree:797537027469082627>':
 					await collection.delete_one({'_id': user.id})
-					await ctx.send("Succesfully removed your bdsm results. %s" % (user.mention))
-					await msg.delete()
+					e = "Succesfully removed your bdsm results. %s" % (user.mention)
+					await msg.edit(content=e)
+					await msg.clear_reactions()
 					return
 				
 				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-					await ctx.send("Okay, your bdsm results have not been removed. %s" % (user.mention))
-					await msg.delete()
+					e = "Okay, your bdsm results have not been removed. %s" % (user.mention)
+					await msg.edit(content=e)
+					await msg.clear_reactions()
 					return
 
 		else:
