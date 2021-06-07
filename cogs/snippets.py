@@ -326,24 +326,33 @@ class Snippets(commands.Cog):
 						return
 
 					else:
-						await ctx.send("Are you sure you want to delete `%s`? `yes` | `no` %s" % (snippet_name, ctx.author.mention))
+						msg = await ctx.send("Are you sure you want to delete `%s`? %s" % (snippet_name, ctx.author.mention))
+						await msg.add_reaction('<:agree:797537027469082627>')
+						await msg.add_reaction('<:disagree:797537030980239411>')
+
 						try:
-							reply = await self.client.wait_for('message', check=check, timeout=90)
-							reply = reply.content
-							if reply == "yes":
+							reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
+						except asyncio.TimeoutError:
+							new_msg = f"{ctx.author.mention} Did not react in time."
+							await msg.edit(content=new_msg)
+							await msg.clear_reactions()
+							return
+						
+						else:
+							if str(reaction.emoji) == '<:agree:797537027469082627>':
 								collection.delete_one({"_id": snippet_name})
 
-								await ctx.send(f"`{snippet_name}` deleted succesfully!")
+								e = f"`{snippet_name}` deleted succesfully! {ctx.author.mention}"
+								await msg.edit(content=e)
+								await msg.clear_reactions()
 								return
-							elif reply == "no":
-								await ctx.send("Snippet was not deleted.")
+							
+							elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+								e = f"Snippet was not deleted. {ctx.author.mention}"
+								await msg.edit(content=e)
+								await msg.clear_reactions()
 								return
-							else:
-								await ctx.send("That is not a valid form of reply.")
-								return
-						
-						except asyncio.TimeoutError:
-							return
 				
 		else:
 			all_snippets = []
@@ -365,24 +374,33 @@ class Snippets(commands.Cog):
 					await ctx.send("You do not own this snippet!")
 					return
 			else:
-				await ctx.send("Are you sure you want to delete `%s`? `yes` | `no` %s" % (get_snippet_name, ctx.author.mention))
+				msg = await ctx.send("Are you sure you want to delete `%s`? %s" % (get_snippet_name, ctx.author.mention))
+				await msg.add_reaction('<:agree:797537027469082627>')
+				await msg.add_reaction('<:disagree:797537030980239411>')
+				
 				try:
-					reply = await self.client.wait_for('message', check=check, timeout=90)
-					reply = reply.content
-					if reply == "yes":
+					reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
+				except asyncio.TimeoutError:
+					new_msg = f"{ctx.author.mention} Did not react in time."
+					await msg.edit(content=new_msg)
+					await msg.clear_reactions()
+					return
+				
+				else:
+					if str(reaction.emoji) == '<:agree:797537027469082627>':
 						collection.delete_one({"_id": get_snippet_name})
 
-						await ctx.send(f"`{get_snippet_name}` deleted succesfully!")
+						e = f"`{get_snippet_name}` deleted succesfully! {ctx.author.mention}"
+						await msg.edit(content=e)
+						await msg.clear_reactions()
 						return
-					elif reply == "no":
-						await ctx.send("Snippet was not deleted.")
+					
+					elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+						e = f"Snippet was not deleted. {ctx.author.mention}"
+						await msg.edit(content=e)
+						await msg.clear_reactions()
 						return
-					else:
-						await ctx.send("That is not a valid form of reply.")
-						return
-				
-				except asyncio.TimeoutError:
-					return
 
 
 	@snippet.command()
