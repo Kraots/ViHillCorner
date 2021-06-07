@@ -83,33 +83,36 @@ class BdsmResults(commands.Cog):
 	async def remove(self, ctx):
 		user = ctx.author
 		
-		def check(m):
-			return m.author == ctx.author and m.channel == ctx.channel
+		def check(reaction, user):
+			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
 		
-		await ctx.send("Are you sure you want to remove your bdsm results? `yes` | `no` %s" % (user.mention))
+		msg = await ctx.send("Are you sure you want to remove your bdsm results? %s" % (user.mention))
+		await msg.add_reaction('<:agree:797537027469082627>')
+		await msg.add_reaction('<:disagree:797537030980239411>')
 		hasBdsm = await collection.find_one({'_id': user.id})
 
-		if hasBdsm != None:
+		if hasBdsm != None:			
 			try:
-				raw_reply = await self.client.wait_for('message', timeout=180, check=check)
-				reply = raw_reply.content.lower()
-				
-				if reply == "yes":
+				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
+			except asyncio.TimeoutError:
+				new_msg = f"{ctx.author.mention} Did not react in time."
+				await msg.edit(content=new_msg)
+				await msg.clear_reactions()
+				return
+			
+			else:
+				if str(reaction.emoji) == '<:agree:797537027469082627>':
 					await collection.delete_one({'_id': user.id})
 					await ctx.send("Succesfully removed your bdsm results. %s" % (user.mention))
+					await msg.delete()
 					return
 				
-				elif reply == "no":
+				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
 					await ctx.send("Okay, your bdsm results have not been removed. %s" % (user.mention))
+					await msg.delete()
 					return
-				
-				else:
-					await ctx.send("Invalid form of reply, please type the command again, but this time only reply with `yes` or `no`.")
-					return
-			
-			except asyncio.TimeoutError:
-				await ctx.send("Time expired. %s" % (user.mention))
-				return
+
 		else:
 			await ctx.send("There are no bdsm results to delete, you don't have them set. To set your bdsm results type `!bdsm set`, and then send the screenshot of your results. %s" % (user.mention))
 
