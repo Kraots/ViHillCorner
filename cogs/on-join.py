@@ -15,13 +15,6 @@ collection = db["Intros"]
 mutes_collection = db['Moderation Mutes']
 filter_mutes = db["Filter Mutes"]
 
-positive_messages=["yes",
-				   "sure",
-				   "yeah why not",
-				   "yeah",
-				   "sure why not"
-				   ]
-
 status_pos=[
 			"taken",
 			"single",
@@ -151,7 +144,9 @@ class on_join(commands.Cog):
 			
 			introchannel = VHguild.get_channel(750160850593251449)
 			
-			await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself to us? `yes` | `no`")
+			msg1 = await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself to us?")
+			await msg1.add_reaction('<:agree:797537027469082627>')
+			await msg1.add_reaction('<:disagree:797537030980239411>')
 
 			channel = member.dm_channel
 			
@@ -166,112 +161,121 @@ class on_join(commands.Cog):
 				except ValueError:
 					return False
 
-			def newmember(message):
-				return message.content.lower() in positive_messages and message.channel.id == channel.id and message.author.id == user.id
+			def newmember(reaction, user):
+				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
 
 			def rel_reply(message):
 				return message.content.lower() in status_pos and message.channel.id == channel.id and message.author.id == user.id
 
 			try:
+				reaction, user = await self.client.wait_for('reaction_add', check=newmember, timeout=180)
 
-				answer = await self.client.wait_for('message', timeout= 360, check=newmember)
-				if answer.content.lower() == "no":
-					await member.send("Alrighty, you can do your intro later by typing `!intro` in a `bots only` channel (in the server). Enjoy your stay! :wave:")
-					return
 			except asyncio.TimeoutError:
-				await channel.send("The time that you had to answer has expired. However if you wish to do your intro please go to a `bots only` channel (in the server) and type `!intro`. Enjoy your stay! :wave:")
-
+				new_msg = "Welcome to `ViHill Corner`, if you wish to do your intro please go in <#750160851822182486> and type `!intro`."
+				await msg1.edit(content=new_msg)
+				await msg1.clear_reactions()
+				return
+			
 			else:
-
-				await channel.send("What's your name?")
-
-				try:
-					name = await self.client.wait_for('message', timeout= 180, check=check)
-
-				except asyncio.TimeoutError:
+				if str(reaction.emoji) == '<:disagree:797537030980239411>':
+					e = "Alrighty, you can do your intro later by typing `!intro` in <#750160851822182486>. Enjoy your stay! :wave:"
+					await msg1.edit(content=e)
+					await msg1.clear_reactions()
 					return
 
-				else:
-					await channel.send("Where are you from?")
-					
+				elif str(reaction.emoji) == '<:agree:797537027469082627>':
+
+					e = "What's your name?"
+					await msg1.edit(content=e)
+
 					try:
-						location = await self.client.wait_for('message', timeout= 180, check=check)
+						name = await self.client.wait_for('message', timeout= 180, check=check)
 
 					except asyncio.TimeoutError:
 						return
 
 					else:
-						await channel.send("How old are you?")
-
+						await channel.send("Where are you from?")
+						
 						try:
-							age = await self.client.wait_for('message', timeout= 180, check=checkk)
-							try:
-								agenumber = int(age.content)
-							except ValueError:
-								await channel.send("Must be number, please go in a `bots only` channel (in the server) and type `!intro` to try again.")
-								return
-
-							if agenumber > 44:
-								return
-							elif agenumber < 10:
-								return
+							location = await self.client.wait_for('message', timeout= 180, check=check)
 
 						except asyncio.TimeoutError:
 							return
 
 						else:
-							await channel.send("What's your gender?")
-							
+							await channel.send("How old are you?")
+
 							try:
-								gender = await self.client.wait_for('message', timeout= 180, check=check) 
+								age = await self.client.wait_for('message', timeout= 180, check=checkk)
+								try:
+									agenumber = int(age.content)
+								except ValueError:
+									await channel.send("Must be number, please go in a `bots only` channel (in the server) and type `!intro` to try again.")
+									return
+
+								if agenumber > 44:
+									return
+								elif agenumber < 10:
+									return
 
 							except asyncio.TimeoutError:
 								return
 
 							else:
-								await channel.send("Relationship status? `single` | `taken` | `complicated`")
+								await channel.send("What's your gender?")
 								
 								try:
-									prestatuss = await self.client.wait_for('message', timeout= 180, check=rel_reply)
-									status = prestatuss.content
+									gender = await self.client.wait_for('message', timeout= 180, check=check) 
 
 								except asyncio.TimeoutError:
 									return
 
 								else:
-									await channel.send("What are u interested to?")
-
+									await channel.send("Relationship status? `single` | `taken` | `complicated`")
+									
 									try:
-										interests = await self.client.wait_for('message', timeout= 360, check=check)
+										prestatuss = await self.client.wait_for('message', timeout= 180, check=rel_reply)
+										status = prestatuss.content
 
 									except asyncio.TimeoutError:
 										return
 
 									else:
-										em = discord.Embed(color=member.color)
-										em.set_author(name=member, url=member.avatar_url, icon_url=member.avatar_url)
-										em.set_thumbnail(url=member.avatar_url)
-										em.add_field(name="Name", value=name.content, inline=True)
-										em.add_field(name="Location", value=location.content, inline=True)
-										em.add_field(name="Age", value=agenumber, inline=True)
-										em.add_field(name="Gender", value=gender.content, inline=False)
-										em.add_field(name="Relationship Status", value=status, inline=True)
-										em.add_field(name="Interests", value=interests.content, inline=False)
-										await introchannel.send(embed=em)
-										await member.send("Intro added successfully. You can see it in <#750160850593251449>")
+										await channel.send("What are u interested to?")
 
-										post = {"_id": member.id, 
-											"name": name.content,
-											"location": location.content,
-											"age": agenumber,
-											"gender": gender.content,
-											"status": status,
-											"interests": interests.content
-											}
-											
-										await collection.insert_one(post)
+										try:
+											interests = await self.client.wait_for('message', timeout= 360, check=check)
 
-										return
+										except asyncio.TimeoutError:
+											return
+
+										else:
+											em = discord.Embed(color=member.color)
+											em.set_author(name=member, url=member.avatar_url, icon_url=member.avatar_url)
+											em.set_thumbnail(url=member.avatar_url)
+											em.add_field(name="Name", value=name.content, inline=True)
+											em.add_field(name="Location", value=location.content, inline=True)
+											em.add_field(name="Age", value=agenumber, inline=True)
+											em.add_field(name="Gender", value=gender.content, inline=False)
+											em.add_field(name="Relationship Status", value=status, inline=True)
+											em.add_field(name="Interests", value=interests.content, inline=False)
+											intro_msg = await introchannel.send(embed=em)
+											await member.send("Intro added successfully. You can see it in <#750160850593251449>")
+
+											post = {"_id": member.id, 
+												"name": name.content,
+												"location": location.content,
+												"age": agenumber,
+												"gender": gender.content,
+												"status": status,
+												"interests": interests.content,
+												"intro_id": intro_msg.id
+												}
+												
+											await collection.insert_one(post)
+
+											return
 
 
 		else:
