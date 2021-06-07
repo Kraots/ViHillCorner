@@ -61,7 +61,7 @@ class Suggest(commands.Cog):
 		
 		except asyncio.TimeoutError:
 			new_msg = f"{ctx.author.mention} Did not react in time."
-			await msg1.edit(content=new_msg)
+			await msg1.edit(content=new_msg, embed=None)
 			await msg1.clear_reactions()
 			return
 		
@@ -76,10 +76,12 @@ class Suggest(commands.Cog):
 				em = discord.Embed(color=color.inviscolor, description=f"[Suggestion]({msg.jump_url}) successfully added!")
 				await ctx.channel.send(embed=em)
 				await msg1.delete()
+				await msg1.clear_reactions()
 				return
 
 			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-				await msg1.delete()
+				e = "Suggestion aborted. %s" % (ctx.author.mention)
+				await msg1.edit(content=e, embed=None)
 				return
 	
 	@suggest.command()
