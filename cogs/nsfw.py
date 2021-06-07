@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import aiohttp
 import utils.colors as color
 from utils.helpers import NSFW
 from discord.ext.commands import Greedy
