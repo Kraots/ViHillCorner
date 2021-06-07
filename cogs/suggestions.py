@@ -43,6 +43,7 @@ class Suggest(commands.Cog):
 		result = db.find_one({'_id': ctx.author.id})
 		if result != None:
 			await ctx.send("You are blocked from using this command. %s" % (ctx.author.mention))
+			ctx.command.reset_cooldown(ctx)
 			return
 
 		await ctx.message.delete()
@@ -85,8 +86,12 @@ class Suggest(commands.Cog):
 	@commands.is_owner()
 	async def block(self, ctx, members: Greedy[Member]):
 		blocked_list = []
+		if len(members) < 1:
+			await ctx.send("You have not given any member to block.")
+			return
 		for member in members:
-			blocked_list.append(member)
+			a = f"{member.name}#{member.discriminator}"
+			blocked_list.append(a)
 			post = {'_id': member.id}
 			try:
 				db.insert_one(post)
@@ -94,19 +99,23 @@ class Suggest(commands.Cog):
 				pass
 			await member.send("You are not able to use the command `!suggest` anymore, you have been blocked from using it due to abuse or innapropriate use.")
 		blocked_users = " | ".join(blocked_list)
-		await ctx.send("`%s` have been blocked from using the command `!suggest`." % (blocked_users))
+		await ctx.send("`%s` have been blocked from using the command **!suggest**." % (blocked_users))
 
 	@suggest.command()
 	@commands.is_owner()
 	async def unblock(self, ctx, members: Greedy[Member]):
 		unblocked_list = []
+		if len(members) < 1:
+			await ctx.send("You have not given any member to block.")
+			return
 		for member in members:
-			unblocked_list.append(member)
+			a = f"{member.name}#{member.discriminator}"
+			unblocked_list.append(a)
 			post = {'_id': member.id}
 			db.delete_one(post)
 			await member.send("You are able to use the command `!suggest` again. Do **not** abuse it and do **not** use it for innapropriate things that will result in your access being taken away again.")
 		unblocked_users = " | ".join(unblocked_list)
-		await ctx.send("`%s` have been allowed to use the command `!suggest` again." % (unblocked_users))
+		await ctx.send("`%s` have been allowed to use the command **!suggest** again." % (unblocked_users))
 
 	@suggest.command()
 	@commands.is_owner()
