@@ -3,6 +3,7 @@ from discord.ext import commands
 from utils.paginator_v2 import WrappedPaginator, PaginatorEmbedInterface
 import motor.motor_asyncio
 import os
+import asyncio
 
 DBKEY = os.getenv("MONGODBKEY")
 
@@ -103,7 +104,34 @@ class Reclist(commands.Cog):
 		results = await collection.find_one({"_id": ctx.author.id})
 		
 		if results != None:
-			await collection.delete_one({"_id": ctx.author.id})
+			def check(reaction, user):
+				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
+			msg = await ctx.send("Are you sure you want to delete your reclist? %s" % (ctx.author.mention))
+			await msg.add_reaction('<:agree:797537027469082627>')
+			await msg.add_reaction('<:disagree:797537030980239411>')
+			
+			try:
+				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
+			except asyncio.TimeoutError:
+				new_msg = f"{ctx.author.mention} Did not react in time."
+				await msg.edit(content=new_msg)
+				await msg.clear_reactions()
+				return
+			
+			else:
+				if str(reaction.emoji) == '<:agree:797537027469082627>':
+					await collection.delete_one({"_id": ctx.author.id})
+					e = "Succesfully deleted your reclist! %s" % (ctx.author.mention)
+					await msg.edit(content=e)
+					await msg.clear_reactions()
+					return
+				
+				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+					e = "Reclist has not been deleted. %s" % (ctx.author.mention)
+					await msg.edit(content=e)
+					await msg.clear_reactions()
+					return
 		
 		else:
 			await ctx.send("You do not have a reclist! Type: `!reclist set <recommendations>` to set your reclist!")
