@@ -102,4 +102,4 @@ class ImagesChannel(commands.Cog):
 			return
 
 def setup (client):
-	client.add_cog(ImagesChannel(client))
+	client.remove_cog(ImagesChannel(client))
