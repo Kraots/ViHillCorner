@@ -113,7 +113,7 @@ class developer(commands.Cog):
 
 		for member in members:
 				await member.send(f'{args}')
-				await ctx.message.add_reaction('✅')
+				await ctx.message.add_reaction('<:agree:797537027469082627>')
 
 
 	@commands.command()
@@ -180,7 +180,7 @@ class developer(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def shutdown(self, ctx):
-		await ctx.message.add_reaction('✅')
+		await ctx.message.add_reaction('<:agree:797537027469082627>')
 		await self.client.close()
 
 	@commands.command()
