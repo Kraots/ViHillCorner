@@ -112,7 +112,7 @@ class command(commands.Cog):
 	@commands.command(help="Get a list of all snippets", aliases=["inv", "invite"])
 	async def _invite(self, ctx):
 
-			version = discord.Embed(title="ViHill Corner", url="https://discord.gg/Uf2kA8q", color=color.lightpink)
+			version = discord.Embed(title="https://discord.gg/Uf2kA8q", color=color.lightpink)
 			version.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
 
 			await ctx.send(embed=version)
