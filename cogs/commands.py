@@ -223,7 +223,7 @@ class command(commands.Cog):
 		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 		await ctx.send(embed=em)
 
-	@update.error()
+	@update.error
 	async def update_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f"This command has already been used **3** times in this server within an hour. Please wait **{time_phaserr(error.retry_after)}** before using it again."
