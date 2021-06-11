@@ -201,6 +201,12 @@ class command(commands.Cog):
 
 	@commands.command(aliases=['updates'])
 	async def update(self, ctx):
+		
+		def format_date(dt):
+			if dt is None:
+				return 'N/A'
+			return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
+
 		g = Github(git_user, git_pass)
 		repo = g.get_repo("Kraots/ViHill-Corner")
 		master = repo.get_branch("master")
@@ -210,7 +216,7 @@ class command(commands.Cog):
 		sha_com = sha_com[0]
 		commits = repo.get_commit(sha_com)
 		commit = commits.commit.message
-		commit_date = commits.commit.author.date.strftime("%d-%b-%Y (%H:%M:%S)")
+		commit_date = format_date(commits.commit.author.date)
 		em = discord.Embed(title="Here is what's new to the bot:", description="{} \n\n\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800{}".format(commit, commit_date), color=color.lightpink)
 		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 		await ctx.send(embed=em)
