@@ -226,7 +226,7 @@ class command(commands.Cog):
 	@update.error
 	async def update_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f"This command has already been used **3** times in this server within an hour. Please wait **{time_phaserr(error.retry_after)}** before using it again."
+				msg = f"This command has already been used **3** times in this server within an hour. Please wait **{time_phaserr(error.retry_after)}** before using it again. {ctx.author.mention}"
 				await ctx.send(msg)
 
 def setup (client):
