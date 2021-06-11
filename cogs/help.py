@@ -40,7 +40,6 @@ class Help(commands.Cog):
 
 		await ctx.send(embed=em)
 
-
 	@help.command(aliases=['number', 'random', 'rn', 'randomnr'])
 	async def randomnumber(self, ctx):
 		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!randomnumber [num1] [num2] [num3]```")
