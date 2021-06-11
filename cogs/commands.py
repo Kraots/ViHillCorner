@@ -207,7 +207,7 @@ class command(commands.Cog):
 		def format_date(dt):
 			if dt is None:
 				return 'N/A'
-			return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
+			return f'{dt:%Y-%m-%d} ({time.human_timedelta(dt, accuracy=3)})'
 
 		g = Github(git_user, git_pass)
 		repo = g.get_repo("Kraots/ViHill-Corner")
