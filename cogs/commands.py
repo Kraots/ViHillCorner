@@ -8,6 +8,10 @@ from typing import Union
 import datetime
 import random
 import sys
+from github import Github
+
+git_user = os.getenv("github_user")
+git_pass = os.getenv("github_pass") 
 
 addd = """
 ୨୧ VIHILL CORNER ୨୧
@@ -194,6 +198,20 @@ class command(commands.Cog):
 					return
 				else:
 					pass
+
+	@commands.command(aliases=['updates'])
+	async def update(self, ctx):
+		g = Github(git_user, git_pass)
+		repo = g.get_repo("Kraots/ViHill-Corner")
+		master = repo.get_branch("master")
+		sha_com = master.commit
+		sha_com = str(sha_com).split('Commit(sha="')
+		sha_com = sha_com[1].split('")')
+		sha_com = sha_com[0]
+		commit = repo.get_commit(sha_com)
+		commit = commit.commit.message
+		em = discord.Embed(title="Here is what's new to the bot:", description=commit, color=color.lightpink)
+		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
 
 def setup (client):
