@@ -840,17 +840,16 @@ class EcoCommands(commands.Cog):
 
 			def check(message):
 				return message.author.id == usercheck and message.channel.id == ctx.channel.id
-				try:
-					int(message.content)
-					return True
-				except ValueError:
-					return False
 			
 			index = 0
 			
 			for guess in range(0,3):
 				msg = await self.client.wait_for('message', timeout= 30 , check=check)
-				attempt = int(msg.content)
+				try:
+					attempt = int(msg.content)
+				except ValueError:
+					await msg.reply("Not a number! %s" % (ctx.author.mention))
+					return
 				if attempt > number:
 					index += 1
 					if index == 3:

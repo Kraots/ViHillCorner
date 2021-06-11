@@ -260,18 +260,40 @@ class Moderation(commands.Cog):
 				return
 			
 			else:
-				for id in banned_members:
-					a = id
-					if not staff in a.roles:
-						mem_list.append(a)
-						mem_list_final = " | ".join(str(id) for id in mem_list)
-						try:
-							await id.send(msg, embed=reasonn)
-						except discord.HTTPException:
-							pass
-						await guild.ban(id, reason=f"{ctx.author} --->{banned_reason}")
+				await ctx.send("How many days worth of messages from the user do you wish to delete? `0-7` days")
+				try:
+					nr_dayss = await self.client.wait_for('message', timeout=360, check=check)
+					try:
+						nr_days = int(nr_dayss.content)
+						if 0 > nr_days or nr_days > 7:
+							await ctx.send("You can only delete from 0-7 days, no more or less! %s" % (ctx.author.mention))
+							return
+					except ValueError:
+						if nr_dayss.content.lower() == "cancel":
+							await ctx.send("Canceled.")
+							return
+						else:
+							nr_days = 0
+							await nr_dayss.reply("Since there was no number the amount of messages that will be deleted is equivalent to `0` days")					
+				
+				except asyncio.TimeoutError:
+					await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+					return
 
-		ban = discord.Embed(description=f"The user(s) have been banned from the server.\n**Reason:** **[{banned_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
+				else:
+					for id in banned_members:
+						a = id
+						if not staff in a.roles:
+							mem_list.append(a)
+							mem_list_final = " | ".join(str(id) for id in mem_list)
+							try:
+								await id.send(msg, embed=reasonn)
+							except discord.HTTPException:
+								pass
+							await guild.ban(id, reason=f"{ctx.author} --->{banned_reason}", delete_message_days=nr_days)
+
+
+		ban = discord.Embed(description=f"The user(s) have been banned from the server.\n**Reason:** **[{banned_reason}]({ctx.message.jump_url})**\n**Deleted:** `{nr_days}` days worth of messages.", color=discord.Color.red())
 
 		await ctx.channel.send(embed=ban)
 
@@ -284,6 +306,7 @@ class Moderation(commands.Cog):
 			em.add_field(name="Member(s)", value="`Invalid Users!`", inline=False)
 		em.add_field(name="Reason", value=f"**[{banned_reason}]({ctx.message.jump_url})**", inline=False)	
 		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
+		em.add_field(name="Days worth of messages that got deleted:", value=f"**{nr_days}**", inline=False)
 
 		await log_channel.send(embed=em)
 
