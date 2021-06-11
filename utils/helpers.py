@@ -7,6 +7,9 @@ from utils import time, formats
 import os, datetime
 from discord.ext.buttons import Paginator
 
+import typing
+import pkg_resources
+
 
 class Pag(Paginator):
     async def teardown(self):
@@ -112,3 +115,13 @@ def clean_code(content):
 		return "\n".join(content.split("\n")[1:])[:-3]
 	else:
 		return content
+
+def package_version(package_name: str) -> typing.Optional[str]:
+    """
+    Returns package version as a string, or None if it couldn't be found.
+    """
+
+    try:
+        return pkg_resources.get_distribution(package_name).version
+    except (pkg_resources.DistributionNotFound, AttributeError):
+        return None
