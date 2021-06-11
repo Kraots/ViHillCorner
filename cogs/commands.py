@@ -200,6 +200,7 @@ class command(commands.Cog):
 					pass
 
 	@commands.command(aliases=['updates'])
+	@commands.cooldown(3, 20, commands.BucketType.guild)
 	async def update(self, ctx):
 		
 		def format_date(dt):
