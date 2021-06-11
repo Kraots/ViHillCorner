@@ -9,6 +9,7 @@ import datetime
 import random
 import sys
 from github import Github
+from utils.helpers import time_phaserr
 
 git_user = os.getenv("github_user")
 git_pass = os.getenv("github_pass") 
@@ -200,7 +201,7 @@ class command(commands.Cog):
 					pass
 
 	@commands.command(aliases=['updates'])
-	@commands.cooldown(3, 20, commands.BucketType.guild)
+	@commands.cooldown(3, 1800, commands.BucketType.guild)
 	async def update(self, ctx):
 		
 		def format_date(dt):
@@ -222,6 +223,11 @@ class command(commands.Cog):
 		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 		await ctx.send(embed=em)
 
+	@update.error()
+	async def update_error(self, ctx, error):
+		if isinstance(error, commands.CommandOnCooldown):
+				msg = f"This command has already been used **3** times in this server within an hour. Please wait **{time_phaserr(error.retry_after)}** before using it again."
+				await ctx.send(msg)
 
 def setup (client):
 	client.add_cog(command(client))
