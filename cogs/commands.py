@@ -208,10 +208,12 @@ class command(commands.Cog):
 		sha_com = str(sha_com).split('Commit(sha="')
 		sha_com = sha_com[1].split('")')
 		sha_com = sha_com[0]
-		commit = repo.get_commit(sha_com)
-		commit = commit.commit.message
-		em = discord.Embed(title="Here is what's new to the bot:", description=commit, color=color.lightpink)
+		commits = repo.get_commit(sha_com)
+		commit = commits.commit.message
+		commit_date = commits.commit.author.date.strftime("%d-%b-%Y (%H:%M:%S)")
+		em = discord.Embed(title="Here is what's new to the bot:", description="{} \n\n\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800{}".format(commit, commit_date), color=color.lightpink)
 		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+		await ctx.send(embed=em)
 
 
 def setup (client):
