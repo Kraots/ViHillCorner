@@ -603,15 +603,9 @@ class Tags(commands.Cog):
 		collection.delete_many({"tag_owner_id": member.id})
 
 
-	@create.error
-	async def tag_create_error(self, ctx, error):
+	async def cog_command_error(self, ctx, error):
 		if isinstance(error, commands.errors.MissingAnyRole):
-			await ctx.send("You need to be `lvl 15+` to use this command!")
-
-	@delete.error
-	async def tag_delete_error(self, ctx, error):
-		if isinstance(error, commands.errors.MissingAnyRole):
-			await ctx.send("You need to be `lvl 15+` to use this command!")
+			await ctx.send("You must be at least `level 15+` in order to use this command! %s" % (ctx.author.mention))
 
 	@tag.error
 	async def tag_error(self, ctx, error):

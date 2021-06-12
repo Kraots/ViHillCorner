@@ -525,22 +525,9 @@ class Snippets(commands.Cog):
 
 
 
-	@snippet.error
-	async def snippet_error(self, ctx, error):
+	async def cog_command_error(self, ctx, error):
 		if isinstance(error, commands.errors.MissingAnyRole):
-			await ctx.send("You need to be `lvl 55+` to use this command!")
-		elif isinstance(error, commands.TooManyArguments):
-			return
-
-	@create.error
-	async def create_error(self, ctx, error):
-		if isinstance(error, commands.errors.MissingAnyRole):
-			await ctx.send("You need to be `lvl 55+` to use this command!")
-
-	@delete.error
-	async def delete_error(self, ctx, error):
-		if isinstance(error, commands.errors.MissingAnyRole):
-			await ctx.send("You need to be `lvl 55+` to use this command!")
+			await ctx.send("You must be at least `level 55+` in order to use this command! %s" % (ctx.author.mention))
 
 
 def setup (client):
