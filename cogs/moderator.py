@@ -237,7 +237,7 @@ class Moderation(commands.Cog):
 		await ctx.send("What member(s) do you wish to ban? To cancel type `cancel`")
 		try:
 			before_members = await self.client.wait_for('message', timeout=180, check=check)
-			if before_members.content.lower() == "cancel":
+			if before_members.content.lower() in ["cancel", "!cancel"]:
 				await ctx.send("Canceled.")
 				return
 			else:	
@@ -250,7 +250,7 @@ class Moderation(commands.Cog):
 			await ctx.send("What's the reason for the ban?")
 			try:
 				before_reason = await self.client.wait_for('message', timeout=360, check=check)
-				if before_reason.content.lower() == "cancel":
+				if before_reason.content.lower() in ["cancel", "!cancel"]:
 					await ctx.send("Canceled.")
 					return
 				else:
@@ -262,19 +262,20 @@ class Moderation(commands.Cog):
 			else:
 				await ctx.send("How many days worth of messages from the user do you wish to delete? `0-7` days")
 				try:
-					nr_dayss = await self.client.wait_for('message', timeout=360, check=check)
-					try:
-						nr_days = int(nr_dayss.content)
-						if 0 > nr_days or nr_days > 7:
-							await ctx.send("You can only delete from 0-7 days, no more or less! %s" % (ctx.author.mention))
-							return
-					except ValueError:
-						if nr_dayss.content.lower() == "cancel":
-							await ctx.send("Canceled.")
-							return
-						else:
-							nr_days = 0
-							await nr_dayss.reply("Since there was no number the amount of messages that will be deleted is equivalent to `0` days")					
+					while True:
+						nr_dayss = await self.client.wait_for('message', timeout=360, check=check)
+						try:
+							nr_days = int(nr_dayss.content)
+							if 0 > nr_days or nr_days > 7:
+								await ctx.send("You can only delete from 0-7 days, no more or less! %s" % (ctx.author.mention))
+						except ValueError:
+							if nr_dayss.content.lower() in ["cancel", "!cancel"]:
+								await ctx.send("Canceled.")
+								return
+							else:
+								nr_days = 0
+								await nr_dayss.reply("Since there was no number the amount of messages that will be deleted is equivalent to `0` days")
+								break				
 				
 				except asyncio.TimeoutError:
 					await ctx.send("Ran out of time. %s" % (ctx.author.mention))

@@ -11,12 +11,6 @@ cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster["ViHillCornerDB"]
 collection = db["Intros"]
 
-status_pos=[
-			"taken",
-			"single",
-			"complicated"
-			]
-
 class Intros(commands.Cog):
 
 	def __init__(self, client):
@@ -57,10 +51,6 @@ class Intros(commands.Cog):
 		def alreadyhas(reaction, user):
 			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
 
-		def status_reply(message):
-			return message.content.lower() in status_pos and message.author.id == usercheck and message.channel.id == channel.id
-
-		
 		if results != None:
 			msg = await ctx.send("You already have intro set, would you like to edit your intro? %s" % (ctx.author.mention))
 			await msg.add_reaction('<:agree:797537027469082627>')
@@ -90,12 +80,18 @@ class Intros(commands.Cog):
 					except:
 						pass
 
-					await channel.send("What's your name? {}".format(ctx.author.mention))
+					await channel.send("What's your name? {}\n\n*To cancel type `!cancel`*".format(ctx.author.mention))
 
 					try:
 						name = await self.client.wait_for('message', timeout= 180, check=check)
+						if name.content.lower() == '!cancel':
+							await channel.send("Canceled. %s" % (ctx.author.mention))
+							ctx.command.reset_cooldown(ctx)
+							return
 
 					except asyncio.TimeoutError:
+						await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+						ctx.command.reset_cooldown(ctx)
 						return
 
 					else:
@@ -103,47 +99,74 @@ class Intros(commands.Cog):
 						
 						try:
 							location = await self.client.wait_for('message', timeout= 180, check=check)
+							if location.content.lower() == '!cancel':
+								await channel.send("Canceled. %s" % (ctx.author.mention))
+								ctx.command.reset_cooldown(ctx)
+								return
 
 						except asyncio.TimeoutError:
+							await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+							ctx.command.reset_cooldown(ctx)
 							return
 
 						else:
 							await channel.send("How old are you? {}".format(ctx.author.mention))
 
 							try:
-								age = await self.client.wait_for('message', timeout= 180, check=checkk)
-								try:
-									agenumber = int(age.content)
-								except ValueError:
-									await ctx.send("Must be number, do again.")
-									ctx.command.reset_cooldown(ctx)
-									return
-
-								if agenumber > 44:
-									return
-								elif agenumber < 10:
-									return
+								while True:
+									age = await self.client.wait_for('message', timeout= 180, check=check)
+									if age.content.lower() == '!cancel':
+										await channel.send("Canceled. %s" % (ctx.author.mention))
+										ctx.command.reset_cooldown(ctx)
+										return
+									try:
+										agenumber = int(age.content)
+										if agenumber >= 44 or agenumber <= 11:
+											await channel.send("Please put your real age and not a fake age.")
+										else:
+											break
+									except ValueError:
+										await channel.send("Must be number.")
 
 							except asyncio.TimeoutError:
+								await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+								ctx.command.reset_cooldown(ctx)
 								return
 
 							else:
 								await channel.send("What's your gender? {}".format(ctx.author.mention))
 								
 								try:
-									gender = await self.client.wait_for('message', timeout= 180, check=check) 
+									gender = await self.client.wait_for('message', timeout= 180, check=check)
+									if gender.content.lower() == '!cancel':
+										await channel.send("Canceled. %s" % (ctx.author.mention))
+										ctx.command.reset_cooldown(ctx)
+										return
 
 								except asyncio.TimeoutError:
+									await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+									ctx.command.reset_cooldown(ctx)
 									return
 
 								else:
 									await channel.send("Relationship status? `single` | `taken` | `complicated` {}".format(ctx.author.mention))
 									
 									try:
-										prestatuss = await self.client.wait_for('message', timeout= 180, check=status_reply)
-										status = prestatuss.content
+										while True:
+											prestatuss = await self.client.wait_for('message', timeout= 180, check=check)
+											status = prestatuss.content.lower()
+											if status == '!cancel':
+												await channel.send("Canceled. %s" % (ctx.author.mention))
+												ctx.command.reset_cooldown(ctx)
+												return
+											elif status in ['single', 'taken', 'complicated']:
+												break
+											else:
+												await channel.send("Please only choose from `single` | `taken` | `complicated`")
 										
 									except asyncio.TimeoutError:
+										await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+										ctx.command.reset_cooldown(ctx)
 										return
 
 									else:
@@ -151,8 +174,14 @@ class Intros(commands.Cog):
 
 										try:
 											interests = await self.client.wait_for('message', timeout= 360, check=check)
+											if interests.content.lower() == '!cancel':
+												await channel.send("Canceled. %s" % (ctx.author.mention))
+												ctx.command.reset_cooldown(ctx)
+												return
 
 										except asyncio.TimeoutError:
+											await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+											ctx.command.reset_cooldown(ctx)
 											return
 
 										else:
@@ -181,12 +210,18 @@ class Intros(commands.Cog):
 
 		else:
 			
-			await channel.send("What's your name? {}".format(ctx.author.mention))
+			await channel.send("What's your name? {}\n\n*To cancel type `!cancel`*".format(ctx.author.mention))
 
 			try:
 				name = await self.client.wait_for('message', timeout= 180, check=check)
+				if name.content.lower() == '!cancel':
+					await channel.send("Canceled. %s" % (ctx.author.mention))
+					ctx.command.reset_cooldown(ctx)
+					return
 
 			except asyncio.TimeoutError:
+				await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+				ctx.command.reset_cooldown(ctx)
 				return
 
 			else:
@@ -194,47 +229,74 @@ class Intros(commands.Cog):
 				
 				try:
 					location = await self.client.wait_for('message', timeout= 180, check=check)
+					if location.content.lower() == '!cancel':
+						await channel.send("Canceled. %s" % (ctx.author.mention))
+						ctx.command.reset_cooldown(ctx)
+						return
 
 				except asyncio.TimeoutError:
+					await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+					ctx.command.reset_cooldown(ctx)
 					return
 
 				else:
 					await channel.send("How old are you? {}".format(ctx.author.mention))
 
 					try:
-						age = await self.client.wait_for('message', timeout= 180, check=checkk)
-						try:
-							agenumber = int(age.content)
-						except ValueError:
-							await ctx.send("Must be number, do again.")
-							ctx.command.reset_cooldown(ctx)
-							return
-
-						if agenumber > 44:
-							return
-						elif agenumber < 10:
-							return
+						while True:
+							age = await self.client.wait_for('message', timeout= 180, check=check)
+							if age.content.lower() == '!cancel':
+								await channel.send("Canceled. %s" % (ctx.author.mention))
+								ctx.command.reset_cooldown(ctx)
+								return
+							try:
+								agenumber = int(age.content)
+								if agenumber >= 44 or agenumber <= 11:
+									await channel.send("Please put your real age and not a fake age.")
+								else:
+									break
+							except ValueError:
+								await channel.send("Must be number.")
 
 					except asyncio.TimeoutError:
+						await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+						ctx.command.reset_cooldown(ctx)
 						return
 
 					else:
 						await channel.send("What's your gender? {}".format(ctx.author.mention))
 						
 						try:
-							gender = await self.client.wait_for('message', timeout= 180, check=check) 
+							gender = await self.client.wait_for('message', timeout= 180, check=check)
+							if gender.content.lower() == '!cancel':
+								await channel.send("Canceled. %s" % (ctx.author.mention))
+								ctx.command.reset_cooldown(ctx)
+								return
 
 						except asyncio.TimeoutError:
+							await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+							ctx.command.reset_cooldown(ctx)
 							return
 
 						else:
 							await channel.send("Relationship status? `single` | `taken` | `complicated` {}".format(ctx.author.mention))
 							
 							try:
-								prestatuss = await self.client.wait_for('message', timeout= 180, check=status_reply)
-								status = prestatuss.content
+								while True:
+									prestatuss = await self.client.wait_for('message', timeout= 180, check=check)
+									status = prestatuss.content.lower()
+									if status == '!cancel':
+										await channel.send("Canceled. %s" % (ctx.author.mention))
+										ctx.command.reset_cooldown(ctx)
+										return
+									elif status in ['single', 'taken', 'complicated']:
+										break
+									else:
+										await channel.send("Please only choose from `single` | `taken` | `complicated`")
 							
 							except asyncio.TimeoutError:
+								await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+								ctx.command.reset_cooldown(ctx)
 								return
 
 							else:
@@ -242,8 +304,14 @@ class Intros(commands.Cog):
 
 								try:
 									interests = await self.client.wait_for('message', timeout= 360, check=check)
+									if interests.content.lower() == '!cancel':
+										await channel.send("Canceled. %s" % (ctx.author.mention))
+										ctx.command.reset_cooldown(ctx)
+										return
 
 								except asyncio.TimeoutError:
+									await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+									ctx.command.reset_cooldown(ctx)
 									return
 
 								else:

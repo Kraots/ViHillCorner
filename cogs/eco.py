@@ -842,12 +842,13 @@ class EcoCommands(commands.Cog):
 			index = 0
 			
 			for guess in range(0,3):
-				msg = await self.client.wait_for('message', timeout= 30 , check=check)
-				try:
-					attempt = int(msg.content)
-				except ValueError:
-					await msg.reply("Not a number! %s" % (ctx.author.mention))
-					return
+				while True:
+					try:
+						msg = await self.client.wait_for('message', timeout= 30 , check=check)
+						attempt = int(msg.content)
+						break
+					except ValueError:
+						await msg.reply("Not a number! %s" % (ctx.author.mention))
 				if attempt > number:
 					index += 1
 					if index == 3:
@@ -1007,12 +1008,13 @@ class EcoCommands(commands.Cog):
 		earned = randint(5000, 15000)
 		await ctx.send("Please choose between `rock`/`paper`/`scissors`. You have **60** seconds to give your answer. %s" % (user.mention))
 		try:
-			user_rps = 	await self.client.wait_for('message', timeout= 60, check=check)
-			user_rps = user_rps.content.lower()
-			if not user_rps in rps:
-				await ctx.send("You can only choose from `rock`/`paper`/`scissors`. Type the command again. %s" % (user.mention))
-				ctx.command.reset_cooldown(ctx)
-				return
+			while True:
+				user_rps = 	await self.client.wait_for('message', timeout= 60, check=check)
+				user_rps = user_rps.content.lower()
+				if not user_rps in rps:
+					await ctx.send("You can only choose from `rock`/`paper`/`scissors`. %s" % (user.mention))
+				else:
+					break
 		except asyncio.TimeoutError:
 			await ctx.send("You ran out of time. %s" % (user.mention))
 			return

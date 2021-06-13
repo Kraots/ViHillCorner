@@ -15,12 +15,6 @@ collection = db["Intros"]
 mutes_collection = db['Moderation Mutes']
 filter_mutes = db["Filter Mutes"]
 
-status_pos=[
-			"taken",
-			"single",
-			"complicated"
-			]
-
 class on_join(commands.Cog):
 
 	def __init__(self, client):
@@ -153,24 +147,14 @@ class on_join(commands.Cog):
 			def check(message):
 				return message.channel.id == channel.id and message.author.id == user.id
 
-			def checkk(message):
-				return message.channel.id == channel.id and message.author.id == user.id
-				try:
-					int(message.content)
-					return True
-				except ValueError:
-					return False
-
 			def newmember(reaction, user):
 				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
-
-			def rel_reply(message):
-				return message.content.lower() in status_pos and message.channel.id == channel.id and message.author.id == user.id
 
 			try:
 				reaction, user = await self.client.wait_for('reaction_add', check=newmember, timeout=180)
 
 			except asyncio.TimeoutError:
+				await channel.send("Ran out of time.")
 				new_msg = "Welcome to `ViHill Corner`, if you wish to do your intro please go in <#750160851822182486> and type `!intro`"
 				await msg1.edit(content=new_msg)
 				await msg1.remove_reaction('<:agree:797537027469082627>', self.client.user)
@@ -190,13 +174,17 @@ class on_join(commands.Cog):
 					await msg1.remove_reaction('<:agree:797537027469082627>', self.client.user)
 					await msg1.remove_reaction('<:disagree:797537030980239411>', self.client.user)
 
-					e = "What's your name?"
+					e = "What's your name?\n\n*To cancel type `!cancel`*"
 					await msg1.edit(content=e)
 
 					try:
 						name = await self.client.wait_for('message', timeout= 180, check=check)
+						if name.content.lower() == '!cancel':
+							await channel.send("Canceled.")
+							return
 
 					except asyncio.TimeoutError:
+						await channel.send("Ran out of time.")
 						return
 
 					else:
@@ -204,46 +192,66 @@ class on_join(commands.Cog):
 						
 						try:
 							location = await self.client.wait_for('message', timeout= 180, check=check)
+							if location.content.lower() == '!cancel':
+								await channel.send("Canceled.")
+								return
 
 						except asyncio.TimeoutError:
+							await channel.send("Ran out of time.")
 							return
 
 						else:
 							await channel.send("How old are you?")
 
 							try:
-								age = await self.client.wait_for('message', timeout= 180, check=checkk)
-								try:
-									agenumber = int(age.content)
-								except ValueError:
-									await channel.send("Must be number, please go in a `bots only` channel (in the server) and type `!intro` to try again.")
-									return
-
-								if agenumber > 44:
-									return
-								elif agenumber < 10:
-									return
+								while True:
+									age = await self.client.wait_for('message', timeout= 180, check=check)
+									if age.content.lower() == '!cancel':
+										await channel.send("Canceled.")
+										return
+									try:
+										agenumber = int(age.content)
+										if agenumber >= 44 or agenumber <= 11:
+											await channel.send("Please put your real age and not a fake age.")
+										else:
+											break
+									except ValueError:
+										await channel.send("Must be number.")
 
 							except asyncio.TimeoutError:
+								await channel.send("Ran out of time.")
 								return
 
 							else:
 								await channel.send("What's your gender?")
 								
 								try:
-									gender = await self.client.wait_for('message', timeout= 180, check=check) 
+									gender = await self.client.wait_for('message', timeout= 180, check=check)
+									if gender.content.lower() == '!cancel':
+										await channel.send("Canceled.")
+										return 
 
 								except asyncio.TimeoutError:
+									await channel.send("Ran out of time.")
 									return
 
 								else:
 									await channel.send("Relationship status? `single` | `taken` | `complicated`")
 									
 									try:
-										prestatuss = await self.client.wait_for('message', timeout= 180, check=rel_reply)
-										status = prestatuss.content
+										while True:
+											prestatuss = await self.client.wait_for('message', timeout= 180, check=check)
+											status = prestatuss.content.lower()
+											if status == '!cancel':
+												await channel.send("Canceled.")
+												return
+											if status in ['single', 'taken', 'complicated']:
+												break
+											else:
+												await channel.send("Please only choose from single` | `taken` | `complicated`")
 
 									except asyncio.TimeoutError:
+										await channel.send("Ran out of time.")
 										return
 
 									else:
@@ -251,8 +259,12 @@ class on_join(commands.Cog):
 
 										try:
 											interests = await self.client.wait_for('message', timeout= 360, check=check)
+											if interests.content.lower() == '!cancel':
+												await channel.send("Canceled.")
+												return
 
 										except asyncio.TimeoutError:
+											await channel.send("Ran out of time.")
 											return
 
 										else:

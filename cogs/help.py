@@ -31,8 +31,12 @@ class Help(commands.Cog):
 	
 	@help.command()
 	async def trivia(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!trivia\n!trivia points <user>\n!trivia leaderboard```")
-		em.add_field(name="***Info:***", value="`!trivia` - play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a *competitive* vibe to the game.\n\u2800Modes:\n\u2800\u2800 - Solo\n\u2800\u2800 - Competitive [COMING SOON]\n`!trivia points <user>` - see how many points you, or someone else has.\n`!trivia leaderboard` - check the leaderboard and see the top **10** users that have the most points.")
+		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!trivia\n!trivia points <user>\n!trivia points gift <amount> <user>\n!trivia leaderboard```")
+		em.add_field(name="***Info:***", value="`!trivia` - play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a *competitive* vibe to the game.\n\u2800**Difficulties:**\n\u2800\u2800 - Easy -> 5 points\n\u2800\u2800 - Medium -> 10 points\n\u2800\u2800 - Hard -> 15 points\n\u2800**Modes:**\n\u2800\u2800 - Solo\n\u2800\u2800\u2800 Play a normal game of trivia.\n\u2800\u2800 - Competitive\n\u2800\u2800\u2800 Pick a bet and a player that you will have to do a trivia 1v1 with. The winner gets the bet amount as prize while the loser loses the bet amount of points.\n\n`!trivia points <user>` - see how many points you, or someone else has.\n`!trivia points gift <amount> <user>` - gift some of your points to someone.\n`!trivia leaderboard` - check the leaderboard and see the top **10** users that have the most points.", inline=False)
+
+		if ctx.author.id == 374622847672254466:
+			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!trivia points set <amount> <user>`\n\u2800***Info:***\n\u2800\u2800• Set the amount of points for an user.\n\u2800\u2800`!trivia reset <user>` \n\u2800***Info:***\n\u2800\u2800• Add points to an user.\n\u2800\u2800`!trivia points reset <user>`\n\u2800***Info:***\n\u2800\u2800• Reset the points for an user. \n _ _")
+
 		await ctx.send(embed=em)
 	
 	@help.command(aliases=['updates'])

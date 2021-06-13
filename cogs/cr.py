@@ -49,39 +49,53 @@ class CustomRoles(commands.Cog):
 			return
 
 		else:
-
-			await channel.send("What do you want your custom role to be named as?")
+			await channel.send("What do you want your custom role to be named as?\n\n*To cancel type `!cancel`*")
 
 			try:
-				crname = await self.client.wait_for('message', timeout=50, check=check)
-				if crname.content.lower() in nono_list:
-					await ctx.send("You tried, but no, lol!")
-					return
+				while True:
+					crname = await self.client.wait_for('message', timeout=50, check=check)
+					if crname.content.lower() in nono_list:
+						await ctx.send("You tried, but no, lol!")
 
-				elif len(crname.content.lower()) >= 20:
-					await ctx.send("The name of the custom role cannot be longer than `20` characters.")
-					return
+					elif len(crname.content.lower()) >= 20:
+						await ctx.send("The name of the custom role cannot be longer than `20` characters.")
 
-				elif crname.content.lower() == "cancel":
-					await ctx.send("Canceled.")
-					return
+					elif crname.content.lower() == "!cancel":
+						await ctx.send("Canceled. %s" % (ctx.author.mention))
+						return
+					
+					else:
+						break
 
 			except asyncio.TimeoutError:
+				await ctx.send("Ran out of time.")
 				return
 
 			else:
-				
 				await ctx.send("What color do u want it to have, please give the hex code.\nExample: `#ffffff`")
 
 				try:
-					precolor = await self.client.wait_for('message', timeout=50, check=check)
-					thecolor = precolor.content
-					if "#" in thecolor:
-						thefinalcolor = thecolor.replace("#", "")
-						crcolor = f"0x{thefinalcolor}"
+					while True:
+						crcolor = await self.client.wait_for('message', timeout=50, check=check)
+						crcolor = crcolor.content.lower()
+						if crcolor == '!cancel':
+							await ctx.send("Canceled. %s" % (ctx.author.mention))
+							return
+						if "#" in crcolor:
+							crcolor = crcolor.replace("#", "")
+							crcolor = f"0x{crcolor}"
+							try:
+								e = discord.Color(int(crcolor, 16))
+								break
+							except:
+								await ctx.send("Invalid hex colour.")
+								pass
+						else:
+							await ctx.send("Invalid hex colour.")
 
 
 				except asyncio.TimeoutError:
+					await ctx.send("Ran out of time.")
 					return
 
 				else:
@@ -388,11 +402,6 @@ class CustomRoles(commands.Cog):
 	async def delete_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.send("You do not have any custom role! What are you trying to delete???\nType `!cr create` to create your custom role!")
-
-	@create.error
-	async def create_error(self, ctx, error):
-		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("The name is too long or the hex color you put is invalid.")
 
 	@unrole.error
 	async def unrole_error(self, ctx, error):

@@ -106,12 +106,13 @@ class Birthdays(commands.Cog):
 
 		z = datetime.datetime.utcnow().strftime('%Y')
 		pre = f'{z}/{bday}'
-		
+
 		try:
 			birthday = datetime.datetime.strptime(pre, "%Y/%m/%d")
+
 		except ValueError:
-			await ctx.send("That is not a valid date!\n**Valid Dates:**\n\u2800`-` 04/24\n\u2800`-` 01/09\n\u2800`-` 12/01\n\n**Example:**\n\u2800`!birthday set 04/27`")
-			return
+			await ctx.reply("That is not a valid date!\n**Valid Dates:**\n\u2800`-` 04/24\n\u2800`-` 01/09\n\u2800`-` 12/01\n\n**Example:**\n\u2800`!birthday set 04/27`")
+			
 
 		dateNow = datetime.datetime.now().strftime("%Y/%m/%d")
 		dateNow = datetime.datetime.strptime(dateNow, "%Y/%m/%d")
@@ -138,17 +139,20 @@ class Birthdays(commands.Cog):
 		
 		msg = await ctx.send(msg)
 
-		def check(message):
-			return message.author.id == ctx.author.id and message.channel.id == ctx.channel.id
-			try:
-				int(message.content)
-				return True
-			except ValueError:
-				return False
+		def check(m):
+			return m.author == ctx.author and m.channel == ctx.channel
 
 		try:
-			pre_region = await self.client.wait_for('message', timeout = 180, check = check)
-			region = int(pre_region.content)
+			while True:
+				pre_region = await self.client.wait_for('message', timeout = 180, check = check)
+				try:
+					region = int(pre_region.content)
+					if region > 14 or region < 1:
+						await pre_region.reply("Please choose a number that is shown there that corresponds with your region, not another that is higher or smaller.")
+					else:
+						break
+				except ValueError:
+					await pre_region.reply("That is not a number.")
 
 			if region == 1:
 				region = "pacific time (us)"
@@ -222,6 +226,7 @@ class Birthdays(commands.Cog):
 
 
 		except asyncio.TimeoutError:
+			await ctx.send("Ran out of time.")
 			return
 
 

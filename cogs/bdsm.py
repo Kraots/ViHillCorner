@@ -35,27 +35,32 @@ class BdsmResults(commands.Cog):
 		hasBdsm = await collection.find_one({'_id': ctx.author.id})
 
 		try:
-			raw_result = await self.client.wait_for('message', check=check, timeout=180)
-		
-			try:
-				BDSMresult = raw_result.attachments[0].url
-
-				if hasBdsm != None:
-					await collection.update_one({'_id': ctx.author.id}, {'$set':{'BDSMresult': BDSMresult}})
-					await collection.update_one({'_id': ctx.author.id}, {'$set':{'timestamp': datetime.datetime.utcnow()}})
-					await ctx.send("Succesfully updated your bdsm result. To check your bdsm results or others, you can type `!bdsm results <member>`.")
+			while True:
+				raw_result = await self.client.wait_for('message', check=check, timeout=180)
+				if raw_result.content.lower() == "!cancel":
+					await raw_result.reply("Canceled.")
 					return
-				
-				post = {'_id': ctx.author.id,
-						'BDSMresult': BDSMresult,
-						'timestamp': datetime.datetime.utcnow()
-						}
-				await collection.insert_one(post)
+			
+				try:
+					BDSMresult = raw_result.attachments[0].url
 
-				await ctx.send("Succesfully set your bdsm result. To check your bdsm results or others, you can type `!bdsm results <member>`.")
+					if hasBdsm != None:
+						await collection.update_one({'_id': ctx.author.id}, {'$set':{'BDSMresult': BDSMresult}})
+						await collection.update_one({'_id': ctx.author.id}, {'$set':{'timestamp': datetime.datetime.utcnow()}})
+						await ctx.send("Succesfully updated your bdsm result. To check your bdsm results or others, you can type `!bdsm results <member>`.")
+						return
+					
+					post = {'_id': ctx.author.id,
+							'BDSMresult': BDSMresult,
+							'timestamp': datetime.datetime.utcnow()
+							}
+					await collection.insert_one(post)
 
-			except:
-				await ctx.send("You must send an image from your gallery, not an image url.")
+					await ctx.send("Succesfully set your bdsm result. To check your bdsm results or others, you can type `!bdsm results <member>`.")
+					return
+
+				except:
+					await ctx.send("You must send an image from your gallery, not an image url.")
 		
 		except asyncio.TimeoutError:
 			await ctx.send("You ran out of time, type the command again to set your bdsm results. %s " % (ctx.author.mention))
