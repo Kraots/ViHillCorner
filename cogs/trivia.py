@@ -225,6 +225,7 @@ class TriviaCommands(commands.Cog):
 					else:
 						await ctx.send("How many points do you want to bet.")
 						try:
+							user = await db.find_one({'_id': ctx.author.id})
 							while True:
 								wager_amountt = await self.client.wait_for('message', check=check, timeout=180)
 								
@@ -232,29 +233,26 @@ class TriviaCommands(commands.Cog):
 									if wager_amountt.content.lower() == '!cancel':
 										await ctx.send("Canceled. %s" % ctx.author.mention)
 										return
-									user = await db.find_one({'_id': ctx.author.id})
-									if wager_amountt.content.lower() == 'all':
+									elif wager_amountt.content.lower() == 'all':
 										if user is None:
 											await ctx.send("You never played trivia before, you cannot challenge someone else since you don't have any points. %s" % (ctx.author.mention))
 											return
 										wager_amount = user['points']
-									try:
-										wager_amount = wager_amount
-									except:
+									else:
 										wager_amount = int(wager_amountt.content)
-									
-									if wager_amount <= 14:
+								except ValueError:
+									await ctx.send("Not a number. %s" % (ctx.author.mention))
+								else:
+									if wager_amount < 15:
 										await ctx.send("You must place a minimum of `15` points bet. %s" % (ctx.author.mention))
 									elif str(wager_amount)[-1] not in ['5', '0']:
 										await ctx.send("The number must always end in **5** or **0**. %s" % (ctx.author.mention))
+									elif user['points'] < wager_amount:
+										print("here 2")
+										await ctx.send("You do not have enough points to place this bet. %s" % (ctx.author.mention))
+										return
 									else:
 										break
-								except ValueError:
-									await ctx.send("Not a number. %s" % (ctx.author.mention))
-
-							if user['points'] < wager_amount:
-								await ctx.send("You do not have enough points to place this bet. %s" % (ctx.author.mention))
-								return
 
 						except asyncio.TimeoutError:
 							await ctx.send("Ran out of time. %s" % (ctx.author.mention))
