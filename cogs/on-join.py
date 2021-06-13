@@ -171,19 +171,24 @@ class on_join(commands.Cog):
 				reaction, user = await self.client.wait_for('reaction_add', check=newmember, timeout=180)
 
 			except asyncio.TimeoutError:
-				new_msg = "Welcome to `ViHill Corner`, if you wish to do your intro please go in <#750160851822182486> and type `!intro`."
+				new_msg = "Welcome to `ViHill Corner`, if you wish to do your intro please go in <#750160851822182486> and type `!intro`"
 				await msg1.edit(content=new_msg)
-				await msg1.clear_reactions()
+				await msg1.remove_reaction('<:agree:797537027469082627>', self.client.user)
+				await msg1.remove_reaction('<:disagree:797537030980239411>', self.client.user)
 				return
 			
 			else:
 				if str(reaction.emoji) == '<:disagree:797537030980239411>':
 					e = "Alrighty, you can do your intro later by typing `!intro` in <#750160851822182486>. Enjoy your stay! :wave:"
 					await msg1.edit(content=e)
-					await msg1.clear_reactions()
+					await msg1.remove_reaction('<:agree:797537027469082627>', self.client.user)
+					await msg1.remove_reaction('<:disagree:797537030980239411>', self.client.user)
 					return
 
 				elif str(reaction.emoji) == '<:agree:797537027469082627>':
+
+					await msg1.remove_reaction('<:agree:797537027469082627>', self.client.user)
+					await msg1.remove_reaction('<:disagree:797537030980239411>', self.client.user)
 
 					e = "What's your name?"
 					await msg1.edit(content=e)

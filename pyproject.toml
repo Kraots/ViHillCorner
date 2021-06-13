@@ -21,6 +21,7 @@ motor = "^2.3.0"
 "discord.py" = "^1.7.1"
 hmtai = "^2.0.6"
 PyGithub = "^1.55"
+"trivia.py" = "^1.0.8"
 
 [tool.poetry.dev-dependencies]
 

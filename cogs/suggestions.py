@@ -73,15 +73,15 @@ class Suggest(commands.Cog):
 				msg = await suggestions.send(embed=suggest)
 				await msg.add_reaction('<:agree:797537027469082627>')
 				await msg.add_reaction('<:disagree:797537030980239411>')
-				em = discord.Embed(color=color.inviscolor, description=f"[Suggestion]({msg.jump_url}) successfully added!")
-				await ctx.channel.send(embed=em)
-				await msg1.delete()
+				em = discord.Embed(color=color.inviscolor, title="Suggestion successfully added!", url=msg.jump_url)
+				await msg1.edit(embed=em)
 				await msg1.clear_reactions()
 				return
 
 			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
 				e = "Suggestion aborted. %s" % (ctx.author.mention)
 				await msg1.edit(content=e, embed=None)
+				await msg1.clear_reactions()
 				return
 	
 	@suggest.command()
