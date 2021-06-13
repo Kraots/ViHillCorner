@@ -32,7 +32,7 @@ class Help(commands.Cog):
 	@help.command()
 	async def trivia(self, ctx):
 		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!trivia\n!trivia points <user>\n!trivia leaderboard```")
-		em.add_field(name="***Info:***", value="`!trivia` - play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a *competitive* vibe to the game.\n`!trivia points <user>` - see how many points you, or someone else has.\n`!trivia leaderboard` - check the leaderboard and see the top **10** users that have the most points.")
+		em.add_field(name="***Info:***", value="`!trivia` - play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a *competitive* vibe to the game.\n\u2800Modes:\n\u2800\u2800 - Solo\n\u2800\u2800 - Competitive [COMING SOON]\n`!trivia points <user>` - see how many points you, or someone else has.\n`!trivia leaderboard` - check the leaderboard and see the top **10** users that have the most points.")
 		await ctx.send(embed=em)
 	
 	@help.command(aliases=['updates'])

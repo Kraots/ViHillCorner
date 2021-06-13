@@ -221,7 +221,7 @@ class TriviaCommands(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
-		if ctx.author.id == 374622847672254466:
+		if member.id == 374622847672254466:
 			return
 		await db.delete_one({'_id': member.id})
 
