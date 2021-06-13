@@ -219,5 +219,11 @@ class TriviaCommands(commands.Cog):
 		if isinstance(error, commands.TooManyArguments):
 			return
 
+	@commands.Cog.listener()
+	async def on_member_remove(self, member):
+		if ctx.author.id == 374622847672254466:
+			return
+		await db.delete_one({'_id': member.id})
+
 def setup(client):
 	client.add_cog(TriviaCommands(client))
