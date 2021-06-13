@@ -81,7 +81,7 @@ class TriviaCommands(commands.Cog):
 							elif difficulty in ['easy', 'medium', 'hard']:
 								break
 							else:
-								await difficultyy.reply("That is not an avaible difficulty. Please choose from:\n\u2800• **Easy**\n\u2800• **Medium**\n\u2800• **Hard**")
+								await difficultyy.reply("That is not a valid form of difficulty. Please choose from:\n\u2800• **Easy**\n\u2800• **Medium**\n\u2800• **Hard**")
 					
 					except asyncio.TimeoutError:
 						await ctx.send("Took too much to respond. %s" % (ctx.author.mention))
