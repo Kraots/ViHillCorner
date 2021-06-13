@@ -425,6 +425,7 @@ class TriviaCommands(commands.Cog):
 														points2 -= 15
 
 					user = await db.find_one({'_id': ctx.author.id})
+					draw = False
 
 					if points > points2:		# USER/AUTHOR WIN
 						final_result = "***%s Has won the wager (`%s` points).***" % (ctx.author.mention, wager_amount)					
@@ -446,12 +447,14 @@ class TriviaCommands(commands.Cog):
 					
 					elif points == points2:
 						final_result = "***Draw. No one lost and no one won anything.***"
+						draw = True
 
 					result = discord.Embed(color=color.blue, title="Trivia has ended.", description=final_result)
-					result.add_field(name="`%s's` total points before:" % (ctx.author.display_name), value="**%s**" % (before_points_user), inline=True)
-					result.add_field(name="`%s's` total points after:" % (ctx.author.display_name), value="**%s**" % (after_points_user), inline=False)
-					result.add_field(name="`%s's` total points before:" % (opponent.display_name), value="**%s**" % (before_points_opponent), inline=True)
-					result.add_field(name="`%s's` total points after:" % (opponent.display_name), value="**%s**" % (after_points_opponent), inline=False)
+					if draw == False:
+						result.add_field(name="**-->** `%s's` total points before:" % (ctx.author.display_name), value="**%s**" % (before_points_user), inline=True)
+						result.add_field(name="`%s's` total points after:" % (ctx.author.display_name), value="**%s**" % (after_points_user), inline=False)
+						result.add_field(name="**-->** `%s's` total points before:" % (opponent.display_name), value="**%s**" % (before_points_opponent), inline=True)
+						result.add_field(name="`%s's` total points after:" % (opponent.display_name), value="**%s**" % (after_points_opponent), inline=False)
 					
 
 					await ctx.reply(embed=result)
