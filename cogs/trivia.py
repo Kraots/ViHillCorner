@@ -243,8 +243,10 @@ class TriviaCommands(commands.Cog):
 									except:
 										wager_amount = int(wager_amountt.content)
 									
-									if wager_amount <= 15:
+									if wager_amount <= 14:
 										await ctx.send("You must place a minimum of `15` points bet. %s" % (ctx.author.mention))
+									elif str(wager_amount)[-1] not in ['5', '0']:
+										await ctx.send("The number must always end in **5** or **0**. %s" % (ctx.author.mention))
 									else:
 										break
 								except ValueError:
