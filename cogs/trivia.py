@@ -5,7 +5,9 @@ from discord.ext import commands
 import motor.motor_asyncio
 import os
 import discord
+import random
 bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
+
 
 DBKEY = os.getenv('MONGODBLVLKEY')
 
@@ -90,7 +92,7 @@ class TriviaCommands(commands.Cog):
 					
 					else:
 						for i in range(amount):
-							question = await trivia.question(amount=1, difficulty=difficulty, quizType='boolean')
+							question = await trivia.question(amount=1, difficulty=difficulty)
 
 							if i == 0:
 								question_nr = '1st'
@@ -113,16 +115,26 @@ class TriviaCommands(commands.Cog):
 							if i == (amount - 1):
 								question_nr = 'last'
 							
-							em = discord.Embed(color=color.lightpink, title="[TRUE/FALSE]\nHere is your `%s` question %s" % (question_nr, ctx.author.display_name), description='*%s*' % (question[0]['question']))
+							if question[0]['type'] == 'boolean':							
+								em = discord.Embed(color=color.lightpink, title="[TRUE/FALSE]\nHere is your `%s` question %s" % (question_nr, ctx.author.display_name), description='*%s*' % (question[0]['question']))
+							elif question[0]['type'] == 'multiple':	
+								rand = random.randint(1, 4)
+								if rand == 1:
+									desc = '*%s*\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**' % (question[0]['question'], question[0]['correct_answer'], question[0]['incorrect_answers'][0], question[0]['incorrect_answers'][1], question[0]['incorrect_answers'][2])
+								elif rand == 2:
+									desc = '*%s*\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**' % (question[0]['question'], question[0]['incorrect_answers'][0], question[0]['correct_answer'], question[0]['incorrect_answers'][1], question[0]['incorrect_answers'][2])
+								elif rand == 3:
+									desc = '*%s*\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**' % (question[0]['question'], question[0]['incorrect_answers'][0], question[0]['incorrect_answers'][1], question[0]['correct_answer'], question[0]['incorrect_answers'][2])
+								elif rand == 4:
+									desc = '*%s*\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**' % (question[0]['question'], question[0]['incorrect_answers'][0], question[0]['incorrect_answers'][1], question[0]['incorrect_answers'][2], question[0]['correct_answer'])						
+								em = discord.Embed(color=color.lightpink, title="[CHOOSE THE CORRECT ANSWER]\nHere is your `%s` question %s" % (question_nr, ctx.author.display_name), description=desc)
 							question_msg = await ctx.send(embed=em)
+
 							try:
 								while True:
 									answerr = await self.client.wait_for('message', check=check, timeout=180)
 									answer = answerr.content.lower()
-									if answer == '!cancel':
-										await answerr.reply('Canceled.')
-										return
-									elif answer in ['true', 'false']:
+									if answer in question[0]['correct_answer'].lower() or answer in [i.lower() for i in question[0]['incorrect_answers']]:
 										break
 									else:
 										em = discord.Embed(title="That is not a valid form of reply. To get to your question please click me (the blue text).", url=question_msg.jump_url)
@@ -145,13 +157,13 @@ class TriviaCommands(commands.Cog):
 										points += 15
 								else:
 									if difficulty == 'easy':
-										await answerr.reply("Wrong. You lose **5** points.\nThe correct answer was **%s**" % (question[0]['correct_answer'].lower()))
+										await answerr.reply("Wrong. You lose **5** points.\nThe correct answer was **%s**" % (question[0]['correct_answer']))
 										points -= 5
 									elif difficulty == 'medium':
-										await answerr.reply("Wrong. You lose **10** points.\nThe correct answer was **%s**" % (question[0]['correct_answer'].lower()))
+										await answerr.reply("Wrong. You lose **10** points.\nThe correct answer was **%s**" % (question[0]['correct_answer']))
 										points -= 10
 									elif difficulty == 'hard':
-										await answerr.reply("Wrong. You lose **15** points.\nThe correct answer was **%s**" % (question[0]['correct_answer'].lower()))
+										await answerr.reply("Wrong. You lose **15** points.\nThe correct answer was **%s**" % (question[0]['correct_answer']))
 										points -= 15
 
 						if points < 0:
@@ -296,7 +308,7 @@ class TriviaCommands(commands.Cog):
 								else:
 									def checkk(reaction, user):
 										return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == opponent.id
-									msg = await ctx.send("%s You got challenged by %s to a 1v1 trivia. Here are the conditions that your opponent chose:\n\u2800• **Mode**: `%s`\n\u2800• **Rounds**: `%s`\n\u2800• **Bet**: `%s` points\n\nDo you accept?" % (opponent.mention, ctx.author.mention, mode, amount, wager_amount))
+									msg = await ctx.send("%s You got challenged by %s to a 1v1 trivia. Here are the conditions that your opponent chose:\n\u2800• **Mode**: `%s`\n\u2800• **Difficulty**: `%s`\n\u2800• **Rounds**: `%s`\n\u2800• **Bet**: `%s` points\n\nDo you accept?" % (opponent.mention, ctx.author.mention, mode, difficulty, amount, wager_amount))
 									await msg.add_reaction('<:agree:797537027469082627>')
 									await msg.add_reaction('<:disagree:797537030980239411>')
 
@@ -348,13 +360,25 @@ class TriviaCommands(commands.Cog):
 											if i == (amount - 1):
 												question_nr = 'last'
 											
-											em = discord.Embed(color=color.lightpink, title="[TRUE/FALSE]\nHere is your `%s` question %s" % (question_nr, ctx.author.display_name), description='*%s*' % (question[0]['question']))
+											if question[0]['type'] == 'boolean':
+												em = discord.Embed(color=color.lightpink, title="[TRUE/FALSE]\nHere is your `%s` question %s" % (question_nr, ctx.author.display_name), description='*%s*' % (question[0]['question']))
+											elif question[0]['type'] == 'multiple':	
+												rand = random.randint(1, 4)
+												if rand == 1:
+													desc = '*%s*\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**' % (question[0]['question'], question[0]['correct_answer'], question[0]['incorrect_answers'][0], question[0]['incorrect_answers'][1], question[0]['incorrect_answers'][2])
+												elif rand == 2:
+													desc = '*%s*\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**' % (question[0]['question'], question[0]['incorrect_answers'][0], question[0]['correct_answer'], question[0]['incorrect_answers'][1], question[0]['incorrect_answers'][2])
+												elif rand == 3:
+													desc = '*%s*\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**' % (question[0]['question'], question[0]['incorrect_answers'][0], question[0]['incorrect_answers'][1], question[0]['correct_answer'], question[0]['incorrect_answers'][2])
+												elif rand == 4:
+													desc = '*%s*\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**' % (question[0]['question'], question[0]['incorrect_answers'][0], question[0]['incorrect_answers'][1], question[0]['incorrect_answers'][2], question[0]['correct_answer'])
+												em = discord.Embed(color=color.lightpink, title="[CHOOSE THE CORRECT ANSWER]\nHere is your `%s` question %s" % (question_nr, ctx.author.display_name), description=desc)
 											question_msg = await ctx.send(embed=em)
 											try:
 												while True:
 													answerr = await self.client.wait_for('message', check=check, timeout=180)
 													answer = answerr.content.lower()
-													if answer in ['true', 'false']:
+													if answer in question[0]['correct_answer'].lower() or answer in [i.lower() for i in question[0]['incorrect_answers']]:
 														break
 													else:
 														em = discord.Embed(title="That is not a valid form of reply. To get to your question please click me (the blue text).", url=question_msg.jump_url)
@@ -362,7 +386,6 @@ class TriviaCommands(commands.Cog):
 											
 											except asyncio.TimeoutError:
 												await ctx.send("Ran out of time. %s" % (ctx.author.mention))
-												return
 											
 											else:
 												if answer == question[0]['correct_answer'].lower():
@@ -377,22 +400,34 @@ class TriviaCommands(commands.Cog):
 														points += 15
 												else:
 													if difficulty == 'easy':
-														await answerr.reply("Wrong. You lose **5** points. %s\nThe correct answer was **%s**" % (ctx.author.mention, question[0]['correct_answer'].lower()))
+														await answerr.reply("Wrong. You lose **5** points. %s\nThe correct answer was **%s**" % (ctx.author.mention, question[0]['correct_answer']))
 														points -= 5
 													elif difficulty == 'medium':
-														await answerr.reply("Wrong. You lose **10** points. %s\nThe correct answer was **%s**" % (ctx.author.mention, question[0]['correct_answer'].lower()))
+														await answerr.reply("Wrong. You lose **10** points. %s\nThe correct answer was **%s**" % (ctx.author.mention, question[0]['correct_answer']))
 														points -= 10
 													elif difficulty == 'hard':
-														await answerr.reply("Wrong. You lose **15** points. %s\nThe correct answer was **%s**" % (ctx.author.mention, question[0]['correct_answer'].lower()))
+														await answerr.reply("Wrong. You lose **15** points. %s\nThe correct answer was **%s**" % (ctx.author.mention, question[0]['correct_answer']))
 														points -= 15
 												
+											if question[0]['type'] == 'boolean':
 												em = discord.Embed(color=color.lightpink, title="[TRUE/FALSE]\nHere is your `%s` question %s" % (question_nr, opponent.display_name), description='*%s*' % (question[1]['question']))
+											elif question[0]['type'] == 'multiple':	
+												rand = random.randint(1, 4)
+												if rand == 1:
+													desc = '*%s*\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**' % (question[1]['question'], question[1]['correct_answer'], question[1]['incorrect_answers'][0], question[1]['incorrect_answers'][1], question[1]['incorrect_answers'][2])
+												elif rand == 2:
+													desc = '*%s*\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**' % (question[1]['question'], question[1]['incorrect_answers'][0], question[1]['correct_answer'], question[1]['incorrect_answers'][1], question[1]['incorrect_answers'][2])
+												elif rand == 3:
+													desc = '*%s*\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**' % (question[1]['question'], question[1]['incorrect_answers'][0], question[1]['incorrect_answers'][1], question[1]['correct_answer'], question[1]['incorrect_answers'][2])
+												elif rand == 4:
+													desc = '*%s*\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**\n\u2800• **%s**' % (question[1]['question'], question[1]['incorrect_answers'][0], question[1]['incorrect_answers'][1], question[1]['incorrect_answers'][2], question[1]['correct_answer'])
+												em = discord.Embed(color=color.lightpink, title="[CHOOSE THE CORRECT ANSWER]\nHere is your `%s` question %s" % (question_nr, ctx.author.display_name), description=desc)
 											question_msg = await ctx.send(embed=em)
 											try:
 												while True:
 													answerr = await self.client.wait_for('message', check=opponent_check, timeout=180)
 													answer = answerr.content.lower()
-													if answer in ['true', 'false']:
+													if answer in question[1]['correct_answer'].lower() or answer in [i.lower() for i in question[1]['incorrect_answers']]:
 														break
 													else:
 														em = discord.Embed(title="That is not a valid form of reply. To get to your question please click me (the blue text).", url=question_msg.jump_url)
@@ -400,7 +435,6 @@ class TriviaCommands(commands.Cog):
 											
 											except asyncio.TimeoutError:
 												await ctx.send("Ran out of time. %s" % (opponent.mention))
-												return
 											
 											else:
 												if answer == question[1]['correct_answer'].lower():
@@ -415,13 +449,13 @@ class TriviaCommands(commands.Cog):
 														points2 += 15
 												else:
 													if difficulty == 'easy':
-														await answerr.reply("Wrong. You lose **5** points. %s\nThe correct answer was **%s**" % (opponent.mention, question[1]['correct_answer'].lower()))
+														await answerr.reply("Wrong. You lose **5** points. %s\nThe correct answer was **%s**" % (opponent.mention, question[1]['correct_answer']))
 														points2 -= 5
 													elif difficulty == 'medium':
-														await answerr.reply("Wrong. You lose **10** points. %s\nThe correct answer was **%s**" % (opponent.mention, question[1]['correct_answer'].lower()))
+														await answerr.reply("Wrong. You lose **10** points. %s\nThe correct answer was **%s**" % (opponent.mention, question[1]['correct_answer']))
 														points2 -= 10
 													elif difficulty == 'hard':
-														await answerr.reply("Wrong. You lose **15** points. %s\nThe correct answer was **%s**" % (opponent.mention, question[1]['correct_answer'].lower()))
+														await answerr.reply("Wrong. You lose **15** points. %s\nThe correct answer was **%s**" % (opponent.mention, question[1]['correct_answer']))
 														points2 -= 15
 
 					user = await db.find_one({'_id': ctx.author.id})
@@ -609,10 +643,10 @@ class TriviaCommands(commands.Cog):
 				await msg.edit(content=e)
 				await msg.clear_reactions()
 
-	@_trivia.error
-	async def trivia_error(self, ctx, error):
-		if isinstance(error, commands.TooManyArguments):
-			return
+#	@_trivia.error
+#	async def trivia_error(self, ctx, error):
+#		if isinstance(error, commands.TooManyArguments):
+#			return
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
