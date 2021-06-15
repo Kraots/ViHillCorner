@@ -643,10 +643,10 @@ class TriviaCommands(commands.Cog):
 				await msg.edit(content=e)
 				await msg.clear_reactions()
 
-#	@_trivia.error
-#	async def trivia_error(self, ctx, error):
-#		if isinstance(error, commands.TooManyArguments):
-#			return
+	@_trivia.error
+	async def trivia_error(self, ctx, error):
+		if isinstance(error, commands.TooManyArguments):
+			return
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
