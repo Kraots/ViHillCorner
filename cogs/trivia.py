@@ -139,26 +139,26 @@ class TriviaCommands(commands.Cog):
 								while True:
 									answerr = await self.client.wait_for('message', check=check, timeout=180)
 									answer = answerr.content.lower()
-									if answer in ['a', 'b', 'c', 'd']:
+									if answer in ['a', 'b', 'c', 'd', 'true', 'false']:
 										if rand == 1:
 											if answer == 'a':
 												answer = question[0]['correct_answer'].lower()
-											else:
+											elif answer not in ['true', 'false']:
 												answer = "."
 										elif rand == 2:
 											if answer == 'b':
 												answer = question[0]['correct_answer'].lower()
-											else:
+											elif answer not in ['true', 'false']:
 												answer = "."
 										elif rand == 3:
 											if answer == 'c':
 												answer = question[0]['correct_answer'].lower()
-											else:
+											elif answer not in ['true', 'false']:
 												answer = "."
 										elif rand == 4:
 											if answer == 'd':
 												answer = question[0]['correct_answer'].lower()
-											else:
+											elif answer not in ['true', 'false']:
 												answer = "."
 										break
 									else:
@@ -182,13 +182,22 @@ class TriviaCommands(commands.Cog):
 										points += 15
 								else:
 									if difficulty == 'easy':
-										await answerr.reply("Wrong. You lose **5** points.\nThe correct answer was %s **%s**" % (correct, question[0]['correct_answer']))
+										if correct:
+											await answerr.reply("Wrong. You lose **5** points.\nThe correct answer was %s **%s**" % (correct, question[0]['correct_answer']))
+										else:
+											await answerr.reply("Wrong. You lose **5** points.\nThe correct answer was **%s**" % (question[0]['correct_answer']))
 										points -= 5
 									elif difficulty == 'medium':
-										await answerr.reply("Wrong. You lose **10** points.\nThe correct answer was %s **%s**" % (correct, question[0]['correct_answer']))
+										if correct:
+											await answerr.reply("Wrong. You lose **10** points.\nThe correct answer was %s **%s**" % (correct, question[0]['correct_answer']))
+										else:
+											await answerr.reply("Wrong. You lose **10** points.\nThe correct answer was **%s**" % (question[0]['correct_answer']))
 										points -= 10
 									elif difficulty == 'hard':
-										await answerr.reply("Wrong. You lose **15** points.\nThe correct answer was %s **%s**" % (correct, question[0]['correct_answer']))
+										if correct:
+											await answerr.reply("Wrong. You lose **15** points.\nThe correct answer was %s **%s**" % (correct, question[0]['correct_answer']))
+										else:
+											await answerr.reply("Wrong. You lose **15** points.\nThe correct answer was **%s**" % (question[0]['correct_answer']))
 										points -= 15
 
 						if points < 0:
@@ -407,26 +416,26 @@ class TriviaCommands(commands.Cog):
 												while True:
 													answerr = await self.client.wait_for('message', check=check, timeout=180)
 													answer = answerr.content.lower()
-													if answer in ['a', 'b', 'c', 'd']:
+													if answer in ['a', 'b', 'c', 'd', 'true', 'false']:
 														if rand == 1:
 															if answer == 'a':
 																answer = question[0]['correct_answer'].lower()
-															else:
+															elif answer not in ['true', 'false']:
 																answer = "."
 														elif rand == 2:
 															if answer == 'b':
 																answer = question[0]['correct_answer'].lower()
-															else:
+															elif answer not in ['true', 'false']:
 																answer = "."
 														elif rand == 3:
 															if answer == 'c':
 																answer = question[0]['correct_answer'].lower()
-															else:
+															elif answer not in ['true', 'false']:
 																answer = "."
 														elif rand == 4:
 															if answer == 'd':
 																answer = question[0]['correct_answer'].lower()
-															else:
+															elif answer not in ['true', 'false']:
 																answer = "."
 														break
 													else:
@@ -449,13 +458,22 @@ class TriviaCommands(commands.Cog):
 														points += 15
 												else:
 													if difficulty == 'easy':
-														await answerr.reply("Wrong. You lose **5** points. %s\nThe correct answer was %s **%s**" % (ctx.author.mention, correct, question[0]['correct_answer']))
+														if correct:
+															await answerr.reply("Wrong. You lose **5** points. %s\nThe correct answer was %s **%s**" % (ctx.author.mention, correct, question[0]['correct_answer']))
+														else:
+															await answerr.reply("Wrong. You lose **5** points. %s\nThe correct answer was **%s**" % (ctx.author.mention, question[0]['correct_answer']))
 														points -= 5
 													elif difficulty == 'medium':
-														await answerr.reply("Wrong. You lose **10** points. %s\nThe correct answer was %s **%s**" % (ctx.author.mention, correct, question[0]['correct_answer']))
+														if correct:
+															await answerr.reply("Wrong. You lose **10** points. %s\nThe correct answer was %s **%s**" % (ctx.author.mention, correct, question[0]['correct_answer']))
+														else:
+															await answerr.reply("Wrong. You lose **10** points. %s\nThe correct answer was **%s**" % (ctx.author.mention, question[0]['correct_answer']))
 														points -= 10
 													elif difficulty == 'hard':
-														await answerr.reply("Wrong. You lose **15** points. %s\nThe correct answer was %s **%s**" % (ctx.author.mention, correct, question[0]['correct_answer']))
+														if correct:
+															await answerr.reply("Wrong. You lose **15** points. %s\nThe correct answer was %s **%s**" % (ctx.author.mention, correct, question[0]['correct_answer']))
+														else:
+															await answerr.reply("Wrong. You lose **15** points. %s\nThe correct answer was **%s**" % (ctx.author.mention, question[0]['correct_answer']))
 														points -= 15
 												
 											if question[0]['type'] == 'boolean':
@@ -480,26 +498,26 @@ class TriviaCommands(commands.Cog):
 												while True:
 													answerr = await self.client.wait_for('message', check=opponent_check, timeout=180)
 													answer = answerr.content.lower()
-													if answer in ['a', 'b', 'c', 'd']:
+													if answer in ['a', 'b', 'c', 'd', 'true', 'false']:
 														if rand == 1:
 															if answer == 'a':
 																answer = question[1]['correct_answer'].lower()
-															else:
+															elif answer not in ['true', 'false']:
 																answer = "."
 														elif rand == 2:
 															if answer == 'b':
 																answer = question[1]['correct_answer'].lower()
-															else:
+															elif answer not in ['true', 'false']:
 																answer = "."
 														elif rand == 3:
 															if answer == 'c':
 																answer = question[1]['correct_answer'].lower()
-															else:
+															elif answer not in ['true', 'false']:
 																answer = "."
 														elif rand == 4:
 															if answer == 'd':
 																answer = question[1]['correct_answer'].lower()
-															else:
+															elif answer not in ['true', 'false']:
 																answer = "."
 														break
 													else:
@@ -522,13 +540,22 @@ class TriviaCommands(commands.Cog):
 														points2 += 15
 												else:
 													if difficulty == 'easy':
-														await answerr.reply("Wrong. You lose **5** points. %s\nThe correct answer was %s **%s**" % (opponent.mention, correct, question[1]['correct_answer']))
+														if correct:
+															await answerr.reply("Wrong. You lose **5** points. %s\nThe correct answer was %s **%s**" % (opponent.mention, correct, question[1]['correct_answer']))
+														else:
+															await answerr.reply("Wrong. You lose **5** points. %s\nThe correct answer was **%s**" % (opponent.mention, question[1]['correct_answer']))
 														points2 -= 5
 													elif difficulty == 'medium':
-														await answerr.reply("Wrong. You lose **10** points. %s\nThe correct answer was %s **%s**" % (opponent.mention, correct, question[1]['correct_answer']))
+														if correct:
+															await answerr.reply("Wrong. You lose **10** points. %s\nThe correct answer was %s **%s**" % (opponent.mention, correct, question[1]['correct_answer']))
+														else:
+															await answerr.reply("Wrong. You lose **10** points. %s\nThe correct answer was **%s**" % (opponent.mention, question[1]['correct_answer']))
 														points2 -= 10
 													elif difficulty == 'hard':
-														await answerr.reply("Wrong. You lose **15** points. %s\nThe correct answer was %s **%s**" % (opponent.mention, correct, question[1]['correct_answer']))
+														if correct:
+															await answerr.reply("Wrong. You lose **15** points. %s\nThe correct answer was %s **%s**" % (opponent.mention, correct, question[1]['correct_answer']))
+														else:
+															await answerr.reply("Wrong. You lose **15** points. %s\nThe correct answer was **%s**" % (opponent.mention, question[1]['correct_answer']))
 														points2 -= 15
 
 					user = await db.find_one({'_id': ctx.author.id})
