@@ -5,7 +5,6 @@ import os
 
 token = os.environ.get('DISCORD_BOT_SECRET')
 
-
 intents = discord.Intents.all()
 
 # CLIENT
