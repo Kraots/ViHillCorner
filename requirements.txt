@@ -28,4 +28,3 @@ urllib3
 wolframalpha
 motor
 pymongo
-dotenv

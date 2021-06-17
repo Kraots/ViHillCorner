@@ -2,11 +2,6 @@
 import discord
 from discord.ext import commands
 import os
-import asyncio
-from dotenv import load_dotenv
-
-load_dotenv()
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 token = os.environ.get('DISCORD_BOT_SECRET')
 
