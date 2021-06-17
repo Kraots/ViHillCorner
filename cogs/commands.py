@@ -210,7 +210,7 @@ class command(commands.Cog):
 			return f'{dt:%Y-%m-%d} ({time.human_timedelta(dt, accuracy=3)})'
 
 		g = Github(git_user, git_pass)
-		repo = g.get_repo("Kraots/ViHill-Corner")
+		repo = g.get_repo("Kraots/ViHillCorner")
 		master = repo.get_branch("master")
 		sha_com = master.commit
 		sha_com = str(sha_com).split('Commit(sha="')

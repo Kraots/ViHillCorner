@@ -14,13 +14,12 @@ client.load_extension("jishaku")
 
 # COGS
 for filename in os.listdir('./cogs'):
-  if filename.endswith('.py'):
-    client.load_extension(f'cogs.{filename[:-3]}')
+	if filename.endswith('.py'):
+		client.load_extension(f'cogs.{filename[:-3]}')
 
 for filename in os.listdir('./outsidereloadcogs'):
-  if filename.endswith('.py'):
-    client.load_extension(f'outsidereloadcogs.{filename[:-3]}')
-
+	if filename.endswith('.py'):
+		client.load_extension(f'outsidereloadcogs.{filename[:-3]}')
 
 # RUN
 client.run(token)

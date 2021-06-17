@@ -19,7 +19,7 @@ class BotInfo(commands.Cog):
 	@commands.command(hidden=True)
 	async def botinfo(self, ctx):
 		g = Github(git_user, git_pass)
-		repo = g.get_repo("Kraots/ViHill-Corner")
+		repo = g.get_repo("Kraots/ViHillCorner")
 		master = repo.get_branch("master")
 		sha_com = master.commit
 		sha_com = str(sha_com).split('Commit(sha="')
