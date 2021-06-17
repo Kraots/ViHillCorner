@@ -12,27 +12,27 @@ import pkg_resources
 
 
 class Pag(Paginator):
-    async def teardown(self):
-        try:
-            await self.page.clear_reactions()
-        except discord.HTTPException:
-            pass
+	async def teardown(self):
+		try:
+			await self.page.clear_reactions()
+		except discord.HTTPException:
+			pass
 
 def get_user_image(user: discord.User):
-    if str(user.avatar_url_as(static_format='png'))[54:].startswith('a_'):
-        image = str(user.avatar_url).rsplit("?", 1)[0]
-    else:
-        image = user.avatar_url_as(static_format='png')
-    return image
+	if str(user.avatar_url_as(static_format='png'))[54:].startswith('a_'):
+		image = str(user.avatar_url).rsplit("?", 1)[0]
+	else:
+		image = user.avatar_url_as(static_format='png')
+	return image
 
 def get_member_role(member: discord.Member):
-    role = member.top_role.name
-    if role == "@everyone":
-        role = "N/A"
-    return role
+	role = member.top_role.name
+	if role == "@everyone":
+		role = "N/A"
+	return role
 
 def get_member_voice(member: discord.Member):
-    return "Not in VC" if not member.voice else member.voice.channel
+	return "Not in VC" if not member.voice else member.voice.channel
 
 def profile(ctx, user):
 	
@@ -117,11 +117,11 @@ def clean_code(content):
 		return content
 
 def package_version(package_name: str) -> typing.Optional[str]:
-    """
-    Returns package version as a string, or None if it couldn't be found.
-    """
+	"""
+	Returns package version as a string, or None if it couldn't be found.
+	"""
 
-    try:
-        return pkg_resources.get_distribution(package_name).version
-    except (pkg_resources.DistributionNotFound, AttributeError):
-        return None
+	try:
+		return pkg_resources.get_distribution(package_name).version
+	except (pkg_resources.DistributionNotFound, AttributeError):
+		return None
