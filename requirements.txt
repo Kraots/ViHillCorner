@@ -1,0 +1,27 @@
+aiodns
+aiohttp
+attrs
+braceexpand
+buttons
+chardet
+-e git+https://github.com/Rapptz/discord-ext-menus@309c70222eec33acacb8c21bbb0fbe9bc57de661#egg=discord_ext_menus
+discord.py
+discord
+dnspython
+hmtai
+humanize
+jishaku
+numpy
+parsedatetime
+Pillow
+pkginfo
+psutil
+pygame
+PyGithub
+pymongo
+PyNaCl
+regex
+requests
+trivia.py
+urllib3
+wolframalpha
