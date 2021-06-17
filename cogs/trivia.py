@@ -9,6 +9,7 @@ import random
 bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
 
 
+
 DBKEY = os.getenv('MONGODBLVLKEY')
 
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
@@ -722,7 +723,7 @@ class TriviaCommands(commands.Cog):
 		msg = await ctx.send("%s wants to give you **%s** points. Do you accept? %s" % (ctx.author.mention, amount, member.mention))
 		await msg.add_reaction('<:agree:797537027469082627>')
 		await msg.add_reaction('<:disagree:797537030980239411>')
-		
+
 		try:
 				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
 
