@@ -8,6 +8,7 @@ chardet
 discord.py
 discord
 dnspython
+dateutil
 hmtai
 humanize
 jishaku
