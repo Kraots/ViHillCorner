@@ -26,3 +26,5 @@ requests
 trivia.py
 urllib3
 wolframalpha
+motor
+pymongo
