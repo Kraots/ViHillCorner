@@ -30,7 +30,7 @@ class Calculatorr:
 				x, y = v.group().split(operator)
 			except ValueError:
 				self.expression = "Can't contain a negative number or some error occured."
-				return
+				return self.expression
 			x, y = float(x), float(y)
 			conv = {
 				"/": x/y,
