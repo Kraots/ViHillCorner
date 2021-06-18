@@ -26,7 +26,11 @@ class Calculatorr:
 
 	def sub_regex(self, operator):
 		def sub_fn(v):
-			x, y = v.group().split(operator)
+			try:
+				x, y = v.group().split(operator)
+			except ValueError:
+				self.expression = "Can't contain a negative number or some error occured."
+				return
 			x, y = float(x), float(y)
 			conv = {
 				"/": x/y,
