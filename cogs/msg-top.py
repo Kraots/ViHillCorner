@@ -8,7 +8,7 @@ from dateutil.relativedelta import relativedelta
 from utils import time
 import asyncio
 
-BotChannels = [750160851822182486, 750160851822182487, 752164200222163016]
+BotChannels = [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]
 
 DBKEY = os.getenv("MONGODBLVLKEY")
 
@@ -34,9 +34,25 @@ class MessageTop(commands.Cog):
 		dateNow = datetime.datetime.strptime(a, '%Y-%m-%d')
 		
 		if dateNow >= resetWhen:
+			index = 0 
+			results = collection.find().sort([("messages_count", -1)])
+			for result in await results.to_list(3):
+				index += 1
+				user = self.client.get_user(result['_id'])
+				if index == 1:
+					await collection.update_one({'_id': result['_id']}, {'$inc':{'xp': 50000}})
+					await user.send("Congrats. You placed `%s` in the weekly top! Your reward is **50,000** XP." % (index))
+				elif index == 2:
+					await collection.update_one({'_id': result['_id']}, {'$inc':{'xp': 30000}})
+					await user.send("Congrats. You placed `%s` in the weekly top! Your reward is **30,000** XP." % (index))
+				elif index == 3:
+					await collection.update_one({'_id': result['_id']}, {'$inc':{'xp': 20000}})
+					await user.send("Congrats. You placed `%s` in the weekly top! Your reward is **20,000** XP." % (index))
+
 			await collection.update_many({}, {"$set": {"messages_count": 0}})
 			x = dateNow + relativedelta(weeks = 1)
 			await collection.update_one({'_id': 374622847672254466}, {'$set':{'weekly_reset': x}})
+
 
 
 	@commands.group(invoke_without_command = True, case_insensitive = True, aliases=['msg-top', 'top-msg'])
@@ -83,6 +99,15 @@ class MessageTop(commands.Cog):
 				await ctx.send('The message count for this week for member **%s** has been reset successfully.' % (member))
 		except asyncio.TimeoutError:
 			return
+
+	@top.command(aliases=['reward'])
+	async def rewards(self, ctx):
+		em = discord.Embed(color=color.lightpink, title="Here are the rewards for the weekly top:")
+		em.add_field(name="`1st Place`", value="**50k XP**", inline=False)
+		em.add_field(name="`2nd Place`", value="**30k XP**", inline=False)
+		em.add_field(name="`3rd Place`", value="**20k XP**", inline=False)
+		em.set_footer(text="Requested by: %s" % (ctx.author), icon_url=ctx.author.avatar_url)
+		await ctx.send(embed=em)
 
 def setup(client):
 	client.add_cog(MessageTop(client))
