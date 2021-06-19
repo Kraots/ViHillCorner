@@ -6,6 +6,7 @@ from typing import Union
 from utils import time, formats
 import os, datetime
 from discord.ext.buttons import Paginator
+from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 
 import typing
 import pkg_resources
@@ -125,3 +126,18 @@ def package_version(package_name: str) -> typing.Optional[str]:
 		return pkg_resources.get_distribution(package_name).version
 	except (pkg_resources.DistributionNotFound, AttributeError):
 		return None
+
+def drawProgressBar(d, x, y, w, h, progress, bg="white", fg="black"):
+	# draw background
+	d.ellipse((x+w, y, x+h+w, y+h), fill=bg)
+	d.ellipse((x, y, x+h, y+h), fill=bg)
+	d.rectangle((x+(h/2), y, x+w+(h/2), y+h), fill=bg)
+
+	# draw progress bar
+	w *= progress
+	if w != 0.0:
+		d.ellipse((x+w, y, x+h+w, y+h),fill=fg)
+		d.ellipse((x, y, x+h, y+h),fill=fg)
+		d.rectangle((x+(h/2), y, x+w+(h/2), y+h),fill=fg)
+
+	return d

@@ -1,18 +1,17 @@
 import discord
 from discord.ext import commands
-
-import os
-
 import utils.colors as color
-
 import motor.motor_asyncio
+from PIL import ImageDraw, Image
+from utils.helpers import drawProgressBar
+import os
 
 DBKEY = os.getenv("MONGODBLVLKEY")
 cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster['ViHillCornerDB']
 collection = db['Levels']
 
-bot_channel = [750160851822182486, 750160851822182487, 752164200222163016]
+bot_channel = [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]
 no_talk_channels = [750160852006469807, 780374324598145055]
 
 level = [758278459645755392, 750160850290999330, 750160850290999331, 750160850290999332, 750160850290999333, 750160850290999334, 750160850290999335, 750160850295324744, 750160850295324745, 750160850295324746, 750160850295324747, 750160850295324748, 750160850295324749, 750160850295324750, 788127504710762497, 788127526278791240, 788127540459208725, 788127547606827028, 788127552686129265, 788127561283928115, 788127569198579764, 788127574663495720, 788127580330655744, 788127589092818994, 788127593386868758, 818562249349660713, 818562250252091413, 818562250477404173, 818562251644076072, 818562252185534465, 818562252360777749, 818562252906037259, 818562253501628507, 818562254043480075, 818562254495547462, 818562254680883241, 818562255188131924, 818562256101965844, 818562256546824192, 818562257033101372, 818562257653858304, 818562258119950367, 818562258551832657, 818562259587563523, 818562260254588988, 818562260686995486, 818562261844230215, 818562262360784977, 818562262520430654, 818562263169368076, 818562263850025031, 818562264030380033, 818562264554405899, 818562265422757898, 818562265779273749, 818562266475528242, 818562266760740926, 818562267410726964, 818562267837628456, 818562268044197889, 818562268966027294, 818562269029466124, 818562269835034625, 818562270119985163, 818562270375182357, 818562271100928020, 818562271269486623, 818562271978586132, 818562272791101500, 818562273202405396, 818562273215774776, 818562274318090260, 818562274502508555, 818562275539550239, 818562276490870857, 818562276939661343, 818562277514805258, 818562277619400765, 818562278521569282, 818562278832078939, 818562279725203508, 818562280009760889, 818562280765390909, 818562281410658344, 818562282019356733]
@@ -146,28 +145,39 @@ class LevelSystem(commands.Cog):
 				em = discord.Embed(title=f"{member.display_name}'s level stats", color=color.lightpink)
 				em.add_field(name="Name", value=member.mention)
 				
-
+				out = Image.new("RGBA", (3000, 100), (0, 0, 0, 0))
+				d = ImageDraw.Draw(out)
 
 				if lvl == 500:
+					d = drawProgressBar(d, 20, 13, 2875, 75, 1)
+					out.save("ProgressBar.png")
+					file = discord.File(fp="ProgressBar.png", filename="ProgressBar.png")
 					lvl = "500(MAX)"
 					em.add_field(name="XP", value="MAX")
 					em.add_field(name="Level", value=lvl)
 					em.add_field(name="Rank", value=f"{rank}/{all_guild_members}", inline=False)
-					em.add_field(name="Progress Bar [lvl]", value=20 * ":blue_square:", inline=False)
+					em.set_image(url="attachment://ProgressBar.png")
 				else:
 					if str(xp).endswith(".0"):
 						x = str(xp).replace(".0", "")
+						x = int(x)
 					else:
-						x = xp
+						x = int(xp)
 
-					em.add_field(name="XP", value=f"{x}/{int(200*((1/2)*lvl))}")
+					total_needed_xp_for_next_lvl = int(200*((1/2)*lvl))
+					percent = x/total_needed_xp_for_next_lvl
+					d = drawProgressBar(d, 20, 13, 2875, 75, percent)
+					out.save("ProgressBar.png")
+					file = discord.File(fp="ProgressBar.png", filename="ProgressBar.png")
+
+					em.add_field(name="XP", value=f"{x}/{total_needed_xp_for_next_lvl}")
 					em.add_field(name="Level", value=lvl)
 					em.add_field(name="Rank", value=f"{rank}/{all_guild_members}", inline=False)
-					em.add_field(name="Progress Bar [lvl]", value=boxes * ":blue_square:" + (20-boxes) * ":white_large_square:", inline=False)
-				
+					em.set_image(url="attachment://ProgressBar.png")
+					
 				em.set_thumbnail(url=member.avatar_url)
 
-				await ctx.send(embed=em)
+				await ctx.send(embed=em, file=file)
 
 
 
