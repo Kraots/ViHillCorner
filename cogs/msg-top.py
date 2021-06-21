@@ -41,13 +41,13 @@ class MessageTop(commands.Cog):
 				user = self.client.get_user(result['_id'])
 				if index == 1:
 					await collection.update_one({'_id': result['_id']}, {'$inc':{'xp': 50000}})
-					await user.send("Congrats. You placed `%s` in the weekly top! Your reward is **50,000** XP." % (index))
+					await user.send("Congrats. You placed `%sst` in the weekly top! Your reward is **50,000** XP." % (index))
 				elif index == 2:
 					await collection.update_one({'_id': result['_id']}, {'$inc':{'xp': 30000}})
-					await user.send("Congrats. You placed `%s` in the weekly top! Your reward is **30,000** XP." % (index))
+					await user.send("Congrats. You placed `%s2nd` in the weekly top! Your reward is **30,000** XP." % (index))
 				elif index == 3:
 					await collection.update_one({'_id': result['_id']}, {'$inc':{'xp': 20000}})
-					await user.send("Congrats. You placed `%s` in the weekly top! Your reward is **20,000** XP." % (index))
+					await user.send("Congrats. You placed `%s3rd` in the weekly top! Your reward is **20,000** XP." % (index))
 
 			await collection.update_many({}, {"$set": {"messages_count": 0}})
 			x = dateNow + relativedelta(weeks = 1)
@@ -85,20 +85,30 @@ class MessageTop(commands.Cog):
 	@top.command(aliases = ['reset'])
 	@commands.is_owner()
 	async def __reset(self, ctx, member: discord.Member):
-		def check(message):
-			return message.author == ctx.author and message.channel == ctx.channel
+		def check(reaction, user):
+			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
 		
-		await ctx.send("Are you sure you want to reset the message count for this week for member %s? `yes` | `no`" % (member.mention))
+		msg = await ctx.send("Are you sure you want to reset the message count for this week for member %s?" % (member.mention))
+		await msg.add_reaction('<:agree:797537027469082627>')
+		await msg.add_reaction('<:disagree:797537030980239411>')
 		try:
-			answer = await self.client.wait_for('message', timeout = 180, check=check)
-			answer = answer.content.lower()
-			if answer in ['no', 'cancel']:
-				await ctx.send("Command to reset the message count for user `%s` has been canceled." % (member))
-			elif answer == "yes":
-				await collection.update_one({'_id': member.id}, {'$set':{'messages_count': 0}})
-				await ctx.send('The message count for this week for member **%s** has been reset successfully.' % (member))
+			reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
 		except asyncio.TimeoutError:
+			new_msg = f"{ctx.author.mention} Did not react in time."
+			await msg.edit(content=new_msg)
+			await msg.clear_reactions()
 			return
+			
+		else:
+			if str(reaction.emoji) == '<:agree:797537027469082627>':
+				await collection.update_one({'_id': member.id}, {'$set':{'messages_count': 0}})
+				await msg.clear_reactions()
+				await msg.edit(content='The message count for this week for member **%s** has been reset successfully.' % (member))
+			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+				await msg.clear_reactions()
+				await msg.edit(content="Command to reset the message count for user `%s` has been canceled." % (member))
+
 
 	@top.command(aliases=['reward'])
 	async def rewards(self, ctx):

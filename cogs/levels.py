@@ -139,17 +139,17 @@ class LevelSystem(commands.Cog):
 					xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
 					boxes = int((xp/(200*((1/2)*lvl)))*20)
 
-				guild = self.client.get_guild(750160850077089853)
-				all_guild_members = len([m for m in guild.members if not m.bot])
+				#guild = self.client.get_guild(750160850077089853)
+				all_guild_members = len([m for m in ctx.guild.members if not m.bot])
 				
 				em = discord.Embed(title=f"{member.display_name}'s level stats", color=color.lightpink)
 				em.add_field(name="Name", value=member.mention)
 				
-				out = Image.new("RGBA", (3000, 100), (0, 0, 0, 0))
+				out = Image.new("RGBA", (3000, 250), (0, 0, 0, 0))
 				d = ImageDraw.Draw(out)
 
 				if lvl == 500:
-					d = drawProgressBar(d, 20, 13, 2875, 75, 1)
+					d = drawProgressBar(d, 20, 100, 2100, 75, 1)
 					out.save("ProgressBar.png")
 					file = discord.File(fp="ProgressBar.png", filename="ProgressBar.png")
 					lvl = "500(MAX)"
@@ -166,7 +166,7 @@ class LevelSystem(commands.Cog):
 
 					total_needed_xp_for_next_lvl = int(200*((1/2)*lvl))
 					percent = x/total_needed_xp_for_next_lvl
-					d = drawProgressBar(d, 20, 13, 2875, 75, percent)
+					d = drawProgressBar(d, 20, 100, 2100, 75, percent)
 					out.save("ProgressBar.png")
 					file = discord.File(fp="ProgressBar.png", filename="ProgressBar.png")
 
