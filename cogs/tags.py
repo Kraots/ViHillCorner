@@ -84,6 +84,16 @@ class Tags(commands.Cog):
 					await ctx.send(tag)
 
 
+	@tag.command()
+	async def search(self, ctx, *, query):
+		query = str(query).lower()
+		entries = collection.find({'the_tag_name': {'$regex': query, '$options': 'i'}})
+		try:
+			p = TagPages(entries = entries, per_page = 7)
+			await p.start(ctx)
+		except:
+			await ctx.send('No tags found. %s' % (ctx.author.mention))
+	
 
 	@commands.command()
 	async def tags(self, ctx, member: discord.Member = None):

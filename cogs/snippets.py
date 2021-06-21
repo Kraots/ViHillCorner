@@ -59,6 +59,16 @@ class Snippets(commands.Cog):
 		await p.start(ctx)
 
 
+	@snippet.command()
+	async def search(self, ctx, *, query):
+		query = str(query).lower()
+		entries = collection.find({'_id': {'$regex': query, '$options': 'i'}})
+		try:
+			p = SnippetPages(entries = entries, per_page = 7)
+			await p.start(ctx)
+		except:
+			await ctx.send('No snippets found. %s' % (ctx.author.mention))
+
 
 
 	@snippet.command(aliases=['lb'])
