@@ -132,9 +132,6 @@ class command(commands.Cog):
 	async def _av(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
-
-		if member.id in [374622847672254466, 822755470422442044] and not ctx.author.id == [822755470422442044, 374622847672254466]:
-			return
 			
 		avatar = discord.Embed(title=f"{member.name}", url=f"{member.avatar_url}", color=color.blue)
 		avatar.set_image(url=member.avatar_url)
