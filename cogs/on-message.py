@@ -4,10 +4,22 @@ import asyncio
 import utils.colors as color
 import string
 from secrets import choice
+import aiohttp
+import datetime
+import os
 
 invalid_names_list = ["!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "", "]", "^", "_", "`", "{", "|", "}", "~", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 nono_names = ["kraots", "vihillcorner", "carrots"]
+
+MESSAGE_LOG_CHANNEL = os.getenv('MESSAGE_LOG_CHANNEL_WEBHOOK')
+
+
+# Webhook that sends a message in messages-log channel
+async def MessageLogWebhook(em):
+	async with aiohttp.ClientSession() as session:
+		webhook = discord.Webhook.from_url(MESSAGE_LOG_CHANNEL, adapter=discord.AsyncWebhookAdapter(session))
+		await webhook.send(embed=em)
 
 class on_message(commands.Cog):
 	def __init__(self, client):
@@ -26,16 +38,14 @@ class on_message(commands.Cog):
 		else:
 				message_logging = self.client.get_channel(750432155179679815)
 
-				embedd = discord.Embed(title="Getting timestamp...", color=color.red)
-				msg = await message_logging.send(embed=embedd)                
-				embedd = discord.Embed(color=color.red, description=f'[Message]({message.jump_url}) deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=msg.created_at)
-				embedd.set_author(name=f'{message.author}', icon_url=f'{message.author.avatar_url}')
-				embedd.set_footer(text=f'User ID: {message.author.id}')
+				em = discord.Embed(color=color.red, description=f'[Message]({message.jump_url}) deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=datetime.datetime.utcnow())
+				em.set_author(name=f'{message.author}', icon_url=f'{message.author.avatar_url}')
+				em.set_footer(text=f'User ID: {message.author.id}')
 				if message.attachments:
-					embedd.set_image(url=message.attachments[0].proxy_url)
+					em.set_image(url=message.attachments[0].proxy_url)
 				
 				await asyncio.sleep(0.5)
-				await msg.edit(embed=embedd)
+				await MessageLogWebhook(em)
 		
 
 	@commands.Cog.listener('on_message_edit')
@@ -48,14 +58,12 @@ class on_message(commands.Cog):
 		else:
 				after_logging = self.client.get_channel(750432155179679815)
 
-				embed = discord.Embed(title="Getting timestamp...", color=color.red)
-				gettimestamp = await after_logging.send(embed=embed)
-				embed = discord.Embed(color=color.yellow, description=f'[Message]({before.jump_url}) edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=gettimestamp.created_at)
-				embed.set_author(name=f'{before.author}', icon_url=f'{before.author.avatar_url}')
-				embed.set_footer(text=f'User ID: {before.author.id}')
+				em = discord.Embed(color=color.yellow, description=f'[Message]({before.jump_url}) edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=datetime.datetime.utcnow())
+				em.set_author(name=f'{before.author}', icon_url=f'{before.author.avatar_url}')
+				em.set_footer(text=f'User ID: {before.author.id}')
 
 				await asyncio.sleep(0.5)
-				await gettimestamp.edit(embed=embed)
+				await MessageLogWebhook(em)
 
 
 
