@@ -36,7 +36,7 @@ class on_message(commands.Cog):
 				return
 
 		else:
-				message_logging = self.client.get_channel(750432155179679815)
+				kraots = self.client.get_user(374622847672254466)
 
 				em = discord.Embed(color=color.red, description=f'[Message]({message.jump_url}) deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=datetime.datetime.utcnow())
 				em.set_author(name=f'{message.author}', icon_url=f'{message.author.avatar_url}')
@@ -45,7 +45,10 @@ class on_message(commands.Cog):
 					em.set_image(url=message.attachments[0].proxy_url)
 				
 				await asyncio.sleep(0.5)
-				await MessageLogWebhook(em)
+				try:
+					await MessageLogWebhook(em)
+				except Exception as e:
+					await kraots.send(e)
 		
 
 	@commands.Cog.listener('on_message_edit')
@@ -56,14 +59,17 @@ class on_message(commands.Cog):
 		if before.author.id == 374622847672254466:
 				return
 		else:
-				after_logging = self.client.get_channel(750432155179679815)
+				kraots = self.client.get_user(374622847672254466)
 
 				em = discord.Embed(color=color.yellow, description=f'[Message]({before.jump_url}) edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=datetime.datetime.utcnow())
 				em.set_author(name=f'{before.author}', icon_url=f'{before.author.avatar_url}')
 				em.set_footer(text=f'User ID: {before.author.id}')
 
 				await asyncio.sleep(0.5)
-				await MessageLogWebhook(em)
+				try:
+					await MessageLogWebhook(em)
+				except Exception as e:
+					await kraots.send(e)
 
 
 
