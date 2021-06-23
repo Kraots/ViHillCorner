@@ -351,7 +351,7 @@ class Tags(commands.Cog):
 		else:
 
 			matches = re.findall(filter_invite, tag_name_constructor)
-			if ctx.author.id != 750160850077089853::
+			if ctx.author.id != 750160850077089853:
 				for tag_name_constructor in matches:
 					await ctx.send("No invites or what so ever.")
 					return
