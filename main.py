@@ -12,7 +12,7 @@ class ViHillCorner(commands.Bot):
 	def __init__(self):
 		allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
 		intents = discord.Intents.all()
-		super().__init__(command_prefix=('!', ';'), allowed_mentions=allowed_mentions, intents=intents)
+		super().__init__(command_prefix=('!', ';'), allowed_mentions=allowed_mentions, intents=intents, case_insensitive=True)
 		self.session = aiohttp.ClientSession(loop=self.loop)
 
 		self.remove_command('help')
