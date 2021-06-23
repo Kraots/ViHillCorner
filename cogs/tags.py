@@ -283,7 +283,7 @@ class Tags(commands.Cog):
 				tag_name = pre_tag.content.lower()
 				matches = re.findall(filter_invite, tag_name)
 
-				if ctx.author.id != 750160850077089853:
+				if ctx.author.id != 374622847672254466:
 					for tag_name in matches:
 						await ctx.send("No invites or what so ever.")
 						return
@@ -318,7 +318,7 @@ class Tags(commands.Cog):
 						tag_content = pre_tag_content.content
 						matches = re.findall(filter_invite, tag_content)
 
-						if ctx.author.id != 750160850077089853:
+						if ctx.author.id != 374622847672254466:
 							for tag_content in matches:
 								await ctx.send("No invites or what so ever.")
 								return
@@ -351,7 +351,7 @@ class Tags(commands.Cog):
 		else:
 
 			matches = re.findall(filter_invite, tag_name_constructor)
-			if ctx.author.id != 750160850077089853:
+			if ctx.author.id != 374622847672254466:
 				for tag_name_constructor in matches:
 					await ctx.send("No invites or what so ever.")
 					return
@@ -384,7 +384,7 @@ class Tags(commands.Cog):
 					tag_content = pre_tag_content.content
 					matches = re.findall(filter_invite, tag_content)
 
-					if ctx.author.id != 750160850077089853:
+					if ctx.author.id != 374622847672254466:
 						for tag_content in matches:
 							await ctx.send("No invites or what so ever.")
 							return
