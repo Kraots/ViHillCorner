@@ -283,9 +283,10 @@ class Tags(commands.Cog):
 				tag_name = pre_tag.content.lower()
 				matches = re.findall(filter_invite, tag_name)
 
-				for tag_name in matches:
-					await ctx.send("No invites or what so ever.")
-					return
+				if ctx.author.id != 750160850077089853:
+					for tag_name in matches:
+						await ctx.send("No invites or what so ever.")
+						return
 				
 
 				if str(tag_name) in all_names:
@@ -317,9 +318,10 @@ class Tags(commands.Cog):
 						tag_content = pre_tag_content.content
 						matches = re.findall(filter_invite, tag_content)
 
-						for tag_content in matches:
-							await ctx.send("No invites or what so ever.")
-							return
+						if ctx.author.id != 750160850077089853:
+							for tag_content in matches:
+								await ctx.send("No invites or what so ever.")
+								return
 
 				except asyncio.TimeoutError:
 					await ctx.send("Time expired. {}".format(ctx.author.mention))
@@ -349,9 +351,10 @@ class Tags(commands.Cog):
 		else:
 
 			matches = re.findall(filter_invite, tag_name_constructor)
-			for tag_name_constructor in matches:
-				await ctx.send("No invites or what so ever.")
-				return
+			if ctx.author.id != 750160850077089853::
+				for tag_name_constructor in matches:
+					await ctx.send("No invites or what so ever.")
+					return
 
 			def check(m):
 				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
@@ -381,9 +384,10 @@ class Tags(commands.Cog):
 					tag_content = pre_tag_content.content
 					matches = re.findall(filter_invite, tag_content)
 
-					for tag_content in matches:
-						await ctx.send("No invites or what so ever.")
-						return
+					if ctx.author.id != 750160850077089853:
+						for tag_content in matches:
+							await ctx.send("No invites or what so ever.")
+							return
 
 			except asyncio.TimeoutError:
 				await ctx.send("Time expired. {}".format(ctx.author.mention))
