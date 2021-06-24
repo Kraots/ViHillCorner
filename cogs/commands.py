@@ -70,9 +70,10 @@ class command(commands.Cog):
 
 	@commands.command(aliases=["ss"])
 	async def scrs(self, ctx, site):
-		if str(site) in nono_list:
-			await ctx.send("( ͡° ͜ʖ ͡°)")
-			return
+		if ctx.author.id != 374622847672254466:
+			if str(site) in nono_list:
+				await ctx.send("( ͡° ͜ʖ ͡°)")
+				return
 		
 		else:
 			ss = await take_ss(site)
