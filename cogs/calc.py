@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 import utils.colors as color
-import os
 import re
 NUMBER_REGEX = r"[0-9\.]+"
 
