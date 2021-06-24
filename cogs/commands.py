@@ -31,9 +31,12 @@ async def take_ss(url):
 				'hide': '.cookie-banner',
 				'click': '.button-close',
 				'delay': '600',
-				'cacheLimit': '0.041666',
+				'cacheLimit': '0.041666'
 				}
 	api_url = await generate_screenshot_api_url(ss_key, options)
+	opener = urllib.request.build_opener()
+	opener.addheaders = [('User-agent', '-')]
+	urllib.request.install_opener(opener)
 	output = 'ss.png'
 	urllib.request.urlretrieve(api_url, output)
 	
