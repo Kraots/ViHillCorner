@@ -1,4 +1,4 @@
 /bot.py
 /.env
 /commit.txt
-*/__pycache__
+*.pyc
