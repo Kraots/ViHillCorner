@@ -85,16 +85,12 @@ class MarryCommands(commands.Cog):
 						await collection.insert_many([save_auth, save_mem])
 
 						await ctx.send("`{}` married `{}`!!! :tada: :tada:".format(ctx.author.display_name, member.display_name))
-						e = "`{}` married `{}`!!! :tada: :tada:".format(ctx.author.display_name, member.display_name)
-						await msg.edit(content=e)
-						await msg.clear_reactions()
+						await msg.delete()
 
 
 					elif str(reaction.emoji) == '<:disagree:797537030980239411>':
 						await ctx.send("`{}` does not want to marry with you. {} :pensive: :fist:".format(member.display_name, ctx.author.mention))
-						e = "`{}` does not want to marry with you. {} :pensive: :fist:".format(member.display_name, ctx.author.mention)
-						await msg.edit(content=e)
-						await msg.clear_reactions()
+						await msg.delete()
 
 
 
