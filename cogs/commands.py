@@ -10,9 +10,36 @@ import random
 import sys
 from github import Github
 from utils.helpers import time_phaserr
+import urllib.request
+import urllib.parse
+import hashlib
 
 git_user = os.getenv("github_user")
-git_pass = os.getenv("github_pass") 
+git_pass = os.getenv("github_pass")
+ss_key = os.getenv("SS_KEY")
+
+async def generate_screenshot_api_url(customer_key,  options):
+	api_url = 'https://api.screenshotmachine.com/?key=' + customer_key
+	api_url = api_url + '&' + urllib.parse.urlencode(options)
+	return api_url
+
+async def take_ss(url):
+	options = {
+				'url': str(url),
+				'dimension': '1920x1080',
+				'format': 'png',
+				'hide': '.cookie-banner',
+				'click': '.button-close',
+				'delay': '600',
+				'cacheLimit': '0.041666'
+				}
+	api_url = await generate_screenshot_api_url(ss_key, options)
+	opener = urllib.request.build_opener()
+	opener.addheaders = [('User-agent', '-')]
+	urllib.request.install_opener(opener)
+	output = 'ss.png'
+	urllib.request.urlretrieve(api_url, output)
+	
 
 addd = """
 ୨୧ VIHILL CORNER ୨୧
@@ -48,11 +75,12 @@ class command(commands.Cog):
 			return
 		
 		else:
-			site_url = "http://image.thum.io/get/width/1080/crop/1920/http://{}".format(site)
+			ss = await take_ss(site)
+			f = discord.File(fp='ss.png', filename='ss.png')
 			em = discord.Embed(color=color.lightpink, title="Here's your screen shot of `{}`".format(site))
-			em.set_image(url=site_url)
+			em.set_image(url='attachment://ss.png')
 			em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.avatar_url)
-			await ctx.send(embed=em)
+			await ctx.send(embed=em, file=f)
 
 	@commands.command()
 	async def vote(self, ctx):
