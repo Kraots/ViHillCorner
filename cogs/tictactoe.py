@@ -4,6 +4,7 @@ import asyncio
 import motor.motor_asyncio
 import os
 from utils.games import TicTacToe
+bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
 
 DBKEY = os.getenv('MONGODBKEY')
 
@@ -13,6 +14,8 @@ db = cluster['ViHillCornerDB']['Economy']
 class TTT(commands.Cog):
 	def __init__(self, client):
 		self.client = client
+	async def cog_check(self, ctx):
+		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
 	
 	@commands.command(aliases=['ttt', 'tic-tac-toe'])
 	async def tictactoe(self, ctx, member: discord.Member = None):
