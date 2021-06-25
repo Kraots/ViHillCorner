@@ -48,12 +48,12 @@ class TicTacToe:
 	async def get_move(self, pl):
 		if pl == self.player1:
 			sign = ':x:'
-			Player = self.player2
-			Opponent = self.player1
-		elif pl == self.player2:
-			sign = ':o:'
 			Player = self.player1
 			Opponent = self.player2
+		elif pl == self.player2:
+			sign = ':o:'
+			Player = self.player2
+			Opponent = self.player1
 		self.turns += 1
 		await self.ctx.send(f'{pl.mention} make your move, {sign}\n\n{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}')
 		def check(m):
@@ -65,9 +65,9 @@ class TicTacToe:
 					self.answer = int(answer.content)
 				except:
 					if str(answer.content).lower() in ['forfeit', 'cancel']:
-						await ecoDb.update_one({'_id': Player.id}, {'$inc':{'wallet': 10000}})
-						await ecoDb.update_one({'_id': Opponent.id}, {'$inc':{'wallet': -10000}})
-						raise Exception(f"**{Opponent.display_name}** Has forfeit.\n\n{Player.mention} Won 10,000 <:carrots:822122757654577183>!\n{Opponent.mention} Lost 10,000 <:carrots:822122757654577183>!")
+						await ecoDb.update_one({'_id': Opponent.id}, {'$inc':{'wallet': 10000}})
+						await ecoDb.update_one({'_id': Player.id}, {'$inc':{'wallet': -10000}})
+						raise Exception(f"**{Player.display_name}** Has forfeit.\n\n{Opponent.mention} Won **10,000** <:carrots:822122757654577183>!\n{Player.mention} Lost **10,000** <:carrots:822122757654577183>!")
 					await answer.reply(content='Must be a number between **1-9**')
 				else:
 					if 0 >= self.answer or self.answer >= 10:
@@ -100,7 +100,7 @@ class TicTacToe:
 			if self.check_win() == True:
 				await ecoDb.update_one({'_id': player.id}, {'$inc':{'wallet': 10000}})
 				await ecoDb.update_one({'_id': opponent.id}, {'$inc':{'wallet': -10000}})
-				await self.ctx.send(f"{player.mention} Won 10,000 <:carrots:822122757654577183>!\n{opponent.mention} Lost 10,000 <:carrots:822122757654577183>!\n\n{_board}")
+				await self.ctx.send(f"{player.mention} Won **10,000** <:carrots:822122757654577183>!\n{opponent.mention} Lost **10,000** <:carrots:822122757654577183>!\n\n{_board}")
 				return
 			elif self.turns == 9:
 				await self.ctx.send(f"It's a draw. {player.mention} {opponent.mention}\n\n{_board}")
@@ -111,7 +111,7 @@ class TicTacToe:
 			if self.check_win() == True:
 				await ecoDb.update_one({'_id': opponent.id}, {'$inc':{'wallet': 10000}})
 				await ecoDb.update_one({'_id': player.id}, {'$inc':{'wallet': -10000}})
-				await self.ctx.send(f"{opponent.mention} Won 10,000 <:carrots:822122757654577183>!\n{player.mention} Lost 10,000 <:carrots:822122757654577183>!\n\n{_board}")
+				await self.ctx.send(f"{opponent.mention} Won **10,000** <:carrots:822122757654577183>!\n{player.mention} Lost **10,000** <:carrots:822122757654577183>!\n\n{_board}")
 				return
 			elif self.turns == 9:
 				await self.ctx.send(f"It's a draw. {player.mention} {opponent.mention}\n\n{_board}")
