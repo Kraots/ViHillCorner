@@ -487,7 +487,7 @@ class EcoCommands(commands.Cog):
 			# GIVE
 
 
-	@commands.command()
+	@commands.command(aliases=['gift'])
 	async def give(self, ctx, member : discord.Member, amount = None):
 		
 		results = await collection.find_one({"_id": ctx.author.id})
@@ -522,14 +522,39 @@ class EcoCommands(commands.Cog):
 				await ctx.send('You cannot give less than `100` <:carrots:822122757654577183> .')
 				return
 
-			await collection.update_one({"_id": author.id}, {"$inc":{"wallet": -amount}})
-			await collection.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
+			def check(reaction, user):
+				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
 
-			await ctx.send("You gave **{:,}** <:carrots:822122757654577183>  to `{}`.".format(amount, member.name))
+			msg = await ctx.send(f"{ctx.author.mention} wants to give you some money. Do you accept them {member.mention}?")
+			await msg.add_reaction('<:agree:797537027469082627>')
+			await msg.add_reaction('<:disagree:797537030980239411>')
+
+			try:
+				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
+			except asyncio.TimeoutError:
+				new_msg = f"{member.mention} Did not react in time."
+				await msg.edit(content=new_msg)
+				await msg.clear_reactions()
+				return
+			
+			else:
+				if str(reaction.emoji) == '<:agree:797537027469082627>':
+					await collection.update_one({"_id": author.id}, {"$inc":{"wallet": -amount}})
+					await collection.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
+					e = f"{member.mention} accepted and got {amount:,} <:carrots:822122757654577183> from {ctx.author.mention}."
+					await msg.edit(content=e)
+					await msg.clear_reactions()
+					return
+				
+				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+					e = f"{member.mention} did not accept your <:carrots:822122757654577183>. {ctx.author.mention}"
+					await msg.edit(content=e)
+					await msg.clear_reactions()
+					return
 
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register.")
-			ctx.command.reset_cooldown(ctx)
 			return
 			
 
