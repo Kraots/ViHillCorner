@@ -577,7 +577,7 @@ class Help(commands.Cog):
 		embed.add_field(name="***Info:***", value="• Bet your money in the slots machine!", inline=False)
 		await ctx.send(embed=embed)
 
-	@help.command()
+	@help.command(aliases=['gift'])
 	async def give(self, ctx):
 		embed = discord.Embed(title="***Usage:***", description="```CSS\n!give [user] [amount]```", color=color.lightpink)
 		embed.add_field(name="***Info:***", value="• Be a kind person and give some of your money from ur bank to someone else's!", inline=False)

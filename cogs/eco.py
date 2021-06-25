@@ -1113,26 +1113,6 @@ class EcoCommands(commands.Cog):
 		elif isinstance(error, commands.errors.MissingRequiredArgument):
 				ctx.command.reset_cooldown(ctx)
 
-	@deposit.error
-	async def dep_error(self, ctx, error):
-		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid amount! Please deposit numbers only! %s" % (ctx.author.mention))
-
-	@withdraw.error
-	async def with_error(self, ctx, error):
-		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid amount! Please deposit numbers only! %s" % (ctx.author.mention))
-
-	@give.error
-	async def give_error(self, ctx, error):
-		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid amount! Please deposit numbers only! %s" % (ctx.author.mention))
-
-
-
-
-
-
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
