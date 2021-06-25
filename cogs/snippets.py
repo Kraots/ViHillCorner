@@ -180,8 +180,8 @@ class Snippets(commands.Cog):
 							await ctx.send("You cannot do that anymore hoe ;))")
 							return
 
-				if len(snippet_name) >= 35:
-					await ctx.send("Snippet's name cannot be that long! Max is: `35`")
+				if len(snippet_name) >= 50:
+					await ctx.send("Snippet's name cannot be that long! Max is: `50`")
 					return
 
 				elif len(snippet_name) < 3:
@@ -244,8 +244,8 @@ class Snippets(commands.Cog):
 						await ctx.send("You cannot do that anymore hoe ;))")
 						return
 
-			if len(get_snippet_name) >= 35:
-					await ctx.send("Snippet's name cannot be that long! Max is: `35`")
+			if len(get_snippet_name) >= 50:
+					await ctx.send("Snippet's name cannot be that long! Max is: `50`")
 					return
 			
 			elif len(get_snippet_name) < 3:

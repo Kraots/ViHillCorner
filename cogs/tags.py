@@ -293,8 +293,8 @@ class Tags(commands.Cog):
 					await ctx.send("Tag name already taken.")
 					return
 				
-				elif len(tag_name) >= 35:
-					await ctx.send("Tag's name canot be longer than `35` characters!")
+				elif len(tag_name) >= 75:
+					await ctx.send("Tag's name canot be longer than `75` characters!")
 					return
 				
 				elif len(tag_name) < 2:
@@ -363,8 +363,8 @@ class Tags(commands.Cog):
 				await ctx.send("Tag name already taken.")
 				return
 			
-			elif len(tag_name_constructor) >= 35:
-				await ctx.send("Tag's name canot be longer than `35` characters!")
+			elif len(tag_name_constructor) >= 75:
+				await ctx.send("Tag's name canot be longer than `75` characters!")
 				return
 			elif len(tag_name_constructor) < 2:
 					await ctx.send("Tag's name cannot be less than `2` characters long!")
