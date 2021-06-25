@@ -2,6 +2,7 @@ import asyncio
 import random
 import motor.motor_asyncio
 import os
+import discord
 
 DBKEY = os.getenv('MONGODBKEY')
 
@@ -55,7 +56,8 @@ class TicTacToe:
 			Player = self.player2
 			Opponent = self.player1
 		self.turns += 1
-		await self.ctx.send(f'{pl.mention} make your move, {sign}\n\n{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}')
+		em = discord.Embed(description=f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}")
+		await self.ctx.send(f'{pl.mention} make your move, {sign}\n', embed=em)
 		def check(m):
 			return m.channel == self.ctx.channel and m.author == pl
 		try:
@@ -96,23 +98,23 @@ class TicTacToe:
 		
 		while True:
 			await self.get_move(player)
-			_board = f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}"
+			em = discord.Embed(description=f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}")
 			if self.check_win() == True:
 				await ecoDb.update_one({'_id': player.id}, {'$inc':{'wallet': 10000}})
 				await ecoDb.update_one({'_id': opponent.id}, {'$inc':{'wallet': -10000}})
-				await self.ctx.send(f"{player.mention} Won **10,000** <:carrots:822122757654577183>!\n{opponent.mention} Lost **10,000** <:carrots:822122757654577183>!\n\n{_board}")
+				await self.ctx.send(f"{player.mention} Won **10,000** <:carrots:822122757654577183>!\n{opponent.mention} Lost **10,000** <:carrots:822122757654577183>!\n\n", embed=em)
 				return
 			elif self.turns == 9:
-				await self.ctx.send(f"It's a draw. {player.mention} {opponent.mention}\n\n{_board}")
+				await self.ctx.send(f"It's a draw. {player.mention} {opponent.mention}\n", embed=em)
 				return
 			
 			await self.get_move(opponent)
-			_board = f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}"
+			em = discord.Embed(description=f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}")
 			if self.check_win() == True:
 				await ecoDb.update_one({'_id': opponent.id}, {'$inc':{'wallet': 10000}})
 				await ecoDb.update_one({'_id': player.id}, {'$inc':{'wallet': -10000}})
-				await self.ctx.send(f"{opponent.mention} Won **10,000** <:carrots:822122757654577183>!\n{player.mention} Lost **10,000** <:carrots:822122757654577183>!\n\n{_board}")
+				await self.ctx.send(f"{opponent.mention} Won **10,000** <:carrots:822122757654577183>!\n{player.mention} Lost **10,000** <:carrots:822122757654577183>!\n\n", embed=em)
 				return
 			elif self.turns == 9:
-				await self.ctx.send(f"It's a draw. {player.mention} {opponent.mention}\n\n{_board}")
+				await self.ctx.send(f"It's a draw. {player.mention} {opponent.mention}\n", embed=em)
 				return
