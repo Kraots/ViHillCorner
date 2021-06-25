@@ -60,7 +60,7 @@ class TicTacToe:
 			return m.channel == self.ctx.channel and m.author == pl
 		try:
 			while True:
-				answer = await self.bot.wait_for('message', check=check, timeout=10)
+				answer = await self.bot.wait_for('message', check=check, timeout=180)
 				try:
 					self.answer = int(answer.content)
 				except:
