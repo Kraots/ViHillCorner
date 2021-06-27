@@ -86,8 +86,8 @@ class Snippets(commands.Cog):
 		
 		await ctx.send(embed=em)
 
-	@snippet.command()
-	async def list(self, ctx, member: discord.Member = None):
+	@snippet.command(aliases=['list'])
+	async def _list(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
 		entries = collection.find({'snippet_credits': member.id})
@@ -154,7 +154,7 @@ class Snippets(commands.Cog):
 				return await ctx.reply("Ran out of time")
 
 		data = {}
-		results = collection.find_one({'_id': snippet_name.lower()})
+		results = collection.find({'_id': snippet_name.lower()})
 		for i in results:
 			data = i
 		if len(data) > 0:
@@ -216,7 +216,7 @@ class Snippets(commands.Cog):
 			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
 
 		data = {}
-		results = collection.find_one({'_id': snippet_name.lower})
+		results = collection.find({'_id': snippet_name.lower})
 		for i in results:
 			data = i
 		if len(data) > 0:
@@ -260,7 +260,7 @@ class Snippets(commands.Cog):
 	@commands.is_owner()
 	async def remove(self, ctx, *, snippet_name : str = None):
 		data = {}
-		results = collection.find_one({'_id': snippet_name.lower()})
+		results = collection.find({'_id': snippet_name.lower()})
 		for i in results:
 			data = i
 		if len(data) == 0:
@@ -293,7 +293,7 @@ class Snippets(commands.Cog):
 		snippet_name = "".join(presnippet_name.split(";", 1))
 		
 		data = {}
-		results = collection.find_one({'_id': snippet_name})
+		results = collection.find({'_id': snippet_name})
 		for i in results:
 			data = i
 		if len(data) == 0:
