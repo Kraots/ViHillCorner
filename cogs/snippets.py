@@ -100,7 +100,7 @@ class Snippets(commands.Cog):
 	@snippet.command()
 	async def info(self, ctx, *, snippet_name : str = None):
 		if snippet_name is None:
-			return await ctx.reply("**!snippet info <snippet_name>***")
+			return await ctx.reply("**!snippet info <snippet_name>**")
 		results = collection.find({}).sort([('uses_count', -1)])
 		index = 0
 		for result in results:
