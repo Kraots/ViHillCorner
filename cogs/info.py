@@ -21,7 +21,7 @@ class info(commands.Cog):
 		mention_list = []
 
 		if members == None:
-			msg = await ctx.send(embed=sfw)
+			msg = await ctx.send(embed=sfw, reference=ctx.replied_reference)
 
 		else:
 			for member in members:
@@ -30,7 +30,7 @@ class info(commands.Cog):
 				mention_list.append(a)
 				mentions = " ".join(mention_list)
 			
-			msg = await ctx.send(mentions, embed=sfw)
+			msg = await ctx.send(mentions, embed=sfw, reference=ctx.replied_reference)
 		await msg.add_reaction('🗑️')
 
 	@commands.command(aliases=['lvlinfo', 'levelinfo', 'lvl-info', 'level-info', 'howtolvl', 'howtolevel'])
@@ -40,7 +40,7 @@ class info(commands.Cog):
 		mention_list = []
 
 		if members == None:
-			msg = await ctx.send(embed=lvl)
+			msg = await ctx.send(embed=lvl, reference=ctx.replied_reference)
 
 		else:
 			for member in members:
@@ -49,7 +49,7 @@ class info(commands.Cog):
 				mention_list.append(a)
 				mentions = " ".join(mention_list)
 			
-			msg = await ctx.send(mentions, embed=lvl)
+			msg = await ctx.send(mentions, embed=lvl, reference=ctx.replied_reference)
 		await msg.add_reaction('🗑️')
 
 	@commands.command(aliases=['rankinfo', 'rank-info', 'rankcheck'])
@@ -59,7 +59,7 @@ class info(commands.Cog):
 		mention_list = []
 
 		if members == None:
-			msg = await ctx.send(embed=rank)
+			msg = await ctx.send(embed=rank, reference=ctx.replied_reference)
 
 		else:
 			for member in members:
@@ -68,7 +68,7 @@ class info(commands.Cog):
 				mention_list.append(a)
 				mentions = " ".join(mention_list)
 			
-			msg = await ctx.send(mentions, embed=rank)
+			msg = await ctx.send(mentions, embed=rank, reference=ctx.replied_reference)
 		await msg.add_reaction('🗑️')
 
 	@commands.command()
@@ -78,7 +78,7 @@ class info(commands.Cog):
 		mention_list = []
 
 		if members == None:
-			msg = await ctx.send(embed=em)
+			msg = await ctx.send(embed=em, reference=ctx.replied_reference)
 
 		else:
 			for member in members:
@@ -87,7 +87,7 @@ class info(commands.Cog):
 				mention_list.append(a)
 				mentions = " ".join(mention_list)
 			
-			msg = await ctx.send(mentions, embed=em)
+			msg = await ctx.send(mentions, embed=em, reference=ctx.replied_reference)
 		await msg.add_reaction('🗑️')
 
 
@@ -98,7 +98,7 @@ class info(commands.Cog):
 		mention_list = []
 
 		if members == None:
-			msg = await ctx.send(embed=em)
+			msg = await ctx.send(embed=em, reference=ctx.replied_reference)
 
 		else:
 			for member in members:
@@ -107,7 +107,7 @@ class info(commands.Cog):
 				mention_list.append(a)
 				mentions = " ".join(mention_list)
 			
-			msg = await ctx.send(mentions, embed=em)
+			msg = await ctx.send(mentions, embed=em, reference=ctx.replied_reference)
 		await msg.add_reaction('🗑️')
 
 
@@ -118,7 +118,7 @@ class info(commands.Cog):
 		mention_list = []
 
 		if members == None:
-			msg = await ctx.send(embed=em)
+			msg = await ctx.send(embed=em, reference=ctx.replied_reference)
 
 		else:
 			for member in members:
@@ -127,7 +127,7 @@ class info(commands.Cog):
 				mention_list.append(a)
 				mentions = " ".join(mention_list)
 			
-			msg = await ctx.send(mentions, embed=em)
+			msg = await ctx.send(mentions, embed=em, reference=ctx.replied_reference)
 		await msg.add_reaction('🗑️')
 
 
@@ -138,7 +138,7 @@ class info(commands.Cog):
 		mention_list = []
 
 		if members == None:
-			msg = await ctx.send(embed=em)
+			msg = await ctx.send(embed=em, reference=ctx.replied_reference)
 
 		else:
 			for member in members:
@@ -147,7 +147,7 @@ class info(commands.Cog):
 				mention_list.append(a)
 				mentions = " ".join(mention_list)
 			
-			msg = await ctx.send(mentions, embed=em)
+			msg = await ctx.send(mentions, embed=em, reference=ctx.replied_reference)
 		await msg.add_reaction('🗑️')
 
 	@commands.command(aliases=['attachments', 'videos', 'links', 'files'])
@@ -157,7 +157,7 @@ class info(commands.Cog):
 		mention_list = []
 
 		if members == None:
-			msg = await ctx.send(embed=em)
+			msg = await ctx.send(embed=em, reference=ctx.replied_reference)
 
 		else:
 			for member in members:
@@ -166,7 +166,7 @@ class info(commands.Cog):
 				mention_list.append(a)
 				mentions = " ".join(mention_list)
 			
-			msg = await ctx.send(mentions, embed=em)
+			msg = await ctx.send(mentions, embed=em, reference=ctx.replied_reference)
 		await msg.add_reaction('🗑️')
 
 
