@@ -214,7 +214,7 @@ class Snippets(commands.Cog):
 		results = collection.find({'_id': snippet_name.lower()})
 		for i in results:
 			data = i
-		if len(data) > 0:
+		if len(data) == 0:
 			return await ctx.send("Snippet `%s` does not exist! %s" % (snippet_name, ctx.author.mention))
 
 		if ctx.author.id != 374622847672254466:
