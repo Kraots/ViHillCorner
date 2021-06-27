@@ -211,7 +211,7 @@ class Snippets(commands.Cog):
 			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
 
 		data = {}
-		results = collection.find({'_id': snippet_name.lower})
+		results = collection.find({'_id': snippet_name.lower()})
 		for i in results:
 			data = i
 		if len(data) > 0:
