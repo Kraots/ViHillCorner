@@ -101,42 +101,37 @@ class Snippets(commands.Cog):
 	async def info(self, ctx, *, snippet_name : str = None):
 		if snippet_name is None:
 			return await ctx.reply("**!snippet info <snippet_name>**")
-		results = collection.find({}).sort([('uses_count', -1)])
-		index = 0
-		for result in results:
-			snippet_namee = result['_id']
-			string1 = f"{index} {snippet_namee}"
-			string2 = f"{index} {snippet_name.lower()}"
-			if string1 == string2:
-				index = index
+		
+		data = {}
+		get_data = collection.find({'_id': snippet_name.lower()})
+		for i in get_data:
+			data = i
+		
+		if len(data) == 0:
+			return await ctx.send("Snippet **%s** does not exist! %s" % (snippet_name, ctx.author.mention))
+
+		sortSnippets = collection.find({}).sort([('uses_count', -1)])
+		rank = 0
+		for e in sortSnippets:
+			if e['_id'] == data['_id']:
 				break
-			else:
-				index += 1
+			rank += 1
 
-		else:
-			data = {}
-			get_data = collection.find({'_id': snippet_name.lower()})
-			for i in get_data:
-				data = i
-			
-			if len(data) == 0:
-				return await ctx.send("Snippet **%s** does not exist! %s" % (snippet_name, ctx.author.mention))
+		snippet_name = data['_id']
+		snippet_owner_id = data['snippet_credits']
+		snippet_uses = data['uses_count']
+		snippet_created_at = data['created_at']
 
-			snippet_name = data['_id']
-			snippet_owner_id = data['snippet_credits']
-			snippet_uses = data['uses_count']
-			snippet_created_at = data['created_at']
+		snippet_owner = self.client.get_user(snippet_owner_id)
 
-			snippet_owner = self.client.get_user(snippet_owner_id)
+		em = discord.Embed(color=color.reds, title=snippet_name)
+		em.set_author(name=snippet_owner, url=snippet_owner.avatar_url, icon_url=snippet_owner.avatar_url)
+		em.add_field(name="Owner", value=snippet_owner.mention)
+		em.add_field(name="Uses", value=snippet_uses)
+		em.add_field(name="Rank", value="`#{}`".format(rank))
+		em.set_footer(text="Snippet created at • {}".format(snippet_created_at))
 
-			em = discord.Embed(color=color.reds, title=snippet_name)
-			em.set_author(name=snippet_owner, url=snippet_owner.avatar_url, icon_url=snippet_owner.avatar_url)
-			em.add_field(name="Owner", value=snippet_owner.mention)
-			em.add_field(name="Uses", value=snippet_uses)
-			em.add_field(name="Rank", value="`#{}`".format(index))
-			em.set_footer(text="Snippet created at • {}".format(snippet_created_at))
-
-			await ctx.send(embed=em)
+		await ctx.send(embed=em)
 
 
 

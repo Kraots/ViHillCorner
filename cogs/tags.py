@@ -124,51 +124,50 @@ class Tags(commands.Cog):
 		if tag_name is None:
 			return await ctx.reply("**!tag info <tag_name>**")
 
-		else:
-			data = {}
-			results_name = collection.find({'the_tag_name': tag_name.lower()})
-			for e in results_name:
-				data = e
-			if len(data) == 0:
-				try:
-					results_id = collection.find({'_id': int(tag_name)})
-					for e in results_id:
-						data = e
-				except ValueError:
-					pass
-			if len(data) == 0:
-				results_aliases = collection.find({'aliases': tag_name.lower()})
-				for e in results_aliases:
+		data = {}
+		results_name = collection.find({'the_tag_name': tag_name.lower()})
+		for e in results_name:
+			data = e
+		if len(data) == 0:
+			try:
+				results_id = collection.find({'_id': int(tag_name)})
+				for e in results_id:
 					data = e
+			except ValueError:
+				pass
+		if len(data) == 0:
+			results_aliases = collection.find({'aliases': tag_name.lower()})
+			for e in results_aliases:
+				data = e
+		
+		if len(data) == 0:
+			return await ctx.send("Tag **%s** does not exist. %s" % (tag_name, ctx.author.mention))
 			
-			if len(data) == 0:
-				return await ctx.send("Tag **%s** does not exist. %s" % (tag_name, ctx.author.mention))
-				
-			sortTags = collection.find({}).sort([('uses_count', -1)])
-			rank = 0
-			for i in sortTags:
-				if i['_id'] == data['_id']:
-					break
-				
-				rank += 1
+		sortTags = collection.find({}).sort([('uses_count', -1)])
+		rank = 0
+		for i in sortTags:
+			if i['_id'] == data['_id']:
+				break
 			
-			tag_name = data["the_tag_name"]
-			tag_owner_id = data["tag_owner_id"]
-			tag_uses = data["uses_count"]
-			tag_created_at = data["created_at"]
-			the_tag_id = data["_id"]
+			rank += 1
+		
+		tag_name = data["the_tag_name"]
+		tag_owner_id = data["tag_owner_id"]
+		tag_uses = data["uses_count"]
+		tag_created_at = data["created_at"]
+		the_tag_id = data["_id"]
 
-			tag_owner = self.client.get_user(tag_owner_id)
+		tag_owner = self.client.get_user(tag_owner_id)
 
-			em = discord.Embed(color=color.blue, title=tag_name)
-			em.set_author(name=tag_owner, url=tag_owner.avatar_url, icon_url=tag_owner.avatar_url)
-			em.add_field(name="Owner", value=tag_owner.mention)
-			em.add_field(name="Uses", value=tag_uses)
-			em.add_field(name="Rank", value=f"`#{rank}`")
-			em.add_field(name="Tag ID",value="`{}`".format(the_tag_id), inline= False)
-			em.set_footer(text="Tag created at • {}".format(tag_created_at))
+		em = discord.Embed(color=color.blue, title=tag_name)
+		em.set_author(name=tag_owner, url=tag_owner.avatar_url, icon_url=tag_owner.avatar_url)
+		em.add_field(name="Owner", value=tag_owner.mention)
+		em.add_field(name="Uses", value=tag_uses)
+		em.add_field(name="Rank", value=f"`#{rank}`")
+		em.add_field(name="Tag ID",value="`{}`".format(the_tag_id), inline= False)
+		em.set_footer(text="Tag created at • {}".format(tag_created_at))
 
-			await ctx.send(embed=em)
+		await ctx.send(embed=em)
 
 	@tag.group(aliases=['alias', 'aliases'], invoke_without_command=True, case_insensitive=True, ignore_extra = False)
 	async def _aliases(self, ctx, *, tag : str = None):
@@ -488,7 +487,7 @@ class Tags(commands.Cog):
 			return await ctx.send("That tag does not exist. %s" % (ctx.author.mention))
 		if ctx.author.id != 374622847672254466:
 			if ctx.author.id != data['tag_owner_id']:
-				return await ctx.send("You do not own the tag **%s**! %s" (data['the_tag_name'], ctx.author.mention))
+				return await ctx.send("You do not own the tag **%s**! %s" % (data['the_tag_name'], ctx.author.mention))
 
 		def check(reaction, user):
 			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
