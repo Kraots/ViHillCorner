@@ -41,8 +41,7 @@ class Tags(commands.Cog):
 	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra = False)
 	async def tag(self, ctx, *, tag_name: str = None):
 		if tag_name is None:
-			await ctx.send("`!tag <tag_name>`")
-			return
+			return await ctx.reply("**!tag <tag_name>**")
 		data = {}
 
 		get_by_name = collection.find({'the_tag_name': tag_name.lower()})
@@ -123,8 +122,7 @@ class Tags(commands.Cog):
 	@tag.command()
 	async def info(self, ctx, *, tag_name : str = None):
 		if tag_name is None:
-			await ctx.send("`!tag info <tag_name>`")
-			return
+			return await ctx.reply("**!tag info <tag_name>**")
 
 		else:
 			data = {}
@@ -175,7 +173,7 @@ class Tags(commands.Cog):
 	@tag.group(aliases=['alias', 'aliases'], invoke_without_command=True, case_insensitive=True, ignore_extra = False)
 	async def _aliases(self, ctx, *, tag : str = None):
 		if tag is None:
-			return await ctx.send("You must give the tag's name. %s" % (ctx.author.mention))
+			return await ctx.reply("You must give the tag's name. %s" % (ctx.author.mention))
 		
 		try:
 			tag = int(tag)
@@ -239,7 +237,7 @@ class Tags(commands.Cog):
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
 	async def _create(self, ctx, *, tag : str = None):
 		if tag is None:
-			return await ctx.send("You must give the tag's name. %s" % (ctx.author.mention))
+			return await ctx.reply("You must give the tag's name. %s" % (ctx.author.mention))
 
 		all_names = []
 		names = collection.find()
@@ -342,7 +340,7 @@ class Tags(commands.Cog):
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
 	async def _delete(self, ctx, *, alias: str = None):
 		if alias is None:
-			return await ctx.send("You must specify the name of the alias you wish to delete. %s" % (ctx.author.mention))
+			return await ctx.reply("You must specify the name of the alias you wish to delete. %s" % (ctx.author.mention))
 		results = collection.find({'aliases': alias.lower()})
 		try:
 			for result in results:
@@ -393,8 +391,8 @@ class Tags(commands.Cog):
 
 	@tag.command(aliases=['make', 'add'])
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")	
-	async def create(self, ctx, *, tag_name_constructor : str = None):
-		if tag_name_constructor is None:
+	async def create(self, ctx, *, tag_name : str = None):
+		if tag_name is None:
 			def check(m):
 				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
@@ -402,144 +400,72 @@ class Tags(commands.Cog):
 
 			try:
 				pre_tag = await self.client.wait_for('message', timeout=180, check=check)
-				tag_name = pre_tag.content.lower()
-				matches = re.findall(filter_invite, tag_name)
+				tag_name = pre_tag.content
 
-				if ctx.author.id != 374622847672254466:
-					for tag_name in matches:
-						await ctx.send("No invites or what so ever.")
-						return
-				
-				results = collection.find_one({'the_tag_name': str(tag_name).lower()})
-				data = {}
-				for i in results:
-					data = i
-
-				if len(data) > 0:
-					await ctx.send("Tag name already taken.")
-					return
-				
-				elif len(tag_name) >= 75:
-					await ctx.send("Tag's name cannot be longer than `75` characters!")
-					return
-				
-				elif len(tag_name) < 2:
-					await ctx.send("Tag's name cannot be less than `2` characters long!")
-					return
-					
-				elif tag_name.isnumeric():
-					await ctx.send("Tag name cannot be a number!")
-					return
 			except asyncio.TimeoutError:
-				await ctx.send("Time expired. {}".format(ctx.author.mention))
+				return await ctx.reply("Ran out of time.")
 
-			else:
-				await ctx.send("Please send the tag's content. {}".format(ctx.author.mention))
-				try:
-					pre_tag_content = await self.client.wait_for('message', timeout=420, check=check)
-					if pre_tag_content.attachments:
-						await ctx.send("Tag cannot contain attachments!")
-						return					
-					else:
-						tag_content = pre_tag_content.content
-						matches = re.findall(filter_invite, tag_content)
+		matches = re.findall(filter_invite, tag_name)
+		if ctx.author.id != 374622847672254466:
+			for tag_name in matches:
+				await ctx.send("No invites or what so ever.")
+				return
 
-						if ctx.author.id != 374622847672254466:
-							for tag_content in matches:
-								await ctx.send("No invites or what so ever.")
-								return
+		results = collection.find_one({'the_tag_name': str(tag_name).lower()})
+		data = {}
+		for i in results:
+			data = i
 
-				except asyncio.TimeoutError:
-					await ctx.send("Time expired. {}".format(ctx.author.mention))
-					return
-				
-				else:
-					get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-					get_sorted = collection.find({}).sort([("_id", -1)]).limit(1)
-					
-					for x in get_sorted:
-						last_id = x['_id']
-					
-					post = {"_id": last_id + 1,
-							"tag_content": tag_content, 
-							"tag_owner_id": ctx.author.id, 
-							"the_tag_name": tag_name.lower(), 
-							"created_at": get_time, "uses_count": 0
-							}
-					
-					collection.insert_one(post)
-					
-					await ctx.send("Tag `{}` Successfully created!".format(tag_name))
+		if len(data) > 0:
+			await ctx.send("Tag name already taken.")
+			return
+		
+		elif len(tag_name) >= 75:
+			await ctx.send("Tag's name cannot be longer than `75` characters!")
+			return
+		elif len(tag_name) < 2:
+				await ctx.send("Tag's name cannot be less than `2` characters long!")
+				return
+		elif tag_name.isnumeric():
+			await ctx.send("Tag name cannot be a number!")
 			return
 
-
-
-		else:
-
-			matches = re.findall(filter_invite, tag_name_constructor)
-			if ctx.author.id != 374622847672254466:
-				for tag_name_constructor in matches:
-					await ctx.send("No invites or what so ever.")
-					return
-
-			def check(m):
-				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
-
-			results = collection.find_one({'the_tag_name': str(tag_name_constructor).lower()})
-			data = {}
-			for i in results:
-				data = i
-
-			if len(data) > 0:
-				await ctx.send("Tag name already taken.")
-				return
-			
-			elif len(tag_name_constructor) >= 75:
-				await ctx.send("Tag's name cannot be longer than `75` characters!")
-				return
-			elif len(tag_name_constructor) < 2:
-					await ctx.send("Tag's name cannot be less than `2` characters long!")
-					return
-			elif tag_name_constructor.isnumeric():
-				await ctx.send("Tag name cannot be a number!")
-				return
-
-			await ctx.send("Please send the tag's content. {}".format(ctx.author.mention))
-			
-			try:
-				pre_tag_content = await self.client.wait_for('message', timeout=420, check=check)
-				if pre_tag_content.attachments:
-					await ctx.send("Tag cannot contain attachments!")
-					return					
-				else:
-					tag_content = pre_tag_content.content
-					matches = re.findall(filter_invite, tag_content)
-
-					if ctx.author.id != 374622847672254466:
-						for tag_content in matches:
-							await ctx.send("No invites or what so ever.")
-							return
-
-			except asyncio.TimeoutError:
-				await ctx.send("Time expired. {}".format(ctx.author.mention))
-				return
-			
+		await ctx.send("Please send the tag's content. {}".format(ctx.author.mention))
+		
+		try:
+			pre_tag_content = await self.client.wait_for('message', timeout=420, check=check)
+			if pre_tag_content.attachments:
+				await ctx.send("Tag cannot contain attachments!")
+				return					
 			else:
-				get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-				get_sorted = collection.find({}).sort([("_id", -1)]).limit(1)
-				for x in get_sorted:
-					last_id = x['_id']
+				tag_content = pre_tag_content.content
+				matches = re.findall(filter_invite, tag_content)
 
-				post = {"_id": last_id + 1,
-						"tag_content": tag_content, 
-						"tag_owner_id": ctx.author.id, 
-						"the_tag_name": tag_name_constructor.lower(), 
-						"created_at": get_time, "uses_count": 0
-						}
-					
-				collection.insert_one(post)
+				if ctx.author.id != 374622847672254466:
+					for tag_content in matches:
+						await ctx.send("No invites or what so ever.")
+						return
+
+		except asyncio.TimeoutError:
+			return await ctx.reply("Ran out of time.")
+		
+		else:
+			get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
+			get_sorted = collection.find({}).sort([("_id", -1)]).limit(1)
+			for x in get_sorted:
+				last_id = x['_id']
+
+			post = {"_id": last_id + 1,
+					"tag_content": tag_content, 
+					"tag_owner_id": ctx.author.id, 
+					"the_tag_name": tag_name.lower(), 
+					"created_at": get_time, 
+					"uses_count": 0
+					}
 				
-				await ctx.send("Tag `{}` Successfully created!".format(tag_name_constructor))
+			collection.insert_one(post)
+			
+			await ctx.send("Tag `{}` Successfully created!".format(tag_name))
 
 
 
@@ -548,8 +474,7 @@ class Tags(commands.Cog):
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
 	async def delete(self, ctx, *, tag_name: str = None):
 		if tag_name is None:
-			await ctx.send("`!tag delete <tag_name>`")
-			return
+			return await ctx.reply("**!tag delete <tag_name>**")
 		
 		data = {}
 		results = collection.find({'the_tag_name': tag_name.lower()})
@@ -603,8 +528,7 @@ class Tags(commands.Cog):
 	@commands.is_owner()
 	async def remove(self, ctx, *, tag_name: str = None):
 		if tag_name is None:
-			await ctx.send("`!tag remove <tag_name>`")
-			return
+			return await ctx.reply("**!tag remove <tag_name>**")
 		
 		data = {}
 		results = collection.find({'the_tag_name': tag_name.lower()})

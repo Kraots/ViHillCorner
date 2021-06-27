@@ -99,21 +99,19 @@ class Snippets(commands.Cog):
 
 	@snippet.command()
 	async def info(self, ctx, *, snippet_name : str = None):
+		if snippet_name is None:
+			return await ctx.reply("**!snippet info <snippet_name>***")
 		results = collection.find({}).sort([('uses_count', -1)])
-		index2 = 1
+		index = 0
 		for result in results:
 			snippet_namee = result['_id']
-			string1 = f"{index2} {snippet_namee}"
-			string2 = f"{index2} {snippet_name.lower()}"
+			string1 = f"{index} {snippet_namee}"
+			string2 = f"{index} {snippet_name.lower()}"
 			if string1 == string2:
-				index = index2
+				index = index
 				break
 			else:
-				index2 += 1
-
-		if snippet_name is None:
-			await ctx.send("`!snippet info <snippet_name>`")
-			return
+				index += 1
 
 		else:
 			data = {}
@@ -144,222 +142,118 @@ class Snippets(commands.Cog):
 
 	@snippet.command(aliases=['make', 'add'])
 	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
-	async def create(self, ctx, *, get_snippet_name : str = None):
-
-		if get_snippet_name is None:
+	async def create(self, ctx, *, snippet_name : str = None):
+		if snippet_name is None:
 			def check(m):
 				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 			await ctx.send("What do you want to name this snippet?")
 			try:
-				presnippet_name = await self.client.wait_for('message', timeout = 60, check=check)
-				snippet_name = presnippet_name.content.lower()
-				data = {}
-				results = collection.find_one({'_id': snippet_name})
-				for i in results:
-					data = i
-				if len(data) > 0:
-					return await ctx.send("Snippet name (`%s`) is already taken. %s" % (snippet_name, ctx.author.mention))
-				for x in ['kraots', 'carrots', 'carots', 'carot', 'carrot']:
-					if x in snippet_name:
-						if ctx.author.id != 374622847672254466:
-							return await ctx.send("You cannot create a snippet with that name. %s" % (ctx.author.mention))
-
-				if len(snippet_name) >= 50:
-					await ctx.send("Snippet's name cannot be that long! Max is: `50`")
-					return
-
-				elif len(snippet_name) < 3:
-					await ctx.send("Snippet's name cannot be less than `3` characters long!")
-					return
-
-				elif snippet_name.isnumeric():
-					await ctx.send("Snippet name cannot be a number!")
-					return
-				
-				elif snippet_name in nono_names:
-					await ctx.send("That names are invalid! Reason: `They are used in other commands, actions, to be more specific.`")
-					return
-
+				presnippet_name = await self.client.wait_for('message', timeout = 120, check=check)
+				snippet_name = presnippet_name.content
 			except asyncio.TimeoutError:
+				return await ctx.reply("Ran out of time")
+
+		data = {}
+		results = collection.find_one({'_id': snippet_name.lower()})
+		for i in results:
+			data = i
+		if len(data) > 0:
+			return await ctx.send("Snippet name (`%s`) is already taken. %s" % (snippet_name, ctx.author.mention))
+		for x in ['kraots', 'carrots', 'carots', 'carot', 'carrot']:
+			if x in snippet_name.lower():
+				if ctx.author.id != 374622847672254466:
+					return await ctx.send("You cannot create a snippet with that name. %s" % (ctx.author.mention))
+
+		if len(snippet_name) >= 50:
+				await ctx.send("Snippet's name cannot be that long! Max is: `50`")
+				return
+		
+		elif len(snippet_name) < 3:
+				await ctx.send("Snippet's name cannot be less than `3` characters long!")
+				return
+		
+		elif snippet_name.isnumeric():
+			await ctx.send("Snippet name cannot be a number!")
+			return
+
+		elif snippet_name.lower() in nono_names:
+				await ctx.send("That names are invalid! Reason: `They are used in other commands, actions, to be more specific.`")
 				return
 
-			else:
-
-				await ctx.send("Please send the image of the snippet.")
-				try:
-					presnippet_info = await self.client.wait_for('message', timeout = 180, check=check)
-					snippet_info = presnippet_info.attachments[0].url
-
-				except asyncio.TimeoutError:
-					return
-
-				except IndexError:
-					await ctx.send("That is not an image! Please send an image and nothing else!")
-					return
-				
-				else:				
-					get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-					post = {"_id": str(snippet_name.lower()), 
-							"snippet_content": snippet_info,
-							"snippet_credits": ctx.author.id,
-							"created_at": get_time,
-							"uses_count": 0
-							}
-
-					collection.insert_one(post)
-					await ctx.send("Snippet Added!")
-
-		else:
-			data = {}
-			results = collection.find_one({'_id': get_snippet_name.lower()})
-			for i in results:
-				data = i
-			if len(data) > 0:
-				return await ctx.send("Snippet name (`%s`) is already taken. %s" % (get_snippet_name, ctx.author.mention))
-			for x in ['kraots', 'carrots', 'carots', 'carot', 'carrot']:
-				if x in get_snippet_name.lower():
-					if ctx.author.id != 374622847672254466:
-						return await ctx.send("You cannot create a snippet with that name. %s" % (ctx.author.mention))
-
-			if len(get_snippet_name) >= 50:
-					await ctx.send("Snippet's name cannot be that long! Max is: `50`")
-					return
-			
-			elif len(get_snippet_name) < 3:
-					await ctx.send("Snippet's name cannot be less than `3` characters long!")
-					return
-			
-			elif get_snippet_name.isnumeric():
-				await ctx.send("Snippet name cannot be a number!")
-				return
-
-			elif get_snippet_name.lower() in nono_names:
-					await ctx.send("That names are invalid! Reason: `They are used in other commands, actions, to be more specific.`")
-					return
-
-			def check(m):
-				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
-
-			await ctx.send("Please send the image of the snippet.")
-			try:
-				presnippet_info = await self.client.wait_for('message', timeout = 180, check=check)
-				snippet_info = presnippet_info.attachments[0].url
-
-			except asyncio.TimeoutError:
-				return
-
-			except IndexError:
-				await ctx.send("That is not an image! Please send an image and nothing else!")
-				return
-
-			else:
-				get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-				post = {"_id": get_snippet_name.lower(), 
-						"snippet_content": snippet_info,
-						"snippet_credits": ctx.author.id,
-						"created_at": get_time,
-						"uses_count": 0
-						}
-				
-				collection.insert_one(post)
-				await ctx.send("Snippet Added!")
-
-	@snippet.command()
-	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
-	async def delete(self, ctx, *, get_snippet_name : str = None):
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
-		if get_snippet_name is None:
-			await ctx.send("What's the name of the snippet you wish to delete?")
+		await ctx.send("Please send the image of the snippet.")
+		try:
+			presnippet_info = await self.client.wait_for('message', timeout = 180, check=check)
+			snippet_info = presnippet_info.attachments[0].url
+
+		except asyncio.TimeoutError:
+			return await ctx.reply("Ran out of time.")
+
+		except IndexError:
+			return await ctx.reply("That is not an image! Please send an image and nothing else!")
+
+		get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
+		post = {"_id": snippet_name.lower(), 
+				"snippet_content": snippet_info,
+				"snippet_credits": ctx.author.id,
+				"created_at": get_time,
+				"uses_count": 0
+				}
+		
+		collection.insert_one(post)
+		await ctx.send("Snippet Added!")
+
+
+	@snippet.command()
+	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
+	async def delete(self, ctx, *, snippet_name : str = None):
+		if snippet_name is None:
+			return await ctx.reply("**!snippet delete <snippet_name>**")
+		
+		def check(reaction, user):
+			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
+
+		data = {}
+		results = collection.find_one({'_id': snippet_name.lower})
+		for i in results:
+			data = i
+		if len(data) > 0:
+			return await ctx.send("Snippet `%s` does not exist! %s" % (snippet_name, ctx.author.mention))
+
+		if ctx.author.id != 374622847672254466:
+			if ctx.author.id != data['snippet_credits']:
+					await ctx.send("You do not own this snippet!")
+					return
+		else:
+			msg = await ctx.send("Are you sure you want to delete the snippet `%s`? %s" % (snippet_name, ctx.author.mention))
+			await msg.add_reaction('<:agree:797537027469082627>')
+			await msg.add_reaction('<:disagree:797537030980239411>')
+			
 			try:
-				raw_get_snippet = await self.client.wait_for('message', timeout=60, check=check)
-				snippet_name = raw_get_snippet.content.lower()
+				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
 
 			except asyncio.TimeoutError:
+				new_msg = f"{ctx.author.mention} Did not react in time."
+				await msg.edit(content=new_msg)
+				await msg.clear_reactions()
 				return
-
+			
 			else:
-				data = {}
-				results = collection.find_one({'_id': snippet_name})
-				for i in results:
-					data = i
-				if len(data) > 0:
-					return await ctx.send("Snippet `%s` does not exist! %s" % (snippet_name, ctx.author.mention))
-				if ctx.author.id != 374622847672254466:
-					if ctx.author.id != data['snippet_credits']:
-						await ctx.send("You do not own this snippet!")
-						return
+				if str(reaction.emoji) == '<:agree:797537027469082627>':
+					collection.delete_one({"_id": data['_id']})
 
-				else:
-					msg = await ctx.send("Are you sure you want to delete `%s`? %s" % (snippet_name, ctx.author.mention))
-					await msg.add_reaction('<:agree:797537027469082627>')
-					await msg.add_reaction('<:disagree:797537030980239411>')
-
-					try:
-						reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
-
-					except asyncio.TimeoutError:
-						new_msg = f"{ctx.author.mention} Did not react in time."
-						await msg.edit(content=new_msg)
-						await msg.clear_reactions()
-						return
-					
-					else:
-						if str(reaction.emoji) == '<:agree:797537027469082627>':
-							collection.delete_one({"_id": snippet_name})
-
-							e = f"`{snippet_name}` deleted succesfully! {ctx.author.mention}"
-							await msg.edit(content=e)
-							await msg.clear_reactions()
-							return
-						
-						elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-							e = f"Snippet was not deleted. {ctx.author.mention}"
-							await msg.edit(content=e)
-							await msg.clear_reactions()
-							return
-				
-		else:
-			data = {}
-			results = collection.find_one({'_id': get_snippet_name.lower})
-			for i in results:
-				data = i
-			if len(data) > 0:
-				return await ctx.send("Snippet `%s` does not exist! %s" % (get_snippet_name, ctx.author.mention))
-
-			if ctx.author.id != 374622847672254466:
-				if ctx.author.id != data['snippet_credits']:
-						await ctx.send("You do not own this snippet!")
-						return
-			else:
-				msg = await ctx.send("Are you sure you want to delete the snippet `%s`? %s" % (get_snippet_name, ctx.author.mention))
-				await msg.add_reaction('<:agree:797537027469082627>')
-				await msg.add_reaction('<:disagree:797537030980239411>')
-				
-				try:
-					reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
-
-				except asyncio.TimeoutError:
-					new_msg = f"{ctx.author.mention} Did not react in time."
-					await msg.edit(content=new_msg)
+					e = f"`{snippet_name}` deleted succesfully! {ctx.author.mention}"
+					await msg.edit(content=e)
 					await msg.clear_reactions()
 					return
 				
-				else:
-					if str(reaction.emoji) == '<:agree:797537027469082627>':
-						collection.delete_one({"_id": data['_id']})
-
-						e = f"`{get_snippet_name}` deleted succesfully! {ctx.author.mention}"
-						await msg.edit(content=e)
-						await msg.clear_reactions()
-						return
-					
-					elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-						e = f"Snippet was not deleted. {ctx.author.mention}"
-						await msg.edit(content=e)
-						await msg.clear_reactions()
-						return
+				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+					e = f"Snippet was not deleted. {ctx.author.mention}"
+					await msg.edit(content=e)
+					await msg.clear_reactions()
+					return
 
 
 	@snippet.command()
