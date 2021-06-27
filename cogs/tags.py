@@ -394,14 +394,6 @@ class Tags(commands.Cog):
 	@tag.command(aliases=['make', 'add'])
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")	
 	async def create(self, ctx, *, tag_name_constructor : str = None):
-		results = collection.find({})
-
-		all_names = []
-
-		for result in results:
-			db_tag_name = result["the_tag_name"]
-			all_names.append(str(db_tag_name))
-
 		if tag_name_constructor is None:
 			def check(m):
 				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
@@ -418,8 +410,12 @@ class Tags(commands.Cog):
 						await ctx.send("No invites or what so ever.")
 						return
 				
+				results = collection.find_one({'the_tag_name': str(tag_name).lower()})
+				data = {}
+				for i in results:
+					data = i
 
-				if str(tag_name) in all_names:
+				if len(data) > 0:
 					await ctx.send("Tag name already taken.")
 					return
 				
@@ -473,7 +469,7 @@ class Tags(commands.Cog):
 					
 					collection.insert_one(post)
 					
-					await ctx.send("Tag `{}` succesfully created!".format(tag_name))
+					await ctx.send("Tag `{}` Successfully created!".format(tag_name))
 			return
 
 
@@ -489,7 +485,12 @@ class Tags(commands.Cog):
 			def check(m):
 				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
-			if str(tag_name_constructor) in all_names:
+			results = collection.find_one({'the_tag_name': str(tag_name_constructor).lower()})
+			data = {}
+			for i in results:
+				data = i
+
+			if len(data) > 0:
 				await ctx.send("Tag name already taken.")
 				return
 			
@@ -538,7 +539,7 @@ class Tags(commands.Cog):
 					
 				collection.insert_one(post)
 				
-				await ctx.send("Tag `{}` succesfully created!".format(tag_name_constructor))
+				await ctx.send("Tag `{}` Successfully created!".format(tag_name_constructor))
 
 
 
@@ -550,119 +551,50 @@ class Tags(commands.Cog):
 			await ctx.send("`!tag delete <tag_name>`")
 			return
 		
+		data = {}
+		results = collection.find({'the_tag_name': tag_name.lower()})
+		for i in results:
+			data = i
+		if len(data) == 0:
+			try:
+				result = collection.find({'_id': int(tag_name)})
+				for i in result:
+					data = i
+			except ValueError:
+				return await ctx.send("That tag does not exist. %s" % (ctx.author.mention))
+		if len(data) == 0:
+			return await ctx.send("That tag does not exist. %s" % (ctx.author.mention))
+		if ctx.author.id != 374622847672254466:
+			if ctx.author.id != data['tag_owner_id']:
+				return await ctx.send("You do not own the tag **%s**! %s" (data['the_tag_name'], ctx.author.mention))
+
+		def check(reaction, user):
+			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
+		msg = await ctx.send("Are you sure you wish to delete the tag **%s**? %s" % (data['the_tag_name'], ctx.author.mention))
+		await msg.add_reaction('<:agree:797537027469082627>')
+		await msg.add_reaction('<:disagree:797537030980239411>')
+		try:
+			reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
+		except asyncio.TimeoutError:
+			new_msg = f"{ctx.author.mention} Did not react in time."
+			await msg.edit(content=new_msg)
+			await msg.clear_reactions()
+			return
+		
 		else:
-			results = collection.find({})
-
-			all_names = []
-
-			for result in results:
-				db_tag_name = result["the_tag_name"]
-				all_names.append(str(db_tag_name))
-
-			if not tag_name.lower() in all_names:
-				try:
-					tag_name = int(tag_name)
-				except ValueError:
-					await ctx.send(f"Tag `{tag_name}` does not exist!")
-					return
-
-				all_ids = []
-				get_ids = collection.find()
-				for id in get_ids:
-					all_ids.append(id['_id'])
-				
-				if not tag_name in all_ids:
-					await ctx.send("That tag does not exist!")
-					return
-				
-				else:
-					get_info = collection.find({"_id": tag_name})
-					for info in get_info:
-						the_tag_name = info['the_tag_name']
-						tags_owner = info['tag_owner_id']
-					
-					if ctx.author.id != tags_owner:
-						await ctx.send("You do not own this tag, therefore, you cannot delete it.")
-						return
-					else:
-						msg = await ctx.send("Are you sure you want to delete the tag `{}` ? {}".format(the_tag_name, ctx.author.mention))
-					
-						def check(reaction, user):
-							return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
-						
-						await msg.add_reaction('<:agree:797537027469082627>')
-						await msg.add_reaction('<:disagree:797537030980239411>')
-						
-						try:
-							reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
-
-						except asyncio.TimeoutError:
-							new_msg = f"{ctx.author.mention} Did not react in time."
-							await msg.edit(content=new_msg)
-							await msg.clear_reactions()
-							return
-						
-						else:
-							if str(reaction.emoji) == '<:disagree:797537030980239411>':
-								e = "Tag has not been deleted. %s" % (ctx.author.mention)
-								await msg.edit(content=e)
-								await msg.clear_reactions()
-								return
-							
-							elif str(reaction.emoji) == '<:agree:797537027469082627>':
-								collection.delete_one({"_id": tag_name})
-								
-								e = "Tag `{}` deleted succesfully! {}".format(the_tag_name, ctx.author.mention)
-								await msg.edit(content=e)
-								await msg.clear_reactions()
-								return
-					return
-			
-			else:
-				get_data = collection.find({"the_tag_name": tag_name.lower()})
-
-				for data in get_data:
-					the_tag_name = data["the_tag_name"]
-					tag_owner = data["tag_owner_id"]
-			
-			if ctx.author.id != tag_owner:
-				await ctx.send("You do not own this tag, therefore, you cannot delete it.")
+			if str(reaction.emoji) == '<:agree:797537027469082627>':
+				collection.delete_one({'_id': data['_id']})
+				e = "Successfully deleted the tag **%s**. %s" % (data['the_tag_name'], ctx.author.mention)
+				await msg.clear_reactions()
+				await msg.edit(content=e)
 				return
 			
-			else:
-				msg = await ctx.send("Are you sure you want to delete the tag `{}` ?".format(the_tag_name))
-				
-				def check(reaction, user):
-					return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
-				
-				await msg.add_reaction('<:agree:797537027469082627>')
-				await msg.add_reaction('<:disagree:797537030980239411>')
-				
-				try:
-					reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
-
-				except asyncio.TimeoutError:
-					new_msg = f"{ctx.author.mention} Did not react in time."
-					await msg.edit(content=new_msg)
-					await msg.clear_reactions()
-					return
-				
-				else:
-					if str(reaction.emoji) == '<:disagree:797537030980239411>':
-						e = "Tag has not been deleted. %s" % (ctx.author.mention)
-						await msg.edit(content=e)
-						await msg.clear_reactions()
-						return
-					
-					elif str(reaction.emoji) == '<:agree:797537027469082627>':
-						collection.delete_one({"the_tag_name": the_tag_name.lower()})
-						
-						e = "Tag deleted succesfully. %s" % (ctx.author.mention)
-						await msg.edit(content=e)
-						await msg.clear_reactions()
-						return
-
-
+			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+				e = "Operation of deleting the tag  **%s** has been canceled. %s" % (data['the_tag_name'], ctx.author.mention)
+				await msg.clear_reactions()
+				await msg.edit(content=e)
+				return
 
 
 
@@ -674,68 +606,35 @@ class Tags(commands.Cog):
 			await ctx.send("`!tag remove <tag_name>`")
 			return
 		
-		results = collection.find({})
-
-		all_names = []
-
-		for result in results:
-			db_tag_name = result["the_tag_name"]
-			all_names.append(str(db_tag_name))
-
-		if not tag_name in all_names:
+		data = {}
+		results = collection.find({'the_tag_name': tag_name.lower()})
+		for i in results:
+			data = i
+		if len(data) == 0:
 			try:
-				tag_name = int(tag_name)
+				result = collection.find({'_id': int(tag_name)})
+				for i in result:
+					data = i
 			except ValueError:
-				await ctx.send(f"Tag `{tag_name}` does not exist!")
-				return
-
-			all_ids = []
-			get_ids = collection.find()
-			for id in get_ids:
-				all_ids.append(id['_id'])
+				return await ctx.send("That tag does not exist in the database. %s" % (ctx.author.mention))
+		if len(data) == 0:
+			return await ctx.send("That tag does not exist in the database. %s" % (ctx.author.mention))
 			
-			if not tag_name in all_ids:
-				await ctx.send("That tag does not exist!")
-				return
-			
-			else:
-				get_info = collection.find({"_id": tag_name})
-				for info in get_info:
-					get_tag_owner = info['tag_owner_id']
-					tag_owner = self.client.get_user(get_tag_owner)
-					the_tag_name = info['the_tag_name']
-					tag_created_at = info['created_at']
-					uses = info['uses_count']
-				
-				collection.delete_one({"_id": tag_name})
-				
-				em = discord.Embed(title="Tag Removed", color=color.red)
-				em.add_field(name = "Name", value = the_tag_name)
-				em.add_field(name = "Owner", value = tag_owner)
-				em.add_field(name="Uses", value=f"`{uses}`", inline = False)
-				em.set_footer(text=f"Tag created at • {tag_created_at}")
+		get_tag_owner = data['tag_owner_id']
+		tag_owner = self.client.get_user(get_tag_owner)
+		the_tag_name = data['the_tag_name']
+		tag_created_at = data['created_at']
+		uses = data['uses_count']
 
-				await ctx.send(embed=em)
-		
-		else:
-			get_data = collection.find({"the_tag_name": tag_name})
-					
-			for data in get_data:
-				get_tag_owner = data['tag_owner_id']
-				tag_owner = self.client.get_user(get_tag_owner)
-				the_tag_name = data['the_tag_name']
-				tag_created_at = data['created_at']
-				uses = data['uses_count']
+		collection.delete_one({"_id": data['_id']})
 
-			collection.delete_one({"the_tag_name": tag_name})
+		em = discord.Embed(title="Tag Removed", color=color.red)
+		em.add_field(name = "Name", value = the_tag_name)
+		em.add_field(name = "Owner", value = tag_owner)
+		em.add_field(name="Uses", value=f"`{uses}`", inline = False)
+		em.set_footer(text=f"Tag created at • {tag_created_at}")
 
-			em = discord.Embed(title="Tag Removed", color=color.red)
-			em.add_field(name = "Name", value = the_tag_name)
-			em.add_field(name = "Owner", value = tag_owner)
-			em.add_field(name="Uses", value=f"`{uses}`", inline = False)
-			em.set_footer(text=f"Tag created at • {tag_created_at}")
-
-			await ctx.send(embed=em)
+		await ctx.send(embed=em)
 
 
 
