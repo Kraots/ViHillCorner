@@ -254,6 +254,8 @@ class Snippets(commands.Cog):
 	@snippet.command()
 	@commands.is_owner()
 	async def remove(self, ctx, *, snippet_name : str = None):
+		if snippet_name is None:
+			return await ctx.reply("You must give the name of the snippet you wish to remove too.")
 		data = {}
 		results = collection.find({'_id': snippet_name.lower()})
 		for i in results:
