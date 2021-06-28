@@ -135,7 +135,7 @@ class SimplePages(RoboPages):
 
 
 
-class RoboHelp(menus.MenuPages):
+class CustomRobo(menus.MenuPages):
 	def __init__(self, source):
 		super().__init__(source=source, check_embeds=True)
 
@@ -148,7 +148,7 @@ class RoboHelp(menus.MenuPages):
 		except discord.HTTPException:
 			pass
 
-class NewCustomHelp(menus.ListPageSource):
+class NewHelpMenus(menus.ListPageSource):
 	def __init__(self, entries, *, per_page=12):
 		super().__init__(entries, per_page=per_page)
 		
@@ -165,9 +165,33 @@ class NewCustomHelp(menus.ListPageSource):
 		menu.embed.description = "\n".join(pages)
 		return menu.embed
 
-class CustomHelp(RoboHelp):
+class NewCustomMenus(menus.ListPageSource):
+	def __init__(self, entries, *, per_page=12):
+		super().__init__(entries, per_page=per_page)
+		
+	async def format_page(self, menu, entries):
+		pages = []
+		for index, entry in enumerate(entries, start=menu.current_page * self.per_page):
+			pages.append(f'`{index + 1}.` {entry}')
+		
+		maximum = self.get_max_pages()
+		if maximum > 1:
+			footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} entries)'
+			menu.embed.set_footer(text=footer)
+	
+		menu.embed.description = "\n".join(pages)
+		return menu.embed
+
+class HelpmMenu(CustomRobo):
 	def __init__(self, entries, *, per_page=12, title="", color=None):
-		super().__init__(NewCustomHelp(entries, per_page=per_page))
+		super().__init__(NewHelpMenus(entries, per_page=per_page))
+		if color == None:
+			color = discord.Color.blurple()
+		self.embed = discord.Embed(colour=color, title=title)
+
+class CustomMenu(CustomRobo):
+	def __init__(self, entries, *, per_page=12, title="", color=None):
+		super().__init__(NewCustomMenus(entries, per_page=per_page))
 		if color == None:
 			color = discord.Color.blurple()
 		self.embed = discord.Embed(colour=color, title=title)

@@ -1,9 +1,23 @@
 import discord
 from discord.ext import commands
-from utils.paginator_v2 import WrappedPaginator, PaginatorEmbedInterface
+from utils.paginator import CustomMenu
 import motor.motor_asyncio
 import os
+import utils.colors as color
 import asyncio
+
+class ReclistPageEntry:
+	def __init__(self, entry):
+
+		self.name = entry
+
+	def __str__(self):
+		return f'\u2800{self.name}'
+
+class ReclistPages(CustomMenu):
+	def __init__(self, entries, *, per_page=12, title="", color=None):
+		converted = [ReclistPageEntry(entry) for entry in entries]
+		super().__init__(converted, per_page=per_page, color=color, title=title)
 
 DBKEY = os.getenv("MONGODBKEY")
 
@@ -16,7 +30,7 @@ class Reclist(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 
-	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra = False)
+	@commands.group(invoke_without_command=True, case_insensitive=True)
 	async def reclist(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
@@ -25,16 +39,9 @@ class Reclist(commands.Cog):
 
 		user = member
 		if results != None:
-			alist = results['reclist']
-
-			for line in alist.splitlines():
-				final = alist.replace("\n", "\n`###`\u2800")
-
-			if len(final) > 1:
-				paginator = WrappedPaginator(prefix=f"**`{member.name}`'𝘀 𝗔𝗻𝗶𝗺𝗲 𝗥𝗲𝗰𝗼𝗺𝗺𝗲𝗻𝗱𝗮𝘁𝗶𝗼𝗻𝘀:**\n", suffix='', max_size = 500)
-				paginator.add_line(final)
-				interface = PaginatorEmbedInterface(ctx.bot, paginator, owner=ctx.author)
-				await interface.send_to(ctx)
+			entries = results['reclist']
+			p = ReclistPages(entries=entries, per_page=10, title=f"Here's {ctx.author.display_name} reclist:", color=color.lightpink)
+			await p.start(ctx)
 
 		else:
 			if ctx.author.id == user.id:
@@ -46,61 +53,59 @@ class Reclist(commands.Cog):
 
 
 
-	@reclist.command()
-	async def set(self, ctx, *, args):
+	@reclist.command(aliases=['set'])
+	async def _set(self, ctx, *, args: str):
 		user = ctx.author
 		results = await collection.find_one({"_id": user.id})
+		reclist = list(filter(bool, args.splitlines()))
 		if results == None:
-			post = {"_id": user.id, "reclist": f"`###`\u2800{args}"}
+			post = {"_id": user.id, "reclist": reclist}
 			await collection.insert_one(post)
 		else:
-			await collection.update_one({"_id": user.id}, {"$set":{"reclist": f"`###`\u2800{args}"}})
+			await collection.update_one({"_id": user.id}, {"$set":{"reclist": reclist}})
 		await ctx.message.delete()
 		await ctx.send(f"Reclist set! {user.mention}")
 
 
-
 	@reclist.command()
 	async def add(self, ctx, *, args):
-
 		user = ctx.author
-
 		results = await collection.find_one({"_id": user.id})
-		
+		reclist = list(filter(bool, args.splitlines()))
 		if results == None:
-			post = {"_id": user.id, "reclist": f"`###`\u2800{args}"}
+			post = {"_id": user.id, "reclist": reclist}
 			await collection.insert_one(post)
-
 		else:
 			rec = results['reclist']
-			await collection.update_one({"_id": user.id}, {"$set":{"reclist": f"{rec}\n{args}"}})
-		
+			await collection.update_one({"_id": user.id}, {"$set":{"reclist": rec + reclist}})
 		await ctx.message.delete()
 		await ctx.send("Succesfully added to your reclist! {}".format(user.mention))
 
 
-
 	@reclist.command()
-	async def raw(self, ctx):
-		results = await collection.find_one({"_id": ctx.author.id})
+	async def delete(self, ctx, nr: int):
+		results = await collection.find_one({'_id': ctx.author.id})
+		if results == None:
+			return await ctx.send("You do not have a reclist. %s" % (ctx.author.mention))
+		n = nr - 1
+		new_reclist = []
+		rec = None
 		
-		if results != None:
-			user_list = results['reclist']
-
-			final = user_list[6:]
-
-			paginator = WrappedPaginator(prefix='```CSS', suffix='```', max_size = 375)
-			paginator.add_line(final)
-			interface = PaginatorEmbedInterface(ctx.bot, paginator, owner=ctx.author)
-			await interface.send_to(ctx)
-
-		else:
-			await ctx.send("You do not have a reclist! Type: `!reclist set <recommendations>` to set your reclist!")
+		for i in range(len(results['reclist'])):
+			if i != n:
+				new_reclist.append(results['reclist'][i])
+			else:
+				rec = results['reclist'][i]
+		
+		await collection.update_one({'_id': ctx.author.id}, {'$set':{'reclist': new_reclist}})
+		if rec != None:
+			return await ctx.send(f"Successfully removed **{rec}** from your reclist. {ctx.author.mention}")
+		await ctx.send(f"No recommendation with that number found. {ctx.author.mention}")
 
 
 
 	@reclist.command()
-	async def delete(self, ctx):
+	async def clear(self, ctx):
 		results = await collection.find_one({"_id": ctx.author.id})
 		
 		if results != None:
@@ -148,7 +153,7 @@ class Reclist(commands.Cog):
 		
 		if results != None:
 			await collection.delete_one({"_id": user.id})
-			await ctx.send("Succesfully deleted `{}`'s reclist!".format(user.display_name))
+			await ctx.send("Succesfully removed `{}`'s reclist from the database.".format(user.display_name))
 		
 		else:
 			await ctx.send("User does not have a reclist!")
@@ -159,29 +164,6 @@ class Reclist(commands.Cog):
 		if member.id == 374622847672254466:
 			return
 		await collection.delete_one({"_id": member.id})
-
-
-
-
-
-
-
-
-	@reclist.error
-	async def reclist_error(self, ctx, error):
-		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("User does not have any reclist!")
-		elif isinstance(error, commands.TooManyArguments):
-			return
-
-
-
-
-
-
-
-
-
 
 
 def setup(client):

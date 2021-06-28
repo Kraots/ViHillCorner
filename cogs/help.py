@@ -1,8 +1,7 @@
 import discord
-from discord import message
 from discord.ext import commands
 import utils.colors as color
-from utils.paginator import CustomHelp
+from utils.paginator import HelpmMenu
 import asyncio
 
 reactions = {
@@ -36,7 +35,7 @@ class HelpPageEntry:
 	def __str__(self):
 		return f'```\n{self.name}```{self.help}\n'
 
-class HelpPages(CustomHelp):
+class HelpPages(HelpmMenu):
 	def __init__(self, entries, *, per_page=12, title="", color=None):
 		converted = [HelpPageEntry(entry) for entry in entries]
 		super().__init__(converted, per_page=per_page, color=color, title=title)
@@ -215,11 +214,11 @@ class Help(commands.Cog):
 				{'Parent': 'birthday', 'name': '!birthday set <month/day>', 'help': 'Set up your birthday.', 'devOnly': False, 'staffOnly': False}, 
 				{'Parent': 'birthday', 'name': '!birthday [delete|remove]', 'help': 'Delete your birthday.', 'devOnly': False, 'staffOnly': False}, 
 				{'Parent': 'birthday', 'name': '!birthday [upcoming|top]', 'help': 'Get the next `5` upcoming birthdays.', 'devOnly': False, 'staffOnly': False}, 
-				{'Parent': 'intro', 'name': '!intro [remove|delete]', 'help': 'Delete your intro.', 'devOnly': False, 'staffOnly': False}, 
-				{'Parent': 'reclist', 'name': '!reclist raw', 'help': 'Get a raw version of your reclist!\n*This is used so you can copy paste your old reclist, and then remove what you want to remove from it so you don\'t have to type your reclist over and over again.*', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'intro', 'name': '!intro [remove|delete]', 'help': 'Delete your intro.', 'devOnly': False, 'staffOnly': False},  
 				{'Parent': 'reclist', 'name': '!reclist set <recommendations>', 'help': 'Set up your reclist.', 'devOnly': False, 'staffOnly': False}, 
 				{'Parent': 'reclist', 'name': '!reclist add <recommendations>', 'help': 'Add recommendations up your reclist.', 'devOnly': False, 'staffOnly': False}, 
-				{'Parent': 'reclist', 'name': '!reclist delete', 'help': 'Delete your reclist.', 'devOnly': False, 'staffOnly': False},
+				{'Parent': 'reclist', 'name': '!reclist delete <index>', 'help': 'Delete the recommendation at the given index.', 'devOnly': False, 'staffOnly': False},
+				{'Parent': 'reclist', 'name': '!reclist clear', 'help': 'Clear all your reclist, thus deleting it.', 'devOnly': False, 'staffOnly': False},
 				{'Parent': 'reclist', 'name': '!reclist remove <user>', 'help': 'Remove a user\'s reclist from the database.', 'devOnly': True, 'staffOnly': False}, 
 				{'Parent': 'cr', 'name': '!cr create', 'help': 'Create your cr.', 'devOnly': False, 'staffOnly': False}, 
 				{'Parent': 'cr', 'name': '!cr delete', 'help': 'Delete your cr.', 'devOnly': False, 'staffOnly': False}, 
