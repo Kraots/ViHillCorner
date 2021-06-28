@@ -245,7 +245,7 @@ class Help(commands.Cog):
 				{'Parent': 'snippets', 'name': '!snippet list [user]', 'help': 'Get a paginated list of snippets that a user owns.', 'devOnly': False, 'staffOnly': False}, 
 				{'Parent': 'snippets', 'name': '!snippet search <query>', 'help': 'Search for snippets containing the given query.', 'devOnly': False, 'staffOnly': False}, 
 				{'Parent': 'snippets', 'name': '!snippet leaderboard', 'help': 'See top `10` most used snippets!', 'devOnly': False, 'staffOnly': False}, 
-				{'Parent': 'snippets', 'name': '!!snippet remove <snippet_name>', 'help': 'Remove a snippet from the database.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'snippets', 'name': '!snippet remove <snippet_name>', 'help': 'Remove a snippet from the database.', 'devOnly': True, 'staffOnly': False}, 
 				{'Parent': 'bdsm', 'name': '!bdsm set', 'help': 'Set your bdsm result by sending the screenshot of your results.', 'devOnly': False, 'staffOnly': False}, 
 				{'Parent': 'bdsm', 'name': '!bdsm results [member]', 'help': 'Send the bdsm results of the specified member.', 'devOnly': False, 'staffOnly': False}, 
 				{'Parent': 'bdsm', 'name': '!bdsm remove', 'help': 'Remove your bdsm results.', 'devOnly': False, 'staffOnly': False}, 
