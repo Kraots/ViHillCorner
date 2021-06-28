@@ -83,7 +83,11 @@ class Reclist(commands.Cog):
 
 
 	@reclist.command()
-	async def delete(self, ctx, nr: int):
+	async def delete(self, ctx, nr: str):
+		try:
+			nr = int(nr)
+		except ValueError:
+			return await ctx.send("Must be a number. %s" % (ctx.author.mention))
 		results = await collection.find_one({'_id': ctx.author.id})
 		if results == None:
 			return await ctx.send("You do not have a reclist. %s" % (ctx.author.mention))
