@@ -1,6 +1,45 @@
 import discord
+from discord import message
 from discord.ext import commands
 import utils.colors as color
+from utils.paginator import CustomHelp
+import asyncio
+
+reactions = {
+			'<:SakataNom:787370388250034186>': 'help featured',
+			'<:CutieUmwha:787370264165482537>': 'help economy',
+			'<:vampy1:859050561184989204>': 'help utility',
+			'<:epik:818803400154153002>': 'help fun',
+			'<:pepecry:859050982507675699>': 'help miscellaneous',
+			'<:pepe_hang1:859050982402687026>': 'help info',
+			'<:creepy_bird1:859050982382108693>': 'help warns',
+			'<:verifiedbotdev:859064715715018782>': 'help developer',
+			'<:banhammer:859065173352644628>': 'help moderator'
+			}
+
+categs = """
+			<:SakataNom:787370388250034186> -> **Featured**	
+			<:CutieUmwha:787370264165482537> -> **Economy**
+			<:vampy1:859050561184989204> -> **Utility**
+			<:epik:818803400154153002> -> **Fun**
+			<:pepecry:859050982507675699> -> **Miscellaneous**
+			<:pepe_hang1:859050982402687026> -> **Info**
+			<:creepy_bird1:859050982382108693> -> **Warns**
+		"""
+
+class HelpPageEntry:
+	def __init__(self, entry):
+
+		self.name = entry['name']
+		self.help = entry['help']
+
+	def __str__(self):
+		return f'```\n{self.name}```{self.help}\n'
+
+class HelpPages(CustomHelp):
+	def __init__(self, entries, *, per_page=12, title="", color=None):
+		converted = [HelpPageEntry(entry) for entry in entries]
+		super().__init__(converted, per_page=per_page, color=color, title=title)
 
 
 class Help(commands.Cog):
@@ -8,602 +47,369 @@ class Help(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 		self.prefix = "!"
+
+		self.ecoCommands = [
+				{'_name': ['register'], 'name': '!register', 'help': 'Register yourself to be able to use the economy commands.', 'hasChild': False}, 
+				{'_name': ['unregister'], 'name': '!unregister', 'help': 'Unregister yourself, you won\'t be able to use the economy commands anymore.', 'hasChild': False}, 
+				{'_name': ['balance', 'bal', 'bank'], 'name': '![balance|bal] [user]', 'help': 'Check your or another user\'s balance.', 'hasChild': True}, 
+				{'_name': ['deposit', 'dep'], 'name': '![deposit|dep] <amount>', 'help': 'Deposit the amount of money into your bank.', 'hasChild': False}, 
+				{'_name': ['withdraw', 'with'], 'name': '![withdraw|with] <amount>', 'help': 'Withdraw the amount of money from your bank.', 'hasChild': False}, 
+				{'_name': ['steal', 'rob'], 'name': '![steal|rob] <user>', 'help': 'Steal some money from someone\'s wallet.', 'hasChild': False}, 
+				{'_name': ['slots'], 'name': '!slots <amount>', 'help': 'Bet your money in the slots machine.', 'hasChild': False}, 
+				{'_name': ['beg'], 'name': '!beg', 'help': 'Beg for some money. This is the easiest way of getting some money in the beginning.', 'hasChild': False}, 
+				{'_name': ['give', 'gift'], 'name': '![give|gift] <user> <amount>', 'help': 'Be a kind person and give some of your money from your **bank** to someone else\'s.', 'hasChild': False}, 
+				{'_name': ['work'], 'name': '!work', 'help': 'Work and get `5000` coins each hour.', 'hasChild': False}, 
+				{'_name': ['crime'], 'name': '!crime', 'help': 'Commit crimes that range between `small-medium-big`, and depending on which one you get, the more money you get, but be careful! You can lose the money as well.', 'hasChild': False}, 
+				{'_name': ['guess', 'gtn'], 'name': '![guess|gtn]', 'help': 'Play guess the number and if you win you\'ll get some money as prize, but if you lose it then some money will be taken from your wallet.', 'hasChild': False}, 
+				{'_name': ['race'], 'name': '!race', 'help': 'Get into a race and win or lose some money depending on your luck.', 'hasChild': False}, 
+				{'_name': ['ppsuck'], 'name': '!ppsuck', 'help': 'Suck pp for some quick money.', 'hasChild': False}
+				]
+		
+		self.funCommands = [
+				{'_name': ['meme'], 'name': '!meme', 'help': 'Sends a random meme! ;3', 'hasChild': False}, 
+				{'_name': ['cat'], 'name': '!cat', 'help': 'Sends a random cat pic! ;3', 'hasChild': False}, 
+				{'_name': ['dog'], 'name': '!dog', 'help': 'Sends a random dog pic! ;3', 'hasChild': False}, 
+				{'_name': ['topic'], 'name': '!topic', 'help': 'Get a random question or a random topic to talk about.', 'hasChild': False}, 
+				{'_name': ['gayrate', 'gay'], 'name': '!gayrate [user]', 'help': 'See how gay someone is.', 'hasChild': False}, 
+				{'_name': ['straightrate', 'straight'], 'name': '!straightrate [user]', 'help': 'See how straight someone is.', 'hasChild': False}, 
+				{'_name': ['simprate', 'simp'], 'name': '!simprate [user]', 'help': 'See how simp someone is.', 'hasChild': False}, 
+				{'_name': ['hornyrate', 'horny'], 'name': '!hornyrate [user]', 'help': 'See how horny someone is.', 'hasChild': False}, 
+				{'_name': ['boomerrate', 'boomer'], 'name': '!boomerrate [user]', 'help': 'See how boomer someone is.', 'hasChild': False}, 
+				{'_name': ['8ball', 'ball'], 'name': '!8ball <question>', 'help': 'Ask the 8ball a question and get an answer.', 'hasChild': False}, 
+				{'_name': ['fight'], 'name': '!fight <user>', 'help': 'Fight someone, the outcome is always random!', 'hasChild': False}, 
+				{'_name': ['ppsize', 'pp'], 'name': '!ppsize [user]', 'help': 'See how large your or someone else\'s dick is.', 'hasChild': False},
+				{'_name': ['trivia'], 'name': '!trivia', 'help': '', 'help1': 'Play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a competitive vibe to the game.', 'help2':'Play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a *competitive* vibe to the game.\n\u2800**Difficulties:**\n\u2800\u2800 - Easy -> 5 points\n\u2800\u2800 - Medium -> 10 points\n\u2800\u2800 - Hard -> 15 points\n\u2800**Modes:**\n\u2800\u2800 - Solo\n\u2800\u2800\u2800\u2800\u2800Play a normal game of trivia.\n\u2800\u2800 - Competitive\n\u2800\u2800\u2800\u2800\u2800Pick a bet and a player that you will have to do a trivia 1v1 with. The winner gets the bet amount as prize while the loser loses the bet amount of points.', 'hasChild': True},
+				{'_name': ['rock-paper-scissors', 'rps'], 'name': '![rock-paper-scissors|rps]', 'help': 'Play a game of rock-paper-scissors with the bot and earn money.', 'hasChild': False}, 
+				{'_name': ['tic-tac-toe', 'ttt', 'tictactoe'], 'name': '![tic-tac-toe|ttt] <user>', 'help': 'Play a tic-tac-toe game with someone. Both users must have `10,000` <:carrots:822122757654577183> in your wallet in order to play.', 'hasChild': False}
+				]
+
+		self.warnCommands = [
+				{'_name': ['sfw'], 'name': ';sfw [user]', 'help': 'Warn someone about keeping the chat non-nsfw.', 'hasChild': False},
+				{'_name': ['spam'], 'name': ';spam [user]', 'help': 'Warn someone to not spam the chat.', 'hasChild': False}, 
+				{'_name': ['english', 'eng', 'en'], 'name': ';english [user]', 'help': 'Warn and/or tell someone that the server is english only.', 'hasChild': False}
+				]
+		
+		self.infoCommands = [
+				{'_name': ['lvlinfo', 'howtolvl'], 'name': ';[lvlinfo|howtolvl] [user]', 'help': 'See info about how to level up.', 'hasChild': False},
+				{'_name': ['rankinfo'], 'name': ';rankinfo [user]', 'help': 'See info about how to check your rank.', 'hasChild': False},
+				{'_name': ['cam', 'camera'], 'name': ';cam [user]', 'help': 'See info about what level you need to be in order to use the camera.', 'hasChild': False}, 
+				{'_name': ['vc', 'voicechat'], 'name': ';vc [user]', 'help': 'See info about what level you need to be in order to speak in a voice chat.', 'hasChild': False}, 
+				{'_name': ['img', 'images'], 'name': ';images [user]', 'help': 'See info about what level you need to be in order to send images/videos/gifs in general and other channels.', 'hasChild': False},
+				{'_name': ['untill-partner', 'up'], 'name': '![untill-partner|up]', 'help': 'See how many members the server needs untill it\'s eligible for applying for the discord partnership program.', 'hasChild': False}, 
+				{'_name': ['membercount'], 'name': '!membercount', 'help': 'See how many members ViHill Corner has (`bots are not included`).', 'hasChild': False}, 
+				{'_name': ['botinfo'], 'name': '!botinfo', 'help': 'See info about <@!751724369683677275>.', 'hasChild': False}, 
+				{'_name': ['uptime'], 'name': '!uptime', 'help': 'Check the bot\'s uptime.', 'hasChild': False}, 
+				{'_name': ['ping'], 'name': '!ping', 'help': 'Check the bot\'s ping.', 'hasChild': False}, 
+				{'_name': ['serverad', 'ad'], 'name': '![serverad|ad]', 'help': 'Get the server\'s advertising text.', 'hasChild': False}, 
+				{'_name': ['rawad', 'ra'], 'name': '![rawad|ra]', 'help': 'Get the server\'s advertising text in raw format.', 'hasChild': False}, 
+				{'_name': ['serverinfo', 'si'], 'name': '![serverinfo|si]', 'help': 'Get some info about the server.', 'hasChild': False}, 
+				{'_name': ['vote'], 'name': '!vote', 'help': 'Vote for the server on top.gg', 'hasChild': False}, 
+				{'_name': ['update'], 'name': '!update', 'help': 'Shows the latest update and what new features have been brought to the bot.', 'hasChild': False}
+				]
+		
+		self.utilityCommands = [
+				{'_name': ['ee', 'enlargeemoji', 'emoji'], 'name': '!ee', 'help': 'Enlarges the chosen emote.', 'hasChild': False}, 
+				{'_name': ['nick', 'nickname'], 'name': '!nick <newnickname>', 'help': 'Change your nickname.', 'hasChild': True}, 
+				{'_name': ['profile', 'user'], 'name': '!profile [user]', 'help': 'Get a user\'s discord profile info.', 'hasChild': False}, 
+				{'_name': ['avatar', 'av'], 'name': '![avatar|av] [user]', 'help': 'See user\'s avatar.', 'hasChild': False}, 
+				{'_name': ['invite', 'inv'], 'name': '![invite|inv]', 'help': 'Get the invite link for the server.', 'hasChild': False}, 
+				{'_name': ['suggest', 'suggests'], 'name': '!suggest <suggestion>', 'help': 'Make a suggestion in <#858997857968193596>', 'hasChild': False},
+				{'_name': ['snipe'], 'name': '!snipe [channel]', 'help': 'Snipe the last deleted message in the channel.', 'hasChild': False}, 
+				{'_name': ['nsfw'], 'name': '!nsfw <category>', 'help': 'For nsfw categories type **!nsfw** in the nsfw channel. For more info about how to get access to the nsfw channel please type **!help nsfw**', 'hasChild': True}, 
+				{'_name': ['google'], 'name': '!google <query>', 'help': 'Search for something on google.', 'hasChild': False}, 
+				{'_name': ['calculate', 'calc'], 'name': '![calculate|calc] <operation>', 'help': 'Basic calculator for basic operations.', 'hasChild': False}, 
+				{'_name': ['scrs', 'ss'], 'name': '![scrs|ss] <website>', 'help': 'Take a scren shot of a domain.', 'hasChild': False}, 
+				{'_name': ['rank', 'lvl'], 'name': '![rank|lvl] [user]', 'help': 'Check user\'s current level.', 'hasChild': True}, 
+				{'_name': ['rtfd', 'rtfm'], 'name': '![rtfd|rtfm] <obj>', 'help': 'Gives you a documentation link for a discord.py entity.', 'hasChild': True}
+				]
+		
+		self.miscCommands = [
+				{'_name': ['created'], 'name': '!created [user]', 'help': 'See when a user created their account.', 'hasChild': False}, 
+				{'_name': ['joined'], 'name': '!joined [user]', 'help': 'See when a user joined the server.', 'hasChild': False}, 
+				{'_name': ['waifu'], 'name': '!waifu', 'help': 'Get a random waifu pic.', 'hasChild': False}, 
+				{'_name': ['spotify'], 'name': '!spotify [user]', 'help': 'Shows what song the user is listening to, the artist & the album.', 'hasChild': False}, 
+				{'_name': ['dev-portal', 'dev', 'portal'], 'name': '!dev-portal', 'help': 'Get the link to dev-portal website.', 'hasChild': False}, 
+				{'_name': ['perm-calc', 'perm'], 'name': '!perm-calc', 'help': 'Get the link to bots perm-calc website.', 'hasChild': False}, 
+				{'_name': ['vampify'], 'name': '!vampify <text>', 'help': 'Vampify your text.', 'hasChild': False}, 
+				{'_name': ['clapify'], 'name': '!clapify <text>', 'help': 'Clapify your text.', 'hasChild': False}, 
+				{'_name': ['role-id', 'roleid'], 'name': '!role-id <role_name>', 'help': 'Get the ID of the given role.', 'hasChild': False}, 
+				{'_name': ['reminder', 'remind'], 'name': '![reminder|remind] <when> [what]', 'help': 'Set a reminder.', 'hasChild': True}, 
+				{'_name': ['msg-top', 'top'], 'name': '![msg-top|top]', 'help': 'See top 15 most active members.', 'hasChild': True}, 
+				{'_name': ['randomnumber', 'rn'], 'name': '![randomnumber|rn] <nr1> <nr2> <nr3>', 'help': '', 'help1': 'Get a random number depending on the amount of numbers you give. For more info please type **!help randomnumber**', 'help2': 'If you don\'t provide any number, the bot will give a random number between `0` and the `largest positive integer supported by the machine`.\n\nIf you provide only one number, then the bot will give a random number between `0` and `your chosen number (num1)`.\n\nIf you provide two numbers only, then the bot will give you a random number between `your first number (num1)` and `your second number (num2)`.\n\nIf you provide all three numbers, then the bot will give a random number between `your first number (num1)` and `your second number (num2)`, that is not `your third number (num3)`, this can be used if you want a random number between 2 numbers that is not a specific one, here\'s some examples:\n• `10 15 13 - will give a number between 10 and 15 that is not 13`\n• `0 10 5 - will give a number between 0 and 10 that is not 5`\n• `20 100 50 - will give a number between 20 and 100 that is not 50`\n• `10 20 15 - will give a number between 10 and 20 that is not 15`', 'hasChild': False}, 
+				{'_name': ['multiplier'], 'name': '!multiplier', 'help': 'Shows the multipliers for the next groups: **Staff/Mods**, **Server Boosters**, **Members**.', 'hasChild': True}
+				]
+		
+		self.featuredCommands = [
+				{'_name': ['birthday', 'bday'], 'name': '!birthday [user]', 'help': 'See when someone\'s birthday is if they have it set.', 'hasChild': True}, 
+				{'_name': ['intro'], 'name': '!intro', 'help': 'Create or edit your intro.', 'hasChild': True}, 
+				{'_name': ['whois', 'wi'], 'name': '!whois [user]', 'help': 'Check user\'s intro.', 'hasChild': False}, 
+				{'_name': ['reclist'], 'name': '!reclist [user]', 'help': 'Check user\'s recommendations list.', 'hasChild': True}, 
+				{'_name': ['cr'], 'name': '!cr', 'help': 'For more information about this command please see **!help cr**', 'hasChild': True}, 
+				{'_name': ['marry'], 'name': '!marry <user>', 'help': 'Marry the mentioned user.', 'hasChild': False}, 
+				{'_name': ['marriedwho'], 'name': '!marriedwho [user]', 'help': 'See who the user is married with.', 'hasChild': False}, 
+				{'_name': ['divorce'], 'name': '!divorce', 'help': 'Divorce the person you\'re married with.', 'hasChild': False}, 
+				{'_name': ['scrs', 'ss'], 'name': '![scrs|ss] <website>', 'help': 'Take a screenshot of a website.', 'hasChild': False}, 
+				{'_name': ['tag', 'tags'], 'name': '!tag <tag_name>', 'help': 'Get the content of the tag.', 'hasChild': True}, 
+				{'_name': ['snippets', 'snippet'], 'name': '![snippet|snippets]', 'help': 'Get a list with all the snippets.', 'hasChild': True}, 
+				{'_name': ['bdsm'], 'name': '!bdsm', 'help': 'For more information please type **!help bdsm**', 'hasChild': True}
+				]
+
+		self.childCommands = [
+				{'Parent': 'balance', 'name': '!bal add-wallet <amount> [user]', 'help': 'Add money to an user\'s wallet.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'balance', 'name': '!bal add-bank <amount> [user]', 'help': 'Add money to an user\'s bank.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'balance', 'name': '!bal set-wallet <amount> [user]', 'help': 'Set user\'s wallet money.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'balance', 'name': '!bal set-bank <amount> [user]', 'help': 'Set user\'s bank money.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'balance', 'name': '!bal reset [user]', 'help': 'Reset user\'s balance.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'trivia', 'name': '!trivia points <user>', 'help': 'See how many points you, or someone else has.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'trivia', 'name': '!trivia points gift <amount> <user>', 'help': 'Gift some of your points to someone.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'trivia', 'name': '!trivia leaderboard', 'help': 'check the leaderboard and see the top **10** users that have the most points.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'trivia', 'name': '!trivia points set <amount> [user]', 'help': 'Set the amount of trivia points for an user.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'trivia', 'name': '!trivia points add <amount> [user]', 'help': 'Add trivia points to an user.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'trivia', 'name': '!trivia points reset <user>', 'help': 'Reset the trivia points of an user.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'nick', 'name': '!nick [remove|reset]', 'help': 'Remove your nickname.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'nsfw', 'name': '!nsfw me add', 'help': 'Add yourself the permission to view the nsfw channel.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'nsfw', 'name': '!nsfw me remove', 'help': 'Remove your permissions of viewing the nsfw channel.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'nsfw', 'name': '!nsfw block <user>', 'help': 'Block the user from using the nsfw channel.', 'devOnly': False, 'staffOnly': True}, 
+				{'Parent': 'nsfw', 'name': '!nsfw unblock <user>', 'help': 'Unblock the user from using the nsfw channnel and let them use it again.', 'devOnly': False, 'staffOnly': True}, 
+				{'Parent': 'nsfw', 'name': '!nsfw blocks', 'help': 'See all the nsfw blocked users that do not have access in the nsfw channel.', 'devOnly': False, 'staffOnly': True}, 
+				{'Parent': 'rank', 'name': '!rank [leaderboard|top]', 'help': 'See top `10` highest level members.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'rank', 'name': '!rank set <lvl> [user]', 'help': '', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'rtfm', 'name': '!rtfm [master|2.0]', 'help': 'Gives you a documentation link for a discord.py master entity.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'rtfm', 'name': '!rtfm [py|python]', 'help': 'Gives you a documentation link for a python entity.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'remind', 'name': '!reminder list', 'help': 'Get a list of your 10 upcoming reminders.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'remind', 'name': '!reminder [cancel|remove|delete] <remindID>', 'help': 'Delete your reminder by its ID.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'remind', 'name': '!reminder clear', 'help': 'Clear all your reminders.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'top', 'name': '!msg-top rewards', 'help': 'See the rewards for the weekly top.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'top', 'name': '!msg-top reset <user>', 'help': 'Reset a user\'s weekly messages count', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'multiplier', 'name': '!multiplier set <group> <multiplier>', 'help': 'Groups:\n\u2800\u2800\u2800\u2800 • **Mod/Staff**\n\u2800\u2800\u2800\u2800 • **Boosters**\n\u2800\u2800\u2800\u2800 • **Members**\n\u2800\u2800\u2800\u2800 • **Kraots**\n\u2800\u2800\u2800\u2800 • **all** - to set for every group', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'multiplier', 'name': '!multiplier reset <group>', 'help': 'Groups:\n\u2800\u2800\u2800\u2800 • **Mod/Staff**\n\u2800\u2800\u2800\u2800 • **Boosters**\n\u2800\u2800\u2800\u2800 • **Members**\n\u2800\u2800\u2800\u2800 • **Kraots**\n\u2800\u2800\u2800\u2800 • **all** - to set for every group', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'birthday', 'name': '!birthday set <month/day>', 'help': 'Set up your birthday.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'birthday', 'name': '!birthday [delete|remove]', 'help': 'Delete your birthday.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'birthday', 'name': '!birthday [upcoming|top]', 'help': 'Get the next `5` upcoming birthdays.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'intro', 'name': '!intro [remove|delete]', 'help': 'Delete your intro.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'reclist', 'name': '!reclist raw', 'help': 'Get a raw version of your reclist!\n*This is used so you can copy paste your old reclist, and then remove what you want to remove from it so you don\'t have to type your reclist over and over again.*', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'reclist', 'name': '!reclist set <recommendations>', 'help': 'Set up your reclist.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'reclist', 'name': '!reclist add <recommendations>', 'help': 'Add recommendations up your reclist.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'reclist', 'name': '!reclist delete', 'help': 'Delete your reclist.', 'devOnly': False, 'staffOnly': False},
+				{'Parent': 'reclist', 'name': '!reclist remove <user>', 'help': 'Remove a user\'s reclist from the database.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'cr', 'name': '!cr create', 'help': 'Create your cr.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'cr', 'name': '!cr delete', 'help': 'Delete your cr.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'cr', 'name': '!cr edit color <new_color>', 'help': 'Edit your cr\'s color', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'cr', 'name': '!cr edit name <new_name>', 'help': 'Edit your cr\'s name.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'cr', 'name': '!cr share <user>', 'help': 'Get some info about a cr.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'cr', 'name': '!cr info <cr_id>', 'help': 'Share your cr with someone.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'cr', 'name': '!cr unrole <cr_id>', 'help': 'Remove a cr from your profile. To get the cr\'s ID type: `!role-id <role_name>`', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'cr', 'name': '!cr clean', 'help': 'Remove all cr\'s that you don\'t own from your profile.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'tag', 'name': '!tag [create|make|add] <tag_name>', 'help': 'Create a new tag!', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'tag', 'name': '!tag delete <tag_name>', 'help': 'Delete a tag that you made.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'tag', 'name': '!tag alias <tag_name>', 'help': 'See all the aliases a tag has.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'tag', 'name': '!tag alias create <tag_name>', 'help': 'Create an alias for a tag that you own.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'tag', 'name': '!tag alias delete <tag_name>', 'help': 'Delete an alias from a tag that you own.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'tag', 'name': '!tag info <tag_name>', 'help': 'See info about a tag.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'tag', 'name': '!tag all', 'help': 'Get paginated list with all tags.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'tag', 'name': '!tag list [user]', 'help': 'Get paginated list with all tags that a user owns.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'tag', 'name': '!tag search <query>', 'help': 'Search for tags with the given query.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'tag', 'name': '!tag [leaderboard|lb]', 'help': 'See top `10` most used tags!', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'tag', 'name': '!tag remove <tag_name>', 'help': 'Remove a tag from the database.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'snippets', 'name': '!snippet [create|make|add] <snippet_name>', 'help': 'Create a new snippet.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'snippets', 'name': '!snippet delete <snippet_name>', 'help': 'Delete a snippet you own.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'snippets', 'name': '!snippet list [user]', 'help': 'Get a paginated list of snippets that a user owns.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'snippets', 'name': '!snippet search <query>', 'help': 'Search for snippets containing the given query.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'snippets', 'name': '!snippet leaderboard', 'help': 'See top `10` most used snippets!', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'snippets', 'name': '!!snippet remove <snippet_name>', 'help': 'Remove a snippet from the database.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'bdsm', 'name': '!bdsm set', 'help': 'Set your bdsm result by sending the screenshot of your results.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'bdsm', 'name': '!bdsm results [member]', 'help': 'Send the bdsm results of the specified member.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'bdsm', 'name': '!bdsm remove', 'help': 'Remove your bdsm results.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'bdsm', 'name': '!bdsm test', 'help': 'Get a link to the bdsm test webpage.', 'devOnly': False, 'staffOnly': False}, 
+				]
+
+		self.allCommands = self.featuredCommands + self.ecoCommands + self.funCommands + self.warnCommands + self.infoCommands + self.utilityCommands + self.miscCommands
+
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
-
-
-
+	
 	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
-	async def help(self, ctx):
-		helpEm = discord.Embed(description="To get help for a certain command type `!help <command_name>`", color=color.lightpink)
-		helpEm.set_footer(text='To get help for a certain command type `!help <command_name>`\n', icon_url=ctx.author.avatar_url)
-		helpEm.set_thumbnail(url=self.client.user.avatar_url)
-		helpEm.add_field(name="Commands", value="`ee`, `nick`, `profile`, `created`, `joined`, `av`, `waifu`, `invite`, `suggest`, `spotify`, `meme`, `cat`, `dog`, `snipe`, `nsfw`, `topic`, `gayrate`, `straightrate` , `simprate`, `hornyrate`, `boomerrate`, `8ball`, `fight`, `ppsize`, `birthday`, `intro`, `whois`, `reclist`, `dev-portal`, `perm-calc`, `cr`, `vampify`, `clapify`, `google`, `calculator`, `marry`, `marriedwho`, `divorce`, `scrs`, `tag`, `snippets`, `role-id`, `rank`, `remind`, `top`, `bdsm`, `randomnumber`, `multiplier`, `trivia`, `rtfm`")
-		helpEm.add_field(name="Economy", value="`register`, `unregister` ,`balance`, `deposit`, `withdraw`, `steal`, `slots`, `beg`, `give`, `work`, `crime`, `guess`, `race`, `ppsuck`, `daily`, `rock-paper-scissors`, `tic-tac-toe`", inline=False)
-		helpEm.add_field(name="Info", value="`untill-partner`, `membercount`, `sfw`, `spam`, `english`, `botinfo`, `uptime`, `ping`, `serverad`, `rawad`, `serverinfo`, `vote`, `update`", inline=False)
-		if "Staff" in [role.name for role in ctx.message.author.roles]:
-			helpEm.add_field(name="Moderator Commands", value="`clear`, `mute`, `tempmute`, `unmute`, `kick`, `ban`, `idban`, `unban`, `idunban`, `nsfw`, `slowmode`", inline=False)
-		
-		if ctx.author.id == 374622847672254466:
-			helpEm.add_field(name="Dev Commands", value="`eval`, `load`, `unload`, `reload`, `reload all`, `unload all`, `load all`, `modmute`, `modunmute`, `makemod`, `removemod`, `shutdown`, `restart`, `jsk`, `statuses`, `metrics`, `mail`", inline=False)
+	async def help(self, ctx, get_command : str = None):
+		if get_command is None:
+				# General help
+			_categs = categs
+			if "Staff" in [role.name for role in ctx.author.roles] or ctx.author.id == 374622847672254466:
+				_categs = f"<:banhammer:859065173352644628> -> **Moderator**{categs}"
+			if ctx.author.id == 374622847672254466:
+				_categs = f"<:verifiedbotdev:859064715715018782> -> **Developer**\n<:banhammer:859065173352644628> -> **Moderator**{categs}"
+			em = discord.Embed(color=color.lightpink, title="Here's the help.", description="```diff\n+ <> means it's a required argument\n===============================================\n+ [] means it's an optional argument (only if it's not how the command works)\n===============================================\n- !help <command_name> if you want help for a specific command```")
+			em.set_thumbnail(url=self.client.user.avatar_url)
+			em.add_field(name="React with the reactions specific to the category you wish to see.", 
+			value=_categs)
+			msg = await ctx.send(embed=em)
+			
+			if ctx.author.id == 374622847672254466:
+				await msg.add_reaction("<:verifiedbotdev:859064715715018782>")
+				await msg.add_reaction("<:banhammer:859065173352644628>")
+			elif "Staff" in [role.name for role in ctx.author.roles]:
+				await msg.add_reaction("<:banhammer:859065173352644628>")
+			await msg.add_reaction("<:SakataNom:787370388250034186>")
+			await msg.add_reaction("<:CutieUmwha:787370264165482537>")
+			await msg.add_reaction("<:vampy1:859050561184989204>")
+			await msg.add_reaction("<:epik:818803400154153002>")
+			await msg.add_reaction("<:pepecry:859050982507675699>")
+			await msg.add_reaction("<:pepe_hang1:859050982402687026>")
+			await msg.add_reaction("<:creepy_bird1:859050982382108693>")
+
+			def check(reaction, user):
+				if ctx.author.id == 374622847672254466:
+					return str(reaction.emoji) in ['<:verifiedbotdev:859064715715018782>' ,'<:banhammer:859065173352644628>', '<:SakataNom:787370388250034186>', '<:CutieUmwha:787370264165482537>', '<:vampy1:859050561184989204>', '<:epik:818803400154153002>', '<:pepecry:859050982507675699>', '<:pepe_hang1:859050982402687026>', '<:creepy_bird1:859050982382108693>'] and user.id == ctx.author.id
+				elif "Staff" in [role.name for role in ctx.author.roles]:
+					return str(reaction.emoji) in ['<:banhammer:859065173352644628>, <:SakataNom:787370388250034186>', '<:CutieUmwha:787370264165482537>', '<:vampy1:859050561184989204>', '<:epik:818803400154153002>', '<:pepecry:859050982507675699>', '<:pepe_hang1:859050982402687026>', '<:creepy_bird1:859050982382108693>'] and user.id == ctx.author.id
+				else:
+					return str(reaction.emoji) in ['<:SakataNom:787370388250034186>', '<:CutieUmwha:787370264165482537>', '<:vampy1:859050561184989204>', '<:epik:818803400154153002>', '<:pepecry:859050982507675699>', '<:pepe_hang1:859050982402687026>', '<:creepy_bird1:859050982382108693>'] and user.id == ctx.author.id
+
+			try:
+				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=35)
+			except asyncio.TimeoutError:
+				await msg.clear_reactions()
+				return
+			else:
+				try:
+					get_command = reactions[str(reaction.emoji)]
+					command = self.client.get_command(get_command)
+					await ctx.invoke(command)
+					await msg.delete()
+				except Exception as e:
+					await ctx.send(e)
 
-		await ctx.send(embed=helpEm, reference=ctx.replied_reference)
-	
-	@help.command(aliases=['tic-tac-toe', 'tictactoe'])
-	async def ttt(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!tic-tac-toe <user>```")
-		em.add_field(name="***Info:***", value="Play a tic-tac-toe game with someone. Both must have `10,000` <:carrots:822122757654577183> in your wallet in order to play.")
-		
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command(aliases=['rtfd'])
-	async def rtfm(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!rtfm [master | py] <obj>```")
-		em.add_field(name="***Info:***", value="Gives you a documentation link for a discord.py entity.")
-
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def trivia(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!trivia\n!trivia points <user>\n!trivia points gift <amount> <user>\n!trivia leaderboard```")
-		em.add_field(name="***Info:***", value="`!trivia` - play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a *competitive* vibe to the game.\n\u2800**Difficulties:**\n\u2800\u2800 - Easy -> 5 points\n\u2800\u2800 - Medium -> 10 points\n\u2800\u2800 - Hard -> 15 points\n\u2800**Modes:**\n\u2800\u2800 - Solo\n\u2800\u2800\u2800 Play a normal game of trivia.\n\u2800\u2800 - Competitive\n\u2800\u2800\u2800 Pick a bet and a player that you will have to do a trivia 1v1 with. The winner gets the bet amount as prize while the loser loses the bet amount of points.\n\n`!trivia points <user>` - see how many points you, or someone else has.\n`!trivia points gift <amount> <user>` - gift some of your points to someone.\n`!trivia leaderboard` - check the leaderboard and see the top **10** users that have the most points.", inline=False)
-
-		if ctx.author.id == 374622847672254466:
-			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!trivia points set <amount> <user>`\n\u2800***Info:***\n\u2800\u2800• Set the amount of points for an user.\n\u2800\u2800`!trivia reset <user>` \n\u2800***Info:***\n\u2800\u2800• Add points to an user.\n\u2800\u2800`!trivia points reset <user>`\n\u2800***Info:***\n\u2800\u2800• Reset the points for an user. \n _ _")
-
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-	
-	@help.command(aliases=['updates'])
-	async def update(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!update```")
-		em.add_field(name="***Info:***", value="• Shows the latest update and what new features have been brought to the bot!",inline=False)
-		em.add_field(name="***WARNING***", value="*This command has a cooldown of* **3** *uses each hour.*", inline=False)
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command(aliases=['multiplier'])
-	async def multipliers(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!multiplier```")
-		em.add_field(name="***Info:***", value="• Shows the multipliers for the next groups: **Staff/Mods, Server Boosters, Members**.", inline = False)
-
-		if ctx.author.id == 374622847672254466:
-			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!multiplier set <group> <multiplier>`\n\u2800***Info:***\n\u2800\u2800• Set the multiplier for a group. Groups:\n\u2800\u2800\u2800\u2800 • **Mod/Staff**\n\u2800\u2800\u2800\u2800 • **Boosters**\n\u2800\u2800\u2800\u2800 • **Members**\n\u2800\u2800\u2800\u2800 • **all** - to set for every group \n\u2800\u2800`!multiplier reset <group>` \n\u2800***Info:***\n\u2800\u2800• Reset the multiplier for a group. Groups:\n\u2800\u2800\u2800\u2800 • **Mod/Staff**\n\u2800\u2800\u2800\u2800 • **Boosters**\n\u2800\u2800\u2800\u2800 • **Members**\n\u2800\u2800\u2800\u2800 • **all** - to reset for every group \n _ _")
-
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command(aliases=['number', 'random', 'rn', 'randomnr'])
-	async def randomnumber(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!randomnumber [num1] [num2] [num3]```")
-		em.add_field(name="***Aliases:***", value="• **number**\n• **random**\n• **rn**\n• **randomnr**", inline=False)
-		em.add_field(name="***Info:***", value="If you don't provide any number, the bot will give a random number between `0` and the `largest positive integer supported by the machine`.\n\nIf you provide only one number, then the bot will give a random number between `0` and `your chosen number (num1)`.\n\nIf you provide two numbers only, then the bot will give you a random number between `your first number (num1)` and `your second number (num2)`.\n\nIf you provide all three numbers, then the bot will give a random number between `your first number (num1)` and `your second number (num2)`, that is not `your third number (num3)`, this can be used if you want a random number between 2 numbers that is not a specific one, here's some examples:\n• `10 15 13 - will give a number between 10 and 15 that is not 13`\n• `0 10 5 - will give a number between 0 and 10 that is not 5`\n• `20 100 50 - will give a number between 20 and 100 that is not 50`\n• `10 20 15 - will give a number between 10 and 20 that is not 15`", inline=False)
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def bdsm(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!bdsm set\n!bdsm results [member]\n!bdsm remove\n!bdsm test```")
-		em.add_field(name="***Info:***", value="`!bdsm results <member>` - send the bdsm results of the specified member. \n`!bdsm set` - set your bdsm result by sending the screenshot of your results. \n`!bdsm remove` - remove your bdsm results. \n`!bdsm test` - take the test, duh.", inline=False)
-		
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command(aliases=['msg-top', 'top-msg'])
-	async def top(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!top\n!top rewards```")
-		em.add_field(name="***Aliases:***", value="• **msg-top**\n• **top-msg**", inline=False)
-		em.add_field(name="***Info:***", value="• See top **15** most active members.\n• See the rewards for the weekly top.", inline=False)
-
-		if ctx.author.id == 374622847672254466:
-			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!top reset <user>`\n\u2800***Info:***\n\u2800\u2800• Reset a user's weekly messages count.\n _ _")
-		
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command(aliases=['reminder'])
-	async def remind(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!reminder <when> [what]\n!remind list\n!remind cancel <remind ID>\n!remind clear```")
-		em.add_field(name="***Commands:***", value="\n• **list**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get a list of your `10` upcoming reminders!\n\n• **cancel**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **remove**\n\u2800\u2800\u2800• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your reminder by it's ID.\n\n• **clear**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Clear all your reminders!", inline = False)
-		em.add_field(name="***Info:***", value="• Set a reminder.", inline = False)
-
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-
-	@help.command(aliases=['level', 'lvl'])
-	async def rank(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!rank [member]\n!rank leaderboard```")
-		em.add_field(name="***Commands:***", value="\n• **leaderboard**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **lb**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See top `10` highest level members!", inline = False)
-		em.add_field(name="***Aliases:***", value="• **level**\n• **lvl**", inline = False)
-		
-		if ctx.author.id == 374622847672254466:
-			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!rank set <lvl> <user>`\n\u2800***Info:***\n\u2800\u2800• Set a user's level.\n _ _")
-		
-		em.add_field(name="***Info:***", value="• Check your current level.", inline = False)
-		
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command(aliases=['role-id'])
-	async def _role_id(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!role-id <role_name>```")
-		em.add_field(name="***Info:***", value="• Get the ID of the given role.")
-
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def ppsuck(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!ppsuck```")
-		em.add_field(name="***Info:***", value="• Suck pp for some quick money.")
-
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command(aliases=['tags'])
-	async def tag(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!tag <tag_name>\n!tag create <tag_name>\n!tag delete <tag_name>\n!tag alias <tag_name>\n!tag alias create <tag_name>\n!tag alias delete <alias_name>\n!tag info <tag_name>\n!tag all\n!tag list [user]\n!tag search <query>\n!tag leaderboard```")
-		em.add_field(name="***Commands:***", value="\n• **create**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **make**\n\u2800\u2800\u2800• **add**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create a new tag!\n\u2800\u2800***Warning:***\n\u2800\u2800\u2800• They cannot contain any of the banned words (in case it does you will be banned without a second thought, so be careful!)\n\u2800\u2800\u2800• They cannot contain attachments!\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete a tag that you made.\n\n• **aliases <tag_name>**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See all the aliases a tag has!\n\n• **alias create <tag_name>**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create an alias for a tag that you own!\n\n• **alias delete <alias_name>**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete an alias from a tag that you own!\n\n• **info**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See info about a tag!\n\n• **all**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get paginated list with all tags.\n\n• **list**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get paginated list with all tags that a user owns.\n\n• **search**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Search for tags with the given query.\n\n• **leaderboard**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **lb**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See top `10` most used tags!", inline=False)
-		
-		if ctx.author.id == 374622847672254466:
-			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!tag remove <tag_name>`\n\u2800***Info:***\n\u2800\u2800• Remove a tag from the database.\n _ _")
-
-		em.add_field(name="***Info:***", value="• Allows you to tag text for later retrieval.", inline=False)
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command(aliases=['ss'])
-	async def scrs(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!scrs <domain>```")
-		em.add_field(name="***Aliases:***", value="• ss", inline=False)
-		em.add_field(name="***Info:***", value="• Take a scren shot of a domain.\n• It will **not** work if the site you try to screen shot has captcha verification.", inline=False)
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def marry(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!marry <user>```")
-		em.add_field(name="***Info:***", value="• Marry to someone <:SheepLove:787370467438362694>")
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def divorce(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!divorce```")
-		em.add_field(name="***Info:***", value="• Divorce with the person you are married to. :cry:")
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def marriedwho(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!marriedwho <user>```")
-		em.add_field(name="***Info:***", value="• See who the user is married to.")
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def idban(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="**Usage:**", description="```CSS\n!idban <user>```")
-		em.add_field(name="***Info:***", value="• Bans a user that is **not** in the server.")
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-
-	@help.command()
-	async def idunban(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="**Usage:**", description="```CSS\n!idunban <user>```")
-		em.add_field(name="***Info:***", value="• Unbans a user that is **not** in the ban appeal server or the server itself.")
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def google(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!google <query>```")
-		em.add_field(name="***Info:***", value="• Search for something on google.")
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command(aliases=['snippets'])
-	async def snippet(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!snippets\n!snippet create <snippet_name>\n!snippet delete <snippet_name>\n!snippet list [user]\n!snippet search <query>\n!snippet leaderboard```")
-		em.add_field(name="***Commands:***", value="• **create**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **make**\n\u2800\u2800\u2800• **add**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create a new snippet.\n\u2800\u2800***Requirements:***\n\u2800\u2800\u2800• Level 55+\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete a snippet you own.\n\u2800\u2800***Requirements:***\n\u2800\u2800\u2800• Level 55+\n\n• **list**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get a paginated list of snippets that a user owns.\n\n• **search**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Search for snippets containing the given query.\n\n• **leaderboard**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **lb**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• See top `10` most used snippets!", inline=False)
-
-		if ctx.author.id == 374622847672254466:
-			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!snippet remove <snippet_name>`\n\u2800***Info:***\n\u2800\u2800• Remove a snippet from the database.\n _ _")
-
-		em.add_field(name="***Info:***", value="• Send paginated list of all snippets.", inline=False)
-
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def vampify(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!vampify <text>```")
-		embed.add_field(name="***Info:***", value="• Vampify your text!")
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def clapify(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!clapify <text>```")
-		embed.add_field(name="***Info:***", value="• Clapify your text!")
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def cr(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!cr create\n!cr delete\n!cr edit color <new_color>\n!cr edit name <new_name>\n!cr share <user>\n!cr info <cr_id>\n!cr unrole <cr_id>\n!cr clean```")
-		em.add_field(name="***Commands:***", value="• **create**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Create your cr.\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your cr.\n\n• **edit color**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Edit your cr's color.\n\n• **edit name**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Edit your cr's name.\n\n• **info**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get some info about a cr.\n\n• **share**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Share your cr with someone.\n\n• **unrole**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Remove a cr from your profile. To get the cr's ID type: `!role-id <role_name>`.\n\n• **clean**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Remove all cr's that you don't own from your profile.")
-		em.add_field(name="***Requirements:***", value="• Level 40 +", inline=False)
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def reclist(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!reclist [user]\n!reclist set <recommendations>\n!reclist add <recommendations>\n!reclist delete```")
-		em.add_field(name="***Commands:***", value="• **set**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set up your reclist.\n\n • **add**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Add reccomendations up your reclist.\n\n• **delete**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your reclist.\n\n• **raw**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get a raw version of your reclist!\n*• This is used so you can copy paste your old reclist, and then remove what you want to remove from it so you don't have to type your reclist over and over again.*", inline=False)
-		
-		if ctx.author.id == 374622847672254466:
-			em.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800`!reclist remove <user>`\n\u2800***Info:***\n\u2800\u2800• Remove a user's reclist from the database.\n _ _")
-
-		em.add_field(name="Info", value="• Check your or someone else's reclist\n• Reclist stands for recommendations list, please recommend anime only!", inline=False)
-
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def race(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!race```")
-		em.add_field(name="***Info:***", value="• Get into a race and win or lose some money depending on your luck.")
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def intro(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!intro | delete```")
-		em.add_field(name="***Info:***", value="• Set your intro | Delete your intro")
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command(aliases=['wi'])
-	async def whois(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!whois [user]```")
-		em.add_field(name="***Aliases:***", value="• wi", inline=False)
-		em.add_field(name="***Info:***", value="• Check someone's intro!", inline=False)
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command(aliases=['b-day', 'bday'])
-	async def birthday(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!birthday [user]\n!birthday set month/day\n!birthday remove\n!birthday upcoming```")
-		embed.add_field(name="***Aliases:***", value="• b-day\n• bday", inline=False)
-		embed.add_field(name="***Commands:***", value="• **set**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set up your birthday.\n**Example:**\n\u2800`!birthday set 04/27`\n\u2800`!birthday set 01/09`\n\u2800`!birthday set 04/24`\n\u2800`!birthday set 12/01`\n\n • **delete**\n\n\u2800\u2800***Aliases:***\n\n\u2800\u2800\u2800• **remove**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Delete your birthday from the database.\n\n • **upcoming**\n\n\u2800\u2800***Aliases:***\n\n\u2800\u2800\u2800• **top**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Get the next `5` upcoming birthdays.", inline=False)
-		embed.add_field(name="***Info:***", value="• See when someone's birthday is.")
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def crime(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!crime```")
-		embed.add_field(name="***Info:***", value="• Commit crimes that range between `small-medium-big`, and depending on which one you get, the more money you get, but be careful! You can lose the money as well.")
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command(aliases=['guess'])
-	async def gtn(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!guess```")
-		embed.add_field(name="***Aliases:***", value="• gtn", inline=False)
-		embed.add_field(name="***Info:***", value="• Play guess the number and if you win you'll get some money as prize, but if you lose it then some money will be taken from your wallet.", inline=False)
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-
-	@help.command()
-	async def work(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!work```")
-		embed.add_field(name="***Info:***", value="• Work and get `5000` coins each hour!")
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def fight(self, ctx):
-		embed = discord.Embed(title='***Usage:***', description='```CSS\n!fight <user>```', color=color.lightpink)
-		embed.add_field(name="***Info:***", value="• Fight someone, the outcome is always random!")
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command(aliases=['8ball'])
-	async def _8ball(self, ctx):
-		embed = discord.Embed(title='***Usage:***', description='```CSS\n!8ball <question>```', color=color.lightpink)
-		embed.add_field(name="***Info:***", value="• Ask the 8ball a question and get an answer.")
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def boomerrate(self, ctx):
-		embed = discord.Embed(title='***Usage:***', description='```CSS\n!boomerrate [user]```', color=color.lightpink)
-		embed.add_field(name="***Info:***", value="• See how boomer someone is.")
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def hornyrate(self, ctx):
-		embed = discord.Embed(title='***Usage:***', description='```CSS\n!hornyrate [user]```', color=color.lightpink)
-		embed.add_field(name="***Info:***", value="• See how horny someone is.")
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def gayrate(self, ctx):
-		embed = discord.Embed(title='***Usage:***', description='```CSS\n!gayrate [user]```', color=color.lightpink)
-		embed.add_field(name="***Info:***", value="• See how gay someone is.")
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def straightrate(self, ctx):
-		embed = discord.Embed(title='***Usage:***', description='```CSS\n!straightrate [user]```', color=color.lightpink)
-		embed.add_field(name="***Info:***", value="• See how straight someone is.")
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def simprate(self, ctx):
-		embed = discord.Embed(title='***Usage:***', description='```CSS\n!simprate [user]```', color=color.lightpink)
-		embed.add_field(name="***Info:***", value="• See how simp someone is.")
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def ee(self, ctx):
-		ee = discord.Embed(title="***Usage:***", description="```CSS\n!ee <emote>```", color=color.lightpink)
-		ee.add_field(name="***Info:***", value="• Enlarges the chosen emote.")
-		await ctx.send(embed=ee, reference=ctx.replied_reference)
-
-	@help.command()
-	async def nick(self, ctx):
-		nick = discord.Embed(title="***Usage:***", description="```CSS\n!nick <newnickname>\n!nick remove```", color=color.lightpink)
-		nick.add_field(name="***Commands:***", value="• **remove**\n\n\u2800\u2800***Aliases:***\n\u2800\u2800\u2800• **reset**\n\u2800\u2800\u2800• **off**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Remove your nickname.")
-		nick.add_field(name="***Info:***", value="• Change your nickname", inline=False)
-		nick.add_field(name="***Requirements:***", value="• Level 3 +", inline=False)
-		await ctx.send(embed=nick, reference=ctx.replied_reference)
-
-	@help.command()
-	async def profile(self, ctx):
-		profile = discord.Embed(title="***Usage:***", description="```CSS\n!profile [user]```", color=color.lightpink)
-		profile.add_field(name="***Info:***", value="• Get a user's profile info.")
-		await ctx.send(embed=profile, reference=ctx.replied_reference)
-
-	@help.command()
-	async def created(self, ctx):
-		created = discord.Embed(title="***Usage:***", description="```CSS\n!created [user]```", color=color.lightpink)
-		created.add_field(name="***Info:***", value="• See when a user joined discord / created their account.")
-		await ctx.send(embed=created, reference=ctx.replied_reference)
-
-	@help.command()
-	async def joined(self, ctx):
-		joined = discord.Embed(title="***Usage:***", description="```CSS\n!joined [user]```", color=color.lightpink)
-		joined.add_field(name="***Info:***", value="• See when a user joined the server.")
-		await ctx.send(embed=joined, reference=ctx.replied_reference)
-
-	@help.command(aliases=["avatar"])
-	async def av(self, ctx):
-		av = discord.Embed(title="***Usage:***", description="```CSS\n!avatar [user]```", color=color.lightpink)
-		av.add_field(name="***Aliases:***", value="• av", inline=False)
-		av.add_field(name="***Info:***", value="• See user's avatar.", inline=False)
-		await ctx.send(embed=av, reference=ctx.replied_reference)
-
-	@help.command(aliases=["server", "si", "sinfo"])
-	async def serverinfo(self, ctx):
-		serverinfo = discord.Embed(title="***Usage:***", description="```CSS\n!serverinfo```", color=color.lightpink)
-		serverinfo.add_field(name="***Aliases:***", value="• server \n• sinfo \n• si", inline=False)
-		serverinfo.add_field(name="***Info:***", value="• Get some info about the server.", inline=False)
-		await ctx.send(embed=serverinfo, reference=ctx.replied_reference)
-
-	@help.command()
-	async def actions(self, ctx):
-		actions = discord.Embed(title="***Usage:***", description="```CSS\n!actions```", color=color.lightpink)
-		actions.add_field(name="***Info:***", value="• See a list of all existing actions.")
-		await ctx.send(embed=actions, reference=ctx.replied_reference)
-
-	@help.command()
-	async def waifu(self, ctx):
-		waifu = discord.Embed(title="***Usage:***", description="```CSS\n!waifu```", color=color.lightpink)
-		waifu.add_field(name="***Info:***", value="• Get a random waifu pic.")
-		await ctx.send(embed=waifu, reference=ctx.replied_reference)
-
-	@help.command(aliases=["inv"])
-	async def invite(self, ctx):
-		invite = discord.Embed(title="***Usage:***", description="```CSS\n!invite```", color=color.lightpink)
-		invite.add_field(name="***Aliases:***", value="• inv", inline=False)
-		invite.add_field(name="***Info:***", value="• Get the invite to the server.", inline=False)
-		await ctx.send(embed=invite, reference=ctx.replied_reference)
-
-	@help.command()
-	async def serverad(self, ctx):
-		ad = discord.Embed(title="***Usage:***", description="```CSS\n!serverad```", color=color.lightpink)
-		ad.add_field(name="***Info:***", value="• Get the server's advertising text.", inline=False)
-		await ctx.send(embed=ad, reference=ctx.replied_reference)
-
-	@help.command()
-	async def rawad(self, ctx):
-		rawad = discord.Embed(title="***Usage:***", description="```CSS\n!rawad```", color=color.lightpink)
-		rawad.add_field(name="***Info:***", value="• Get the server's advertising text in raw format.", inline=False)
-		await ctx.send(embed=rawad)
-
-	@help.command(aliases=["untill-partner"])
-	async  def up(self, ctx):
-		up = discord.Embed(title="***Usage:***", description="```CSS\n!untill-partner```", color=color.lightpink)
-		up.add_field(name="***Info:***", value="• See how many members the server needs untill it's eligible for applying for the discord partnership program.", inline=False)
-		await ctx.send(embed=up, reference=ctx.replied_reference)
-
-	@help.command()
-	async def botinfo(self, ctx):
-		botinfo = discord.Embed(title="***Usage:***", description="```CSS\n!botinfo```", color=color.lightpink)
-		botinfo.add_field(name="***Info:***", value="• See info about <@!751724369683677275>.", inline=False)
-		await ctx.send(embed=botinfo, reference=ctx.replied_reference)
-
-	@help.command()
-	async def uptime(self, ctx):
-		uptime = discord.Embed(title="***Usage:***", description="```CSS\n!uptime```", color=color.lightpink)
-		uptime.add_field(name="***Info:***", value="• Check the bot's uptime.", inline=False)
-		await ctx.send(embed=uptime, reference=ctx.replied_reference)
-
-	@help.command()
-	async def ping(self, ctx):
-		ping = discord.Embed(title="***Usage:***", description="```CSS\n!ping```", color=color.lightpink)
-		ping.add_field(name="***Info:***", value="• Check the bot's ping.", inline=False)
-		await ctx.send(embed=ping, reference=ctx.replied_reference)
-
-	@help.command()
-	@commands.has_role("Staff")
-	async def clear(self, ctx):
-		clear = discord.Embed(title="***Usage:***", description="```CSS\n!clear <amount>```", color=color.lightpink)
-		clear.add_field(name="***Info:***", value="• Clear's the chat of the amount of messages given..", inline=False)
-		await ctx.send(embed=clear, reference=ctx.replied_reference)
-
-	@help.command()
-	@commands.has_role("Staff")
-	async def tempmute(self, ctx):
-		tempmute = discord.Embed(title="***Usage:***", description="```CSS\n!tempmute <user> <time>```", color=color.lightpink)
-		tempmute.add_field(name="***Example:***", value="!tempmute @BananaBoy69 1 s|m|h|d", inline=False)
-		tempmute.add_field(name="***Info:***", value="• s - second\n• m - minute\n• h - hour\n• d - day\n\n• Mutes a user with the  given time.", inline=False)
-		await ctx.send(embed=tempmute, reference=ctx.replied_reference)
-
-	@help.command()
-	@commands.has_role("Staff")
-	async def unban(self, ctx):
-		unban = discord.Embed(title="***Usage:***", description="```CSS\n!unban <user>```", color=color.lightpink)
-		unban.add_field(name="***Info:***", value="• This command only works in the ban appeal server, if the user is in that server ;)).", inline=False)
-		await ctx.send(embed=unban, reference=ctx.replied_reference)
-
-	@help.command(aliases=['ps'])
-	@commands.has_role("Staff")
-	async def partnership(self, ctx):
-		partnership = discord.Embed(title="***Usage:***", description="```CSS\n!partnership <ad>```", color=color.lightpink)
-		partnership.add_field(name="***Aliases:***", value="• ps", inline=False)
-		partnership.add_field(name="***Info:***", value="• ad - the ad of the server that the partnership is made with.\n\n**USE IT ONLY IN <#750160851822182480>**", inline=False)
-		await ctx.send(embed=partnership, reference=ctx.replied_reference)
-
-	@help.command()
-	async def suggest(self, ctx):
-		suggest = discord.Embed(title="***Usage:***", description="```CSS\n!suggest <suggestion>```", color=color.lightpink)
-		suggest.add_field(name="***Info:***", value="• Make a suggestion in <#750160850593251454>\n• There is 1 minute cooldown between each suggestion per user.", inline=False)
-
-		if ctx.author.id == 374622847672254466:
-			suggest.add_field(name="_ _ \n***Dev Only:***", value="_ _ \n\u2800***Usage***: \n\u2800\u2800```CSS\n!suggest block <members>\n!suggest unblock <members>\n!suggest blocks```\n\u2800***Info***:\n\u2800\u2800• Block / Unblock people from using the `!suggest <suggestion>` command , or get paginated list of all blocked users.", inline=False)
-
-		await ctx.send(embed=suggest, reference=ctx.replied_reference)
-
-	@help.command()
-	async def spotify(self, ctx):
-		spotify = discord.Embed(title="***Usage:***", description="```CSS\n!spotify [user]```", color=color.lightpink)
-		spotify.add_field(name="***Info:***", value="• Show's what song you're listening to, the artist & the album.\n• You gotta have spotify as activity and no other custom activity in order for this command to work.", inline=False)
-		await ctx.send(embed=spotify, reference=ctx.replied_reference)
-
-	@help.command()
-	async def membercount(self, ctx):
-		membercount = discord.Embed(title="***Usage:***", description="```CSS\n!membercount```", color=color.lightpink)
-		membercount.add_field(name="***Info:***", value="• See how many members ViHill Corner has (**bots are not included**).", inline=False)
-		await ctx.send(embed=membercount, reference=ctx.replied_reference)
-
-	@help.command()
-	async def meme(self, ctx):
-		meme = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!meme```")
-		meme.add_field(name="***Info:***", value="• Sends a random meme! ;3", inline=False)
-		await ctx.send(embed=meme, reference=ctx.replied_reference)
-
-	@help.command()
-	async def cat(self, ctx):
-		cat = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!cat```")
-		cat.add_field(name="***Info:***", value="• Sends a random cat pic! ;3", inline=False)
-		await ctx.send(embed=cat, reference=ctx.replied_reference)
-
-	@help.command()
-	async def dog(self, ctx):
-		dog = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!dog```")
-		dog.add_field(name="***Info:***", value="• Sends a random dog pic! ;3", inline=False)
-		await ctx.send(embed=dog, reference=ctx.replied_reference)
-
-	@help.command()
-	async def snipe(self, ctx):
-		em = discord.Embed(title='***Usage:***', description='```CSS\n!snipe```', color=color.lightpink)
-		em.add_field(name="***Info:***", value="• Snipe the last deleted message in the channel!", inline=False)
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command()
-	async def nsfw(self, ctx):
-		if "Staff" in [role.name for role in ctx.message.author.roles]:
-
-			em = discord.Embed(color=color.lightpink, title='***Usage:***', description='```CSS\n!nsfw block <users>\n!nsfw unblock <users>\n!nsfw blocks```')
-			em.add_field(name="***Info:***", value="• Block / Unblock people from using the `!nsfw me add` command & seeing the nsfw channel, or get paginated list of all blocked users.", inline=False)
-			await ctx.send(embed=em, reference=ctx.replied_reference)
-
-		else:
-
-			em = discord.Embed(color=color.lightpink, title='***Usage:***', description='```CSS\n!nsfw <category>```')
-			em.add_field(name="***Categories:***", value="Just type `!nsfw` in the nsfw channel to get the list of categories.", inline=False)
-			em.add_field(name="***Commands:***", value="• **me**\n\u2800\u2800***Usage:***\n\u2800\u2800\u2800• `!nsfw me add`\n\u2800\u2800\u2800• `!nsfw me remove`\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Toggle wether you see the nsfw channel or not.\n _ _ ")
-			em.set_footer(text="USE ONLY IN THE NSFW CHANNEL", icon_url=ctx.author.avatar_url)
-			await ctx.send(embed=em, reference=ctx.replied_reference)
-
-	@help.command(aliases=['calculate, calculator'])
-	async def calc(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title='***Usage:***', description='```CSS\n!calculator <operation>```')
-		embed.add_field(name="***Aliases:***", value="• calculate\n• calc", inline=False)
-		embed.add_field(name="***Info:***", value="• Basic calculator for basic operations!", inline=False)
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	@commands.has_role('Staff')
-	async def slowmode(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title="***Usage:***", description="```CSS\n!slowmode <time>```")
-		embed.add_field(name="***Info:***", value="• Change the slowmode of the current channel.", inline=False)
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def topic(self, ctx):
-		embed = discord.Embed(color=color.lightpink, title='***Usage:***', description='```CSS\n!topic```')
-		embed.add_field(name="***Info:***", value="• Get a random question or a random topic to talk about.", inline=False)
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command(aliases=['balance'])
-	async def bal(self, ctx):
-		if ctx.author.id == 374622847672254466:
-			embedd = discord.Embed(title="***Usage:***", description="```CSS\n!bal\n!bal add-wallet <amount> [user]\n!bal add-bank <amount> [user]\n!bal set-wallet <amount> [user]\n!bal set-bank <amount> [user]\n!bal reset [user]```", color=color.lightpink)
-			embedd.add_field(name="***Commands:***", value="• **add-wallet**\n\n\u2800\u2800\u2800***Info:***\n\u2800\u2800\u2800• Add money to an user's wallet.\n\n• **add-bank**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Add money to an user's bank.\n\n• **set-wallet**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set user's wallet money.\n\n• **set-bank**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Set user's bank money.\n\n• **reset**\n\n\u2800\u2800***Info:***\n\u2800\u2800\u2800• Reset user's balance.")
-			embedd.add_field(name="***Info:***", value="• Check your or another user's balance!", inline=False)
-			await ctx.send(embed=embedd, reference=ctx.replied_reference)
-
-		else:
-			embed = discord.Embed(title="***Usage:***", description="```CSS\n!bal [user]```", color=color.lightpink)
-			embed.add_field(name="***Info:***", value="• Check your or another user's balance!", inline=False)
-			await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command(aliases=['deposit'])
-	async def dep(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```CSS\n!deposit [amount]```", color=color.lightpink)
-		embed.add_field(name="***Aliases:***", value="• dep", inline=False)
-		embed.add_field(name="***Info:***", value="• Deposit the amount of money into your bank.", inline=False)
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command(aliases=['withdraw', "with"])
-	async def _with(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```CSS\n!withdraw [amount]```", color=color.lightpink)
-		embed.add_field(name="***Aliases:***", value="• with", inline=False)
-		embed.add_field(name="***Info:***", value="• Withdraw the amount of money from your bank.", inline=False)
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def beg(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```CSS\n!beg```", color=color.lightpink)
-		embed.add_field(name="***Info:***", value="• Beg for some money, peasant.", inline=False)
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def steal(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```CSS\n!steal [user]```")
-		embed.add_field(name="***Aliases:***", value="• rob", inline=False)
-		embed.add_field(name="***Info:***", value="• Steal some money from someone's wallet.", inline=False)
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command()
-	async def slots(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```CSS\n!slots [amount]```", color=color.lightpink)
-		embed.add_field(name="***Info:***", value="• Bet your money in the slots machine!", inline=False)
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.command(aliases=['gift'])
-	async def give(self, ctx):
-		embed = discord.Embed(title="***Usage:***", description="```CSS\n!give [user] [amount]```", color=color.lightpink)
-		embed.add_field(name="***Info:***", value="• Be a kind person and give some of your money from ur bank to someone else's!", inline=False)
-		await ctx.send(embed=embed, reference=ctx.replied_reference)
-
-	@help.error
-	async def help_error(self, ctx, error):
-		if isinstance(error, commands.TooManyArguments):
 			return
+		
+			# Help for a command
 
+		command = get_command.lower()
+		found = False
+		for i in range(len(self.allCommands)):
+			if command in self.allCommands[i]['_name']:
+				found = True
+				if self.allCommands[i]['hasChild'] == True:
+					childList = []
+					for e in range(len(self.childCommands)):
+						if self.childCommands[e]['Parent'] in self.allCommands[i]['_name']:
+							if self.childCommands[e]['staffOnly'] == True:
+								if "Staff" in [role.name for role in ctx.author.roles]:
+									childList.append(self.childCommands[e])
+							elif self.childCommands[e]['devOnly'] == True:
+								if ctx.author.id == 374622847672254466:
+									childList.append(self.childCommands[e])
+							else:
+								childList.append(self.childCommands[e])
+					try:
+						self.allCommands[i]['help'] = f"{self.allCommands[i]['help1']}{self.allCommands[i]['help2']}"
+					except KeyError:
+						pass
+					entries = [self.allCommands[i]] + childList
+					p = HelpPages(entries=entries, per_page=3, title=f"Here's help for command `{self.allCommands[i]['_name'][0]}`", color=color.lightpink)
+					await p.start(ctx)
+					return
+				
+				entries = [self.allCommands[i]]
+				p = HelpPages(entries=entries, per_page=3, title=f"Here's help for command `{self.allCommands[i]['_name'][0]}`", color=color.lightpink)
+				await p.start(ctx)
+				return
+		
+		if found == False:
+			return await ctx.reply("Command not found! Type `!help` for a list of commands.")
 
+	@help.command(aliases=['eco'])
+	async def economy(self, ctx):
+		for i in range(len(self.ecoCommands)):
+			try:
+				self.ecoCommands[i]['help'] = self.ecoCommands[i]['help1']
+			except KeyError:
+				pass
+		p = HelpPages(entries=self.ecoCommands, per_page=5, color=color.lightpink, title="Here are all the `Economy` commands:")
+		await p.start(ctx)
+	
+	@help.command()
+	async def fun(self, ctx):
+		for i in range(len(self.funCommands)):
+			try:
+				self.funCommands[i]['help'] = self.funCommands[i]['help1']
+			except KeyError:
+				pass
+		p = HelpPages(entries=self.funCommands, per_page=5, color=color.lightpink, title="Here are all the `Fun` commands:")
+		await p.start(ctx)
+	
+	@help.command(aliases=['warnings', 'warns'])
+	async def warn(self, ctx):
+		for i in range(len(self.warnCommands)):
+			try:
+				self.warnCommands[i]['help'] = self.warnCommands[i]['help1']
+			except KeyError:
+				pass
+		p = HelpPages(entries=self.warnCommands, per_page=3, color=color.lightpink, title="Here are all the `Warn` commands:")
+		await p.start(ctx)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	@help.command(aliases=['information', 'informative'])
+	async def info(self, ctx):
+		for i in range(len(self.infoCommands)):
+			try:
+				self.infoCommands[i]['help'] = self.infoCommands[i]['help1']
+			except KeyError:
+				pass
+		p = HelpPages(entries=self.infoCommands, per_page=4, color=color.lightpink, title="Here are all the `Infomative` commands:")
+		await p.start(ctx)
+	
+	@help.command(aliases=['utilities', 'util', 'utils'])
+	async def utility(self, ctx):
+		for i in range(len(self.utilityCommands)):
+			try:
+				self.utilityCommands[i]['help'] = self.utilityCommands[i]['help1']
+			except KeyError:
+				pass
+		p = HelpPages(entries=self.utilityCommands, per_page=5, color=color.lightpink, title="Here are all the `Utility` commands:")
+		await p.start(ctx)
+	
+	@help.command(aliases=['miscellaneous'])
+	async def misc(self, ctx):
+		for i in range(len(self.miscCommands)):
+			try:
+				self.miscCommands[i]['help'] = self.ecoCommands[i]['help1']
+			except KeyError:
+				pass
+		p = HelpPages(entries=self.miscCommands, per_page=5, color=color.lightpink, title="Here are all the `Miscellaneous` commands:")
+		await p.start(ctx)
+	
+	@help.command(aliases=['feature', 'features'])
+	async def featured(self, ctx):
+		for i in range(len(self.featuredCommands)):
+			try:
+				self.featuredCommands[i]['help'] = self.featuredCommands[i]['help1']
+			except KeyError:
+				pass
+		p = HelpPages(entries=self.featuredCommands, per_page=5, color=color.lightpink, title="Here are all the `Featured` commands:")
+		await p.start(ctx)
+	
+	@help.command(aliases=['dev'])
+	async def developer(self, ctx):
+		em = discord.Embed(title="[COMING SOON]")
+		return await ctx.send(embed=em)
+		for i in range(len(self.developerCommands)):
+			try:
+				self.developerCommands[i]['help'] = self.developerCommands[i]['help1']
+			except KeyError:
+				pass
+		p = HelpPages(entries=self.developerCommands, per_page=5, color=color.lightpink, title="Here are all the `Developer` commands:")
+		await p.start(ctx)
+	
+	@help.command(aliases=['mod', 'admin'])
+	async def moderator(self, ctx):
+		em = discord.Embed(title="[COMING SOON]")
+		return await ctx.send(embed=em)
+		for i in range(len(self.moderatorCommands)):
+			try:
+				self.moderatorCommands[i]['help'] = self.moderatorCommands[i]['help1']
+			except KeyError:
+				pass
+		p = HelpPages(entries=self.moderatorCommands, per_page=5, color=color.lightpink, title="Here are all the `Moderator` commands:")
+		await p.start(ctx)
+		
 
 
 def setup(client):

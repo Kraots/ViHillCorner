@@ -38,10 +38,12 @@ class Tags(commands.Cog):
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 
-	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra = False)
+	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra = False, aliases=['tags'])
 	async def tag(self, ctx, *, tag_name: str = None):
 		if tag_name is None:
-			return await ctx.reply("**!tag <tag_name>**")
+			command = self.client.get_command('help')
+			await ctx.invoke(command, 'tag')
+			return
 		data = {}
 
 		get_by_name = collection.find({'the_tag_name': tag_name.lower()})
@@ -73,17 +75,6 @@ class Tags(commands.Cog):
 		except:
 			await ctx.send('No tags found. %s' % (ctx.author.mention))
 	
-
-	@commands.command()
-	async def tags(self, ctx, member: discord.Member = None):
-		if member is None:
-			member = ctx.author
-		entries = collection.find({'tag_owner_id': member.id})
-		try:
-			p = TagPages(entries = entries, per_page = 7)
-			await p.start(ctx)
-		except:
-			await ctx.send("`{}` has no tags.".format(member))
 
 	@tag.command(aliases=['list'])
 	async def _list(self, ctx, member: discord.Member = None):

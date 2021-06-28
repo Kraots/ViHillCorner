@@ -1,5 +1,6 @@
 import asyncio
 import discord
+from discord.colour import Color
 from discord.ext.commands import Paginator as CommandPaginator
 from discord.ext import menus
 
@@ -125,6 +126,48 @@ class SimplePages(RoboPages):
 	Basically an embed with some normal formatting.
 	"""
 
-	def __init__(self, entries, *, per_page=12):
+	def __init__(self, entries, *, per_page=12, color=None):
 		super().__init__(SimplePageSource(entries, per_page=per_page))
-		self.embed = discord.Embed(colour=discord.Color.blurple())
+		if color == None:
+			color = discord.Color.blurple()
+		self.embed = discord.Embed(colour=color)
+
+
+
+
+class RoboHelp(menus.MenuPages):
+	def __init__(self, source):
+		super().__init__(source=source, check_embeds=True)
+
+	async def finalize(self, timed_out):
+		try:
+			if timed_out:
+				await self.message.clear_reactions()
+			else:
+				await self.message.delete()
+		except discord.HTTPException:
+			pass
+
+class NewCustomHelp(menus.ListPageSource):
+	def __init__(self, entries, *, per_page=12):
+		super().__init__(entries, per_page=per_page)
+		
+	async def format_page(self, menu, entries):
+		pages = []
+		for index, entry in enumerate(entries, start=menu.current_page * self.per_page):
+			pages.append(f'{entry}')
+		
+		maximum = self.get_max_pages()
+		if maximum > 1:
+			footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} commands)'
+			menu.embed.set_footer(text=footer)
+	
+		menu.embed.description = "\n".join(pages)
+		return menu.embed
+
+class CustomHelp(RoboHelp):
+	def __init__(self, entries, *, per_page=12, title="", color=None):
+		super().__init__(NewCustomHelp(entries, per_page=per_page))
+		if color == None:
+			color = discord.Color.blurple()
+		self.embed = discord.Embed(colour=color, title=title)

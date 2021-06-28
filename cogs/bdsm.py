@@ -22,8 +22,8 @@ class BdsmResults(commands.Cog):
 
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def bdsm(self, ctx):
-		em = discord.Embed(color=color.lightpink, title="BDSM commands:	", description="`!bdsm results <member>` - send the bdsm results of the specified member. \n`!bdsm set` - set your bdsm result by sending the screenshot of your results. \n`!bdsm remove` - remove your bdsm results. \n`!bdsm test` - take the test, duh.")
-		await ctx.send(embed=em)
+		command = self.client.get_command('help')
+		await ctx.invoke(command, 'bdsm')
 	
 	@bdsm.command()
 	async def set(self, ctx):
