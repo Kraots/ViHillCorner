@@ -5,7 +5,7 @@ import motor.motor_asyncio
 import os
 import utils.colors as color
 import asyncio
-
+import numpy as np
 
 class ReclistPageEntry:
 	def __init__(self, entry):
@@ -41,7 +41,7 @@ class Reclist(commands.Cog):
 		user = member
 		if results != None:
 			entries = results['reclist']
-			p = ReclistPages(entries=entries, per_page=10, title=f"Here's {ctx.author.display_name} reclist:", color=color.lightpink)
+			p = ReclistPages(entries=entries, per_page=10, title=f"Here's {ctx.author.display_name} reclist:", color=color.reds)
 			await p.start(ctx)
 
 		else:
@@ -69,7 +69,7 @@ class Reclist(commands.Cog):
 
 
 	@reclist.command()
-	async def add(self, ctx, *, args):
+	async def add(self, ctx, *, args: str):
 		user = ctx.author
 		results = await collection.find_one({"_id": user.id})
 		reclist = list(filter(bool, args.splitlines()))
@@ -78,11 +78,7 @@ class Reclist(commands.Cog):
 			await collection.insert_one(post)
 		else:
 			rec = results['reclist']
-			for i in range(len(rec)):
-				for n in range(len(reclist)):
-					if str(reclist[n]).lower() != str(rec[i]).lower():
-						rec.append(reclist[n])
-			await collection.update_one({"_id": user.id}, {"$set":{"reclist": rec}})
+			await collection.update_one({"_id": user.id}, {"$set":{"reclist": rec + reclist}})
 		await ctx.message.delete()
 		await ctx.send("Succesfully added to your reclist! {}".format(user.mention))
 
