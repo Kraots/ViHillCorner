@@ -202,7 +202,7 @@ class Help(commands.Cog):
 				{'Parent': 'nsfw', 'name': '!nsfw unblock <user>', 'help': 'Unblock the user from using the nsfw channnel and let them use it again.', 'devOnly': False, 'staffOnly': True}, 
 				{'Parent': 'nsfw', 'name': '!nsfw blocks', 'help': 'See all the nsfw blocked users that do not have access in the nsfw channel.', 'devOnly': False, 'staffOnly': True}, 
 				{'Parent': 'rank', 'name': '!rank [leaderboard|top]', 'help': 'See top `10` highest level members.', 'devOnly': False, 'staffOnly': False}, 
-				{'Parent': 'rank', 'name': '!rank set <lvl> [user]', 'help': '', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'rank', 'name': '!rank set <lvl> [user]', 'help': 'Set the level for the user.', 'devOnly': True, 'staffOnly': False}, 
 				{'Parent': 'rtfm', 'name': '!rtfm [master|2.0]', 'help': 'Gives you a documentation link for a discord.py master entity.', 'devOnly': False, 'staffOnly': False}, 
 				{'Parent': 'rtfm', 'name': '!rtfm [py|python]', 'help': 'Gives you a documentation link for a python entity.', 'devOnly': False, 'staffOnly': False}, 
 				{'Parent': 'remind', 'name': '!reminder list', 'help': 'Get a list of your 10 upcoming reminders.', 'devOnly': False, 'staffOnly': False}, 
