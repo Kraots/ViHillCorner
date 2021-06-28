@@ -247,7 +247,7 @@ class command(commands.Cog):
 		commit_date = format_date(commits.commit.author.date)
 		em = discord.Embed(title="Here is what's new to the bot:", description="{} \n\n\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800{}".format(commit, commit_date), color=color.lightpink)
 		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-		await ctx.send(embed=em)
+		await ctx.send(embed=em, reference=ctx.replied_reference)
 
 	@update.error
 	async def update_error(self, ctx, error):
