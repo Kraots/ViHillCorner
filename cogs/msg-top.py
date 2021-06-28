@@ -44,10 +44,10 @@ class MessageTop(commands.Cog):
 					await user.send("Congrats. You placed `%sst` in the weekly top! Your reward is **50,000** XP." % (index))
 				elif index == 2:
 					await collection.update_one({'_id': result['_id']}, {'$inc':{'xp': 30000}})
-					await user.send("Congrats. You placed `%s2nd` in the weekly top! Your reward is **30,000** XP." % (index))
+					await user.send("Congrats. You placed `%snd` in the weekly top! Your reward is **30,000** XP." % (index))
 				elif index == 3:
 					await collection.update_one({'_id': result['_id']}, {'$inc':{'xp': 20000}})
-					await user.send("Congrats. You placed `%s3rd` in the weekly top! Your reward is **20,000** XP." % (index))
+					await user.send("Congrats. You placed `%srd` in the weekly top! Your reward is **20,000** XP." % (index))
 
 			await collection.update_many({}, {"$set": {"messages_count": 0}})
 			x = dateNow + relativedelta(weeks = 1)
