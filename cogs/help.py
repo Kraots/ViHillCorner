@@ -49,109 +49,138 @@ class Help(commands.Cog):
 		self.prefix = "!"
 
 		self.ecoCommands = [
-				{'_name': ['register'], 'name': '!register', 'help': 'Register yourself to be able to use the economy commands.', 'hasChild': False}, 
-				{'_name': ['unregister'], 'name': '!unregister', 'help': 'Unregister yourself, you won\'t be able to use the economy commands anymore.', 'hasChild': False}, 
+				{'_name': ['register'], 'name': '!register', 'help': 'Register yourself to be able to use the economy commands.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['unregister'], 'name': '!unregister', 'help': 'Unregister yourself, you won\'t be able to use the economy commands anymore.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['balance', 'bal', 'bank'], 'name': '![balance|bal] [user]', 'help': 'Check your or another user\'s balance.', 'hasChild': True}, 
-				{'_name': ['deposit', 'dep'], 'name': '![deposit|dep] <amount>', 'help': 'Deposit the amount of money into your bank.', 'hasChild': False}, 
-				{'_name': ['withdraw', 'with'], 'name': '![withdraw|with] <amount>', 'help': 'Withdraw the amount of money from your bank.', 'hasChild': False}, 
-				{'_name': ['steal', 'rob'], 'name': '![steal|rob] <user>', 'help': 'Steal some money from someone\'s wallet.', 'hasChild': False}, 
-				{'_name': ['slots'], 'name': '!slots <amount>', 'help': 'Bet your money in the slots machine.', 'hasChild': False}, 
-				{'_name': ['beg'], 'name': '!beg', 'help': 'Beg for some money. This is the easiest way of getting some money in the beginning.', 'hasChild': False}, 
-				{'_name': ['give', 'gift'], 'name': '![give|gift] <user> <amount>', 'help': 'Be a kind person and give some of your money from your **bank** to someone else\'s.', 'hasChild': False}, 
-				{'_name': ['work'], 'name': '!work', 'help': 'Work and get `5000` coins each hour.', 'hasChild': False}, 
-				{'_name': ['crime'], 'name': '!crime', 'help': 'Commit crimes that range between `small-medium-big`, and depending on which one you get, the more money you get, but be careful! You can lose the money as well.', 'hasChild': False}, 
-				{'_name': ['guess', 'gtn'], 'name': '![guess|gtn]', 'help': 'Play guess the number and if you win you\'ll get some money as prize, but if you lose it then some money will be taken from your wallet.', 'hasChild': False}, 
-				{'_name': ['race'], 'name': '!race', 'help': 'Get into a race and win or lose some money depending on your luck.', 'hasChild': False}, 
-				{'_name': ['ppsuck'], 'name': '!ppsuck', 'help': 'Suck pp for some quick money.', 'hasChild': False}
+				{'_name': ['deposit', 'dep'], 'name': '![deposit|dep] <amount>', 'help': 'Deposit the amount of money into your bank.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['withdraw', 'with'], 'name': '![withdraw|with] <amount>', 'help': 'Withdraw the amount of money from your bank.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['steal', 'rob'], 'name': '![steal|rob] <user>', 'help': 'Steal some money from someone\'s wallet.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['slots'], 'name': '!slots <amount>', 'help': 'Bet your money in the slots machine.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['beg'], 'name': '!beg', 'help': 'Beg for some money. This is the easiest way of getting some money in the beginning.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['give', 'gift'], 'name': '![give|gift] <user> <amount>', 'help': 'Be a kind person and give some of your money from your **bank** to someone else\'s.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['work'], 'name': '!work', 'help': 'Work and get `5000` coins each hour.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['crime'], 'name': '!crime', 'help': 'Commit crimes that range between `small-medium-big`, and depending on which one you get, the more money you get, but be careful! You can lose the money as well.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['guess', 'gtn'], 'name': '![guess|gtn]', 'help': 'Play guess the number and if you win you\'ll get some money as prize, but if you lose it then some money will be taken from your wallet.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['race'], 'name': '!race', 'help': 'Get into a race and win or lose some money depending on your luck.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['ppsuck'], 'name': '!ppsuck', 'help': 'Suck pp for some quick money.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}
 				]
 		
 		self.funCommands = [
-				{'_name': ['meme'], 'name': '!meme', 'help': 'Sends a random meme! ;3', 'hasChild': False}, 
-				{'_name': ['cat'], 'name': '!cat', 'help': 'Sends a random cat pic! ;3', 'hasChild': False}, 
-				{'_name': ['dog'], 'name': '!dog', 'help': 'Sends a random dog pic! ;3', 'hasChild': False}, 
-				{'_name': ['topic'], 'name': '!topic', 'help': 'Get a random question or a random topic to talk about.', 'hasChild': False}, 
-				{'_name': ['gayrate', 'gay'], 'name': '!gayrate [user]', 'help': 'See how gay someone is.', 'hasChild': False}, 
-				{'_name': ['straightrate', 'straight'], 'name': '!straightrate [user]', 'help': 'See how straight someone is.', 'hasChild': False}, 
-				{'_name': ['simprate', 'simp'], 'name': '!simprate [user]', 'help': 'See how simp someone is.', 'hasChild': False}, 
-				{'_name': ['hornyrate', 'horny'], 'name': '!hornyrate [user]', 'help': 'See how horny someone is.', 'hasChild': False}, 
-				{'_name': ['boomerrate', 'boomer'], 'name': '!boomerrate [user]', 'help': 'See how boomer someone is.', 'hasChild': False}, 
-				{'_name': ['8ball', 'ball'], 'name': '!8ball <question>', 'help': 'Ask the 8ball a question and get an answer.', 'hasChild': False}, 
-				{'_name': ['fight'], 'name': '!fight <user>', 'help': 'Fight someone, the outcome is always random!', 'hasChild': False}, 
-				{'_name': ['ppsize', 'pp'], 'name': '!ppsize [user]', 'help': 'See how large your or someone else\'s dick is.', 'hasChild': False},
+				{'_name': ['meme'], 'name': '!meme', 'help': 'Sends a random meme! ;3', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['cat'], 'name': '!cat', 'help': 'Sends a random cat pic! ;3', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['dog'], 'name': '!dog', 'help': 'Sends a random dog pic! ;3', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['topic'], 'name': '!topic', 'help': 'Get a random question or a random topic to talk about.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['gayrate', 'gay'], 'name': '!gayrate [user]', 'help': 'See how gay someone is.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['straightrate', 'straight'], 'name': '!straightrate [user]', 'help': 'See how straight someone is.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['simprate', 'simp'], 'name': '!simprate [user]', 'help': 'See how simp someone is.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['hornyrate', 'horny'], 'name': '!hornyrate [user]', 'help': 'See how horny someone is.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['boomerrate', 'boomer'], 'name': '!boomerrate [user]', 'help': 'See how boomer someone is.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['8ball', 'ball'], 'name': '!8ball <question>', 'help': 'Ask the 8ball a question and get an answer.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['fight'], 'name': '!fight <user>', 'help': 'Fight someone, the outcome is always random!', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['ppsize', 'pp'], 'name': '!ppsize [user]', 'help': 'See how large your or someone else\'s dick is.', 'hasChild': False, 'devOnly': False, 'staffOnly': False},
 				{'_name': ['trivia'], 'name': '!trivia', 'help': '', 'help1': 'Play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a competitive vibe to the game.', 'help2':'Play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a *competitive* vibe to the game.\n\u2800**Difficulties:**\n\u2800\u2800 - Easy -> 5 points\n\u2800\u2800 - Medium -> 10 points\n\u2800\u2800 - Hard -> 15 points\n\u2800**Modes:**\n\u2800\u2800 - Solo\n\u2800\u2800\u2800\u2800\u2800Play a normal game of trivia.\n\u2800\u2800 - Competitive\n\u2800\u2800\u2800\u2800\u2800Pick a bet and a player that you will have to do a trivia 1v1 with. The winner gets the bet amount as prize while the loser loses the bet amount of points.', 'hasChild': True},
-				{'_name': ['rock-paper-scissors', 'rps'], 'name': '![rock-paper-scissors|rps]', 'help': 'Play a game of rock-paper-scissors with the bot and earn money.', 'hasChild': False}, 
-				{'_name': ['tic-tac-toe', 'ttt', 'tictactoe'], 'name': '![tic-tac-toe|ttt] <user>', 'help': 'Play a tic-tac-toe game with someone. Both users must have `10,000` <:carrots:822122757654577183> in your wallet in order to play.', 'hasChild': False}
+				{'_name': ['rock-paper-scissors', 'rps'], 'name': '![rock-paper-scissors|rps]', 'help': 'Play a game of rock-paper-scissors with the bot and earn money.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['tic-tac-toe', 'ttt', 'tictactoe'], 'name': '![tic-tac-toe|ttt] <user>', 'help': 'Play a tic-tac-toe game with someone. Both users must have `10,000` <:carrots:822122757654577183> in your wallet in order to play.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}
 				]
 
 		self.warnCommands = [
-				{'_name': ['sfw'], 'name': ';sfw [user]', 'help': 'Warn someone about keeping the chat non-nsfw.', 'hasChild': False},
-				{'_name': ['spam'], 'name': ';spam [user]', 'help': 'Warn someone to not spam the chat.', 'hasChild': False}, 
-				{'_name': ['english', 'eng', 'en'], 'name': ';english [user]', 'help': 'Warn and/or tell someone that the server is english only.', 'hasChild': False}
+				{'_name': ['sfw'], 'name': ';sfw [user]', 'help': 'Warn someone about keeping the chat non-nsfw.', 'hasChild': False, 'devOnly': False, 'staffOnly': False},
+				{'_name': ['spam'], 'name': ';spam [user]', 'help': 'Warn someone to not spam the chat.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['english', 'eng', 'en'], 'name': ';english [user]', 'help': 'Warn and/or tell someone that the server is english only.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}
 				]
 		
 		self.infoCommands = [
-				{'_name': ['lvlinfo', 'howtolvl'], 'name': ';[lvlinfo|howtolvl] [user]', 'help': 'See info about how to level up.', 'hasChild': False},
-				{'_name': ['rankinfo'], 'name': ';rankinfo [user]', 'help': 'See info about how to check your rank.', 'hasChild': False},
-				{'_name': ['cam', 'camera'], 'name': ';cam [user]', 'help': 'See info about what level you need to be in order to use the camera.', 'hasChild': False}, 
-				{'_name': ['vc', 'voicechat'], 'name': ';vc [user]', 'help': 'See info about what level you need to be in order to speak in a voice chat.', 'hasChild': False}, 
-				{'_name': ['img', 'images'], 'name': ';images [user]', 'help': 'See info about what level you need to be in order to send images/videos/gifs in general and other channels.', 'hasChild': False},
-				{'_name': ['untill-partner', 'up'], 'name': '![untill-partner|up]', 'help': 'See how many members the server needs untill it\'s eligible for applying for the discord partnership program.', 'hasChild': False}, 
-				{'_name': ['membercount'], 'name': '!membercount', 'help': 'See how many members ViHill Corner has (`bots are not included`).', 'hasChild': False}, 
-				{'_name': ['botinfo'], 'name': '!botinfo', 'help': 'See info about <@!751724369683677275>.', 'hasChild': False}, 
-				{'_name': ['uptime'], 'name': '!uptime', 'help': 'Check the bot\'s uptime.', 'hasChild': False}, 
-				{'_name': ['ping'], 'name': '!ping', 'help': 'Check the bot\'s ping.', 'hasChild': False}, 
-				{'_name': ['serverad', 'ad'], 'name': '![serverad|ad]', 'help': 'Get the server\'s advertising text.', 'hasChild': False}, 
-				{'_name': ['rawad', 'ra'], 'name': '![rawad|ra]', 'help': 'Get the server\'s advertising text in raw format.', 'hasChild': False}, 
-				{'_name': ['serverinfo', 'si'], 'name': '![serverinfo|si]', 'help': 'Get some info about the server.', 'hasChild': False}, 
-				{'_name': ['vote'], 'name': '!vote', 'help': 'Vote for the server on top.gg', 'hasChild': False}, 
-				{'_name': ['update'], 'name': '!update', 'help': 'Shows the latest update and what new features have been brought to the bot.', 'hasChild': False}
+				{'_name': ['lvlinfo', 'howtolvl'], 'name': ';[lvlinfo|howtolvl] [user]', 'help': 'See info about how to level up.', 'hasChild': False, 'devOnly': False, 'staffOnly': False},
+				{'_name': ['rankinfo'], 'name': ';rankinfo [user]', 'help': 'See info about how to check your rank.', 'hasChild': False, 'devOnly': False, 'staffOnly': False},
+				{'_name': ['cam', 'camera'], 'name': ';cam [user]', 'help': 'See info about what level you need to be in order to use the camera.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['vc', 'voicechat'], 'name': ';vc [user]', 'help': 'See info about what level you need to be in order to speak in a voice chat.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['img', 'images'], 'name': ';images [user]', 'help': 'See info about what level you need to be in order to send images/videos/gifs in general and other channels.', 'hasChild': False, 'devOnly': False, 'staffOnly': False},
+				{'_name': ['untill-partner', 'up'], 'name': '![untill-partner|up]', 'help': 'See how many members the server needs untill it\'s eligible for applying for the discord partnership program.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['membercount'], 'name': '!membercount', 'help': 'See how many members ViHill Corner has (`bots are not included`).', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['botinfo'], 'name': '!botinfo', 'help': 'See info about <@!751724369683677275>.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['uptime'], 'name': '!uptime', 'help': 'Check the bot\'s uptime.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['ping'], 'name': '!ping', 'help': 'Check the bot\'s ping.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['serverad', 'ad'], 'name': '![serverad|ad]', 'help': 'Get the server\'s advertising text.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['rawad', 'ra'], 'name': '![rawad|ra]', 'help': 'Get the server\'s advertising text in raw format.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['serverinfo', 'si'], 'name': '![serverinfo|si]', 'help': 'Get some info about the server.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['vote'], 'name': '!vote', 'help': 'Vote for the server on top.gg', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['update'], 'name': '!update', 'help': 'Shows the latest update and what new features have been brought to the bot.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}
 				]
 		
 		self.utilityCommands = [
-				{'_name': ['ee', 'enlargeemoji', 'emoji'], 'name': '!ee', 'help': 'Enlarges the chosen emote.', 'hasChild': False}, 
+				{'_name': ['ee', 'enlargeemoji', 'emoji'], 'name': '!ee', 'help': 'Enlarges the chosen emote.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['nick', 'nickname'], 'name': '!nick <newnickname>', 'help': 'Change your nickname.', 'hasChild': True}, 
-				{'_name': ['profile', 'user'], 'name': '!profile [user]', 'help': 'Get a user\'s discord profile info.', 'hasChild': False}, 
-				{'_name': ['avatar', 'av'], 'name': '![avatar|av] [user]', 'help': 'See user\'s avatar.', 'hasChild': False}, 
-				{'_name': ['invite', 'inv'], 'name': '![invite|inv]', 'help': 'Get the invite link for the server.', 'hasChild': False}, 
-				{'_name': ['suggest', 'suggests'], 'name': '!suggest <suggestion>', 'help': 'Make a suggestion in <#858997857968193596>', 'hasChild': False},
-				{'_name': ['snipe'], 'name': '!snipe [channel]', 'help': 'Snipe the last deleted message in the channel.', 'hasChild': False}, 
+				{'_name': ['profile', 'user'], 'name': '!profile [user]', 'help': 'Get a user\'s discord profile info.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['avatar', 'av'], 'name': '![avatar|av] [user]', 'help': 'See user\'s avatar.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['invite', 'inv'], 'name': '![invite|inv]', 'help': 'Get the invite link for the server.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['suggest', 'suggests'], 'name': '!suggest <suggestion>', 'help': 'Make a suggestion in <#858997857968193596>', 'hasChild': False, 'devOnly': False, 'staffOnly': False},
+				{'_name': ['snipe'], 'name': '!snipe [channel]', 'help': 'Snipe the last deleted message in the channel.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['nsfw'], 'name': '!nsfw <category>', 'help': 'For nsfw categories type **!nsfw** in the nsfw channel. For more info about how to get access to the nsfw channel please type **!help nsfw**', 'hasChild': True}, 
-				{'_name': ['google'], 'name': '!google <query>', 'help': 'Search for something on google.', 'hasChild': False}, 
-				{'_name': ['calculate', 'calc'], 'name': '![calculate|calc] <operation>', 'help': 'Basic calculator for basic operations.', 'hasChild': False}, 
-				{'_name': ['scrs', 'ss'], 'name': '![scrs|ss] <website>', 'help': 'Take a scren shot of a domain.', 'hasChild': False}, 
+				{'_name': ['google'], 'name': '!google <query>', 'help': 'Search for something on google.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['calculate', 'calc'], 'name': '![calculate|calc] <operation>', 'help': 'Basic calculator for basic operations.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['scrs', 'ss'], 'name': '![scrs|ss] <website>', 'help': 'Take a scren shot of a domain.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['rank', 'lvl'], 'name': '![rank|lvl] [user]', 'help': 'Check user\'s current level.', 'hasChild': True}, 
 				{'_name': ['rtfd', 'rtfm'], 'name': '![rtfd|rtfm] <obj>', 'help': 'Gives you a documentation link for a discord.py entity.', 'hasChild': True}
 				]
 		
 		self.miscCommands = [
-				{'_name': ['created'], 'name': '!created [user]', 'help': 'See when a user created their account.', 'hasChild': False}, 
-				{'_name': ['joined'], 'name': '!joined [user]', 'help': 'See when a user joined the server.', 'hasChild': False}, 
-				{'_name': ['waifu'], 'name': '!waifu', 'help': 'Get a random waifu pic.', 'hasChild': False}, 
-				{'_name': ['spotify'], 'name': '!spotify [user]', 'help': 'Shows what song the user is listening to, the artist & the album.', 'hasChild': False}, 
-				{'_name': ['dev-portal', 'dev', 'portal'], 'name': '!dev-portal', 'help': 'Get the link to dev-portal website.', 'hasChild': False}, 
-				{'_name': ['perm-calc', 'perm'], 'name': '!perm-calc', 'help': 'Get the link to bots perm-calc website.', 'hasChild': False}, 
-				{'_name': ['vampify'], 'name': '!vampify <text>', 'help': 'Vampify your text.', 'hasChild': False}, 
-				{'_name': ['clapify'], 'name': '!clapify <text>', 'help': 'Clapify your text.', 'hasChild': False}, 
-				{'_name': ['role-id', 'roleid'], 'name': '!role-id <role_name>', 'help': 'Get the ID of the given role.', 'hasChild': False}, 
+				{'_name': ['created'], 'name': '!created [user]', 'help': 'See when a user created their account.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['joined'], 'name': '!joined [user]', 'help': 'See when a user joined the server.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['waifu'], 'name': '!waifu', 'help': 'Get a random waifu pic.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['spotify'], 'name': '!spotify [user]', 'help': 'Shows what song the user is listening to, the artist & the album.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['dev-portal', 'dev', 'portal'], 'name': '!dev-portal', 'help': 'Get the link to dev-portal website.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['perm-calc', 'perm'], 'name': '!perm-calc', 'help': 'Get the link to bots perm-calc website.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['vampify'], 'name': '!vampify <text>', 'help': 'Vampify your text.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['clapify'], 'name': '!clapify <text>', 'help': 'Clapify your text.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['role-id', 'roleid'], 'name': '!role-id <role_name>', 'help': 'Get the ID of the given role.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['reminder', 'remind'], 'name': '![reminder|remind] <when> [what]', 'help': 'Set a reminder.', 'hasChild': True}, 
 				{'_name': ['msg-top', 'top'], 'name': '![msg-top|top]', 'help': 'See top 15 most active members.', 'hasChild': True}, 
-				{'_name': ['randomnumber', 'rn'], 'name': '![randomnumber|rn] <nr1> <nr2> <nr3>', 'help': '', 'help1': 'Get a random number depending on the amount of numbers you give. For more info please type **!help randomnumber**', 'help2': 'If you don\'t provide any number, the bot will give a random number between `0` and the `largest positive integer supported by the machine`.\n\nIf you provide only one number, then the bot will give a random number between `0` and `your chosen number (num1)`.\n\nIf you provide two numbers only, then the bot will give you a random number between `your first number (num1)` and `your second number (num2)`.\n\nIf you provide all three numbers, then the bot will give a random number between `your first number (num1)` and `your second number (num2)`, that is not `your third number (num3)`, this can be used if you want a random number between 2 numbers that is not a specific one, here\'s some examples:\n• `10 15 13 - will give a number between 10 and 15 that is not 13`\n• `0 10 5 - will give a number between 0 and 10 that is not 5`\n• `20 100 50 - will give a number between 20 and 100 that is not 50`\n• `10 20 15 - will give a number between 10 and 20 that is not 15`', 'hasChild': False}, 
+				{'_name': ['randomnumber', 'rn'], 'name': '![randomnumber|rn] <nr1> <nr2> <nr3>', 'help': '', 'help1': 'Get a random number depending on the amount of numbers you give. For more info please type **!help randomnumber**', 'help2': 'If you don\'t provide any number, the bot will give a random number between `0` and the `largest positive integer supported by the machine`.\n\nIf you provide only one number, then the bot will give a random number between `0` and `your chosen number (num1)`.\n\nIf you provide two numbers only, then the bot will give you a random number between `your first number (num1)` and `your second number (num2)`.\n\nIf you provide all three numbers, then the bot will give a random number between `your first number (num1)` and `your second number (num2)`, that is not `your third number (num3)`, this can be used if you want a random number between 2 numbers that is not a specific one, here\'s some examples:\n• `10 15 13 - will give a number between 10 and 15 that is not 13`\n• `0 10 5 - will give a number between 0 and 10 that is not 5`\n• `20 100 50 - will give a number between 20 and 100 that is not 50`\n• `10 20 15 - will give a number between 10 and 20 that is not 15`', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['multiplier'], 'name': '!multiplier', 'help': 'Shows the multipliers for the next groups: **Staff/Mods**, **Server Boosters**, **Members**.', 'hasChild': True}
 				]
 		
 		self.featuredCommands = [
 				{'_name': ['birthday', 'bday'], 'name': '!birthday [user]', 'help': 'See when someone\'s birthday is if they have it set.', 'hasChild': True}, 
 				{'_name': ['intro'], 'name': '!intro', 'help': 'Create or edit your intro.', 'hasChild': True}, 
-				{'_name': ['whois', 'wi'], 'name': '!whois [user]', 'help': 'Check user\'s intro.', 'hasChild': False}, 
+				{'_name': ['whois', 'wi'], 'name': '!whois [user]', 'help': 'Check user\'s intro.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['reclist'], 'name': '!reclist [user]', 'help': 'Check user\'s recommendations list.', 'hasChild': True}, 
 				{'_name': ['cr'], 'name': '!cr', 'help': 'For more information about this command please see **!help cr**', 'hasChild': True}, 
-				{'_name': ['marry'], 'name': '!marry <user>', 'help': 'Marry the mentioned user.', 'hasChild': False}, 
-				{'_name': ['marriedwho'], 'name': '!marriedwho [user]', 'help': 'See who the user is married with.', 'hasChild': False}, 
-				{'_name': ['divorce'], 'name': '!divorce', 'help': 'Divorce the person you\'re married with.', 'hasChild': False}, 
-				{'_name': ['scrs', 'ss'], 'name': '![scrs|ss] <website>', 'help': 'Take a screenshot of a website.', 'hasChild': False}, 
+				{'_name': ['marry'], 'name': '!marry <user>', 'help': 'Marry the mentioned user.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['marriedwho'], 'name': '!marriedwho [user]', 'help': 'See who the user is married with.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['divorce'], 'name': '!divorce', 'help': 'Divorce the person you\'re married with.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['scrs', 'ss'], 'name': '![scrs|ss] <website>', 'help': 'Take a screenshot of a website.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['tag', 'tags'], 'name': '!tag <tag_name>', 'help': 'Get the content of the tag.', 'hasChild': True}, 
 				{'_name': ['snippets', 'snippet'], 'name': '![snippet|snippets]', 'help': 'Get a list with all the snippets.', 'hasChild': True}, 
 				{'_name': ['bdsm'], 'name': '!bdsm', 'help': 'For more information please type **!help bdsm**', 'hasChild': True}
+				]
+		
+		self.moderatorCommands = [
+				{'_name': ['ban'], 'name': '!ban', 'help': 'Ban an user from the server.', 'hasChild': False, 'devOnly': False, 'staffOnly': True}, 
+				{'_name': ['unban'], 'name': '!unban', 'help': 'Unban an user.\n*Only works in the ban appeal server.*', 'hasChild': False, 'devOnly': False, 'staffOnly': True}, 
+				{'_name': ['idban'], 'name': '!idban <id>', 'help': 'Ban someone that is not in the server.', 'hasChild': False, 'devOnly': False, 'staffOnly': True}, 
+				{'_name': ['idunban'], 'name': '!idunban <id>', 'help': 'Unban someone that is not in the server.', 'hasChild': False, 'devOnly': False, 'staffOnly': True},
+				{'_name': ['kick'], 'name': '!kick', 'help': 'Kick an user from the server.', 'hasChild': False, 'devOnly': False, 'staffOnly': True}, 
+				{'_name': ['mute'], 'name': '!mute', 'help': 'Mutes an user.', 'hasChild': False, 'devOnly': False, 'staffOnly': True}, 
+				{'_name': ['unmute'], 'name': '!unmute', 'help': 'Unmutes an user.', 'hasChild': False, 'devOnly': False, 'staffOnly': True}, 
+				{'_name': ['tempmute'], 'name': '!tempmute <user> <time>', 'help': 'Mute an user temporarily.', 'hasChild': False, 'devOnly': False, 'staffOnly': True}, 
+				{'_name': ['clear'], 'name': '!clear <amount>', 'help': 'Delete the amount of messages in the channel you are in.', 'hasChild': False, 'devOnly': False, 'staffOnly': True}, 
+				{'_name': ['slowmode'], 'name': '!slowmode <how_much>', 'help': 'Set the slowmode for the channel you are in.', 'hasChild': False, 'devOnly': False, 'staffOnly': True}
+				]
+		
+		self.developerCommands = [
+				{'_name': ['eval', 'evaluate'], 'name': '!eval <code>', 'help': 'Evaluate some code.', 'hasChild': False, 'devOnly': True, 'staffOnly': False}, 
+				{'_name': ['load'], 'name': '!load cogs.<cog_name>', 'help': 'Loads the cog.', 'hasChild': True, 'devOnly': True, 'staffOnly': False}, 
+				{'_name': ['unload'], 'name': '!unload cogs.<cog_name>', 'help': 'Unloads the cog.', 'hasChild': True, 'devOnly': True, 'staffOnly': False}, 
+				{'_name': ['reload'], 'name': '!reload cogs.<cog_name>', 'help': 'Reloads the cog.', 'hasChild': True, 'devOnly': True, 'staffOnly': False}, 
+				{'_name': ['modmute'], 'name': '!modmute <mod_user>', 'help': 'Mutes a mod.', 'hasChild': False, 'devOnly': True, 'staffOnly': False}, 
+				{'_name': ['modunmute'], 'name': '!modunmute <mod_user>', 'help': 'Unmutes a mod.', 'hasChild': False, 'devOnly': True, 'staffOnly': False}, 
+				{'_name': ['makemod'], 'name': '!makemod <user>', 'help': 'Make someone a mod.', 'hasChild': False, 'devOnly': True, 'staffOnly': False}, 
+				{'_name': ['removemod'], 'name': '!removemod <mod_user>', 'help': 'Remove a mod.', 'hasChild': False, 'devOnly': True, 'staffOnly': False}, 
+				{'_name': ['shutdown'], 'name': '!shutdown', 'help': 'Shut the bot down.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['restart'], 'name': '!restart', 'help': 'Restart the bot.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['status', 'statuses'], 'name': '!status', 'help': 'Shows what kind of different statuses you can apply to the bot.', 'hasChild': True, 'devOnly': True, 'staffOnly': False}, 
+				{'_name': ['metrics'], 'name': '!metrics', 'help': 'Get info about the metrics.', 'hasChild': False, 'devOnly': True, 'staffOnly': False}, 
+				{'_name': ['mail'], 'name': '!mail <user> <message>', 'help': 'Dm the user the given message.', 'hasChild': False, 'devOnly': True, 'staffOnly': False}
 				]
 
 		self.childCommands = [
@@ -221,9 +250,12 @@ class Help(commands.Cog):
 				{'Parent': 'bdsm', 'name': '!bdsm results [member]', 'help': 'Send the bdsm results of the specified member.', 'devOnly': False, 'staffOnly': False}, 
 				{'Parent': 'bdsm', 'name': '!bdsm remove', 'help': 'Remove your bdsm results.', 'devOnly': False, 'staffOnly': False}, 
 				{'Parent': 'bdsm', 'name': '!bdsm test', 'help': 'Get a link to the bdsm test webpage.', 'devOnly': False, 'staffOnly': False}, 
+				{'Parent': 'load', 'name': '!load all', 'help': 'Loads all the cogs.', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'unload', 'name': '!unload all', 'help': 'Unloads all the cogs', 'devOnly': True, 'staffOnly': False}, 
+				{'Parent': 'reload', 'name': '!reload all', 'help': 'Reloads all the cogs.', 'devOnly': True, 'staffOnly': False},
 				]
 
-		self.allCommands = self.featuredCommands + self.ecoCommands + self.funCommands + self.warnCommands + self.infoCommands + self.utilityCommands + self.miscCommands
+		self.allCommands = self.featuredCommands + self.ecoCommands + self.funCommands + self.warnCommands + self.infoCommands + self.utilityCommands + self.miscCommands + self.moderatorCommands + self.developerCommands
 
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -304,12 +336,22 @@ class Help(commands.Cog):
 					except KeyError:
 						pass
 					entries = [self.allCommands[i]] + childList
-					p = HelpPages(entries=entries, per_page=3, title=f"Here's help for command `{self.allCommands[i]['_name'][0]}`", color=color.lightpink)
+					p = HelpPages(entries=entries, per_page=3, title=f"Here's help for command `{self.allCommands[i]['_name'][0]}`:", color=color.lightpink)
 					await p.start(ctx)
 					return
 				
+				if self.allCommands[i]['staffOnly'] == True:
+					if not "Staff" in [role.name for role in ctx.author.roles]:
+							return
+				elif self.allCommands[i]['devOnly'] == True:
+					if ctx.author.id != 374622847672254466:
+						return
+				try:
+					self.allCommands[i]['help'] = f"{self.allCommands[i]['help1']}{self.allCommands[i]['help2']}"
+				except KeyError:
+					pass
 				entries = [self.allCommands[i]]
-				p = HelpPages(entries=entries, per_page=3, title=f"Here's help for command `{self.allCommands[i]['_name'][0]}`", color=color.lightpink)
+				p = HelpPages(entries=entries, per_page=3, title=f"Here's help for command `{self.allCommands[i]['_name'][0]}`:", color=color.lightpink)
 				await p.start(ctx)
 				return
 		
@@ -387,21 +429,19 @@ class Help(commands.Cog):
 		await p.start(ctx)
 	
 	@help.command(aliases=['dev'])
+	@commands.is_owner()
 	async def developer(self, ctx):
-		em = discord.Embed(title="[COMING SOON]")
-		return await ctx.send(embed=em)
 		for i in range(len(self.developerCommands)):
 			try:
 				self.developerCommands[i]['help'] = self.developerCommands[i]['help1']
 			except KeyError:
 				pass
-		p = HelpPages(entries=self.developerCommands, per_page=5, color=color.lightpink, title="Here are all the `Developer` commands:")
+		p = HelpPages(entries=self.developerCommands, per_page=4, color=color.lightpink, title="Here are all the `Developer` commands:")
 		await p.start(ctx)
 	
 	@help.command(aliases=['mod', 'admin'])
+	@commands.has_role('Staff')
 	async def moderator(self, ctx):
-		em = discord.Embed(title="[COMING SOON]")
-		return await ctx.send(embed=em)
 		for i in range(len(self.moderatorCommands)):
 			try:
 				self.moderatorCommands[i]['help'] = self.moderatorCommands[i]['help1']
