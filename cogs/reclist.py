@@ -77,6 +77,10 @@ class Reclist(commands.Cog):
 			await collection.insert_one(post)
 		else:
 			rec = results['reclist']
+			for i in range(len(rec)):
+				for n in range(len(reclist)):
+					if str(rec[i]).lower() == str(reclist[n]).lower():
+						return await ctx.reply("Exact duplicate of a recommendation that you already have in your reclist!\n**%s**" % (reclist[n]))
 			await collection.update_one({"_id": user.id}, {"$set":{"reclist": rec + reclist}})
 		await ctx.message.delete()
 		await ctx.send("Succesfully added to your reclist! {}".format(user.mention))
