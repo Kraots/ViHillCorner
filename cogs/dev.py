@@ -78,7 +78,7 @@ class developer(commands.Cog):
 
 		pager = Pag(
 			timeout=100,
-			entries=[result[i: i + 2000] for i in range(0, len(result), 2000)],
+			entries=[result[i: i + 4000] for i in range(0, len(result), 4000)],
 			length=1,
 			prefix="```py\n",
 			suffix="```"
