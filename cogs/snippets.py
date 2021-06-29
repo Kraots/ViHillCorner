@@ -307,7 +307,6 @@ class Snippets(commands.Cog):
 			em.set_image(url=snippet)
 			em.set_footer(text=f"Credits: {credits_user}", icon_url=credits_avatar)
 			msg = await message.channel.send(embed=em)
-			await msg.add_reaction('🗑️')
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):

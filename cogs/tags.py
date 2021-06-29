@@ -62,7 +62,7 @@ class Tags(commands.Cog):
 				return await ctx.send("No tag found. %s" % (ctx.author.mention))
 		
 		collection.update_one({'_id': data['_id']}, {'$inc':{'uses_count': 1}})
-		await ctx.send(data['tag_content'])
+		await ctx.send(data['tag_content'], reference=ctx.replied_reference)
 
 
 	@tag.command()
