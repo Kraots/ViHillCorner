@@ -41,7 +41,7 @@ class Reclist(commands.Cog):
 		user = member
 		if results != None:
 			entries = results['reclist']
-			p = ReclistPages(entries=entries, per_page=10, title=f"Here's {ctx.author.display_name} reclist:", color=color.reds)
+			p = ReclistPages(entries=entries, per_page=10, title=f"Here's `{ctx.author.display_name}` reclist:", color=color.reds)
 			await p.start(ctx)
 
 		else:
