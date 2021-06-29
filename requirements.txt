@@ -1,6 +1,7 @@
 aiodns
 aiohttp
 async-cse
+async-tio
 attrs
 braceexpand
 buttons
