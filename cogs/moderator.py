@@ -266,8 +266,10 @@ class Moderation(commands.Cog):
 						nr_dayss = await self.client.wait_for('message', timeout=360, check=check)
 						try:
 							nr_days = int(nr_dayss.content)
-							if 0 > nr_days or nr_days > 7:
+							if -1 > nr_days or nr_days > 7:
 								await ctx.send("You can only delete from 0-7 days, no more or less! %s" % (ctx.author.mention))
+							else:
+								break
 						except ValueError:
 							if nr_dayss.content.lower() in ["cancel", "!cancel"]:
 								await ctx.send("Canceled.")
