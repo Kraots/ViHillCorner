@@ -227,7 +227,7 @@ class Moderation(commands.Cog):
 		log_channel = guild.get_channel(788377362739494943)
 		staff = guild.get_role(754676705741766757)
 		mem_list = []
-		reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/m3Zyaj5Vc4")
+		reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/5SratjPmGc")
 		reasonn.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
 		msg="You have been banned from `ViHill Corner`. If you think that this has been applied in error please submit a detailed appeal at the following link."
 		
@@ -320,10 +320,17 @@ class Moderation(commands.Cog):
 	@commands.has_role('Staff')
 	async def unban(self, ctx, member: discord.User):
 		guild = self.client.get_guild(750160850077089853)
+		if ctx.guild == guild:
+			return await ctx.reply("This command can only be performed in the ban appeal server.")
 		guild2 = self.client.get_guild(788384492175884299)
-		await guild.fetch_ban(member)
-		await guild.unban(discord.Object(id=member.id))
-		
+		if ctx.channel.id == 788488359306592316:
+			return await ctx.reply("This command cannot be performed in the staff chat. Please go in the chat where the member you wish to unban exists.")
+		try:
+			await guild.fetch_ban(member)
+			await guild.unban(discord.Object(id=member.id))
+		except:
+			return await ctx.send("Failed. Did you input the correct member that is in the same guild?")
+			
 		unban = discord.Embed(description= f"`{member}` has been unbanned from the server" , color=discord.Color.red())
 
 		await ctx.send(embed=unban)
@@ -341,16 +348,10 @@ class Moderation(commands.Cog):
 
 		await log_channel.send(embed=em)
 
-		try:
-			msg="Congrats! You have been unbanned from `ViHill Corner`. Come back: https://discord.gg/mFm5GrQ"
-			try:
-				await member.send(msg)
-			except discord.HTTPException:
-				pass
-			await guild2.kick(member)
-		
-		except discord.HTTPException:
-			await guild2.kick(member)
+
+		msg="Congrats! You have been unbanned from `ViHill Corner`. Come back: https://discord.gg/mFm5GrQ"
+		await member.send(msg)
+		await guild2.kick(member)
 
 	
 		# MUTE
@@ -638,15 +639,12 @@ class Moderation(commands.Cog):
 
 			# ERROR HANDLERS
 	
-	@mute.error
-	async def mute_error(self, ctx, error):
-		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("Invalid User!")
+	@unban.error
+	async def unban_error(self, ctx, error):
+		if isinstance(error, commands.errors.UserNotFound):
+			await ctx.reply("User not found")
 
-#	@unmute.error
-#	async def unmute_error(self, ctx, error):
-#		if isinstance(error, commands.errors.CommandInvokeError):
-#			await ctx.send("Invalid User!")
+
 
 
 def setup (client):
