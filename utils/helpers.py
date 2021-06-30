@@ -15,7 +15,7 @@ import pkg_resources
 class Pag(Paginator):
 	async def teardown(self):
 		try:
-			await self.page.delete()
+			await self.page.clear_reactions()
 		except discord.HTTPException:
 			pass
 
