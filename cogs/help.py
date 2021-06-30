@@ -259,7 +259,7 @@ class Help(commands.Cog):
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 	
-	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
+	@commands.group(invoke_without_command=True, case_insensitive=True)
 	async def help(self, ctx, get_command : str = None):
 		if get_command is None:
 				# General help
