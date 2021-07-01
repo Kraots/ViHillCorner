@@ -32,7 +32,10 @@ class OnBanAppealJoin(commands.Cog):
 						}
 			channel = await g.create_text_channel(f"{member.name}-ban-appeal", overwrites=overwrites)
 			await channel.edit(topic=member.id)
-			await channel.send(f"You have been banned by the moderator `{moderator}`\n*Reason:*\n**{ban_reason}**")
+			em = discord.Embed(title="Ban Reason", description=ban_reason)
+			m = await channel.send(f"Hello {member.name}! You have been banned by moderator: `{moderator}`\nSend your unban appeal here. {member.mention}", embed=em)
+			await m.pin()
+			await channel.purge(limit=1)
 			await channel.set_permissions(member, read_messages = True)
 	
 	@commands.Cog.listener('on_member_remove')
