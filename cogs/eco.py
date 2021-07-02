@@ -378,7 +378,10 @@ class EcoCommands(commands.Cog):
 				amount = amount.replace(",", "")
 			except:
 				pass
-			amount = int(amount)
+			try:
+				amount = int(amount)
+			except ValueError:
+				return await ctx.reply("Not a number!")
 
 			if amount > bal:
 				await ctx.send('You do not own that much money! %s' % (ctx.author.mention))
@@ -424,7 +427,10 @@ class EcoCommands(commands.Cog):
 				amount = amount.replace(",", "")
 			except:
 				pass
-			amount = int(amount)
+			try:
+				amount = int(amount)
+			except ValueError:
+				return await ctx.reply("Not a number!")
 
 			if amount > bal:
 				await ctx.send('You do not own that much money! %s' % (ctx.author.mention))
@@ -472,7 +478,10 @@ class EcoCommands(commands.Cog):
 				amount = amount.replace(",", "")
 			except:
 				pass
-			amount = int(amount)
+			try:
+				amount = int(amount)
+			except ValueError:
+				return await ctx.reply("Not a number!")
 
 			if amount > bal:
 				await ctx.send('You do not own that much money! %s' % (ctx.author.mention))
@@ -625,7 +634,10 @@ class EcoCommands(commands.Cog):
 				amount = amount.replace(",", "")
 			except:
 				pass
-			amount = int(amount)
+			try:
+				amount = int(amount)
+			except ValueError:
+				return await ctx.reply("Not a number!")
 
 			if amount > bal:
 				await ctx.send('You do not own that much money! %s' % (ctx.author.mention))
