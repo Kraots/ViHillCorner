@@ -144,9 +144,7 @@ class Help(commands.Cog):
 				{'_name': ['whois', 'wi'], 'name': '!whois [user]', 'help': 'Check user\'s intro.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['reclist'], 'name': '!reclist [user]', 'help': 'Check user\'s recommendations list.', 'hasChild': True}, 
 				{'_name': ['cr'], 'name': '!cr', 'help': 'For more information about this command please see **!help cr**', 'hasChild': True}, 
-				{'_name': ['marry'], 'name': '!marry <user>', 'help': 'Marry the mentioned user.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
-				{'_name': ['marriedwho'], 'name': '!marriedwho [user]', 'help': 'See who the user is married with.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
-				{'_name': ['divorce'], 'name': '!divorce', 'help': 'Divorce the person you\'re married with.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['marry', 'marriedwho', 'divorce'], 'name': '!marry <user>', 'help': 'Marry the mentioned user.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['scrs', 'ss'], 'name': '![scrs|ss] <website>', 'help': 'Take a screenshot of a website.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['tag', 'tags'], 'name': '!tag <tag_name>', 'help': 'Get the content of the tag.', 'hasChild': True}, 
 				{'_name': ['snippets', 'snippet'], 'name': '![snippet|snippets]', 'help': 'Get a list with all the snippets.', 'hasChild': True}, 
@@ -252,6 +250,8 @@ class Help(commands.Cog):
 				{'Parent': 'load', 'name': '!load all', 'help': 'Loads all the cogs.', 'devOnly': True, 'staffOnly': False}, 
 				{'Parent': 'unload', 'name': '!unload all', 'help': 'Unloads all the cogs', 'devOnly': True, 'staffOnly': False}, 
 				{'Parent': 'reload', 'name': '!reload all', 'help': 'Reloads all the cogs.', 'devOnly': True, 'staffOnly': False},
+				{'Parent': 'marry', 'name': '!marriedwho [user]', 'help': 'See who the user is married with.', 'devOnly': False, 'staffOnly': False},
+				{'Parent': 'marry', 'name': '!divorce', 'help': 'Divorce the person you\'re married with.', 'devOnly': False, 'staffOnly': False}
 				]
 
 		self.allCommands = self.featuredCommands + self.ecoCommands + self.funCommands + self.warnCommands + self.infoCommands + self.utilityCommands + self.miscCommands + self.moderatorCommands + self.developerCommands
