@@ -41,6 +41,16 @@ class Moderation(commands.Cog):
 		self.check_current_mutes.start()
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
+	
+	async def _mute(self, m: discord.Member):
+		g = self.client.get_guild(750160850077089853)
+		r = g.get_role(750465726069997658)
+		await m.add_roles(r)
+	
+	async def _unmute(self, m: discord.Member):
+		g = self.client.get_guild(750160850077089853)
+		r = g.get_role(750465726069997658)
+		await m.remove_roles(r)
 
 		# LOOP FOR MUTES
 	
@@ -242,6 +252,8 @@ class Moderation(commands.Cog):
 				return
 			else:	
 				banned_members = before_members.mentions
+				for i in range(len(banned_members)):
+					await self._mute(banned_members[i])
 
 		except asyncio.TimeoutError:
 			return
@@ -251,6 +263,8 @@ class Moderation(commands.Cog):
 			try:
 				before_reason = await self.client.wait_for('message', timeout=360, check=check)
 				if before_reason.content.lower() in ["cancel", "!cancel"]:
+					for i in range(len(banned_members)):
+						await self._unmute(banned_members[i])
 					await ctx.send("Canceled.")
 					return
 				else:
@@ -273,6 +287,8 @@ class Moderation(commands.Cog):
 						except ValueError:
 							if nr_dayss.content.lower() in ["cancel", "!cancel"]:
 								await ctx.send("Canceled.")
+								for i in range(len(banned_members)):
+									await self._unmute(banned_members[i])
 								return
 							else:
 								nr_days = 0
