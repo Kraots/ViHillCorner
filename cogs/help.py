@@ -17,13 +17,13 @@ reactions = {
 			}
 
 categs = """
-			<:SakataNom:787370388250034186> -> **Featured**	
-			<:CutieUmwha:787370264165482537> -> **Economy**
-			<:vampy1:859050561184989204> -> **Utility**
-			<:epik:818803400154153002> -> **Fun**
-			<:pepecry:859050982507675699> -> **Miscellaneous**
-			<:pepe_hang1:859050982402687026> -> **Info**
-			<:creepy_bird1:859050982382108693> -> **Warns**
+<:SakataNom:787370388250034186> -> **Featured**	
+<:CutieUmwha:787370264165482537> -> **Economy**
+<:vampy1:859050561184989204> -> **Utility**
+<:epik:818803400154153002> -> **Fun**
+<:pepecry:859050982507675699> -> **Miscellaneous**
+<:pepe_hang1:859050982402687026> -> **Info**
+<:creepy_bird1:859050982382108693> -> **Warns**
 		"""
 
 class HelpPageEntry:
