@@ -449,7 +449,8 @@ class Tags(commands.Cog):
 					"tag_owner_id": ctx.author.id, 
 					"the_tag_name": tag_name.lower(), 
 					"created_at": get_time, 
-					"uses_count": 0
+					"uses_count": 0,
+					"aliases": []
 					}
 				
 			collection.insert_one(post)
