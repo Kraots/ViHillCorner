@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import random
 from random import randint
-from utils.helpers import time_phaserr
+from utils.helpers import time_phaserr, BotChannels
 import asyncio
 import games
 
@@ -424,7 +424,7 @@ class Fun(commands.Cog):
 		await ctx.send(f':8ball:** | {ctx.author.name} asked:** {question}\n<:blank:788666214318735360>** | Answer:** {random.choice(responses)}')
 
 
-
+	@commands.check(BotChannels)
 	@commands.command()
 	async def fight(self, ctx, p2: discord.Member):
 		p1 = ctx.author
