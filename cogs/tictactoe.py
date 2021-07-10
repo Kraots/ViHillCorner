@@ -3,7 +3,7 @@ from discord.ext import commands
 import asyncio
 import motor.motor_asyncio
 import os
-from utils.games import TicTacToe
+import games
 bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
 
 DBKEY = os.getenv('MONGODBKEY')
@@ -15,8 +15,8 @@ class TTT(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 		self.prefix = "!"
-	async def cog_check(self, ctx):
-		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
+	# async def cog_check(self, ctx):
+	# 	return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
 	
 	@commands.command(aliases=['ttt', 'tic-tac-toe'])
 	async def tictactoe(self, ctx, member: discord.Member = None):
@@ -45,7 +45,7 @@ class TTT(commands.Cog):
 		def check(reaction, user):
 			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
 		
-		msg = await ctx.send(f"{ctx.author.mention} Wants to play tic-tac-toe with you {member.mention}. Do you accept?\nWinner gets **10,000** <:carrots:822122757654577183>\nLoser loses **10,000** <:carrots:822122757654577183>")
+		msg = await ctx.send(f"**{ctx.author.mention}** Wants to play tic-tac-toe with you {member.mention}. Do you accept?\nWinner gets **10,000** <:carrots:822122757654577183>\nLoser loses **10,000** <:carrots:822122757654577183>")
 		await msg.add_reaction('<:agree:797537027469082627>')
 		await msg.add_reaction('<:disagree:797537030980239411>')
 
@@ -61,8 +61,9 @@ class TTT(commands.Cog):
 		else:
 			if str(reaction.emoji) == '<:agree:797537027469082627>':
 				await msg.delete()
-				ttt = TicTacToe(ctx.author, member, ctx, self.client)
-				await ttt.start()
+				t = games.TicTacToe(ctx.author, member, ctx, self.client)
+				await t.start()
+				
 			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
 				await ctx.reply(f"**{member.mention}** does not want to play tic-tac-toe with you.")
 				await msg.delete()

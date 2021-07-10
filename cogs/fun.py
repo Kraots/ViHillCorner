@@ -2,9 +2,9 @@ import discord
 from discord.ext import commands
 import random
 from random import randint
-import utils.colors as color
 from utils.helpers import time_phaserr
 import asyncio
+import games
 
 class Fun(commands.Cog):
 
@@ -426,38 +426,32 @@ class Fun(commands.Cog):
 
 
 	@commands.command()
-	async def fight(self, ctx):
-			message = ctx.message
-			args = message.content.split()
-			loss = 0
-			rounds = 1
-			init = message.author.mention
-			target = " ".join(args[1:])
-			fight = "%s has challenged %s to a fight!" % (init, target) + "\n"
-			fightEm = discord.Embed(description=fight, colour=color.reds)
-			fightEm.set_author(name="Fight")
-			fMessage = await message.channel.send(embed=fightEm)
-			while not (loss == 1) and not (rounds > 7):
-				fight = fight + random.choice(["%s threw a chair at %s" % (init, target), "%s whacked %s with a stick" % (init, target), "%s slapped %s to the floor" % (init, target), "%s threw %s through a wall" % (init, target), "%s bitch slapped %s" % (init, target), "%s used dark magic against %s" % (init, target), "%s used the infinity gauntlet" % (init), "%s used fake news on %s" % (init, target), "%s ran %s over with a truck" % (init, target), "%s ate %s and threw them up again" % (init, target), "%s savagely roasted %s for sunday lunch" % (init, target), "%s forced %s to watch anime" % (init, target), "%s slapped %s with a Macbook" % (init, target), "%s used TUNNELBEAR! THE FREE EASY TO USE VPN..." % (init), "%s performed a windows update on %s" % (init, target), "%s used the might of Zeus" % (init), "%s trapped %s in Flex Tape" % (init, target), "%s built a wall!" % (init)])+"\n"
-				fightEm = discord.Embed(title="Fight!", description=fight, colour=color.reds)
-				await fMessage.edit(embed=fightEm)
-				await asyncio.sleep(2)
-				loss = random.randint(1, 4)
-				if loss == 1:
-					fight = fight + "%s accepts defeat! %s has won the fight!" % (target, init)
-				elif rounds == 7:
-					fight = fight + "The fight has ended in a draw!"
-				else:
-					fight = fight +"%s does not giveup and continues the fight!" % (target) + "\n"
-				fightEm = discord.Embed(description=fight, colour=color.reds)
-				fightEm.set_author(name="Fight")
-				await fMessage.edit(embed=fightEm)
-				temp = target
-				target = init
-				init = temp
-				rounds = rounds + 1
-				await asyncio.sleep(4)
+	async def fight(self, ctx, p2: discord.Member):
+		p1 = ctx.author
+		msg = await ctx.send(f"{p1.display_name} wants to have a fight with you, do you accept? {p2.mention}")
+		def check(reaction, user):
+			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == p2.id
+		await msg.add_reaction('<:agree:797537027469082627>')
+		await msg.add_reaction('<:disagree:797537030980239411>')
 
+		try:
+				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+
+		except asyncio.TimeoutError:
+			new_msg = f"{p2.mention} Did not react in time."
+			await msg.edit(content=new_msg)
+			await msg.clear_reactions()
+			return
+		
+		else:
+			if str(reaction.emoji) == '<:agree:797537027469082627>':
+				await msg.delete()
+				f = games.Fight(p1, p2, ctx, self.client)
+				await f.start()
+
+			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
+				await msg.clear_reactions()
+				await msg.edit(content=f"{p2.display_name} does not want to fight with you {p1.display_name}")
 
 	@commands.command()
 	@commands.cooldown(1, 60, commands.BucketType.user)
@@ -487,6 +481,11 @@ class Fun(commands.Cog):
 			await ctx.send(f"You're on cooldown, try again in {time_phaserr(error.retry_after)}.")
 		elif isinstance(error, commands.MissingRequiredArgument):
 			ctx.command.reset_cooldown(ctx)
+
+	@fight.error
+	async def fight_error(self, ctx, error):
+		if isinstance(error, commands.errors.CommandInvokeError):
+			await ctx.send(error.original)
 
 
 
