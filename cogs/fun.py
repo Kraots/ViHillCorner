@@ -428,7 +428,7 @@ class Fun(commands.Cog):
 	@commands.command()
 	async def fight(self, ctx, p2: discord.Member):
 		p1 = ctx.author
-		msg = await ctx.send(f"{p1.display_name} wants to have a fight with you, do you accept? {p2.mention}")
+		msg = await ctx.send(f"**{p1.display_name}** wants to have a fight with you, do you accept? {p2.mention}")
 		def check(reaction, user):
 			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == p2.id
 		await msg.add_reaction('<:agree:797537027469082627>')
