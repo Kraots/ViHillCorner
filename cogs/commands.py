@@ -12,7 +12,7 @@ from github import Github
 from utils.helpers import time_phaserr
 import urllib.request
 import urllib.parse
-import hashlib
+import inspect
 
 git_user = os.getenv("github_user")
 git_pass = os.getenv("github_pass")
@@ -248,6 +248,35 @@ class command(commands.Cog):
 		em = discord.Embed(title="Here is what's new to the bot:", description="{} \n\n\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800{}".format(commit, commit_date), color=color.lightpink)
 		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 		await ctx.send(embed=em, reference=ctx.replied_reference)
+
+	@commands.command()
+	async def source(self, ctx, *, command: str = None):
+		source_url = 'https://github.com/Kraots/ViHillCorner'
+		branch = 'master'
+		if command is None:
+			return await ctx.send(source_url)
+
+		obj = self.client.get_command(command.replace('.', ' '))
+		if obj is None:
+			return await ctx.send('Could not find command.')
+
+		# since we found the command we're looking for, presumably anyway, let's
+		# try to access the code itself
+		src = obj.callback.__code__
+		module = obj.callback.__module__
+		filename = src.co_filename
+
+		lines, firstlineno = inspect.getsourcelines(src)
+		if not module.startswith('discord'):
+			# not a built-in command
+			location = os.path.relpath(filename).replace('\\', '/')
+		else:
+			location = module.replace('.', '/') + '.py'
+			source_url = 'https://github.com/Rapptz/discord.py'
+			branch = 'master'
+
+		final_url = f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>'
+		await ctx.send(final_url)
 
 	@update.error
 	async def update_error(self, ctx, error):

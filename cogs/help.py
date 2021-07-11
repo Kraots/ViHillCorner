@@ -50,7 +50,7 @@ class Help(commands.Cog):
 		self.ecoCommands = [
 				{'_name': ['register'], 'name': '!register', 'help': 'Register yourself to be able to use the economy commands.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['unregister'], 'name': '!unregister', 'help': 'Unregister yourself, you won\'t be able to use the economy commands anymore.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
-				{'_name': ['balance', 'bal', 'bank'], 'name': '![balance|bal] [user]', 'help': 'Check your or another user\'s balance.', 'hasChild': True}, 
+				{'_name': ['balance', 'bal', 'bank'], 'name': '![balance|bal] [user]', 'help': 'Check your or another user\'s balance.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['deposit', 'dep'], 'name': '![deposit|dep] <amount>', 'help': 'Deposit the amount of money into your bank.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['withdraw', 'with'], 'name': '![withdraw|with] <amount>', 'help': 'Withdraw the amount of money from your bank.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['steal', 'rob'], 'name': '![steal|rob] <user>', 'help': 'Steal some money from someone\'s wallet.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
@@ -77,7 +77,7 @@ class Help(commands.Cog):
 				{'_name': ['8ball', 'ball'], 'name': '!8ball <question>', 'help': 'Ask the 8ball a question and get an answer.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['fight'], 'name': '!fight <user>', 'help': 'Challenge someone to a fight.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['ppsize', 'pp'], 'name': '!ppsize [user]', 'help': 'See how large your or someone else\'s dick is.', 'hasChild': False, 'devOnly': False, 'staffOnly': False},
-				{'_name': ['trivia'], 'name': '!trivia', 'help': '', 'help1': 'Play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a competitive vibe to the game.', 'help2':'Play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a *competitive* vibe to the game.\n\u2800**Difficulties:**\n\u2800\u2800 - Easy -> 5 points\n\u2800\u2800 - Medium -> 10 points\n\u2800\u2800 - Hard -> 15 points\n\u2800**Modes:**\n\u2800\u2800 - Solo\n\u2800\u2800\u2800\u2800\u2800Play a normal game of trivia.\n\u2800\u2800 - Competitive\n\u2800\u2800\u2800\u2800\u2800Pick a bet and a player that you will have to do a trivia 1v1 with. The winner gets the bet amount as prize while the loser loses the bet amount of points.', 'hasChild': True},
+				{'_name': ['trivia'], 'name': '!trivia', 'help': '', 'help1': 'Play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a competitive vibe to the game.', 'help2':'Play a game of trivia, you can get points and see who can get the most points. These points have no actual use rather than just simply giving a *competitive* vibe to the game.\n\u2800**Difficulties:**\n\u2800\u2800 - Easy -> 5 points\n\u2800\u2800 - Medium -> 10 points\n\u2800\u2800 - Hard -> 15 points\n\u2800**Modes:**\n\u2800\u2800 - Solo\n\u2800\u2800\u2800\u2800\u2800Play a normal game of trivia.\n\u2800\u2800 - Competitive\n\u2800\u2800\u2800\u2800\u2800Pick a bet and a player that you will have to do a trivia 1v1 with. The winner gets the bet amount as prize while the loser loses the bet amount of points.', 'hasChild': True, 'devOnly': False, 'staffOnly': False},
 				{'_name': ['rock-paper-scissors', 'rps'], 'name': '![rock-paper-scissors|rps]', 'help': 'Play a game of rock-paper-scissors with the bot and earn money.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['tic-tac-toe', 'ttt', 'tictactoe'], 'name': '![tic-tac-toe|ttt] <user>', 'help': 'Play a tic-tac-toe game with someone. Both users must have `10,000` <:carrots:822122757654577183> in your wallet in order to play.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}
 				]
@@ -108,18 +108,19 @@ class Help(commands.Cog):
 		
 		self.utilityCommands = [
 				{'_name': ['ee', 'enlargeemoji', 'emoji'], 'name': '!ee', 'help': 'Enlarges the chosen emote.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
-				{'_name': ['nick', 'nickname'], 'name': '!nick <newnickname>', 'help': 'Change your nickname.', 'hasChild': True}, 
+				{'_name': ['nick', 'nickname'], 'name': '!nick <newnickname>', 'help': 'Change your nickname.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['profile', 'user'], 'name': '!profile [user]', 'help': 'Get a user\'s discord profile info.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['avatar', 'av'], 'name': '![avatar|av] [user]', 'help': 'See user\'s avatar.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['invite', 'inv'], 'name': '![invite|inv]', 'help': 'Get the invite link for the server.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['suggest', 'suggests'], 'name': '!suggest <suggestion>', 'help': 'Make a suggestion in <#858997857968193596>', 'hasChild': False, 'devOnly': False, 'staffOnly': False},
 				{'_name': ['snipe'], 'name': '!snipe [channel]', 'help': 'Snipe the last deleted message in the channel.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
-				{'_name': ['nsfw'], 'name': '!nsfw <category>', 'help': 'For nsfw categories type **!nsfw** in the nsfw channel. For more info about how to get access to the nsfw channel please type **!help nsfw**', 'hasChild': True}, 
+				{'_name': ['nsfw'], 'name': '!nsfw <category>', 'help': 'For nsfw categories type **!nsfw** in the nsfw channel. For more info about how to get access to the nsfw channel please type **!help nsfw**', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['google'], 'name': '!google <query>', 'help': 'Search for something on google.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['calculate', 'calc'], 'name': '![calculate|calc] <operation>', 'help': 'Basic calculator for basic operations.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['scrs', 'ss'], 'name': '![scrs|ss] <website>', 'help': 'Take a scren shot of a domain.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
-				{'_name': ['rank', 'lvl'], 'name': '![rank|lvl] [user]', 'help': 'Check user\'s current level.', 'hasChild': True}, 
-				{'_name': ['rtfd', 'rtfm'], 'name': '![rtfd|rtfm] <obj>', 'help': 'Gives you a documentation link for a discord.py entity.', 'hasChild': True}
+				{'_name': ['rank', 'lvl'], 'name': '![rank|lvl] [user]', 'help': 'Check user\'s current level.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['rtfd', 'rtfm'], 'name': '![rtfd|rtfm] <obj>', 'help': 'Gives you a documentation link for a discord.py entity.', 'hasChild': True, 'devOnly': False, 'staffOnly': False},
+				{'_name': ['source'], 'name': '!source <command>', 'help': 'Displays my full source code or for a specific command.\n\nTo display the source code of a subcommand you can separate it by periods, e.g. tag.create for the create subcommand of the tag command or by spaces.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}
 				]
 		
 		self.miscCommands = [
@@ -132,23 +133,23 @@ class Help(commands.Cog):
 				{'_name': ['vampify'], 'name': '!vampify <text>', 'help': 'Vampify your text.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['clapify'], 'name': '!clapify <text>', 'help': 'Clapify your text.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['role-id', 'roleid'], 'name': '!role-id <role_name>', 'help': 'Get the ID of the given role.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
-				{'_name': ['reminder', 'remind'], 'name': '![reminder|remind] <when> [what]', 'help': 'Set a reminder.', 'hasChild': True}, 
-				{'_name': ['msg-top', 'top'], 'name': '![msg-top|top]', 'help': 'See top 15 most active members.', 'hasChild': True}, 
+				{'_name': ['reminder', 'remind'], 'name': '![reminder|remind] <when> [what]', 'help': 'Set a reminder.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['msg-top', 'top'], 'name': '![msg-top|top]', 'help': 'See top 15 most active members.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['randomnumber', 'rn'], 'name': '![randomnumber|rn] <nr1> <nr2> <nr3>', 'help': '', 'help1': 'Get a random number depending on the amount of numbers you give. For more info please type **!help randomnumber**', 'help2': 'If you don\'t provide any number, the bot will give a random number between `0` and the `largest positive integer supported by the machine`.\n\nIf you provide only one number, then the bot will give a random number between `0` and `your chosen number (num1)`.\n\nIf you provide two numbers only, then the bot will give you a random number between `your first number (num1)` and `your second number (num2)`.\n\nIf you provide all three numbers, then the bot will give a random number between `your first number (num1)` and `your second number (num2)`, that is not `your third number (num3)`, this can be used if you want a random number between 2 numbers that is not a specific one, here\'s some examples:\n• `10 15 13 - will give a number between 10 and 15 that is not 13`\n• `0 10 5 - will give a number between 0 and 10 that is not 5`\n• `20 100 50 - will give a number between 20 and 100 that is not 50`\n• `10 20 15 - will give a number between 10 and 20 that is not 15`', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
-				{'_name': ['multiplier'], 'name': '!multiplier', 'help': 'Shows the multipliers for the next groups: **Staff/Mods**, **Server Boosters**, **Members**.', 'hasChild': True}
+				{'_name': ['multiplier'], 'name': '!multiplier', 'help': 'Shows the multipliers for the next groups: **Staff/Mods**, **Server Boosters**, **Members**.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}
 				]
 		
 		self.featuredCommands = [
-				{'_name': ['birthday', 'bday'], 'name': '!birthday [user]', 'help': 'See when someone\'s birthday is if they have it set.', 'hasChild': True}, 
-				{'_name': ['intro'], 'name': '!intro', 'help': 'Create or edit your intro.', 'hasChild': True}, 
+				{'_name': ['birthday', 'bday'], 'name': '!birthday [user]', 'help': 'See when someone\'s birthday is if they have it set.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['intro'], 'name': '!intro', 'help': 'Create or edit your intro.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['whois', 'wi'], 'name': '!whois [user]', 'help': 'Check user\'s intro.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
-				{'_name': ['reclist'], 'name': '!reclist [user]', 'help': 'Check user\'s recommendations list.', 'hasChild': True}, 
-				{'_name': ['cr'], 'name': '!cr', 'help': 'For more information about this command please see **!help cr**', 'hasChild': True}, 
+				{'_name': ['reclist'], 'name': '!reclist [user]', 'help': 'Check user\'s recommendations list.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['cr'], 'name': '!cr', 'help': 'For more information about this command please see **!help cr**', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['marry', 'marriedwho', 'divorce'], 'name': '!marry <user>', 'help': 'Marry the mentioned user.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['scrs', 'ss'], 'name': '![scrs|ss] <website>', 'help': 'Take a screenshot of a website.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
-				{'_name': ['tag', 'tags'], 'name': '!tag <tag_name>', 'help': 'Get the content of the tag.', 'hasChild': True}, 
-				{'_name': ['snippets', 'snippet'], 'name': '![snippet|snippets]', 'help': 'Get a list with all the snippets.', 'hasChild': True}, 
-				{'_name': ['bdsm'], 'name': '!bdsm', 'help': 'For more information please type **!help bdsm**', 'hasChild': True}
+				{'_name': ['tag', 'tags'], 'name': '!tag <tag_name>', 'help': 'Get the content of the tag.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['snippets', 'snippet'], 'name': '![snippet|snippets]', 'help': 'Get a list with all the snippets.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
+				{'_name': ['bdsm'], 'name': '!bdsm', 'help': 'For more information please type **!help bdsm**', 'hasChild': True, 'devOnly': False, 'staffOnly': False}
 				]
 		
 		self.moderatorCommands = [
