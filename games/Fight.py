@@ -6,7 +6,7 @@ class Fight:
 		self.p1 = pl1
 		self.p2 = pl2
 		self.ctx = ctx
-		self.client = bot
+		self.bot = bot
 		self.p1_hp = 100
 		self.p2_hp = 100
 		self.started = False
@@ -59,7 +59,7 @@ class Fight:
 			await self.ctx.send(f"{Player.mention} Please choose what you wish to do next from the following options:\n`fight`, `health`, `forfeit`")
 		try:
 			while True:
-				response = await self.client.wait_for('message', check=check, timeout=120)
+				response = await self.bot.wait_for('message', check=check, timeout=120)
 				option = response.content.lower()
 				if option == 'forfeit':
 					raise Exception(f"**{Player.display_name}** has forfeited. {Opponent.mention} won!")
