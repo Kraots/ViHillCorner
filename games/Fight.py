@@ -11,11 +11,11 @@ class Fight:
 		self.p2_hp = 100
 		self.started = False
 
-	def fight(self, hp) -> int:
+	def fight(self, hp) -> list[int, int]:
 		dmg = random.randint(1,50)
 		return [dmg, hp-dmg]
 
-	def health(self, hp) -> int:
+	def health(self, hp) -> list[int, int]:
 		healt = random.randint(1,35)
 		return [healt, hp+healt]
 	
