@@ -17,7 +17,7 @@ class Fight:
 
 	def health(self, hp) -> int:
 		healt = random.randint(1,35)
-		return [hp, hp+healt]
+		return [healt, hp+healt]
 	
 	def update_health(self, affected_player, option, hp) -> int:
 		if option == 'fight':
