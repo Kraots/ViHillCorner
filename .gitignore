@@ -1,5 +1,4 @@
 *.pyc
 /bot.py
 /.env
-/commit.txt
 /.vscode
