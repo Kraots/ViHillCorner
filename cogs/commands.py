@@ -260,15 +260,12 @@ class command(commands.Cog):
 		if obj is None:
 			return await ctx.send('Could not find command.')
 
-		# since we found the command we're looking for, presumably anyway, let's
-		# try to access the code itself
 		src = obj.callback.__code__
 		module = obj.callback.__module__
 		filename = src.co_filename
 
 		lines, firstlineno = inspect.getsourcelines(src)
 		if not module.startswith('discord'):
-			# not a built-in command
 			location = os.path.relpath(filename).replace('\\', '/')
 		else:
 			location = module.replace('.', '/') + '.py'
