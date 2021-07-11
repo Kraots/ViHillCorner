@@ -118,10 +118,6 @@ def clean_code(content):
 		return content
 
 def package_version(package_name: str) -> typing.Optional[str]:
-	"""
-	Returns package version as a string, or None if it couldn't be found.
-	"""
-
 	try:
 		return pkg_resources.get_distribution(package_name).version
 	except (pkg_resources.DistributionNotFound, AttributeError):

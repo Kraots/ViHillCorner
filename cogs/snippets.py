@@ -1,11 +1,12 @@
 import discord
 from discord.ext import commands
 import asyncio
-from utils.paginator_v3 import SimplePages
+from utils.paginator import SimplePages
 import datetime
 import utils.colors as color
 from pymongo import MongoClient
 import os
+import utils.colors as color
 DBKEY = os.getenv("MONGODBKEY")
 
 cluster = MongoClient(DBKEY)
@@ -24,24 +25,9 @@ class SnippetPageEntry:
 		return f'{self.name}\u2800•\u2800(`Owner:` <@!{self.id}>)'
 
 class SnippetPages(SimplePages):
-	def __init__(self, entries, *, per_page=12):
+	def __init__(self, entries, *, per_page=12, color=color):
 		converted = [SnippetPageEntry(entry) for entry in entries]
-		super().__init__(converted, per_page=per_page)
-
-class SnippetOwnerPageEntry:
-	def __init__(self, entry):
-
-		self.name = entry['_id']
-		self.created = entry['created_at']
-
-	def __str__(self):
-		return f'{self.name}\u2800•\u2800(`Created At:` **{self.created}**)'
-
-class SnippetOwnerPages(SimplePages):
-	def __init__(self, entries, *, per_page=12):
-		converted = [SnippetOwnerPageEntry(entry) for entry in entries]
-		super().__init__(converted, per_page=per_page)
-
+		super().__init__(converted, per_page=per_page, color=color)
 
 class Snippets(commands.Cog):
 
@@ -55,7 +41,7 @@ class Snippets(commands.Cog):
 	async def snippet(self, ctx):
 		entries = collection.find({})
 		
-		p = SnippetPages(entries = entries, per_page = 7)
+		p = SnippetPages(entries = entries, per_page = 7, color=color.reds)
 		await p.start(ctx)
 
 
@@ -64,7 +50,7 @@ class Snippets(commands.Cog):
 		query = str(query).lower()
 		entries = collection.find({'_id': {'$regex': query, '$options': 'i'}})
 		try:
-			p = SnippetPages(entries = entries, per_page = 7)
+			p = SnippetPages(entries = entries, per_page = 7, color=color.reds)
 			await p.start(ctx)
 		except:
 			await ctx.send('No snippets found. %s' % (ctx.author.mention))
@@ -92,7 +78,7 @@ class Snippets(commands.Cog):
 			member = ctx.author
 		entries = collection.find({'snippet_credits': member.id})
 		try:
-			p = SnippetPages(entries = entries, per_page = 7)
+			p = SnippetPages(entries = entries, per_page = 7, color=color.reds)
 			await p.start(ctx)
 		except:
 			await ctx.send('You do not own any snippets. %s' % (ctx.author.mention))

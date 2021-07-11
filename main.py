@@ -20,9 +20,9 @@ class ViHillCorner(commands.Bot):
 			if filename.endswith('.py'):
 				self.load_extension(f'cogs.{filename[:-3]}')
 
-		for filename in os.listdir('./outsidereloadcogs'):
+		for filename in os.listdir('./reload_cogs'):
 			if filename.endswith('.py'):
-				self.load_extension(f'outsidereloadcogs.{filename[:-3]}')
+				self.load_extension(f'reload_cogs.{filename[:-3]}')
 
 		self.load_extension('jishaku')
 		

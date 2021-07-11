@@ -105,8 +105,6 @@ class UserFriendlyTime(commands.Converter):
         return obj
 
     async def convert(self, ctx, argument):
-        # Create a copy of ourselves to prevent race conditions from two
-        # events modifying the same instance of a converter
         result = self.copy()
         try:
             calendar = HumanTime.calendar
@@ -120,14 +118,10 @@ class UserFriendlyTime(commands.Converter):
                 result.dt = now + relativedelta(**data)
                 return await result.check_constraints(ctx, now, remaining)
 
-
-            # apparently nlp does not like "from now"
-            # it likes "from x" in other cases though so let me handle the 'now' case
             if argument.endswith('from now'):
                 argument = argument[:-8].strip()
 
             if argument[0:2] == 'me':
-                # starts with "me to", "me in", or "me at "
                 if argument[0:6] in ('me to ', 'me in ', 'me at '):
                     argument = argument[6:]
 
@@ -135,12 +129,6 @@ class UserFriendlyTime(commands.Converter):
             if elements is None or len(elements) == 0:
                 raise commands.BadArgument('Invalid time provided, try e.g. "tomorrow" or "3 days".')
 
-            # handle the following cases:
-            # "date time" foo
-            # date time foo
-            # foo date time
-
-            # first the first two cases:
             dt, status, begin, end, dt_string = elements[0]
 
             if not status.hasDateOrTime:
@@ -188,11 +176,6 @@ def human_timedelta(dt, *, source=None, accuracy=3, brief=False, suffix=True):
     now = now.replace(microsecond=0)
     dt = dt.replace(microsecond=0)
 
-    # This implementation uses relativedelta instead of the much more obvious
-    # divmod approach with seconds because the seconds approach is not entirely
-    # accurate once you go over 1 week in terms of accuracy since you have to
-    # hardcode a month as 30 or 31 days.
-    # A query like "11 months" can be interpreted as "!1 months and 6 days"
     if dt > now:
         delta = relativedelta(dt, now)
         suffix = ''
