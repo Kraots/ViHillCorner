@@ -8,14 +8,10 @@ from typing import Union
 import datetime
 import random
 import sys
-from github import Github
-from utils.helpers import time_phaserr
 import urllib.request
 import urllib.parse
 import inspect
 
-git_user = os.getenv("github_user")
-git_pass = os.getenv("github_pass")
 ss_key = os.getenv("SS_KEY")
 
 async def generate_screenshot_api_url(customer_key,  options):
@@ -226,29 +222,6 @@ class command(commands.Cog):
 				else:
 					pass
 
-	@commands.command(aliases=['updates'])
-	@commands.cooldown(3, 1800, commands.BucketType.guild)
-	async def update(self, ctx):
-		
-		def format_date(dt):
-			if dt is None:
-				return 'N/A'
-			return f'{dt:%Y-%m-%d} ({time.human_timedelta(dt, accuracy=3)})'
-
-		g = Github(git_user, git_pass)
-		repo = g.get_repo("Kraots/ViHillCorner")
-		master = repo.get_branch("master")
-		sha_com = master.commit
-		sha_com = str(sha_com).split('Commit(sha="')
-		sha_com = sha_com[1].split('")')
-		sha_com = sha_com[0]
-		commits = repo.get_commit(sha_com)
-		commit = commits.commit.message
-		commit_date = format_date(commits.commit.author.date)
-		em = discord.Embed(title="Here is what's new to the bot:", description="{} \n\n\n\u2800\u2800\u2800\u2800\u2800\u2800\u2800{}".format(commit, commit_date), color=color.lightpink)
-		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-		await ctx.send(embed=em, reference=ctx.replied_reference)
-
 	@commands.command()
 	async def source(self, ctx, *, command: str = None):
 		source_url = 'https://github.com/Kraots/ViHillCorner'
@@ -274,12 +247,6 @@ class command(commands.Cog):
 
 		final_url = f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>'
 		await ctx.send(final_url)
-
-	@update.error
-	async def update_error(self, ctx, error):
-		if isinstance(error, commands.CommandOnCooldown):
-				msg = f"This command has already been used **3** times in this server within an hour. Please wait **{time_phaserr(error.retry_after)}** before using it again. {ctx.author.mention}"
-				await ctx.send(msg)
 
 def setup (client):
 	client.add_cog(command(client))
