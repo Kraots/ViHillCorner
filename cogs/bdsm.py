@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import motor.motor_asyncio
 import os
-import utils.colors as color
 import asyncio
 import datetime
 DBKEY = os.getenv('MONGODBLVLKEY')
