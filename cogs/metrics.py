@@ -2,9 +2,8 @@ import discord
 from discord.ext import commands
 import psutil
 import time
-from utils.helpers import time_phaserr
+from utils import time as t
 import utils.colors as color
-up = time.time()
 
 class Metrics(commands.Cog):
 
@@ -32,7 +31,7 @@ class Metrics(commands.Cog):
 		metrics.add_field(name="Memory Usage:", value=f" \n{memory_usage:.2f} MiB\n{cpu_usage:.2f}% CPU", inline=False)
 		metrics.add_field(name="Guilds:", value=guilds, inline=False)
 		metrics.add_field(name="Commands loaded:", value=f"{len([x.name for x in self.client.commands])}", inline=False)
-		metrics.add_field(name="Uptime:", value=str(time_phaserr(int(time.time()-up))))
+		metrics.add_field(name="Uptime:", value=t.human_timedelta(dt=self.client.uptime, accuracy=3, brief=False, suffix=False))
 		metrics.set_footer(text=f"Bot made by: {kraots}", icon_url=self.client.user.avatar_url)
 		await msg.edit(embed=metrics)
 
