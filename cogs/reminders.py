@@ -49,8 +49,8 @@ class RemindersClass(commands.Cog):
 		delta = time.human_timedelta(when.dt, accuracy=3)
 		await ctx.send(f"Alright {ctx.author.mention}, in **{delta}**: {when.arg}")
 	
-	@remind.command()
-	async def list(self, ctx):
+	@remind.command(aliases=['list'])
+	async def _list(self, ctx):
 		results = collection.find({"userID": ctx.author.id}).sort([("remindWhen", 1)])
 		em = discord.Embed(color=color.lightpink, title="Reminders")
 		index = 0
@@ -63,7 +63,7 @@ class RemindersClass(commands.Cog):
 		for result in await results.to_list(10):
 			index += 1
 			shorten = textwrap.shorten(result['remindWhat'], width=320)
-			em.add_field(name=f"(ID)`{result['_id']}`: In {time.human_timedelta(result['remindWhen'])}", value=shorten, inline=False)
+			em.add_field(name=f"(ID)`{result['_id']}`: In {time.human_timedelta(result['remindWhen'])}", value=f"{shorten}\n[Click here to go there]({result['messageJumpUrl']})", inline=False)
 		
 		if len(em) < 12:
 			await ctx.send("No currently running reminders.")
