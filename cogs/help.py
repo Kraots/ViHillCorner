@@ -269,7 +269,7 @@ class Help(commands.Cog):
 				_categs = f"<:banhammer:859065173352644628> -> **Moderator**{categs}"
 			if ctx.author.id == 374622847672254466:
 				_categs = f"<:verifiedbotdev:859064715715018782> -> **Developer**\n<:banhammer:859065173352644628> -> **Moderator**{categs}"
-			em = discord.Embed(color=color.lightpink, title="Here's the help.", description="```diff\n+ <> means it's a required argument\n===============================================\n+ [] means it's an optional argument (only if it's not how the command works)\n===============================================\n- !help <command_name> if you want help for a specific command```")
+			em = discord.Embed(color=color.lightpink, title="Here's the help.", description="```diff\n- [] = optional argument\n- <> = required argument\n- do NOT type these when using commands!\n+ Type !help [command|category] for more help on a command or a category!```")
 			em.set_thumbnail(url=self.client.user.avatar_url)
 			em.add_field(name="React with the reactions specific to the category you wish to see.", 
 			value=_categs)
