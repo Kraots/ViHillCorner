@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import random
 from random import randint
-from utils.helpers import time_phaserr, BotChannels
+from utils.helpers import time_phaser, BotChannels
 import asyncio
 import games
 
@@ -470,7 +470,7 @@ class Fun(commands.Cog):
 	@vampify.error
 	async def vampify_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandOnCooldown):
-			await ctx.send(f"You're on cooldown, try again in {time_phaserr(error.retry_after)}.")
+			await ctx.send(f"You're on cooldown, try again in {time_phaser(error.retry_after)}.")
 		elif isinstance(error, commands.MissingRequiredArgument):
 			ctx.command.reset_cooldown(ctx)
 
@@ -478,7 +478,7 @@ class Fun(commands.Cog):
 	@clapify.error
 	async def clapify_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandOnCooldown):
-			await ctx.send(f"You're on cooldown, try again in {time_phaserr(error.retry_after)}.")
+			await ctx.send(f"You're on cooldown, try again in {time_phaser(error.retry_after)}.")
 		elif isinstance(error, commands.MissingRequiredArgument):
 			ctx.command.reset_cooldown(ctx)
 

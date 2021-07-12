@@ -1,7 +1,7 @@
 import discord 
 from discord.ext import commands
 import asyncio
-from utils.helpers import BotChannels, time_phaserr
+from utils.helpers import BotChannels, time_phaser
 import motor.motor_asyncio
 import os
 
@@ -447,7 +447,7 @@ class Intros(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 
 		elif isinstance(error, commands.CommandOnCooldown):
-				msg = f'Please wait {time_phaserr(error.retry_after)}.'
+				msg = f'Please wait {time_phaser(error.retry_after)}.'
 				await ctx.channel.send(msg)
 
 	@intro.error
@@ -457,7 +457,7 @@ class Intros(commands.Cog):
 			return
 
 		elif isinstance(error, commands.CommandOnCooldown):
-			msg = f'Please wait {time_phaserr(error.retry_after)}.'
+			msg = f'Please wait {time_phaser(error.retry_after)}.'
 			await ctx.channel.send(msg)
 
 		elif isinstance(error, commands.TooManyArguments):

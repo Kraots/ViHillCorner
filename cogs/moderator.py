@@ -2,7 +2,7 @@ import discord
 import asyncio
 import utils.colors as color
 import re
-from utils.helpers import time_phaserr
+from utils.helpers import time_phaser
 import motor.motor_asyncio
 import os
 import datetime
@@ -107,11 +107,11 @@ class Moderation(commands.Cog):
 
 		if how_much:
 			await ctx.channel.edit(slowmode_delay=how_much)
-			await ctx.author.send(f'Set slowmode for <#{ctx.channel.id}> to {time_phaserr(how_much)} !')
+			await ctx.author.send(f'Set slowmode for <#{ctx.channel.id}> to {time_phaser(how_much)} !')
 			
 			em = discord.Embed(color=color.reds, title="___SLOWMODE___", timestamp = ctx.message.created_at)
 			em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-			em.add_field(name="Action", value=f"`Set slowmode to {time_phaserr(how_much)}`", inline=False)
+			em.add_field(name="Action", value=f"`Set slowmode to {time_phaser(how_much)}`", inline=False)
 			em.add_field(name="Channel", value=f"<#{ctx.channel.id}>",inline=False)
 
 			await log_channel.send(embed=em)
