@@ -54,7 +54,7 @@ class OnBanAppealJoin(commands.Cog):
 		if message.guild:
 			if message.guild.id == 788384492175884299:
 				if message.content.lower() == 'bye':
-					if 374622847672254466 in [role.id for role in message.author.roles] or message.author.id == 374622847672254466:
+					if 788384677987352608 in [role.id for role in message.author.roles] or message.author.id == 374622847672254466:
 						found = False
 						for obj in message.channel.overwrites:
 							if obj.id == int(message.channel.topic):
