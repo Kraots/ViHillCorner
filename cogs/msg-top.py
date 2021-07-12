@@ -34,20 +34,22 @@ class MessageTop(commands.Cog):
 		dateNow = datetime.datetime.strptime(a, '%Y-%m-%d')
 		
 		if dateNow >= resetWhen:
+			users = {}
 			index = 0 
 			results = collection.find().sort([("messages_count", -1)])
 			for result in await results.to_list(3):
 				index += 1
 				user = self.client.get_user(result['_id'])
-				if index == 1:
-					await collection.update_one({'_id': result['_id']}, {'$inc':{'xp': 50000}})
-					await user.send("Congrats. You placed `%sst` in the weekly top! Your reward is **50,000** XP." % (index))
-				elif index == 2:
-					await collection.update_one({'_id': result['_id']}, {'$inc':{'xp': 30000}})
-					await user.send("Congrats. You placed `%snd` in the weekly top! Your reward is **30,000** XP." % (index))
-				elif index == 3:
-					await collection.update_one({'_id': result['_id']}, {'$inc':{'xp': 20000}})
-					await user.send("Congrats. You placed `%srd` in the weekly top! Your reward is **20,000** XP." % (index))
+				users[index] = user
+			_1stplace = users[1]
+			_2ndplace = users[2]
+			_3rdplace = users[3]
+			await collection.update_one({'_id': _1stplace.id}, {'$inc':{'xp': 50000}})
+			await collection.update_one({'_id': _2ndplace.id}, {'$inc':{'xp': 30000}})
+			await collection.update_one({'_id': _3rdplace.id}, {'$inc':{'xp': 20000}})
+			await _1stplace.send(f"Congrats. You placed `1st` in the weekly top! Your reward is **50,000** XP.\nThe others placed:\n\u2800• **{_2ndplace}** -> `2nd`\n\u2800• **{_3rdplace}** -> `3rd`")
+			await _1stplace.send(f"Congrats. You placed `2nd` in the weekly top! Your reward is **30,000** XP.\nThe others placed:\n\u2800• **{_1stplace}** -> `1st`\n\u2800• **{_3rdplace}** -> `3rd`")
+			await _1stplace.send(f"Congrats. You placed `3rd` in the weekly top! Your reward is **20,000** XP.\nThe others placed:\n\u2800• **{_1stplace}** -> `1st`\n\u2800• **{_2ndplace}** -> `2nd`")
 
 			await collection.update_many({}, {"$set": {"messages_count": 0}})
 			x = dateNow + relativedelta(weeks = 1)
