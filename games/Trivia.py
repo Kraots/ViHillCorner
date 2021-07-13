@@ -434,6 +434,9 @@ class Trivia:
 			return
 		
 		elif mode in ['comp', 'competitive']:
-			em = await self.competitive()
-			await self.ctx.send(embed=em)
+			try:
+				em = await self.competitive()
+				await self.ctx.send(embed=em)
+			except:
+				pass
 			return
