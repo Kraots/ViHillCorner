@@ -245,7 +245,15 @@ class command(commands.Cog):
 			source_url = 'https://github.com/Rapptz/discord.py'
 			branch = 'master'
 
-		final_url = f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>'
+		if command == 'trivia':
+			final_url = 'https://github.com/Kraots/ViHillCorner/blob/master/games/Trivia.py#L13-L439'
+		elif command == 'fight':
+			final_url = 'https://github.com/Kraots/ViHillCorner/blob/master/games/Fight.py#L4-L90'
+		elif command in ['ttt', 'tictactoe', 'tic-tac-toe']:
+			final_url = 'https://github.com/Kraots/ViHillCorner/blob/master/games/TicTacToe.py#L13-L119'
+		else:
+			final_url = f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>'
+		
 		await ctx.send(final_url)
 
 def setup (client):
