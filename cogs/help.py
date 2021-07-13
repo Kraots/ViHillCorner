@@ -103,7 +103,7 @@ class Help(commands.Cog):
 				{'_name': ['rawad', 'ra'], 'name': '![rawad|ra]', 'help': 'Get the server\'s advertising text in raw format.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['serverinfo', 'si'], 'name': '![serverinfo|si]', 'help': 'Get some info about the server.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['vote'], 'name': '!vote', 'help': 'Vote for the server on top.gg', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
-				{'_name': ['update'], 'name': '!update', 'help': 'Shows the latest update and what new features have been brought to the bot.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}
+				{'_name': ['update', 'updates'], 'name': '!update', 'help': 'Shows the latest update and what new features have been brought to the bot.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}
 				]
 		
 		self.utilityCommands = [
@@ -252,7 +252,8 @@ class Help(commands.Cog):
 				{'Parent': 'unload', 'name': '!unload all', 'help': 'Unloads all the cogs', 'devOnly': True, 'staffOnly': False}, 
 				{'Parent': 'reload', 'name': '!reload all', 'help': 'Reloads all the cogs.', 'devOnly': True, 'staffOnly': False},
 				{'Parent': 'marry', 'name': '!marriedwho [user]', 'help': 'See who the user is married with.', 'devOnly': False, 'staffOnly': False},
-				{'Parent': 'marry', 'name': '!divorce', 'help': 'Divorce the person you\'re married with.', 'devOnly': False, 'staffOnly': False}
+				{'Parent': 'marry', 'name': '!divorce', 'help': 'Divorce the person you\'re married with.', 'devOnly': False, 'staffOnly': False},
+				{'Parent': 'update', 'name': '!update set <args>', 'help': 'Set the new update.', 'devOnly': True, 'staffOnly': False}
 				]
 
 		self.allCommands = self.featuredCommands + self.ecoCommands + self.funCommands + self.warnCommands + self.infoCommands + self.utilityCommands + self.miscCommands + self.moderatorCommands + self.developerCommands
