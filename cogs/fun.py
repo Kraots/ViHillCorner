@@ -446,7 +446,7 @@ class Fun(commands.Cog):
 		else:
 			if str(reaction.emoji) == '<:agree:797537027469082627>':
 				await msg.delete()
-				f = games.Fight(p1, p2, ctx, self.client)
+				f = games.Fight(p1, p2, ctx)
 				await f.start()
 
 			elif str(reaction.emoji) == '<:disagree:797537030980239411>':

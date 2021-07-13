@@ -62,7 +62,7 @@ class TTT(commands.Cog):
 		else:
 			if str(reaction.emoji) == '<:agree:797537027469082627>':
 				await msg.delete()
-				t = games.TicTacToe(ctx.author, member, ctx, self.client)
+				t = games.TicTacToe(ctx.author, member, ctx)
 				await t.start()
 				
 			elif str(reaction.emoji) == '<:disagree:797537030980239411>':

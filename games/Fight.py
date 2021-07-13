@@ -2,11 +2,11 @@ import random
 import asyncio
 
 class Fight:
-	def __init__(self, pl1, pl2, ctx, bot):
+	def __init__(self, pl1, pl2, ctx):
 		self.p1 = pl1
 		self.p2 = pl2
 		self.ctx = ctx
-		self.bot = bot
+		self.bot = ctx.bot
 		self.p1_hp = 100
 		self.p2_hp = 100
 		self.started = False

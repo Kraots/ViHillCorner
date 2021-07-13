@@ -11,11 +11,11 @@ cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 ecoDb = cluster['ViHillCornerDB']['Economy']
 
 class TicTacToe:
-	def __init__(self, pl1, pl2, ctx, bot):
+	def __init__(self, pl1, pl2, ctx):
 		self.player1 = pl1
 		self.player2 = pl2
 		self.ctx = ctx
-		self.bot = bot
+		self.bot = ctx.bot
 		self.turns = 0
 		self.board = [':one:', ':two:', ':three:', ':four:', ':five:', ':six:', ':seven:', ':eight:', ':nine:']
 	
@@ -84,8 +84,6 @@ class TicTacToe:
 
 		except asyncio.TimeoutError:
 			raise Exception(f"The game has been canceled since {Player.mention} took too much to give an answer. {Opponent.mention}")
-
-				
 
 	async def start(self):
 		self.choose_starter()
