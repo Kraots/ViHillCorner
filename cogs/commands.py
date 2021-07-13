@@ -246,11 +246,11 @@ class command(commands.Cog):
 			branch = 'master'
 
 		if command == 'trivia':
-			final_url = 'https://github.com/Kraots/ViHillCorner/blob/master/games/Trivia.py#L13-L439'
+			final_url = '<https://github.com/Kraots/ViHillCorner/blob/master/games/Trivia.py#L13-L439>'
 		elif command == 'fight':
-			final_url = 'https://github.com/Kraots/ViHillCorner/blob/master/games/Fight.py#L4-L90'
+			final_url = '<https://github.com/Kraots/ViHillCorner/blob/master/games/Fight.py#L4-L90>'
 		elif command in ['ttt', 'tictactoe', 'tic-tac-toe']:
-			final_url = 'https://github.com/Kraots/ViHillCorner/blob/master/games/TicTacToe.py#L13-L119'
+			final_url = '<https://github.com/Kraots/ViHillCorner/blob/master/games/TicTacToe.py#L13-L119>'
 		else:
 			final_url = f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>'
 		
