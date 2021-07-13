@@ -15,8 +15,9 @@ class TTT(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 		self.prefix = "!"
-	# async def cog_check(self, ctx):
-	# 	return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
+	
+	async def cog_check(self, ctx):
+		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
 	
 	@commands.command(aliases=['ttt', 'tic-tac-toe'])
 	async def tictactoe(self, ctx, member: discord.Member = None):
