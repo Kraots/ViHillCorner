@@ -142,8 +142,8 @@ class LevelSystem(commands.Cog):
 					xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
 					boxes = int((xp/(200*((1/2)*lvl)))*20)
 
-				#guild = self.client.get_guild(750160850077089853)
-				all_guild_members = len([m for m in ctx.guild.members if not m.bot])
+				guild = self.client.get_guild(750160850077089853)
+				all_guild_members = len([m for m in guild.members if not m.bot])
 				
 				em = discord.Embed(title=f"{member.display_name}'s level stats", color=color.lightpink)
 				em.add_field(name="Name", value=member.mention)
@@ -226,11 +226,12 @@ class LevelSystem(commands.Cog):
 				
 				if str(f).endswith(".0"):
 					f = str(f).replace(".0", "")
+					f = int(f)
 				else:
-					f = f
+					f = int(f)
 				
 
-				em.add_field(name=f"`#{index}` **-->** {user.display_name}", value=f"Level: `{lvl}`\nTotal XP: `{f}`", inline=False)
+				em.add_field(name=f"`#{index}` **-->** {user.display_name}", value=f"Level: `{lvl}`\nTotal XP: `{f:,}`", inline=False)
 			
 			await ctx.send(embed=em)
 
