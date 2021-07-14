@@ -173,7 +173,7 @@ class LevelSystem(commands.Cog):
 					out.save("ProgressBar.png")
 					file = discord.File(fp="ProgressBar.png", filename="ProgressBar.png")
 
-					em.add_field(name="XP", value=f"{x}/{total_needed_xp_for_next_lvl}")
+					em.add_field(name="XP", value=f"{x:,}/{total_needed_xp_for_next_lvl:,}")
 					em.add_field(name="Level", value=lvl)
 					em.add_field(name="Rank", value=f"{rank}/{all_guild_members}", inline=False)
 					em.set_image(url="attachment://ProgressBar.png")
