@@ -81,7 +81,6 @@ def time_phaser(seconds):
 		output = output + str(int(round(s, 0))) + " seconds "
 	return output
 
-
 def Developer(ctx):
 	return ctx.author.id == 374622847672254466
 
@@ -117,3 +116,21 @@ def drawProgressBar(d, x, y, w, h, progress, bg="white", fg="black"):
 		d.rectangle((x+(h/2), y, x+w+(h/2), y+h),fill=fg)
 
 	return d
+
+def format_balance(balance):
+    cBalance = "{:,}".format(balance)
+    sBalance = cBalance.split(",")
+    if len(sBalance) == 1:
+        return str(balance)
+    elif len(sBalance) == 2:
+        sign = "K"
+    elif len(sBalance) == 3:
+        sign = "M"
+    elif len(sBalance) == 4:
+        sign = "B"
+    elif len(sBalance) == 5:
+        sign = "T"
+    elif len(sBalance) >= 6:
+        sign = "Q"
+    fBalance = sBalance[0] + "." + sBalance[1][0:2] + sign
+    return fBalance

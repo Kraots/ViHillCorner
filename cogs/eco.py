@@ -4,7 +4,7 @@ from random import randint
 import random
 import utils.colors as color
 import asyncio
-from utils.helpers import time_phaser
+from utils.helpers import time_phaser, format_balance
 import pymongo
 import motor.motor_asyncio
 import os
@@ -174,9 +174,9 @@ class EcoCommands(commands.Cog):
 
 
 		em = discord.Embed(title=f"{member.name}'s balance", color=color.lightpink)
-		em.add_field(name="Wallet Balance", value="**{:,}** <:carrots:822122757654577183> ".format(wallet_amt), inline=False)
-		em.add_field(name="Bank Balance", value="**{:,}** <:carrots:822122757654577183> ".format(bank_amt), inline=False)
-		em.add_field(name="Total Balance", value="**{:,}** <:carrots:822122757654577183> ".format(total_amt))
+		em.add_field(name="Wallet Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(wallet_amt)), inline=False)
+		em.add_field(name="Bank Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(bank_amt)), inline=False)
+		em.add_field(name="Total Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(total_amt)))
 		em.add_field(name="Rank", value="`#{}`".format(index))
 		em.set_thumbnail(url=user.avatar_url)
 
@@ -204,7 +204,7 @@ class EcoCommands(commands.Cog):
 			
 			name = mem.name
 
-			em.add_field(name=f"`#{index}` {name}", value="**{:,}** <:carrots:822122757654577183> ".format(amt), inline=False)
+			em.add_field(name=f"`#{index}` {name}", value="{} <:carrots:822122757654577183> ".format(format_balance(amt)), inline=False)
 			if index == 10:
 				break
 			
@@ -231,7 +231,6 @@ class EcoCommands(commands.Cog):
 	@balance.command(aliases=['add-bank'])
 	@commands.is_owner()
 	async def add_bank(self, ctx, amount = None, member: discord.Member = None):
-		kraots = self.client.get_user(374622847672254466)
 		if member is None:
 			member = ctx.author
 
@@ -258,7 +257,6 @@ class EcoCommands(commands.Cog):
 	@balance.command(aliases=['add-wallet'])
 	@commands.is_owner()
 	async def add_wallet(self, ctx, amount = None, member: discord.Member = None):
-		kraots = self.client.get_user(374622847672254466)
 		if member is None:
 			member = ctx.author
 
@@ -286,7 +284,6 @@ class EcoCommands(commands.Cog):
 	@balance.command(aliases=['set-bank'])
 	@commands.is_owner()
 	async def set_bank(self, ctx, amount = None, member: discord.Member = None):
-		kraots = self.client.get_user(374622847672254466)
 		if member is None:
 			member = ctx.author
 
@@ -311,7 +308,6 @@ class EcoCommands(commands.Cog):
 	@balance.command()
 	@commands.is_owner()
 	async def reset(self, ctx, member: discord.Member = None):
-		kraots = self.client.get_user(374622847672254466)
 		if member is None:
 			member = ctx.author
 
@@ -332,8 +328,6 @@ class EcoCommands(commands.Cog):
 	@balance.command(aliases=['set-wallet'])
 	@commands.is_owner()
 	async def set_wallet(self, ctx, amount = None, member: discord.Member = None):
-
-		kraots = self.client.get_user(374622847672254466)
 		if member is None:
 			member = ctx.author
 
