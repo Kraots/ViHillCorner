@@ -5,7 +5,6 @@ from discord.ext import commands
 import motor.motor_asyncio
 import os
 import discord
-import random
 import games
 bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
 
