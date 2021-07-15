@@ -149,7 +149,8 @@ class Help(commands.Cog):
 				{'_name': ['scrs', 'ss'], 'name': '![scrs|ss] <website>', 'help': 'Take a screenshot of a website.', 'hasChild': False, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['tag', 'tags'], 'name': '!tag <tag_name>', 'help': 'Get the content of the tag.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
 				{'_name': ['snippets', 'snippet'], 'name': '![snippet|snippets]', 'help': 'Get a list with all the snippets.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}, 
-				{'_name': ['bdsm'], 'name': '!bdsm', 'help': 'For more information please type **!help bdsm**', 'hasChild': True, 'devOnly': False, 'staffOnly': False}
+				{'_name': ['bdsm'], 'name': '!bdsm', 'help': 'For more information please type **!help bdsm**', 'hasChild': True, 'devOnly': False, 'staffOnly': False},
+				{'_name': ['todo'], 'name': '!todo <todo>', 'help': 'Add to your todo list.', 'hasChild': True, 'devOnly': False, 'staffOnly': False}
 				]
 		
 		self.moderatorCommands = [
@@ -253,7 +254,11 @@ class Help(commands.Cog):
 				{'Parent': 'reload', 'name': '!reload all', 'help': 'Reloads all the cogs.', 'devOnly': True, 'staffOnly': False},
 				{'Parent': 'marry', 'name': '!marriedwho [user]', 'help': 'See who the user is married with.', 'devOnly': False, 'staffOnly': False},
 				{'Parent': 'marry', 'name': '!divorce', 'help': 'Divorce the person you\'re married with.', 'devOnly': False, 'staffOnly': False},
-				{'Parent': 'update', 'name': '!update set <args>', 'help': 'Set the new update.', 'devOnly': True, 'staffOnly': False}
+				{'Parent': 'update', 'name': '!update set <args>', 'help': 'Set the new update.', 'devOnly': True, 'staffOnly': False},
+				{'Parent': 'todo', 'name': '!todo add <todo>', 'help': 'Same as `!todo <todo>`, adds to your todo list.', 'devOnly': False, 'staffOnly': False},
+				{'Parent': 'todo', 'name': '!todo list', 'help': 'See your todo list. Each index is a hyperlink meaning that if you click on it you will be taken to the message where you have added that todo in your list.', 'devOnly': False, 'staffOnly': False},
+				{'Parent': 'todo', 'name': '!todo [delete|remove] <index>', 'help': 'Delete|Remove a todo from your list using the index.', 'devOnly': False, 'staffOnly': False},
+				{'Parent': 'todo', 'name': '!todo clear', 'help': 'Delete your todo list.', 'devOnly': False, 'staffOnly': False}
 				]
 
 		self.allCommands = self.featuredCommands + self.ecoCommands + self.funCommands + self.warnCommands + self.infoCommands + self.utilityCommands + self.miscCommands + self.moderatorCommands + self.developerCommands
