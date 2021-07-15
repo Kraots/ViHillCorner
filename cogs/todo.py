@@ -41,9 +41,11 @@ class ToDo(commands.Cog):
 		if user is None:
 			post = {
 			'_id': ctx.author.id,
-			'data': [{'url': ctx.message.jump_url,
+			'data': [
+					{'url': ctx.message.jump_url,
 					'data': todo
-					}]
+					}
+					]
 				}
 			await db.insert_one(post)
 			await ctx.reply("Successfully added to your todo list.")
@@ -86,6 +88,11 @@ class ToDo(commands.Cog):
 		
 		data = user['data']
 		new_data = []
+		if index < 0:
+			return await ctx.reply("The index cannot be `0` or negative.")
+		elif index > len(data) - 1:
+			return await ctx.reply("The index cannot be greater than the highest index in your todo list.")
+
 		for i in range(len(data)):
 			if i != index:
 				new_data.append(data[i])
