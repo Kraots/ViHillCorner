@@ -1,6 +1,5 @@
 inviscolor = 0x2F3136
 red = 0xe64343
-pink = 0xFF00FF
 orange = 0xe97115
 pastel = 0xc69eff
 yellow = 0xb9b211
