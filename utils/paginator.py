@@ -166,14 +166,18 @@ class NewHelpMenus(menus.ListPageSource):
 		return menu.embed
 
 class NewCustomMenus(menus.ListPageSource):
-	def __init__(self, entries, *, per_page=12):
+	def __init__(self, entries, *, per_page=12, url=None):
+		self.url = url
 		super().__init__(entries, per_page=per_page)
 		
 	async def format_page(self, menu, entries):
 		pages = []
 		for index, entry in enumerate(entries, start=menu.current_page * self.per_page):
-			pages.append(f'`{index + 1}.` {entry}')
-		
+			if self.url == None:
+				pages.append(f'`{index + 1}.` {entry}')
+			else:
+				pages.append(f'[{index + 1}.]({self.url}) {entry}')
+
 		maximum = self.get_max_pages()
 		if maximum > 1:
 			footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} entries)'
@@ -190,8 +194,8 @@ class HelpmMenu(CustomRobo):
 		self.embed = discord.Embed(colour=color, title=title)
 
 class CustomMenu(CustomRobo):
-	def __init__(self, entries, *, per_page=12, title="", color=None):
-		super().__init__(NewCustomMenus(entries, per_page=per_page))
+	def __init__(self, entries, *, per_page=12, title="", color=None, url=None):
+		super().__init__(NewCustomMenus(entries, per_page=per_page, url=url))
 		if color == None:
 			color = discord.Color.blurple()
 		self.embed = discord.Embed(colour=color, title=title)
