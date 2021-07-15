@@ -42,8 +42,8 @@ specialkiss = os.getenv("SPECIALKISS")
 
 class actions(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = ";"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -518,7 +518,7 @@ class actions(commands.Cog):
 				get_marry = collection.find({"_id": member.id})
 
 				for x in get_marry:
-					user = self.client.get_user(x['married_to'])
+					user = self.bot.get_user(x['married_to'])
 
 				if ctx.author.id == user.id:
 
@@ -537,6 +537,6 @@ class actions(commands.Cog):
 			await ctx.send("You must be at least `level 15+` in order to use this command! %s" % (ctx.author.mention))
 
 
-def setup (client):
-	client.add_cog(actions(client))
+def setup (bot):
+	bot.add_cog(actions(bot))
 

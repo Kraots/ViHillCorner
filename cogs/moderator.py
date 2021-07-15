@@ -35,20 +35,20 @@ class TimeConverter(commands.Converter):
 
 class Moderation(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 		self.check_current_mutes.start()
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 	
 	async def _mute(self, m: discord.Member):
-		g = self.client.get_guild(750160850077089853)
+		g = self.bot.get_guild(750160850077089853)
 		r = g.get_role(750465726069997658)
 		await m.add_roles(r)
 	
 	async def _unmute(self, m: discord.Member):
-		g = self.client.get_guild(750160850077089853)
+		g = self.bot.get_guild(750160850077089853)
 		r = g.get_role(750465726069997658)
 		await m.remove_roles(r)
 
@@ -56,7 +56,7 @@ class Moderation(commands.Cog):
 	
 	@tasks.loop(seconds=30)
 	async def check_current_mutes(self):
-		await self.client.wait_until_ready()
+		await self.bot.wait_until_ready()
 		currentTime = datetime.datetime.now()
 		results = collection.find()
 		results2 = collection2.find()
@@ -64,7 +64,7 @@ class Moderation(commands.Cog):
 			unmuteTime = result['mutedAt'] + relativedelta(seconds=result['muteDuration'])
 
 			if currentTime >= unmuteTime:
-				guild = self.client.get_guild(result['guildId'])
+				guild = self.bot.get_guild(result['guildId'])
 				member = guild.get_member(result['_id'])
 
 				mute_role = guild.get_role(750465726069997658)
@@ -82,7 +82,7 @@ class Moderation(commands.Cog):
 			unmuteTime = result2['mutedAt'] + relativedelta(seconds=result2['muteDuration'])
 
 			if currentTime >= unmuteTime:
-				guild = self.client.get_guild(result2['guildId'])
+				guild = self.bot.get_guild(result2['guildId'])
 				member = guild.get_member(result2['_id'])
 
 				mute_role = guild.get_role(750465726069997658)
@@ -101,7 +101,7 @@ class Moderation(commands.Cog):
 	@commands.command()
 	@commands.has_role('Staff')
 	async def slowmode(self, ctx, *, how_much: TimeConverter):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 		await ctx.message.delete()
 
@@ -143,7 +143,7 @@ class Moderation(commands.Cog):
 	@commands.command()
 	@commands.has_role('Staff')
 	async def kick(self, ctx):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		staff = guild.get_role(754676705741766757)
 		log_channel = guild.get_channel(788377362739494943)
 		mem_list = []
@@ -153,7 +153,7 @@ class Moderation(commands.Cog):
 
 		await ctx.send("What member(s) do you wish to kick? To cancel type `cancel`")
 		try:
-			before_members = await self.client.wait_for('message', timeout=180, check=check)
+			before_members = await self.bot.wait_for('message', timeout=180, check=check)
 			if before_members.content.lower() == "cancel":
 				await ctx.send("Canceled.")
 				return
@@ -166,7 +166,7 @@ class Moderation(commands.Cog):
 		else:
 			await ctx.send("What's the reason for the kick?")
 			try:
-				before_reason = await self.client.wait_for('message', timeout=360, check=check)
+				before_reason = await self.bot.wait_for('message', timeout=360, check=check)
 				if before_reason.content.lower() == "cancel":
 					await ctx.send("Canceled.")
 					return
@@ -210,8 +210,8 @@ class Moderation(commands.Cog):
 
 	@commands.command()
 	async def idban(self, ctx, member: int):
-		guild = self.client.get_guild(750160850077089853)
-		get_member = await self.client.fetch_user(member)
+		guild = self.bot.get_guild(750160850077089853)
+		get_member = await self.bot.fetch_user(member)
 		await guild.ban(get_member)
 		em = discord.Embed(color=discord.Color.red(), description=f"`{get_member}` was banned succesfully.")
 		await ctx.send(embed=em)
@@ -221,8 +221,8 @@ class Moderation(commands.Cog):
 
 	@commands.command()
 	async def idunban(self, ctx, member: int):
-		guild = self.client.get_guild(750160850077089853)
-		get_member = await self.client.fetch_user(member)
+		guild = self.bot.get_guild(750160850077089853)
+		get_member = await self.bot.fetch_user(member)
 		await guild.unban(get_member)
 		em = discord.Embed(color=discord.Color.red(), description=f"`{get_member}` was unbanned succesfully.")
 		await ctx.send(embed=em)
@@ -233,7 +233,7 @@ class Moderation(commands.Cog):
 	@commands.command()
 	@commands.has_role('Staff')
 	async def ban(self, ctx):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 		staff = guild.get_role(754676705741766757)
 		mem_list = []
@@ -246,7 +246,7 @@ class Moderation(commands.Cog):
 
 		await ctx.send("What member(s) do you wish to ban? To cancel type `cancel`")
 		try:
-			before_members = await self.client.wait_for('message', timeout=180, check=check)
+			before_members = await self.bot.wait_for('message', timeout=180, check=check)
 			if before_members.content.lower() in ["cancel", "!cancel"]:
 				await ctx.send("Canceled.")
 				return
@@ -261,7 +261,7 @@ class Moderation(commands.Cog):
 		else:
 			await ctx.send("What's the reason for the ban?")
 			try:
-				before_reason = await self.client.wait_for('message', timeout=360, check=check)
+				before_reason = await self.bot.wait_for('message', timeout=360, check=check)
 				if before_reason.content.lower() in ["cancel", "!cancel"]:
 					for i in range(len(banned_members)):
 						await self._unmute(banned_members[i])
@@ -277,7 +277,7 @@ class Moderation(commands.Cog):
 				await ctx.send("How many days worth of messages from the user do you wish to delete? `0-7` days")
 				try:
 					while True:
-						nr_dayss = await self.client.wait_for('message', timeout=360, check=check)
+						nr_dayss = await self.bot.wait_for('message', timeout=360, check=check)
 						try:
 							nr_days = int(nr_dayss.content)
 							if -1 > nr_days or nr_days > 7:
@@ -335,10 +335,10 @@ class Moderation(commands.Cog):
 	@commands.command()
 	@commands.has_role('Staff')
 	async def unban(self, ctx, member: discord.User):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		if ctx.guild == guild:
 			return await ctx.reply("This command can only be performed in the ban appeal server.")
-		guild2 = self.client.get_guild(788384492175884299)
+		guild2 = self.bot.get_guild(788384492175884299)
 		if ctx.channel.id == 788488359306592316:
 			return await ctx.reply("This command cannot be performed in the staff chat. Please go in the chat where the member you wish to unban exists.")
 		try:
@@ -375,7 +375,7 @@ class Moderation(commands.Cog):
 	@commands.command()
 	@commands.has_role('Staff')
 	async def mute(self, ctx):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 		mem_list = []
 		muted = guild.get_role(750465726069997658)
@@ -386,7 +386,7 @@ class Moderation(commands.Cog):
 
 		await ctx.send("What member(s) do you wish to mute? To cancel type `cancel`")
 		try:
-			before_members = await self.client.wait_for('message', timeout=180, check=check)
+			before_members = await self.bot.wait_for('message', timeout=180, check=check)
 			if before_members.content.lower() == "cancel":
 				await ctx.send("Canceled.")
 				return
@@ -399,7 +399,7 @@ class Moderation(commands.Cog):
 		else:
 			await ctx.send("What's the reason for the mute?")
 			try:
-				before_reason = await self.client.wait_for('message', timeout=360, check=check)
+				before_reason = await self.bot.wait_for('message', timeout=360, check=check)
 				if before_reason.content.lower() == "cancel":
 					await ctx.send("Canceled.")
 					return
@@ -458,7 +458,7 @@ class Moderation(commands.Cog):
 	@commands.command()
 	@commands.has_role('Staff')
 	async def unmute(self, ctx):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 		mem_list = []
 		muted = guild.get_role(750465726069997658)
@@ -472,7 +472,7 @@ class Moderation(commands.Cog):
 
 		await ctx.send("What member(s) do you wish to unmute? To cancel type `cancel`")
 		try:
-			before_members = await self.client.wait_for('message', timeout=180, check=check)
+			before_members = await self.bot.wait_for('message', timeout=180, check=check)
 			if before_members.content.lower() == "cancel":
 					await ctx.send("Canceled.")
 					return
@@ -554,7 +554,7 @@ class Moderation(commands.Cog):
 		"""Mutes a member for the specified time- time in 2d 10h 3m 2s format ex:
 		!mute @Someone 1d"""
 
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 		staff = guild.get_role(754676705741766757)
 
@@ -568,7 +568,7 @@ class Moderation(commands.Cog):
 			
 			await ctx.send("What's the reason?")
 			try:
-				get_reason = await self.client.wait_for('message', timeout=180, check=check)
+				get_reason = await self.bot.wait_for('message', timeout=180, check=check)
 				reason_content = get_reason.content
 
 			except asyncio.TimeoutError:
@@ -641,7 +641,7 @@ class Moderation(commands.Cog):
 			await ctx.message.delete()
 			await ctx.channel.purge(limit=amount)
 
-			guild = self.client.get_guild(750160850077089853)
+			guild = self.bot.get_guild(750160850077089853)
 			log_channel = guild.get_channel(788377362739494943)
 
 			em = discord.Embed(color=color.reds, title="___PURGE / CLEAR___", timestamp = ctx.message.created_at)
@@ -663,5 +663,5 @@ class Moderation(commands.Cog):
 
 
 
-def setup (client):
-	client.add_cog(Moderation(client))
+def setup (bot):
+	bot.add_cog(Moderation(bot))

@@ -20,8 +20,8 @@ lvlnum = [3, 5, 10, 15, 20, 25, 30, 40, 45, 50, 55, 60, 65, 69, 75, 80, 85, 90, 
 
 class LevelSystem(commands.Cog):
 	
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -33,7 +33,7 @@ class LevelSystem(commands.Cog):
 			ch_id = message.channel.id
 			if not ch_id in no_talk_channels:
 				if not message.author.bot:
-					guild = self.client.get_guild(750160850077089853)
+					guild = self.bot.get_guild(750160850077089853)
 					stats = await collection.find_one({"_id": message.author.id})
 					if stats is None:
 						newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0}
@@ -142,7 +142,7 @@ class LevelSystem(commands.Cog):
 					xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
 					boxes = int((xp/(200*((1/2)*lvl)))*20)
 
-				guild = self.client.get_guild(750160850077089853)
+				guild = self.bot.get_guild(750160850077089853)
 				all_guild_members = len([m for m in guild.members if not m.bot])
 				
 				em = discord.Embed(title=f"{member.display_name}'s level stats", color=color.lightpink)
@@ -205,7 +205,7 @@ class LevelSystem(commands.Cog):
 			for result in await results.to_list(10):
 				xp = result['xp']
 				user = result['_id']
-				user = self.client.get_user(user)
+				user = self.bot.get_user(user)
 
 				lvl = 0
 				while True:
@@ -346,5 +346,5 @@ class LevelSystem(commands.Cog):
 			return
 		await collection.delete_one({"_id": member.id})
 
-def setup(client):
-	client.add_cog(LevelSystem(client))
+def setup(bot):
+	bot.add_cog(LevelSystem(bot))

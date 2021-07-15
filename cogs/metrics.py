@@ -7,8 +7,8 @@ import utils.colors as color
 
 class Metrics(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 		self.process = psutil.Process()
 	async def cog_check(self, ctx):
@@ -18,22 +18,22 @@ class Metrics(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def metrics(self, ctx):
-		kraots = self.client.get_user(374622847672254466)
+		kraots = self.bot.get_user(374622847672254466)
 		memory_usage = self.process.memory_full_info().uss / 1024**2
 		cpu_usage = self.process.cpu_percent() / psutil.cpu_count()
-		guilds = len(list(self.client.guilds))
+		guilds = len(list(self.bot.guilds))
 		metrics = discord.Embed(description="_ _", color=color.inviscolor)
 		start = time.time() * 1000
 		msg = await ctx.send(embed=metrics)
 		end = time.time() * 1000
 		metrics = discord.Embed(title="Metrics", description="_ _", color=color.inviscolor)
-		metrics.add_field(name="Ping:", value=f"Websocket Latency: `{(round(self.client.latency * 1000, 2))}ms`\nBot Latency: `{int(round(end-start, 0))}ms`\nResponse Time: `{(msg.created_at - ctx.message.created_at).total_seconds()/1000}` ms", inline=False)
+		metrics.add_field(name="Ping:", value=f"Websocket Latency: `{(round(self.bot.latency * 1000, 2))}ms`\nBot Latency: `{int(round(end-start, 0))}ms`\nResponse Time: `{(msg.created_at - ctx.message.created_at).total_seconds()/1000}` ms", inline=False)
 		metrics.add_field(name="Memory Usage:", value=f" \n{memory_usage:.2f} MiB\n{cpu_usage:.2f}% CPU", inline=False)
 		metrics.add_field(name="Guilds:", value=guilds, inline=False)
-		metrics.add_field(name="Commands loaded:", value=f"{len([x.name for x in self.client.commands])}", inline=False)
-		metrics.add_field(name="Uptime:", value=t.human_timedelta(dt=self.client.uptime, accuracy=3, brief=False, suffix=False))
-		metrics.set_footer(text=f"Bot made by: {kraots}", icon_url=self.client.user.avatar_url)
+		metrics.add_field(name="Commands loaded:", value=f"{len([x.name for x in self.bot.commands])}", inline=False)
+		metrics.add_field(name="Uptime:", value=t.human_timedelta(dt=self.bot.uptime, accuracy=3, brief=False, suffix=False))
+		metrics.set_footer(text=f"Bot made by: {kraots}", icon_url=self.bot.user.avatar_url)
 		await msg.edit(embed=metrics)
 
-def setup (client):
-	client.add_cog(Metrics(client))
+def setup (bot):
+	bot.add_cog(Metrics(bot))

@@ -16,8 +16,8 @@ collection = db["Filter Mutes"]
 
 class RepeatedTextFilter(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 	@commands.Cog.listener()
 	async def on_message(self, message : discord.Message):
@@ -36,7 +36,7 @@ class RepeatedTextFilter(commands.Cog):
 			user = message.author
 			users = await get_repeated_text_warns_data()
 
-			guild = self.client.get_guild(750160850077089853)
+			guild = self.bot.get_guild(750160850077089853)
 			muted = guild.get_role(750465726069997658)
 			staff = guild.get_role(754676705741766757)
 			mod = guild.get_role(750162714407600228)
@@ -141,8 +141,8 @@ class RepeatedTextFilter(commands.Cog):
 
 class SpamFilter(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 	
 	@commands.Cog.listener()
 	async def on_message(self, message: discord.Message):
@@ -155,7 +155,7 @@ class SpamFilter(commands.Cog):
 			user = message.author
 			users = await get_spam_warns_data()
 
-			guild = self.client.get_guild(750160850077089853)
+			guild = self.bot.get_guild(750160850077089853)
 			muted = guild.get_role(750465726069997658)
 			staff = guild.get_role(754676705741766757)
 			mod = guild.get_role(750162714407600228)
@@ -259,6 +259,6 @@ async def get_spam_warns_data():
 	return users
 
 
-def setup (client):
-	client.add_cog(RepeatedTextFilter(client))
-	client.add_cog(SpamFilter(client))
+def setup (bot):
+	bot.add_cog(RepeatedTextFilter(bot))
+	bot.add_cog(SpamFilter(bot))

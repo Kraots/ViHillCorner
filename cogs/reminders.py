@@ -16,8 +16,8 @@ collection = db["Reminders"]
 
 class RemindersClass(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 		self.check_current_reminders.start()
 	def cog_check(self, ctx):
@@ -82,7 +82,7 @@ class RemindersClass(commands.Cog):
 				await msg.add_reaction('<:agree:797537027469082627>')
 				await msg.add_reaction('<:disagree:797537030980239411>')
 				try:
-					reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+					reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 				except asyncio.TimeoutError:
 					new_msg = f"{ctx.author.mention} Did not react in time."
@@ -120,7 +120,7 @@ class RemindersClass(commands.Cog):
 			await msg.add_reaction('<:agree:797537027469082627>')
 			await msg.add_reaction('<:disagree:797537030980239411>')
 			try:
-				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 			except asyncio.TimeoutError:
 				new_msg = f"{ctx.author.mention} Did not react in time."
@@ -147,7 +147,7 @@ class RemindersClass(commands.Cog):
 
 	@tasks.loop(seconds=5)
 	async def check_current_reminders(self):
-		await self.client.wait_until_ready()
+		await self.bot.wait_until_ready()
 		currentTime = datetime.datetime.now()
 		results = collection.find()
 		for result in await results.to_list(99999999999999999):
@@ -160,7 +160,7 @@ class RemindersClass(commands.Cog):
 			channelID = result['channel']
 
 			if currentTime >= expireDate:
-				guild = self.client.get_guild(750160850077089853)
+				guild = self.bot.get_guild(750160850077089853)
 				remindChannel = guild.get_channel(channelID)
 				msg = f"<@!{user}>, **{time.human_timedelta(remindedWhen)}**: {remindWhat}\n\n{remindUrl}"
 				await remindChannel.send(msg)
@@ -179,5 +179,5 @@ class RemindersClass(commands.Cog):
 		if isinstance(error, commands.errors.TooManyArguments):
 			return
 
-def setup (client):
-	client.add_cog(RemindersClass(client))
+def setup (bot):
+	bot.add_cog(RemindersClass(bot))

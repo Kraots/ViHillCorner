@@ -17,8 +17,8 @@ db = cluster['ViHillCornerDB']['Trivia']
 
 class TriviaCommands(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
@@ -156,7 +156,7 @@ class TriviaCommands(commands.Cog):
 		await msg.add_reaction('<:disagree:797537030980239411>')
 
 		try:
-				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 		except asyncio.TimeoutError:
 			new_msg = f"{ctx.author.mention} Did not react in time."
@@ -191,5 +191,5 @@ class TriviaCommands(commands.Cog):
 			return
 		await db.delete_one({'_id': member.id})
 
-def setup(client):
-	client.add_cog(TriviaCommands(client))
+def setup(bot):
+	bot.add_cog(TriviaCommands(bot))

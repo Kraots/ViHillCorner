@@ -28,8 +28,8 @@ collection = db["Reclist"]
 
 class Reclist(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	async def reclist(self, ctx, member: discord.Member = None):
@@ -121,7 +121,7 @@ class Reclist(commands.Cog):
 			await msg.add_reaction('<:disagree:797537030980239411>')
 			
 			try:
-				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 			except asyncio.TimeoutError:
 				new_msg = f"{ctx.author.mention} Did not react in time."
@@ -171,5 +171,5 @@ class Reclist(commands.Cog):
 		await collection.delete_one({"_id": member.id})
 
 
-def setup(client):
-	client.add_cog(Reclist(client))
+def setup(bot):
+	bot.add_cog(Reclist(bot))

@@ -29,8 +29,8 @@ class TagPages(SimplePages):
 		super().__init__(converted, per_page=per_page)
 
 class Suggest(commands.Cog):
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -57,7 +57,7 @@ class Suggest(commands.Cog):
 			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
 		
 		try:
-			reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+			reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 		
 		except asyncio.TimeoutError:
 			new_msg = f"{ctx.author.mention} Did not react in time."
@@ -69,7 +69,7 @@ class Suggest(commands.Cog):
 			if str(reaction.emoji) == '<:agree:797537027469082627>':
 				suggest = discord.Embed(color=color.inviscolor, title="", description=f"{args}", timestamp=ctx.message.created_at)
 				suggest.set_author(name=f'{ctx.author.name} suggested:', icon_url=ctx.author.avatar_url)
-				suggestions = self.client.get_channel(750160850593251454)
+				suggestions = self.bot.get_channel(750160850593251454)
 				msg = await suggestions.send(embed=suggest)
 				await msg.add_reaction('<:agree:797537027469082627>')
 				await msg.add_reaction('<:disagree:797537030980239411>')
@@ -151,5 +151,5 @@ class Suggest(commands.Cog):
 		else:
 				raise error
 
-def setup (client):
-	client.add_cog(Suggest(client))
+def setup (bot):
+	bot.add_cog(Suggest(bot))

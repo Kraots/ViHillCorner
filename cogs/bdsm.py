@@ -13,15 +13,15 @@ collection2 = db['Confesscord Restrictions']
 
 class BdsmResults(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def bdsm(self, ctx):
-		command = self.client.get_command('help')
+		command = self.bot.get_command('help')
 		await ctx.invoke(command, 'bdsm')
 	
 	@bdsm.command()
@@ -35,7 +35,7 @@ class BdsmResults(commands.Cog):
 
 		try:
 			while True:
-				raw_result = await self.client.wait_for('message', check=check, timeout=180)
+				raw_result = await self.bot.wait_for('message', check=check, timeout=180)
 				if raw_result.content.lower() == "!cancel":
 					await raw_result.reply("Canceled.")
 					return
@@ -97,7 +97,7 @@ class BdsmResults(commands.Cog):
 
 		if hasBdsm != None:			
 			try:
-				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 			except asyncio.TimeoutError:
 				new_msg = f"{ctx.author.mention} Did not react in time."
@@ -133,5 +133,5 @@ class BdsmResults(commands.Cog):
 		await collection.delete_one({'_id': member.id})
 		await collection2.delete_one({'_id': member.id})
 
-def setup (client):
-	client.add_cog(BdsmResults(client))
+def setup (bot):
+	bot.add_cog(BdsmResults(bot))

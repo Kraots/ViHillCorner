@@ -43,8 +43,8 @@ class HelpPages(HelpmMenu):
 
 class Help(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 
 		self.ecoCommands = [
@@ -271,7 +271,7 @@ class Help(commands.Cog):
 			if ctx.author.id == 374622847672254466:
 				_categs = f"<:verifiedbotdev:859064715715018782> -> **Developer**\n<:banhammer:859065173352644628> -> **Moderator**{categs}"
 			em = discord.Embed(color=color.lightpink, title="Here's the help.", description="```diff\n- [] = optional argument\n- <> = required argument\n- do NOT type these when using commands!\n+ Type !help [command|category] for more help on a command or a category!```")
-			em.set_thumbnail(url=self.client.user.avatar_url)
+			em.set_thumbnail(url=self.bot.user.avatar_url)
 			em.add_field(name="React with the reactions specific to the category you wish to see.", 
 			value=_categs)
 			msg = await ctx.send(embed=em)
@@ -298,14 +298,14 @@ class Help(commands.Cog):
 					return str(reaction.emoji) in ['<:SakataNom:787370388250034186>', '<:CutieUmwha:787370264165482537>', '<:vampy1:859050561184989204>', '<:epik:818803400154153002>', '<:pepecry:859050982507675699>', '<:pepe_hang1:859050982402687026>', '<:creepy_bird1:859050982382108693>'] and user.id == ctx.author.id
 
 			try:
-				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=35)
+				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=35)
 			except asyncio.TimeoutError:
 				await msg.clear_reactions()
 				return
 			else:
 				try:
 					get_command = reactions[str(reaction.emoji)]
-					command = self.client.get_command(get_command)
+					command = self.bot.get_command(get_command)
 					await ctx.invoke(command)
 					await msg.delete()
 				except Exception as e:
@@ -453,5 +453,5 @@ class Help(commands.Cog):
 		
 
 
-def setup(client):
-	client.add_cog(Help(client))
+def setup(bot):
+	bot.add_cog(Help(bot))

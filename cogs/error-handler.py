@@ -6,8 +6,8 @@ from traceback import format_exception
 
 class GlobalErrorHandler(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 	@commands.Cog.listener()
 	async def on_command_error(self, ctx, error):
@@ -59,5 +59,5 @@ class GlobalErrorHandler(commands.Cog):
 
 						# print(type(error))
 
-def setup (client):
-	client.add_cog(GlobalErrorHandler(client))
+def setup (bot):
+	bot.add_cog(GlobalErrorHandler(bot))

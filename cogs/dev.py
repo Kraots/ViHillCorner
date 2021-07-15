@@ -19,8 +19,8 @@ def restart_program():
 
 class developer(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.ch_pr.start()
 		self.prefix = '!'
 	async def cog_check(self, ctx):
@@ -28,17 +28,17 @@ class developer(commands.Cog):
 
 	@tasks.loop(seconds = 125)
 	async def ch_pr(self):
-		await self.client.wait_until_ready()
+		await self.bot.wait_until_ready()
 
 		status_list = ["carrots", "ur mom", "you", "anime", "over the members"]
 
-		while not self.client.is_closed():
+		while not self.bot.is_closed():
 
 			status = random.choice(status_list)
 
 			activity = discord.Activity(type=discord.ActivityType.watching, name=status)
 
-			await self.client.change_presence(status=discord.Status.dnd, activity=activity)
+			await self.bot.change_presence(status=discord.Status.dnd, activity=activity)
 
 			await asyncio.sleep(60)
 
@@ -55,7 +55,7 @@ class developer(commands.Cog):
 		local_variables = {
 			"discord": discord,
 			"commands": commands,
-			"_bot": self.client,
+			"_bot": self.bot,
 			"_ctx": ctx,
 			"_channel": ctx.channel,
 			"_author": ctx.author,
@@ -119,7 +119,7 @@ class developer(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def modmute(self, ctx, members: Greedy[Member]):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		staff = guild.get_role(754676705741766757)
 		mod = guild.get_role(750162714407600228)
 		mute = guild.get_role(750465726069997658)
@@ -136,7 +136,7 @@ class developer(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def modunmute(self, ctx, members: Greedy[Member]):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		staff = guild.get_role(754676705741766757)
 		mod = guild.get_role(750162714407600228)
 		mute = guild.get_role(750465726069997658)
@@ -152,7 +152,7 @@ class developer(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def makemod(self, ctx, members: Greedy[Member]):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		staff = guild.get_role(754676705741766757)
 		mod = guild.get_role(750162714407600228)
 
@@ -166,7 +166,7 @@ class developer(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def removemod(self, ctx, members: Greedy[Member]):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		staff = guild.get_role(754676705741766757)
 		mod = guild.get_role(750162714407600228)
 		
@@ -181,7 +181,7 @@ class developer(commands.Cog):
 	@commands.is_owner()
 	async def shutdown(self, ctx):
 		await ctx.message.add_reaction('<:agree:797537027469082627>')
-		await self.client.close()
+		await self.bot.close()
 
 	@commands.command()
 	@commands.is_owner()
@@ -236,7 +236,7 @@ class developer(commands.Cog):
 	@commands.is_owner()
 	async def online(self, ctx):
 		await ctx.message.delete()
-		await self.client.change_presence(status=discord.Status.online)
+		await self.bot.change_presence(status=discord.Status.online)
 		await ctx.send("**[ONLINE]** Status succesfully changed.", delete_after=5)
 
 
@@ -252,7 +252,7 @@ class developer(commands.Cog):
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.playing, name=f"{args}")
-			await self.client.change_presence(status=discord.Status.online, activity=listening)
+			await self.bot.change_presence(status=discord.Status.online, activity=listening)
 			await ctx.send("**[ONLINE] [PLAYING]** Status succesfully changed.", delete_after=5)
 
 	@online.command(aliases=["listening"])
@@ -266,7 +266,7 @@ class developer(commands.Cog):
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.listening, name=f"{args}")
-			await self.client.change_presence(status=discord.Status.online, activity=listening)
+			await self.bot.change_presence(status=discord.Status.online, activity=listening)
 			await ctx.send("**[ONLINE] [LISTENING]** Status succesfully changed.", delete_after=5)
 
 	@online.command(aliases=["watching"])
@@ -280,7 +280,7 @@ class developer(commands.Cog):
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.watching, name=f"{args}")
-			await self.client.change_presence(status=discord.Status.online, activity=listening)
+			await self.bot.change_presence(status=discord.Status.online, activity=listening)
 			await ctx.send("**[ONLINE] [WATCHING]** Status succesfully changed.", delete_after=5)
 
 
@@ -304,7 +304,7 @@ class developer(commands.Cog):
 	@commands.is_owner()
 	async def idle(self, ctx):
 		await ctx.message.delete()
-		await self.client.change_presence(status=discord.Status.idle)
+		await self.bot.change_presence(status=discord.Status.idle)
 		await ctx.send("**[IDLE]** Status succesfully changed.", delete_after=5)
 
 
@@ -320,7 +320,7 @@ class developer(commands.Cog):
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.playing, name=f"{args}")
-			await self.client.change_presence(status=discord.Status.idle, activity=listening)
+			await self.bot.change_presence(status=discord.Status.idle, activity=listening)
 			await ctx.send("**[IDLE] [PLAYING]** Status succesfully changed.", delete_after=5)
 
 	@idle.command(aliases=["listening"])
@@ -334,7 +334,7 @@ class developer(commands.Cog):
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.listening, name=f"{args}")
-			await self.client.change_presence(status=discord.Status.idle, activity=listening)
+			await self.bot.change_presence(status=discord.Status.idle, activity=listening)
 			await ctx.send("**[IDLE] [LISTENING]** Status succesfully changed.", delete_after=5)
 
 	@idle.command(aliases=["watching"])
@@ -348,7 +348,7 @@ class developer(commands.Cog):
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.watching, name=f"{args}")
-			await self.client.change_presence(status=discord.Status.idle, activity=listening)
+			await self.bot.change_presence(status=discord.Status.idle, activity=listening)
 			await ctx.send("**[IDLE] [WATCHING]** Status succesfully changed.", delete_after=5)
 
 
@@ -372,7 +372,7 @@ class developer(commands.Cog):
 	@commands.is_owner()
 	async def dnd(self, ctx):
 		await ctx.message.delete()
-		await self.client.change_presence(status=discord.Status.do_not_disturb)
+		await self.bot.change_presence(status=discord.Status.do_not_disturb)
 		await ctx.send("**[DND]** Status succesfully changed.", delete_after=5)
 
 
@@ -388,7 +388,7 @@ class developer(commands.Cog):
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.playing, name=f"{args}")
-			await self.client.change_presence(status=discord.Status.do_not_disturb, activity=listening)
+			await self.bot.change_presence(status=discord.Status.do_not_disturb, activity=listening)
 			await ctx.send("**[DND] [PLAYING]** Status succesfully changed.", delete_after=5)
 
 	@dnd.command(aliases=["listening"])
@@ -402,7 +402,7 @@ class developer(commands.Cog):
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.listening, name=f"{args}")
-			await self.client.change_presence(status=discord.Status.do_not_disturb, activity=listening)
+			await self.bot.change_presence(status=discord.Status.do_not_disturb, activity=listening)
 			await ctx.send("**[DND] [LISTENING]** Status succesfully changed.", delete_after=5)
 
 	@dnd.command(aliases=["watching"])
@@ -416,7 +416,7 @@ class developer(commands.Cog):
 		else:
 
 			listening= discord.Activity(type=discord.ActivityType.watching, name=f"{args}")
-			await self.client.change_presence(status=discord.Status.do_not_disturb, activity=listening)
+			await self.bot.change_presence(status=discord.Status.do_not_disturb, activity=listening)
 			await ctx.send("**[DND] [WATCHING]** Status succesfully changed.", delete_after=5)
 
 
@@ -438,7 +438,7 @@ class developer(commands.Cog):
 	@commands.is_owner()
 	async def offline(self, ctx):
 		await ctx.message.delete()
-		await self.client.change_presence(status=discord.Status.offline)
+		await self.bot.change_presence(status=discord.Status.offline)
 		await ctx.send("**[OFFLINE]** Status succesfully changed.", delete_after=5)
 
 
@@ -446,5 +446,5 @@ class developer(commands.Cog):
 
 
 
-def setup (client):
-	client.add_cog(developer(client))
+def setup (bot):
+	bot.add_cog(developer(bot))

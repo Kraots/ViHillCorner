@@ -5,8 +5,8 @@ from utils import time
 
 class ServerInfo(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -15,7 +15,7 @@ class ServerInfo(commands.Cog):
 	@commands.command(aliases=['server', 'sinfo', 'si'])
 	async def serverinfo(self, ctx):
 		await ctx.message.delete()
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		online = 0
 		for i in guild.members:
 			if str(i.status) == 'online' or str(i.status) == 'idle' or str(i.status) == 'dnd':
@@ -53,5 +53,5 @@ class ServerInfo(commands.Cog):
 		
 		await ctx.send(embed=em, reference=ctx.replied_reference)
 
-def setup (client):
-	client.add_cog(ServerInfo(client))
+def setup (bot):
+	bot.add_cog(ServerInfo(bot))

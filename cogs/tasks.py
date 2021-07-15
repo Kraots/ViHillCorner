@@ -3,8 +3,8 @@ import json
 
 class WarnsRemove(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.clear_caps_warns.start()
 		self.clear_words_warns.start()
 		self.clear_spam_warns.start()
@@ -67,5 +67,5 @@ async def get_repeated_text_warns_data():
 
 	return users
 
-def setup(client):
-	client.add_cog(WarnsRemove(client))
+def setup(bot):
+	bot.add_cog(WarnsRemove(bot))

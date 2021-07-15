@@ -3,12 +3,12 @@ from discord.ext import commands
 
 class ReactionRoles(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 	@commands.Cog.listener()
 	async def on_raw_reaction_add(self, payload):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 
 		COLORSMSG1 = 779389485573079071
 		COLORSMSG2 = 779389533875601451
@@ -93,5 +93,5 @@ class ReactionRoles(commands.Cog):
 
 
 
-def setup (client):
-	client.add_cog(ReactionRoles(client))
+def setup (bot):
+	bot.add_cog(ReactionRoles(bot))

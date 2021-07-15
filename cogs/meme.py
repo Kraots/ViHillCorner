@@ -4,8 +4,8 @@ import aiohttp
 import utils.colors as color
 
 class Memes(commands.Cog):
-  def __init__(self, client):
-    self.client = client
+  def __init__(self, bot):
+    self.bot = bot
     self.prefix = "!"
   async def cog_check(self, ctx):
         return ctx.prefix == self.prefix
@@ -28,5 +28,5 @@ class Memes(commands.Cog):
 
             await ctx.send(embed=embed)
 
-def setup (client):
-  client.add_cog(Memes(client))
+def setup (bot):
+  bot.add_cog(Memes(bot))

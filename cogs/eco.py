@@ -23,8 +23,8 @@ collection = db["Economy"]
 
 class EcoCommands(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
@@ -146,7 +146,7 @@ class EcoCommands(commands.Cog):
 		leader_board = {}
 
 		for all_results in await all_accounts.to_list(99999999999999999999999999):
-			userr = self.client.get_user(all_results["_id"])
+			userr = self.bot.get_user(all_results["_id"])
 			all_wallet_amt = all_results["wallet"]
 			all_bank_amt = all_results["bank"]
 			leader_board[userr] = all_wallet_amt + all_bank_amt
@@ -192,7 +192,7 @@ class EcoCommands(commands.Cog):
 		all_users = []
 
 		for result in await results.to_list(9999999999999):
-			user = self.client.get_user(result["_id"])  
+			user = self.bot.get_user(result["_id"])  
 			leader_board[user] = result["wallet"] + result["bank"]  
 			all_users.append(result['_id'])
 		
@@ -497,7 +497,7 @@ class EcoCommands(commands.Cog):
 			await msg.add_reaction('<:disagree:797537030980239411>')
 
 			try:
-				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 			except asyncio.TimeoutError:
 				new_msg = f"{member.mention} Did not react in time."
@@ -839,7 +839,7 @@ class EcoCommands(commands.Cog):
 			for guess in range(0,3):
 				while True:
 					try:
-						msg = await self.client.wait_for('message', timeout= 30 , check=check)
+						msg = await self.bot.wait_for('message', timeout= 30 , check=check)
 						attempt = int(msg.content)
 						break
 					except ValueError:
@@ -1004,7 +1004,7 @@ class EcoCommands(commands.Cog):
 		await ctx.send("Please choose between `rock`/`paper`/`scissors`. You have **60** seconds to give your answer. %s" % (user.mention))
 		try:
 			while True:
-				user_rps = 	await self.client.wait_for('message', timeout= 60, check=check)
+				user_rps = 	await self.bot.wait_for('message', timeout= 60, check=check)
 				user_rps = user_rps.content.lower()
 				if not user_rps in rps:
 					await ctx.send("You can only choose from `rock`/`paper`/`scissors`. %s" % (user.mention))
@@ -1129,5 +1129,5 @@ class EcoCommands(commands.Cog):
 
 
 
-def setup (client):
-	client.add_cog(EcoCommands(client))	
+def setup (bot):
+	bot.add_cog(EcoCommands(bot))	

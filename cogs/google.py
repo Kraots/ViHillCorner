@@ -8,8 +8,8 @@ GoogleKey2 = os.getenv("GOOGLE_API_KEY_B")
 GoogleKey3 = os.getenv("GOOGLE_API_KEY_C")
 
 class GoogleSearch(commands.Cog):
-	def __init__(self, client):
-		self.client = client 
+	def __init__(self, bot):
+		self.bot = bot 
 
 	@commands.command()
 	async def google(self, ctx, *, query):
@@ -23,5 +23,5 @@ class GoogleSearch(commands.Cog):
 		await ctx.send(embed=em)
 		await GoogleClient.close()
 
-def setup (client):
-	client.add_cog(GoogleSearch(client))
+def setup (bot):
+	bot.add_cog(GoogleSearch(bot))

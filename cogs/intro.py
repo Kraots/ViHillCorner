@@ -13,8 +13,8 @@ collection = db["Intros"]
 
 class Intros(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -33,7 +33,7 @@ class Intros(commands.Cog):
 		channel = ctx.message.channel
 		usercheck = ctx.author.id
 
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 
 		introchannel = guild.get_channel(750160850593251449)
 		
@@ -57,7 +57,7 @@ class Intros(commands.Cog):
 			await msg.add_reaction('<:disagree:797537030980239411>')
 
 			try:
-				reaction, user = await self.client.wait_for('reaction_add', check=alreadyhas, timeout=30)
+				reaction, user = await self.bot.wait_for('reaction_add', check=alreadyhas, timeout=30)
 
 			except asyncio.TimeoutError:
 				new_msg = f"{ctx.author.mention} Did not react in time."
@@ -83,7 +83,7 @@ class Intros(commands.Cog):
 					await channel.send("What's your name? {}\n\n*To cancel type `!cancel`*".format(ctx.author.mention))
 
 					try:
-						name = await self.client.wait_for('message', timeout= 180, check=check)
+						name = await self.bot.wait_for('message', timeout= 180, check=check)
 						if name.content.lower() == '!cancel':
 							await channel.send("Canceled. %s" % (ctx.author.mention))
 							ctx.command.reset_cooldown(ctx)
@@ -98,7 +98,7 @@ class Intros(commands.Cog):
 						await channel.send("Where are you from? {}".format(ctx.author.mention))
 						
 						try:
-							location = await self.client.wait_for('message', timeout= 180, check=check)
+							location = await self.bot.wait_for('message', timeout= 180, check=check)
 							if location.content.lower() == '!cancel':
 								await channel.send("Canceled. %s" % (ctx.author.mention))
 								ctx.command.reset_cooldown(ctx)
@@ -114,7 +114,7 @@ class Intros(commands.Cog):
 
 							try:
 								while True:
-									age = await self.client.wait_for('message', timeout= 180, check=check)
+									age = await self.bot.wait_for('message', timeout= 180, check=check)
 									if age.content.lower() == '!cancel':
 										await channel.send("Canceled. %s" % (ctx.author.mention))
 										ctx.command.reset_cooldown(ctx)
@@ -137,7 +137,7 @@ class Intros(commands.Cog):
 								await channel.send("What's your gender? {}".format(ctx.author.mention))
 								
 								try:
-									gender = await self.client.wait_for('message', timeout= 180, check=check)
+									gender = await self.bot.wait_for('message', timeout= 180, check=check)
 									if gender.content.lower() == '!cancel':
 										await channel.send("Canceled. %s" % (ctx.author.mention))
 										ctx.command.reset_cooldown(ctx)
@@ -153,7 +153,7 @@ class Intros(commands.Cog):
 									
 									try:
 										while True:
-											prestatuss = await self.client.wait_for('message', timeout= 180, check=check)
+											prestatuss = await self.bot.wait_for('message', timeout= 180, check=check)
 											status = prestatuss.content.lower()
 											if status == '!cancel':
 												await channel.send("Canceled. %s" % (ctx.author.mention))
@@ -173,7 +173,7 @@ class Intros(commands.Cog):
 										await channel.send("What are u interested to? {}".format(ctx.author.mention))
 
 										try:
-											interests = await self.client.wait_for('message', timeout= 360, check=check)
+											interests = await self.bot.wait_for('message', timeout= 360, check=check)
 											if interests.content.lower() == '!cancel':
 												await channel.send("Canceled. %s" % (ctx.author.mention))
 												ctx.command.reset_cooldown(ctx)
@@ -213,7 +213,7 @@ class Intros(commands.Cog):
 			await channel.send("What's your name? {}\n\n*To cancel type `!cancel`*".format(ctx.author.mention))
 
 			try:
-				name = await self.client.wait_for('message', timeout= 180, check=check)
+				name = await self.bot.wait_for('message', timeout= 180, check=check)
 				if name.content.lower() == '!cancel':
 					await channel.send("Canceled. %s" % (ctx.author.mention))
 					ctx.command.reset_cooldown(ctx)
@@ -228,7 +228,7 @@ class Intros(commands.Cog):
 				await channel.send("Where are you from? {}".format(ctx.author.mention))
 				
 				try:
-					location = await self.client.wait_for('message', timeout= 180, check=check)
+					location = await self.bot.wait_for('message', timeout= 180, check=check)
 					if location.content.lower() == '!cancel':
 						await channel.send("Canceled. %s" % (ctx.author.mention))
 						ctx.command.reset_cooldown(ctx)
@@ -244,7 +244,7 @@ class Intros(commands.Cog):
 
 					try:
 						while True:
-							age = await self.client.wait_for('message', timeout= 180, check=check)
+							age = await self.bot.wait_for('message', timeout= 180, check=check)
 							if age.content.lower() == '!cancel':
 								await channel.send("Canceled. %s" % (ctx.author.mention))
 								ctx.command.reset_cooldown(ctx)
@@ -267,7 +267,7 @@ class Intros(commands.Cog):
 						await channel.send("What's your gender? {}".format(ctx.author.mention))
 						
 						try:
-							gender = await self.client.wait_for('message', timeout= 180, check=check)
+							gender = await self.bot.wait_for('message', timeout= 180, check=check)
 							if gender.content.lower() == '!cancel':
 								await channel.send("Canceled. %s" % (ctx.author.mention))
 								ctx.command.reset_cooldown(ctx)
@@ -283,7 +283,7 @@ class Intros(commands.Cog):
 							
 							try:
 								while True:
-									prestatuss = await self.client.wait_for('message', timeout= 180, check=check)
+									prestatuss = await self.bot.wait_for('message', timeout= 180, check=check)
 									status = prestatuss.content.lower()
 									if status == '!cancel':
 										await channel.send("Canceled. %s" % (ctx.author.mention))
@@ -303,7 +303,7 @@ class Intros(commands.Cog):
 								await channel.send("What are u interested to? {}".format(ctx.author.mention))
 
 								try:
-									interests = await self.client.wait_for('message', timeout= 360, check=check)
+									interests = await self.bot.wait_for('message', timeout= 360, check=check)
 									if interests.content.lower() == '!cancel':
 										await channel.send("Canceled. %s" % (ctx.author.mention))
 										ctx.command.reset_cooldown(ctx)
@@ -355,7 +355,7 @@ class Intros(commands.Cog):
 			await msg.add_reaction('<:agree:797537027469082627>')
 			await msg.add_reaction('<:disagree:797537030980239411>')
 			try:
-				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 			except asyncio.TimeoutError:
 				new_msg = f"{ctx.author.mention} Did not react in time."
@@ -467,5 +467,5 @@ class Intros(commands.Cog):
 
 
 
-def setup(client):
-	client.add_cog(Intros(client))
+def setup(bot):
+	bot.add_cog(Intros(bot))

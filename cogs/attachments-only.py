@@ -3,14 +3,14 @@ from discord.ext import commands
 
 class ImagesChannel(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 	@commands.Cog.listener()
 	async def on_message(self, message : discord.Message):
 		if message.author.bot:
 			return
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		staff = guild.get_role(754676705741766757)
 		if staff in message.author.roles:
 			return
@@ -101,5 +101,5 @@ class ImagesChannel(commands.Cog):
 		else:
 			return
 
-def setup (client):
-	client.remove_cog(ImagesChannel(client))
+def setup (bot):
+	bot.remove_cog(ImagesChannel(bot))

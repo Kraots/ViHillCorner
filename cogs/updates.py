@@ -13,8 +13,8 @@ db = cluster['ViHillCornerDB']['Updates']
 
 class Updates(commands.Cog):
 	
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = '!'
 	def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -36,5 +36,5 @@ class Updates(commands.Cog):
 		await db.update_one({'_id': ctx.author.id}, {'$set':{'update': args, 'date': datetime.datetime.utcnow()}})
 		await ctx.reply('Operation successful.')
 
-def setup (client):
-	client.add_cog(Updates(client))
+def setup (bot):
+	bot.add_cog(Updates(bot))

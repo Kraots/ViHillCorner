@@ -6,8 +6,8 @@ import async_tio
 
 class Calculator(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -41,5 +41,5 @@ class Calculator(commands.Cog):
 
 
 
-def setup(client):
-	client.add_cog(Calculator(client))	
+def setup(bot):
+	bot.add_cog(Calculator(bot))	

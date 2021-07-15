@@ -22,8 +22,8 @@ async def MessageLogWebhook(em):
 		await webhook.send(embed=em)
 
 class on_message(commands.Cog):
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 
 	@commands.Cog.listener('on_message_delete')
@@ -36,7 +36,7 @@ class on_message(commands.Cog):
 				return
 
 		else:
-				kraots = self.client.get_user(374622847672254466)
+				kraots = self.bot.get_user(374622847672254466)
 
 				em = discord.Embed(color=color.red, description=f'[Message]({message.jump_url}) deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=datetime.datetime.utcnow())
 				em.set_author(name=f'{message.author}', icon_url=f'{message.author.avatar_url}')
@@ -59,7 +59,7 @@ class on_message(commands.Cog):
 		if before.author.id == 374622847672254466:
 				return
 		else:
-				kraots = self.client.get_user(374622847672254466)
+				kraots = self.bot.get_user(374622847672254466)
 
 				em = discord.Embed(color=color.yellow, description=f'[Message]({before.jump_url}) edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=datetime.datetime.utcnow())
 				em.set_author(name=f'{before.author}', icon_url=f'{before.author.avatar_url}')
@@ -75,7 +75,7 @@ class on_message(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message(self, message: discord.Message):
-		kraots = self.client.get_user(374622847672254466)
+		kraots = self.bot.get_user(374622847672254466)
 
 		if message.channel.id == 750160850593251449:
 			await message.add_reaction("<:hug:750751796317913218>")
@@ -140,5 +140,5 @@ class on_message(commands.Cog):
 
 
 
-def setup (client):
-	client.add_cog(on_message(client))
+def setup (bot):
+	bot.add_cog(on_message(bot))

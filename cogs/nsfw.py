@@ -31,8 +31,8 @@ class TagPages(SimplePages):
 
 class NSFW(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -73,7 +73,7 @@ class NSFW(commands.Cog):
 	@nsfw.command()
 	async def me(self, ctx, choice : str):
 		user = ctx.author
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		nsfwchannel = guild.get_channel(780374324598145055)
 
 		all_users = []
@@ -103,7 +103,7 @@ class NSFW(commands.Cog):
 	@nsfw.group()
 	@commands.has_role("Staff")
 	async def block(self, ctx, members : Greedy[Member]):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		nsfwchannel = guild.get_channel(780374324598145055)
 
 		blocked_list = []
@@ -181,5 +181,5 @@ class NSFW(commands.Cog):
 
 
 # https://www.reddit.com/r/hentai/random/.json
-def setup (client):
-	client.add_cog(NSFW(client))
+def setup (bot):
+	bot.add_cog(NSFW(bot))

@@ -18,15 +18,15 @@ filter_invite = re.compile("(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?
 
 class InviteFilter(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 	@commands.Cog.listener()
 	@commands.guild_only()
 	async def on_message(self, message: discord.Message):
 		if message.author.id in no_mute_these:
 			return
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		if message.guild:
 			use_this = message.content.lower()
 			matches = re.findall(filter_invite, use_this)
@@ -61,6 +61,6 @@ class InviteFilter(commands.Cog):
 					await asyncio.sleep(30)
 					await message.author.remove_roles(role)
 
-def setup (client):
-	client.add_cog(InviteFilter(client))
+def setup (bot):
+	bot.add_cog(InviteFilter(bot))
 

@@ -66,14 +66,14 @@ ok_words = ["shoe", "whoever"]
 
 class FilterCog(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 	@commands.Cog.listener()
 	async def on_message(self,message):
 		if message.author.id in no_mute_these:
 			return
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		if message.guild:
 			staff = guild.get_role(754676705741766757)
 			mod = guild.get_role(750162714407600228)
@@ -232,7 +232,7 @@ class FilterCog(commands.Cog):
 	async def on_message_edit(self,before,after):
 		if after.author.id in no_mute_these:
 			return
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		staff = guild.get_role(754676705741766757)
 		if after.guild:
 			mod = guild.get_role(750162714407600228)
@@ -396,5 +396,5 @@ async def get_warns_data():
 	return users
 
 
-def setup (client):
-	client.add_cog(FilterCog(client))
+def setup (bot):
+	bot.add_cog(FilterCog(bot))

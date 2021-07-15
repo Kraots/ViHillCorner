@@ -31,8 +31,8 @@ class SnippetPages(SimplePages):
 
 class Snippets(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -66,7 +66,7 @@ class Snippets(commands.Cog):
 			snippet_name = result['_id']
 			uses = result['uses_count']
 			get_owner = result['snippet_credits']
-			owner = self.client.get_user(get_owner)
+			owner = self.bot.get_user(get_owner)
 			index += 1
 			em.add_field(name=f"`{index}`.\u2800{snippet_name}", value=f"Uses: `{uses}`\n Owner: `{owner}`", inline=False)
 		
@@ -108,7 +108,7 @@ class Snippets(commands.Cog):
 		snippet_uses = data['uses_count']
 		snippet_created_at = data['created_at']
 
-		snippet_owner = self.client.get_user(snippet_owner_id)
+		snippet_owner = self.bot.get_user(snippet_owner_id)
 
 		em = discord.Embed(color=color.reds, title=snippet_name)
 		em.set_author(name=snippet_owner, url=snippet_owner.avatar_url, icon_url=snippet_owner.avatar_url)
@@ -129,7 +129,7 @@ class Snippets(commands.Cog):
 				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 			await ctx.send("What do you want to name this snippet?")
 			try:
-				presnippet_name = await self.client.wait_for('message', timeout = 120, check=check)
+				presnippet_name = await self.bot.wait_for('message', timeout = 120, check=check)
 				snippet_name = presnippet_name.content
 			except asyncio.TimeoutError:
 				return await ctx.reply("Ran out of time")
@@ -166,7 +166,7 @@ class Snippets(commands.Cog):
 
 		await ctx.send("Please send the image of the snippet.")
 		try:
-			presnippet_info = await self.client.wait_for('message', timeout = 180, check=check)
+			presnippet_info = await self.bot.wait_for('message', timeout = 180, check=check)
 			snippet_info = presnippet_info.attachments[0].url
 
 		except asyncio.TimeoutError:
@@ -213,7 +213,7 @@ class Snippets(commands.Cog):
 			await msg.add_reaction('<:disagree:797537030980239411>')
 			
 			try:
-				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 			except asyncio.TimeoutError:
 				new_msg = f"{ctx.author.mention} Did not react in time."
@@ -251,7 +251,7 @@ class Snippets(commands.Cog):
 		
 		else:
 			get_snippet_owner = data['snippet_credits']
-			snippet_owner = self.client.get_user(get_snippet_owner)
+			snippet_owner = self.bot.get_user(get_snippet_owner)
 			the_snippet_name = data['_id']
 			snippet_created_at = data['created_at']
 			uses = data['uses_count']
@@ -284,7 +284,7 @@ class Snippets(commands.Cog):
 
 		snippet = data['snippet_content']
 		get_credits_info = data['snippet_credits']
-		credits_user = self.client.get_user(get_credits_info)
+		credits_user = self.bot.get_user(get_credits_info)
 		credits_avatar = credits_user.avatar_url
 		collection.update_one({"_id": data['_id']}, {"$inc":{"uses_count": 1}})
 
@@ -307,5 +307,5 @@ class Snippets(commands.Cog):
 			await ctx.send("You must be at least `level 55+` in order to use this command! %s" % (ctx.author.mention))
 
 
-def setup (client):
-	client.add_cog(Snippets(client))
+def setup (bot):
+	bot.add_cog(Snippets(bot))

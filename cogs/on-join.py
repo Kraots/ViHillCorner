@@ -17,14 +17,14 @@ filter_mutes = db["Filter Mutes"]
 
 class on_join(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 	@commands.Cog.listener('on_member_join')
 	async def on_member_join(self, member):
 
 
-		VHguild = self.client.get_guild(750160850077089853)
+		VHguild = self.bot.get_guild(750160850077089853)
 		welcomechannel = VHguild.get_channel(750160850303582237)
 		member_count = len([m for m in VHguild.members if not m.bot])
 
@@ -121,14 +121,14 @@ class on_join(commands.Cog):
 
 			results = await mutes_collection.find_one({'_id': member.id})
 			if results != None:
-				guild = self.client.get_guild(750160850077089853)
+				guild = self.bot.get_guild(750160850077089853)
 
 				mute_role = guild.get_role(750465726069997658)
 				await member.add_roles(mute_role)
 			
 			resultss = await filter_mutes.find_one({'_id': member.id})
 			if resultss != None:
-				guild = self.client.get_guild(750160850077089853)
+				guild = self.bot.get_guild(750160850077089853)
 
 				mute_role = guild.get_role(750465726069997658)
 				await member.add_roles(mute_role)
@@ -151,34 +151,34 @@ class on_join(commands.Cog):
 				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
 
 			try:
-				reaction, user = await self.client.wait_for('reaction_add', check=newmember, timeout=180)
+				reaction, user = await self.bot.wait_for('reaction_add', check=newmember, timeout=180)
 
 			except asyncio.TimeoutError:
 				await channel.send("Ran out of time.")
 				new_msg = "Welcome to `ViHill Corner`, if you wish to do your intro please go in <#750160851822182486> and type `!intro`"
 				await msg1.edit(content=new_msg)
-				await msg1.remove_reaction('<:agree:797537027469082627>', self.client.user)
-				await msg1.remove_reaction('<:disagree:797537030980239411>', self.client.user)
+				await msg1.remove_reaction('<:agree:797537027469082627>', self.bot.user)
+				await msg1.remove_reaction('<:disagree:797537030980239411>', self.bot.user)
 				return
 			
 			else:
 				if str(reaction.emoji) == '<:disagree:797537030980239411>':
 					e = "Alrighty, you can do your intro later by typing `!intro` in <#750160851822182486>. Enjoy your stay! :wave:"
 					await msg1.edit(content=e)
-					await msg1.remove_reaction('<:agree:797537027469082627>', self.client.user)
-					await msg1.remove_reaction('<:disagree:797537030980239411>', self.client.user)
+					await msg1.remove_reaction('<:agree:797537027469082627>', self.bot.user)
+					await msg1.remove_reaction('<:disagree:797537030980239411>', self.bot.user)
 					return
 
 				elif str(reaction.emoji) == '<:agree:797537027469082627>':
 
-					await msg1.remove_reaction('<:agree:797537027469082627>', self.client.user)
-					await msg1.remove_reaction('<:disagree:797537030980239411>', self.client.user)
+					await msg1.remove_reaction('<:agree:797537027469082627>', self.bot.user)
+					await msg1.remove_reaction('<:disagree:797537030980239411>', self.bot.user)
 
 					e = "What's your name?\n\n*To cancel type `!cancel`*"
 					await msg1.edit(content=e)
 
 					try:
-						name = await self.client.wait_for('message', timeout= 180, check=check)
+						name = await self.bot.wait_for('message', timeout= 180, check=check)
 						if name.content.lower() == '!cancel':
 							await channel.send("Canceled.")
 							return
@@ -191,7 +191,7 @@ class on_join(commands.Cog):
 						await channel.send("Where are you from?")
 						
 						try:
-							location = await self.client.wait_for('message', timeout= 180, check=check)
+							location = await self.bot.wait_for('message', timeout= 180, check=check)
 							if location.content.lower() == '!cancel':
 								await channel.send("Canceled.")
 								return
@@ -205,7 +205,7 @@ class on_join(commands.Cog):
 
 							try:
 								while True:
-									age = await self.client.wait_for('message', timeout= 180, check=check)
+									age = await self.bot.wait_for('message', timeout= 180, check=check)
 									if age.content.lower() == '!cancel':
 										await channel.send("Canceled.")
 										return
@@ -226,7 +226,7 @@ class on_join(commands.Cog):
 								await channel.send("What's your gender?")
 								
 								try:
-									gender = await self.client.wait_for('message', timeout= 180, check=check)
+									gender = await self.bot.wait_for('message', timeout= 180, check=check)
 									if gender.content.lower() == '!cancel':
 										await channel.send("Canceled.")
 										return 
@@ -240,7 +240,7 @@ class on_join(commands.Cog):
 									
 									try:
 										while True:
-											prestatuss = await self.client.wait_for('message', timeout= 180, check=check)
+											prestatuss = await self.bot.wait_for('message', timeout= 180, check=check)
 											status = prestatuss.content.lower()
 											if status == '!cancel':
 												await channel.send("Canceled.")
@@ -258,7 +258,7 @@ class on_join(commands.Cog):
 										await channel.send("What are u interested to?")
 
 										try:
-											interests = await self.client.wait_for('message', timeout= 360, check=check)
+											interests = await self.bot.wait_for('message', timeout= 360, check=check)
 											if interests.content.lower() == '!cancel':
 												await channel.send("Canceled.")
 												return
@@ -305,5 +305,5 @@ class on_join(commands.Cog):
 
 
 
-def setup (client):
-	client.add_cog(on_join(client))
+def setup (bot):
+	bot.add_cog(on_join(bot))

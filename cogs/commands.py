@@ -57,8 +57,8 @@ nono_list = ["pornhub.com", "hentaiheaven.com", "nhentai.net", "hanime.tv", "xvi
 
 class command(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.process = psutil.Process(os.getpid())
 		self.prefix = "!"
 	async def cog_check(self, ctx):
@@ -149,7 +149,7 @@ class command(commands.Cog):
 
 	@commands.command(hidden=True)
 	async def membercount(self, ctx):
-			guild = self.client.get_guild(750160850077089853)
+			guild = self.bot.get_guild(750160850077089853)
 			member_count = len([m for m in guild.members if not m.bot])
 			await ctx.send(f'`{member_count}` members.') 
 
@@ -192,7 +192,7 @@ class command(commands.Cog):
 
 	@commands.command(aliases=["untill-partner"])
 	async def up(self, ctx):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		member_count = len([m for m in guild.members if not m.bot])
 		await ctx.send(f'Members left untill the server can apply for the *discord partnership program:* \n\n`{500 - member_count}`')
 
@@ -229,7 +229,7 @@ class command(commands.Cog):
 		if command is None:
 			return await ctx.send(source_url)
 
-		obj = self.client.get_command(command.replace('.', ' '))
+		obj = self.bot.get_command(command.replace('.', ' '))
 		if obj is None:
 			return await ctx.send('Could not find command.')
 
@@ -256,5 +256,5 @@ class command(commands.Cog):
 		
 		await ctx.send(final_url)
 
-def setup (client):
-	client.add_cog(command(client))
+def setup (bot):
+	bot.add_cog(command(bot))

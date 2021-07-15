@@ -16,8 +16,8 @@ collection = db["Filter Mutes"]
 
 class CapsFilter(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 
 	@commands.Cog.listener()
@@ -28,7 +28,7 @@ class CapsFilter(commands.Cog):
 		if message.author.bot:
 			return
 
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		muted = guild.get_role(750465726069997658)
 		staff = guild.get_role(754676705741766757)
 		mod = guild.get_role(750162714407600228)
@@ -146,5 +146,5 @@ async def get_warns_data():
 
 
 
-def setup(client):
-	client.remove_cog(CapsFilter(client))
+def setup(bot):
+	bot.remove_cog(CapsFilter(bot))

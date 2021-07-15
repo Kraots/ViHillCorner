@@ -15,8 +15,8 @@ collection = db["Birthdays"]
 
 class Birthdays(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 		self.check_bdays.start()
 	async def cog_check(self, ctx):
@@ -25,7 +25,7 @@ class Birthdays(commands.Cog):
 
 	@tasks.loop(minutes=30)
 	async def check_bdays(self):
-		await self.client.wait_until_ready()
+		await self.bot.wait_until_ready()
 		currentTime = datetime.datetime.utcnow()
 		results = collection.find()
 		for result in await results.to_list(9999999999999999):
@@ -35,7 +35,7 @@ class Birthdays(commands.Cog):
 
 			if currentTime >= bdayDate:
 
-				guild = self.client.get_guild(750160850077089853)
+				guild = self.bot.get_guild(750160850077089853)
 				bday_channel = guild.get_channel(797867811967467560)
 				user = guild.get_member(user)
 
@@ -86,7 +86,7 @@ class Birthdays(commands.Cog):
 
 		results = collection.find().sort([("birthdaydate", 1)])
 		for result in await results.to_list(5):
-			user = self.client.get_user(result['_id'])
+			user = self.bot.get_user(result['_id'])
 			index += 1
 			em.add_field(name=f"`{index}`. _ _ _ _ {user.name}", value=f"{format_date(result['region_birthday'], result['birthdaydate'])}", inline = False) 
 
@@ -144,7 +144,7 @@ class Birthdays(commands.Cog):
 
 		try:
 			while True:
-				pre_region = await self.client.wait_for('message', timeout = 180, check = check)
+				pre_region = await self.bot.wait_for('message', timeout = 180, check = check)
 				try:
 					region = int(pre_region.content)
 					if region > 14 or region < 1:
@@ -241,7 +241,7 @@ class Birthdays(commands.Cog):
 			await msg.add_reaction('<:agree:797537027469082627>')
 			await msg.add_reaction('<:disagree:797537030980239411>')
 			try:
-				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 			except asyncio.TimeoutError:
 				new_msg = f"{ctx.author.mention} Did not react in time."
@@ -287,5 +287,5 @@ class Birthdays(commands.Cog):
 
 
 
-def setup(client):
-	client.add_cog(Birthdays(client))
+def setup(bot):
+	bot.add_cog(Birthdays(bot))

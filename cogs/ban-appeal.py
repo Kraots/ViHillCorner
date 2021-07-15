@@ -4,14 +4,14 @@ from discord.ext import commands
 import asyncio
 
 class OnBanAppealJoin(commands.Cog):
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 	@commands.Cog.listener('on_member_join')
 	async def on_member_join(self, member):
 		found = False
 		if member.guild.id == 788384492175884299:
-			vhc = self.client.get_guild(750160850077089853)
+			vhc = self.bot.get_guild(750160850077089853)
 			bans = await vhc.bans()
 			for i in range(len(bans)):
 				if bans[i][1].id == member.id:
@@ -26,7 +26,7 @@ class OnBanAppealJoin(commands.Cog):
 				await member.kick()
 				return
 			
-			g = self.client.get_guild(788384492175884299)
+			g = self.bot.get_guild(788384492175884299)
 			overwrites = {
 					g.default_role: discord.PermissionOverwrite(read_messages = False)
 						}
@@ -68,7 +68,7 @@ class OnBanAppealJoin(commands.Cog):
 						await message.add_reaction('<:agree:797537027469082627>')
 						await message.add_reaction('<:disagree:797537030980239411>')
 						try:
-							reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=20)
+							reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=20)
 
 						except asyncio.TimeoutError:
 							await message.clear_reactions()
@@ -84,5 +84,5 @@ class OnBanAppealJoin(commands.Cog):
 								return
 
 
-def setup (client):
-	client.add_cog(OnBanAppealJoin(client))
+def setup (bot):
+	bot.add_cog(OnBanAppealJoin(bot))

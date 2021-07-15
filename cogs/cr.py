@@ -19,20 +19,20 @@ nono_list = [
 
 class CustomRoles(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")	
 	async def cr(self, ctx):
-		command = self.client.get_command('help')
+		command = self.bot.get_command('help')
 		await ctx.invoke(command, 'cr')
 
 
 	@cr.command()
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
 	async def create(self, ctx):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		user = ctx.author
 		channel = ctx.message.channel
 		usercheck = ctx.author.id
@@ -50,7 +50,7 @@ class CustomRoles(commands.Cog):
 
 			try:
 				while True:
-					crname = await self.client.wait_for('message', timeout=50, check=check)
+					crname = await self.bot.wait_for('message', timeout=50, check=check)
 					if crname.content.lower() in nono_list:
 						await ctx.send("You tried, but no, lol!")
 
@@ -73,7 +73,7 @@ class CustomRoles(commands.Cog):
 
 				try:
 					while True:
-						crcolor = await self.client.wait_for('message', timeout=50, check=check)
+						crcolor = await self.bot.wait_for('message', timeout=50, check=check)
 						crcolor = crcolor.content.lower()
 						if crcolor == '!cancel':
 							await ctx.send("Canceled. %s" % (ctx.author.mention))
@@ -128,7 +128,7 @@ class CustomRoles(commands.Cog):
 	@edit.command()
 	async def color(self, ctx, new_color: str = None):
 		user = ctx.author
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		
 		results = await collection.find_one({"_id": user.id})
 
@@ -165,7 +165,7 @@ class CustomRoles(commands.Cog):
 	@edit.command()
 	async def name(self, ctx, *, new_name: str = None):
 		user = ctx.author
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 
 		results = await collection.find_one({"_id": user.id})
 
@@ -200,7 +200,7 @@ class CustomRoles(commands.Cog):
 			await ctx.send("You must specify the user that you're sharing the role to!")
 			return
 		user = ctx.author
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 
 		results = await collection.find_one({"_id": user.id})
 
@@ -222,7 +222,7 @@ class CustomRoles(commands.Cog):
 			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
 		
 		try:
-			reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+			reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 		
 		except asyncio.TimeoutError:
 			new_msg = f"{member.mention} Did not react in time."
@@ -281,7 +281,7 @@ class CustomRoles(commands.Cog):
 		if role == None:
 			await ctx.send("You must give the role ID, to get it use `!role-id <role_name>`")
 			return
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		cr = guild.get_role(role)
 		
 		results = await collection.find_one({"CustomRoleName": cr.name})
@@ -307,7 +307,7 @@ class CustomRoles(commands.Cog):
 	async def clean(self, ctx):
 		all_cr = []
 		results = collection.find()
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		for result in await results.to_list(999999999999):
 			user = str(result['_id'])
 			if str(ctx.author.id) != user:
@@ -336,7 +336,7 @@ class CustomRoles(commands.Cog):
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
 	async def delete(self, ctx):
 		user = ctx.author
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 
 		results = await collection.find_one({"_id": user.id})
 
@@ -355,7 +355,7 @@ class CustomRoles(commands.Cog):
 		await msg.add_reaction('<:disagree:797537030980239411>')
 		
 		try:
-				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 		except asyncio.TimeoutError:
 			new_msg = f"{ctx.author.mention} Did not react in time."
@@ -386,7 +386,7 @@ class CustomRoles(commands.Cog):
 		if role_name is None:
 			await ctx.send("You must give the role name that you want the ID for!")
 			return
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		role = discord.utils.get(guild.roles, name=role_name)
 		
 		try:
@@ -423,7 +423,7 @@ class CustomRoles(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		results = await collection.find_one({"_id": member.id})
 		if results != None:
 			get_role = results['CustomRoleName']
@@ -437,5 +437,5 @@ class CustomRoles(commands.Cog):
 
 
 
-def setup(client):
-	client.add_cog(CustomRoles(client))
+def setup(bot):
+	bot.add_cog(CustomRoles(bot))

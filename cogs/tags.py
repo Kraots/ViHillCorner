@@ -32,8 +32,8 @@ class TagPages(SimplePages):
 
 class Tags(commands.Cog):
 	
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -41,7 +41,7 @@ class Tags(commands.Cog):
 	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra = False, aliases=['tags'])
 	async def tag(self, ctx, *, tag_name: str = None):
 		if tag_name is None:
-			command = self.client.get_command('help')
+			command = self.bot.get_command('help')
 			await ctx.invoke(command, 'tag')
 			return
 		data = {}
@@ -104,7 +104,7 @@ class Tags(commands.Cog):
 			tag_name = result['the_tag_name']
 			uses = result['uses_count']
 			get_owner = result['tag_owner_id']
-			owner = self.client.get_user(get_owner)
+			owner = self.bot.get_user(get_owner)
 			index += 1
 			em.add_field(name=f"`{index}`.\u2800{tag_name}", value=f"Uses: `{uses}`\n Owner: `{owner}`", inline=False)
 		
@@ -148,7 +148,7 @@ class Tags(commands.Cog):
 		tag_created_at = data["created_at"]
 		the_tag_id = data["_id"]
 
-		tag_owner = self.client.get_user(tag_owner_id)
+		tag_owner = self.bot.get_user(tag_owner_id)
 
 		em = discord.Embed(color=color.blue, title=tag_name)
 		em.set_author(name=tag_owner, url=tag_owner.avatar_url, icon_url=tag_owner.avatar_url)
@@ -259,7 +259,7 @@ class Tags(commands.Cog):
 			def check(m):
 				return m.author == ctx.author and m.channel == ctx.channel
 			try:
-				alias_name = await self.client.wait_for('message', check=check, timeout=180)
+				alias_name = await self.bot.wait_for('message', check=check, timeout=180)
 				try:
 					e = int(alias_name.content)
 					return await ctx.send("The alias cannot be a number! %s" % (ctx.author.mention))
@@ -304,7 +304,7 @@ class Tags(commands.Cog):
 			def check(m):
 				return m.author == ctx.author and m.channel == ctx.channel
 			try:
-				alias_name = await self.client.wait_for('message', check=check, timeout=180)
+				alias_name = await self.bot.wait_for('message', check=check, timeout=180)
 				try:
 					e = int(alias_name.content)
 					return await ctx.send("The alias cannot be a number! %s" % (ctx.author.mention))
@@ -352,7 +352,7 @@ class Tags(commands.Cog):
 				await msg.add_reaction('<:disagree:797537030980239411>')
 
 				try:
-					reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+					reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 				except asyncio.TimeoutError:
 					new_msg = f"{ctx.author.mention} Did not react in time."
 					await msg.edit(content=new_msg)
@@ -388,7 +388,7 @@ class Tags(commands.Cog):
 			await ctx.send("What do you want the tag to be named as?".format(ctx.author.mention))
 
 			try:
-				pre_tag = await self.client.wait_for('message', timeout=180, check=check)
+				pre_tag = await self.bot.wait_for('message', timeout=180, check=check)
 				tag_name = pre_tag.content
 
 			except asyncio.TimeoutError:
@@ -422,7 +422,7 @@ class Tags(commands.Cog):
 		await ctx.send("Please send the tag's content. {}".format(ctx.author.mention))
 		
 		try:
-			pre_tag_content = await self.client.wait_for('message', timeout=420, check=check)
+			pre_tag_content = await self.bot.wait_for('message', timeout=420, check=check)
 			if pre_tag_content.attachments:
 				await ctx.send("Tag cannot contain attachments!")
 				return					
@@ -486,7 +486,7 @@ class Tags(commands.Cog):
 		await msg.add_reaction('<:agree:797537027469082627>')
 		await msg.add_reaction('<:disagree:797537030980239411>')
 		try:
-			reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+			reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 		except asyncio.TimeoutError:
 			new_msg = f"{ctx.author.mention} Did not react in time."
@@ -532,7 +532,7 @@ class Tags(commands.Cog):
 			return await ctx.send("That tag does not exist in the database. %s" % (ctx.author.mention))
 			
 		get_tag_owner = data['tag_owner_id']
-		tag_owner = self.client.get_user(get_tag_owner)
+		tag_owner = self.bot.get_user(get_tag_owner)
 		the_tag_name = data['the_tag_name']
 		tag_created_at = data['created_at']
 		uses = data['uses_count']
@@ -566,5 +566,5 @@ class Tags(commands.Cog):
 		if isinstance(error, commands.TooManyArguments):
 			return
 
-def setup(client):
-	client.add_cog(Tags(client))
+def setup(bot):
+	bot.add_cog(Tags(bot))

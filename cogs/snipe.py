@@ -5,8 +5,8 @@ snipes = {}
 
 class Snipe(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -41,5 +41,5 @@ class Snipe(commands.Cog):
 
 			
 
-def setup (client):
-	client.add_cog(Snipe(client))
+def setup (bot):
+	bot.add_cog(Snipe(bot))

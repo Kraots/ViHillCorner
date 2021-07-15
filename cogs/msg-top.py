@@ -18,8 +18,8 @@ collection = db["Levels"]
 
 class MessageTop(commands.Cog):
 	
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.weekly_reset.start()
 		self.prefix = "!"
 	def cog_check(self, ctx):
@@ -27,7 +27,7 @@ class MessageTop(commands.Cog):
 
 	@tasks.loop(minutes=1)
 	async def weekly_reset(self):
-		await self.client.wait_until_ready()
+		await self.bot.wait_until_ready()
 		results = await collection.find_one({"_id": 374622847672254466})
 		resetWhen = results['weekly_reset']
 		a = datetime.datetime.utcnow().strftime('%Y-%m-%d')
@@ -39,7 +39,7 @@ class MessageTop(commands.Cog):
 			results = collection.find().sort([("messages_count", -1)])
 			for result in await results.to_list(3):
 				index += 1
-				user = self.client.get_user(result['_id'])
+				user = self.bot.get_user(result['_id'])
 				users[index] = user
 			_1stplace = users[1]
 			_2ndplace = users[2]
@@ -68,7 +68,7 @@ class MessageTop(commands.Cog):
 		em = discord.Embed(color=color.lightpink)
 		
 		index = 0
-		guild = self.client.get_guild(750160850077089853)
+		guild = self.bot.get_guild(750160850077089853)
 		
 		results = collection.find().sort([("messages_count", -1)])
 		for result in await results.to_list(15):
@@ -94,7 +94,7 @@ class MessageTop(commands.Cog):
 		await msg.add_reaction('<:agree:797537027469082627>')
 		await msg.add_reaction('<:disagree:797537030980239411>')
 		try:
-			reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+			reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 		except asyncio.TimeoutError:
 			new_msg = f"{ctx.author.mention} Did not react in time."
@@ -121,5 +121,5 @@ class MessageTop(commands.Cog):
 		em.set_footer(text="Requested by: %s" % (ctx.author), icon_url=ctx.author.avatar_url)
 		await ctx.send(embed=em)
 
-def setup(client):
-	client.add_cog(MessageTop(client))
+def setup(bot):
+	bot.add_cog(MessageTop(bot))

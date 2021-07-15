@@ -5,8 +5,8 @@ from discord.ext.commands import Greedy
 
 class info(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = ";"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -186,5 +186,5 @@ class info(commands.Cog):
 			await ctx.send("You must be at least `level 20+` in order to use this command! %s" % (ctx.author.mention))
 
 
-def setup (client):
-	client.add_cog(info(client))
+def setup (bot):
+	bot.add_cog(info(bot))

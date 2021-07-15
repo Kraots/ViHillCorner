@@ -6,8 +6,8 @@ import utils.colors as color
 
 
 class Waifu(commands.Cog):
-  def __init__(self, client):
-    self.client = client
+  def __init__(self, bot):
+    self.bot = bot
     self.prefix = "!"
   async def cog_check(self, ctx):
     return ctx.prefix == self.prefix
@@ -23,5 +23,5 @@ class Waifu(commands.Cog):
     await ctx.send(embed=embed)
 
 
-def setup (client):
-  client.add_cog(Waifu(client))
+def setup (bot):
+  bot.add_cog(Waifu(bot))

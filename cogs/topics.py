@@ -4,8 +4,8 @@ import random
 
 class Topics(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -19,5 +19,5 @@ class Topics(commands.Cog):
 
 
 
-def setup (client):
-	client.add_cog(Topics(client))
+def setup (bot):
+	bot.add_cog(Topics(bot))

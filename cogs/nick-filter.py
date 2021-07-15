@@ -18,8 +18,8 @@ allowed_letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "
 
 class NickFilter(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 	@commands.Cog.listener()
 	async def on_message(self, message : discord.Message):
@@ -39,5 +39,5 @@ class NickFilter(commands.Cog):
 
 
 
-def setup(client):
-	client.add_cog(NickFilter(client))
+def setup(bot):
+	bot.add_cog(NickFilter(bot))

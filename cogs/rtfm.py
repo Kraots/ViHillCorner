@@ -40,8 +40,8 @@ class SphinxObjectFileReader:
 				pos = buf.find(b'\n')
 
 class RTFMCommand(commands.Cog):
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 	def parse_object_inv(self, stream, url):
 		result = {}
@@ -90,7 +90,7 @@ class RTFMCommand(commands.Cog):
 		cache = {}
 		for key, page in page_types.items():
 			sub = cache[key] = {}
-			async with self.client.session.get(page + '/objects.inv') as resp:
+			async with self.bot.session.get(page + '/objects.inv') as resp:
 				if resp.status != 200:
 					raise RuntimeError('Cannot build rtfm lookup table, try again later.')
 
@@ -157,5 +157,5 @@ class RTFMCommand(commands.Cog):
 
 
 
-def setup(client):
-	client.add_cog(RTFMCommand(client))
+def setup(bot):
+	bot.add_cog(RTFMCommand(bot))

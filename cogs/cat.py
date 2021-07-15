@@ -5,8 +5,8 @@ import utils.colors as color
 
 class Cat(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -27,5 +27,5 @@ class Cat(commands.Cog):
 			await msg.add_reaction("😸")
 
 
-def setup(client):
-	client.add_cog(Cat(client))
+def setup(bot):
+	bot.add_cog(Cat(bot))

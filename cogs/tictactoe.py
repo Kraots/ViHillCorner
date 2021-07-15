@@ -12,8 +12,8 @@ cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
 db = cluster['ViHillCornerDB']['Economy']
 
 class TTT(commands.Cog):
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	
 	async def cog_check(self, ctx):
@@ -51,7 +51,7 @@ class TTT(commands.Cog):
 		await msg.add_reaction('<:disagree:797537030980239411>')
 
 		try:
-			reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+			reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 		except asyncio.TimeoutError:
 			new_msg = f"{member.mention} Did not react in time."
@@ -75,5 +75,5 @@ class TTT(commands.Cog):
 			await ctx.send(error.original)
 
 
-def setup (client):
-	client.add_cog(TTT(client))
+def setup (bot):
+	bot.add_cog(TTT(bot))

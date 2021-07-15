@@ -4,8 +4,8 @@ import os
 import utils.colors as color
 
 class All(commands.Cog):
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = '!'
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -13,20 +13,20 @@ class All(commands.Cog):
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.is_owner()
 	async def load(self, ctx, extension):
-			self.client.load_extension(extension)
+			self.bot.load_extension(extension)
 			await ctx.reply(f":inbox_tray: `{extension}`")
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.is_owner()
 	async def reload(self, ctx, extension):
-			self.client.unload_extension(extension)
-			self.client.load_extension(extension)
+			self.bot.unload_extension(extension)
+			self.bot.load_extension(extension)
 			await ctx.reply(f":repeat: `{extension}`")
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.is_owner()
 	async def unload(self, ctx, extension):
-			self.client.unload_extension(extension)
+			self.bot.unload_extension(extension)
 			await ctx.reply(f":outbox_tray: `{extension}`")
 
 
@@ -40,8 +40,8 @@ class All(commands.Cog):
 		for filename in os.listdir('./cogs'):
 			if filename.endswith('.py'):
 				try:
-					self.client.unload_extension(f'cogs.{filename[:-3]}')
-					self.client.load_extension(f'cogs.{filename[:-3]}')
+					self.bot.unload_extension(f'cogs.{filename[:-3]}')
+					self.bot.load_extension(f'cogs.{filename[:-3]}')
 					a = f":repeat: `cogs.{filename[:-3]}`\n"
 					cogs_list.append(a)
 
@@ -66,7 +66,7 @@ class All(commands.Cog):
 		for filename in os.listdir('./cogs'):
 			if filename.endswith('.py'):
 				try:
-					self.client.load_extension(f'cogs.{filename[:-3]}')
+					self.bot.load_extension(f'cogs.{filename[:-3]}')
 					a = f":inbox_tray: `cogs.{filename[:-3]}`\n"
 					cogs_list.append(a)
 
@@ -90,7 +90,7 @@ class All(commands.Cog):
 		for filename in os.listdir('./cogs'):
 			if filename.endswith('.py'):
 				try:
-					self.client.unload_extension(f'cogs.{filename[:-3]}')
+					self.bot.unload_extension(f'cogs.{filename[:-3]}')
 					a = f":outbox_tray: `cogs.{filename[:-3]}`\n"
 					cogs_list.append(a)
 
@@ -107,5 +107,5 @@ class All(commands.Cog):
 
 
 
-def setup (client):
-	client.add_cog(All(client))
+def setup (bot):
+	bot.add_cog(All(bot))

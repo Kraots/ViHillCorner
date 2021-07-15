@@ -17,8 +17,8 @@ collection = db["Marry Data"]
 
 class MarryCommands(commands.Cog):
 	
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -46,14 +46,14 @@ class MarryCommands(commands.Cog):
 			if member.id in all_users:
 				get_mem = await collection.find_one({"_id": member.id})
 				member_married_to = get_mem["married_to"]
-				they_already_married_to = self.client.get_user(member_married_to)
+				they_already_married_to = self.bot.get_user(member_married_to)
 				await ctx.send("`{}` is already married to `{}`.".format(member.display_name, they_already_married_to.display_name))
 				return
 
 			elif ctx.author.id in all_users:
 					get_auth = await collection.find_one({"_id": ctx.author.id})
 					author_married_to = get_auth["married_to"]
-					author_already_married_to = self.client.get_user(author_married_to)
+					author_already_married_to = self.bot.get_user(author_married_to)
 					await ctx.send("You are already married to `{}`.".format(author_already_married_to.display_name))
 					
 
@@ -66,7 +66,7 @@ class MarryCommands(commands.Cog):
 				await msg.add_reaction('<:disagree:797537030980239411>')
 
 				try:
-					reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+					reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 				except asyncio.TimeoutError:
 					new_msg = f"{ctx.author.mention} Did not react in time."
@@ -105,7 +105,7 @@ class MarryCommands(commands.Cog):
 			return	
 
 		else:	
-			the_married_to_user = self.client.get_user(results['married_to'])	
+			the_married_to_user = self.bot.get_user(results['married_to'])	
 
 			def check(reaction, user):
 				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id	
@@ -115,7 +115,7 @@ class MarryCommands(commands.Cog):
 			await msg.add_reaction('<:disagree:797537030980239411>')
 
 			try:
-				reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=180)
+				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
 
 			except asyncio.TimeoutError:
 				new_msg = f"{ctx.author.mention} Did not react in time."
@@ -168,7 +168,7 @@ class MarryCommands(commands.Cog):
 
 			user_married_to_since = datetime.datetime.strptime(user_married_to_sincee, "%Y-%m-%d %H:%M")
 
-			the_married_to_user = self.client.get_user(user_married_to)
+			the_married_to_user = self.bot.get_user(user_married_to)
 
 			if member == ctx.author:
 				def format_date(dt):
@@ -199,5 +199,5 @@ class MarryCommands(commands.Cog):
 		await collection.delete_one({"_id": member.id})
 		await collection.delete_one({'married_to': member.id})
 
-def setup(client):
-	client.add_cog(MarryCommands(client))
+def setup(bot):
+	bot.add_cog(MarryCommands(bot))

@@ -1,8 +1,8 @@
 from discord.ext import commands
 
 class Nicks(commands.Cog):
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -32,5 +32,5 @@ class Nicks(commands.Cog):
 			await ctx.send("You must be at least `level 3+` in order to use this command! %s" % (ctx.author.mention))
 
 				
-def setup (client):
-	client.add_cog(Nicks(client))
+def setup (bot):
+	bot.add_cog(Nicks(bot))

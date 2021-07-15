@@ -5,8 +5,8 @@ import utils.colors as color
 
 class Dog(commands.Cog):
 
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -25,5 +25,5 @@ class Dog(commands.Cog):
 			await msg.add_reaction("❤️")
 			await msg.add_reaction("🐶")
 
-def setup(client):
-	client.add_cog(Dog(client))
+def setup(bot):
+	bot.add_cog(Dog(bot))
