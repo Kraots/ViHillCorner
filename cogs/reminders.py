@@ -179,5 +179,5 @@ class RemindersClass(commands.Cog):
 		if isinstance(error, commands.errors.TooManyArguments):
 			return
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(RemindersClass(bot))

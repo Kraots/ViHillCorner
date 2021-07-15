@@ -133,5 +133,5 @@ class BdsmResults(commands.Cog):
 		await collection.delete_one({'_id': member.id})
 		await collection2.delete_one({'_id': member.id})
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(BdsmResults(bot))

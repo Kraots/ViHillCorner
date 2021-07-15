@@ -35,5 +35,5 @@ class Metrics(commands.Cog):
 		metrics.set_footer(text=f"Bot made by: {kraots}", icon_url=self.bot.user.avatar_url)
 		await msg.edit(embed=metrics)
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(Metrics(bot))

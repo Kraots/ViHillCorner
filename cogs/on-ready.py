@@ -15,5 +15,5 @@ class on_ready(commands.Cog):
                 print(f"Name: {guild.name} | ID: {guild.id} | Members: {guild.member_count}")
 
 
-def setup (bot):
+def setup(bot):
     bot.add_cog(on_ready(bot))

@@ -181,5 +181,5 @@ class NSFW(commands.Cog):
 
 
 # https://www.reddit.com/r/hentai/random/.json
-def setup (bot):
+def setup(bot):
 	bot.add_cog(NSFW(bot))

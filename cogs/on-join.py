@@ -305,5 +305,5 @@ class on_join(commands.Cog):
 
 
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(on_join(bot))

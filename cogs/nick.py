@@ -32,5 +32,5 @@ class Nicks(commands.Cog):
 			await ctx.send("You must be at least `level 3+` in order to use this command! %s" % (ctx.author.mention))
 
 				
-def setup (bot):
+def setup(bot):
 	bot.add_cog(Nicks(bot))

@@ -23,5 +23,5 @@ class GoogleSearch(commands.Cog):
 		await ctx.send(embed=em)
 		await GoogleClient.close()
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(GoogleSearch(bot))

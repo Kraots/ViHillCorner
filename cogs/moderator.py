@@ -663,5 +663,5 @@ class Moderation(commands.Cog):
 
 
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(Moderation(bot))

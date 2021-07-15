@@ -36,5 +36,5 @@ class Updates(commands.Cog):
 		await db.update_one({'_id': ctx.author.id}, {'$set':{'update': args, 'date': datetime.datetime.utcnow()}})
 		await ctx.reply('Operation successful.')
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(Updates(bot))

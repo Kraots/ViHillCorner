@@ -396,5 +396,5 @@ async def get_warns_data():
 	return users
 
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(FilterCog(bot))

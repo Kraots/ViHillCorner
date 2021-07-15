@@ -61,6 +61,6 @@ class InviteFilter(commands.Cog):
 					await asyncio.sleep(30)
 					await message.author.remove_roles(role)
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(InviteFilter(bot))
 

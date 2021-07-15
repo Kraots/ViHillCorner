@@ -256,5 +256,5 @@ class command(commands.Cog):
 		
 		await ctx.send(final_url)
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(command(bot))

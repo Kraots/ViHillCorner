@@ -1129,5 +1129,5 @@ class EcoCommands(commands.Cog):
 
 
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(EcoCommands(bot))	

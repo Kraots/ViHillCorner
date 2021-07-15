@@ -59,5 +59,5 @@ class GlobalErrorHandler(commands.Cog):
 
 						# print(type(error))
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(GlobalErrorHandler(bot))

@@ -259,6 +259,6 @@ async def get_spam_warns_data():
 	return users
 
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(RepeatedTextFilter(bot))
 	bot.add_cog(SpamFilter(bot))

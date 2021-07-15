@@ -53,5 +53,5 @@ class ServerInfo(commands.Cog):
 		
 		await ctx.send(embed=em, reference=ctx.replied_reference)
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(ServerInfo(bot))

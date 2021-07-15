@@ -28,5 +28,5 @@ class Memes(commands.Cog):
 
             await ctx.send(embed=embed)
 
-def setup (bot):
+def setup(bot):
   bot.add_cog(Memes(bot))

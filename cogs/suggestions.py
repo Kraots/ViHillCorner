@@ -151,5 +151,5 @@ class Suggest(commands.Cog):
 		else:
 				raise error
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(Suggest(bot))

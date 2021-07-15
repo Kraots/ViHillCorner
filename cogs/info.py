@@ -186,5 +186,5 @@ class info(commands.Cog):
 			await ctx.send("You must be at least `level 20+` in order to use this command! %s" % (ctx.author.mention))
 
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(info(bot))

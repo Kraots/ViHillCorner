@@ -101,5 +101,5 @@ class ImagesChannel(commands.Cog):
 		else:
 			return
 
-def setup (bot):
+def setup(bot):
 	bot.remove_cog(ImagesChannel(bot))

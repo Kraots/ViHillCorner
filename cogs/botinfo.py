@@ -43,5 +43,5 @@ class BotInfo(commands.Cog):
 		botinfo.set_thumbnail(url=self.bot.user.avatar_url)
 		await ctx.send(embed=botinfo)
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(BotInfo(bot))

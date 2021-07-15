@@ -75,5 +75,5 @@ class TTT(commands.Cog):
 			await ctx.send(error.original)
 
 
-def setup (bot):
+def setup(bot):
 	bot.add_cog(TTT(bot))
