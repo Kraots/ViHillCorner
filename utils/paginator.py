@@ -198,7 +198,7 @@ class CustomMenu(CustomRobo):
 
 class ToDoMenu(CustomRobo):
 	def __init__(self, entries, *, per_page=12, title="", color=None, author_name=None, author_icon_url=None):
-		super().__init__(NewCustomMenus(entries, per_page=per_page))
+		super().__init__(NewHelpMenus(entries, per_page=per_page))
 		if color == None:
 			color = discord.Color.blurple()
 		self.embed = discord.Embed(colour=color, title=title)
