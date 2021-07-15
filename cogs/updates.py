@@ -26,7 +26,7 @@ class Updates(commands.Cog):
 		updatedDate = time.human_timedelta(dt=update['date'], accuracy=3, brief=False, suffix=True)
 		em = discord.Embed(title="Here's what's new to the bot:", description=f"{updatedMsg}\n\n*{updatedDate}*", color=color.red)
 		em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
-		await ctx.send(embed=em)
+		await ctx.send(embed=em, reference=ctx.replied_reference)
 	
 	@update.command(aliases=['set'])
 	@commands.is_owner()
