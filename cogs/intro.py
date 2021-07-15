@@ -326,7 +326,7 @@ class Intros(commands.Cog):
 									em.add_field(name="Relationship Status", value=status, inline=True)
 									em.add_field(name="Interests", value=interests.content, inline=False)
 									intro_msg = await introchannel.send(embed=em)
-									await ctx.channel.send("Intro added successfully. You can see in <#750160850593251449>")
+									await ctx.send("Intro added successfully. You can see in <#750160850593251449>")
 
 									post = {"_id": ctx.author.id, 
 											"name": name.content,
@@ -443,12 +443,12 @@ class Intros(commands.Cog):
 	@whois.error
 	async def wi_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.channel.send("User does not have any intro!")
+			await ctx.send("User does not have any intro!")
 			ctx.command.reset_cooldown(ctx)
 
 		elif isinstance(error, commands.CommandOnCooldown):
 				msg = f'Please wait {time_phaser(error.retry_after)}.'
-				await ctx.channel.send(msg)
+				await ctx.send(msg)
 
 	@intro.error
 	async def intro_error(self, ctx, error):
@@ -458,7 +458,7 @@ class Intros(commands.Cog):
 
 		elif isinstance(error, commands.CommandOnCooldown):
 			msg = f'Please wait {time_phaser(error.retry_after)}.'
-			await ctx.channel.send(msg)
+			await ctx.send(msg)
 
 		elif isinstance(error, commands.TooManyArguments):
 			ctx.command.reset_cooldown(ctx)

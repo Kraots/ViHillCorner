@@ -24,7 +24,7 @@ class GlobalErrorHandler(commands.Cog):
 		if isinstance(error, commands.NotOwner):
 			error = discord.Embed(title="ERROR", description="Command Error: You do not own this bot!")
 			
-			await ctx.channel.send(embed=error, delete_after=8)
+			await ctx.send(embed=error, delete_after=8)
 			await asyncio.sleep(7.5)
 			await ctx.message.delete()
 		

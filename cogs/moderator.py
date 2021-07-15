@@ -191,7 +191,7 @@ class Moderation(commands.Cog):
 
 		ban = discord.Embed(description=f"The user(s) have been kicked from the server.\n**Reason:** **[{kicked_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
 
-		await ctx.channel.send(embed=ban)
+		await ctx.send(embed=ban)
 
 		em = discord.Embed(color=color.reds, title="___KICK___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
@@ -314,7 +314,7 @@ class Moderation(commands.Cog):
 
 		ban = discord.Embed(description=f"The user(s) have been banned from the server.\n**Reason:** **[{banned_reason}]({ctx.message.jump_url})**\n**Deleted:** `{nr_days}` days worth of messages.", color=discord.Color.red())
 
-		await ctx.channel.send(embed=ban)
+		await ctx.send(embed=ban)
 
 		em = discord.Embed(color=color.reds, title="___BAN___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
@@ -438,7 +438,7 @@ class Moderation(commands.Cog):
 
 		ban = discord.Embed(description=f"The user(s) have been muted!\n**Reason:** **[{mute_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
 
-		await ctx.channel.send(embed=ban)
+		await ctx.send(embed=ban)
 
 		em = discord.Embed(color=color.reds, title="___MUTE___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	

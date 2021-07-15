@@ -166,7 +166,7 @@ class NSFW(commands.Cog):
 			else:
 
 				msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
-				await ctx.channel.send(msg)
+				await ctx.send(msg)
 	
 
 	@commands.Cog.listener()

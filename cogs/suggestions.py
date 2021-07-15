@@ -135,18 +135,18 @@ class Suggest(commands.Cog):
 			await ctx.message.delete()
 			msg = f"To use this command go to <#750160851822182486> or <#750160851822182487>.\n{ctx.author.mention}"
 			ctx.command.reset_cooldown(ctx)
-			await ctx.channel.send(msg, delete_after=6)
+			await ctx.send(msg, delete_after=6)
 
 		elif isinstance(error, commands.CommandOnCooldown):
 				await ctx.message.delete()
 				msg = 'Your on cooldown, please try again in **{:.2f}**s.'.format(error.retry_after)
-				await ctx.channel.send(msg, delete_after=3)
+				await ctx.send(msg, delete_after=3)
 
 		elif isinstance(error, commands.MissingRequiredArgument):
 			await ctx.message.delete()
 			msg = "You have to add your suggestion."
 			ctx.command.reset_cooldown(ctx)
-			await ctx.channel.send(msg, delete_after=3)
+			await ctx.send(msg, delete_after=3)
 
 		else:
 				raise error

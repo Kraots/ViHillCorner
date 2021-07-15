@@ -15,7 +15,7 @@ class Topics(commands.Cog):
 	async def topic(self, ctx):
 		await ctx.message.delete()
 		topics = random.choice(topicslist.topicsList)
-		await ctx.channel.send(topics)
+		await ctx.send(topics)
 
 
 

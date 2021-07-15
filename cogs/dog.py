@@ -21,7 +21,7 @@ class Dog(commands.Cog):
 			embed = discord.Embed(title="Dog", url=data['url'], color=color.orange, timestamp=ctx.message.created_at)
 			embed.set_image(url=data['url'])
 			embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-			msg = await ctx.channel.send(embed=embed)
+			msg = await ctx.send(embed=embed)
 			await msg.add_reaction("❤️")
 			await msg.add_reaction("🐶")
 

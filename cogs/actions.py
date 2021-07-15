@@ -490,7 +490,7 @@ class actions(commands.Cog):
 		moan = discord.Embed(color=discord.Color.red())
 		moan.set_image(url=moann)
 
-		msg = await ctx.channel.send(embed=moan)
+		msg = await ctx.send(embed=moan)
 		await msg.add_reaction('🗑️')
 
 

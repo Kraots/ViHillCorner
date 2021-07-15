@@ -1062,44 +1062,44 @@ class EcoCommands(commands.Cog):
 	async def rps_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f"Please wait: **{time_phaser(error.retry_after)}** before playing rps again. {ctx.author.mention}"
-				await ctx.channel.send(msg)
+				await ctx.send(msg)
 
 	@race.error
 	async def race_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f"{ctx.author.mention} You cannot race that fast! Please wait: **{time_phaser(error.retry_after)}**."
-				await ctx.channel.send(msg)
+				await ctx.send(msg)
 
 	@ppsuck.error
 	async def ppsuck_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f"{ctx.author.mention} OK OK CHILLE, IK U WANT TO SUCK ON SOMETHING BUT PLEASE WAIT **{time_phaser(error.retry_after)}**."
-				await ctx.channel.send(msg)
+				await ctx.send(msg)
 
 	@gtn.error
 	async def gtn_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f"{ctx.author.mention} You've already played the game, come back in **{time_phaser(error.retry_after)}**."
-				await ctx.channel.send(msg)
+				await ctx.send(msg)
 
 	@crime.error
 	async def crime_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f'{ctx.author.mention} You can commit crimes again in **{time_phaser(error.retry_after)}**.'
-				await ctx.channel.send(msg)
+				await ctx.send(msg)
 
 
 	@work.error
 	async def work_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f'{ctx.author.mention} You can work again in **{time_phaser(error.retry_after)}**.'
-				await ctx.channel.send(msg)
+				await ctx.send(msg)
 
 	@beg.error
 	async def beg_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f'{ctx.author.mention} You can have more <:carrots:822122757654577183>  in **{time_phaser(error.retry_after)}**.'
-				await ctx.channel.send(msg)
+				await ctx.send(msg)
 
 
 
@@ -1107,14 +1107,14 @@ class EcoCommands(commands.Cog):
 	async def steal_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f'{ctx.author.mention} You can steal more in **{time_phaser(error.retry_after)}**.'
-				await ctx.channel.send(msg)
+				await ctx.send(msg)
 
 
 	@slots.error
 	async def slots_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f'{ctx.author.mention} You can bet your money in the slots machine in **{time_phaser(error.retry_after)}**.'
-				await ctx.channel.send(msg)
+				await ctx.send(msg)
 
 		elif isinstance(error, commands.errors.MissingRequiredArgument):
 				ctx.command.reset_cooldown(ctx)
