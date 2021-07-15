@@ -5,7 +5,6 @@ import motor.motor_asyncio
 import os
 import utils.colors as color
 import asyncio
-import numpy as np
 
 class ReclistPageEntry:
 	def __init__(self, entry):
