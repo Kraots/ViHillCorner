@@ -451,7 +451,7 @@ class Fun(commands.Cog):
 
 			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
 				await msg.clear_reactions()
-				await msg.edit(content=f"{p2.display_name} does not want to fight with you {p1.display_name}")
+				await msg.edit(content=f"**{p2.display_name}** does not want to fight with you **{p1.display_name}**")
 
 	@commands.command()
 	@commands.cooldown(1, 60, commands.BucketType.user)
