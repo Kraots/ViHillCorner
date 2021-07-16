@@ -234,25 +234,13 @@ class command(commands.Cog):
 			return await ctx.send('Could not find command.')
 
 		src = obj.callback.__code__
-		module = obj.callback.__module__
 		filename = src.co_filename
 
 		lines, firstlineno = inspect.getsourcelines(src)
-		if not module.startswith('discord'):
-			location = os.path.relpath(filename).replace('\\', '/')
-		else:
-			location = module.replace('.', '/') + '.py'
-			source_url = 'https://github.com/Rapptz/discord.py'
-			branch = 'master'
+		
+		location = os.path.relpath(filename).replace('\\', '/')
 
-		if command == 'trivia':
-			final_url = '<https://github.com/Kraots/ViHillCorner/blob/master/games/Trivia.py#L13-L439>'
-		elif command == 'fight':
-			final_url = '<https://github.com/Kraots/ViHillCorner/blob/master/games/Fight.py#L4-L90>'
-		elif command in ['ttt', 'tictactoe', 'tic-tac-toe']:
-			final_url = '<https://github.com/Kraots/ViHillCorner/blob/master/games/TicTacToe.py#L13-L119>'
-		else:
-			final_url = f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>'
+		final_url = f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>'
 		
 		await ctx.send(final_url)
 
