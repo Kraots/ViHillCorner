@@ -228,6 +228,8 @@ class command(commands.Cog):
 		branch = 'master'
 		if command is None:
 			return await ctx.send(source_url)
+		if command.lower() in ['jsk', 'jishaku']:
+			return await ctx.send("That is an extension's command, code unavailable.")
 
 		obj = self.bot.get_command(command.replace('.', ' '))
 		if obj is None:
