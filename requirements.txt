@@ -7,7 +7,6 @@ braceexpand
 buttons
 chardet
 git+https://github.com/Rapptz/discord-ext-menus
-git+https://github.com/JotJunior/PHP-Boleto-ZF2
 discord.py
 discord
 dnspython
