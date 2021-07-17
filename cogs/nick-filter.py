@@ -1,8 +1,13 @@
 import discord
 from discord.ext import commands
-from secrets import choice
-import string
 import re
+
+import os
+import motor.motor_asyncio
+
+DBKEY = os.getenv("MONGODBLVLKEY")
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
+db = cluster['ViHillCornerDB']['InvalidName Filter']
 
 def remove_emoji(string):
     emoji_pattern = re.compile("["
@@ -30,7 +35,21 @@ class NickFilter(commands.Cog):
 
 		if message.guild:
 			user_nickname = str(message.author.nick).lower()
-			new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(9)])
+			user = await db.find_one({'_id': message.author.id})
+			if user is None:
+				kr = await db.find_one({'_id': 374622847672254466})
+				new_index = kr['TotalInvalidNames'][-1] + 1
+				old_list = kr['TotalInvalidNames']
+				new_list = old_list + [new_index]
+				post = {
+					'_id': message.author.id,
+					'InvalidNameIndex': new_index
+				}
+				await db.insert_one(post)
+				await db.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+				new_nick = f'UnpingableName{new_index}'
+			else:
+				new_nick = f"UnpingableName{user['InvalidNameIndex']}"
 			
 			f = remove_emoji(u" %s" % (user_nickname))
 			for x in f:

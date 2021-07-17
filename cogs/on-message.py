@@ -2,11 +2,15 @@ import discord
 from discord.ext import commands
 import asyncio
 import utils.colors as color
-import string
-from secrets import choice
 import aiohttp
 import datetime
+
 import os
+import motor.motor_asyncio
+
+DBKEY = os.getenv("MONGODBLVLKEY")
+cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
+db = cluster['ViHillCornerDB']['InvalidName Filter']
 
 invalid_names_list = ["!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "", "]", "^", "_", "`", "{", "|", "}", "~", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
@@ -106,7 +110,22 @@ class on_message(commands.Cog):
 			else:
 				user_name = message.author.name
 				user_nickname = message.author.nick
-				new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(9)])
+				
+				user = await db.find_one({'_id': message.author.id})
+				if user is None:
+					kr = await db.find_one({'_id': kraots.id})
+					new_index = kr['TotalInvalidNames'][-1] + 1
+					old_list = kr['TotalInvalidNames']
+					new_list = old_list + [new_index]
+					post = {
+						'_id': message.author.id,
+						'InvalidNameIndex': new_index
+					}
+					await db.insert_one(post)
+					await db.update_one({'_id': kraots.id}, {'$set':{'TotalInvalidNames': new_list}})
+					new_nick = f'UnpingableName{new_index}'
+				else:
+					new_nick = f"UnpingableName{user['InvalidNameIndex']}"
 				
 				if any(x == str(user_nickname)[:1] for x in invalid_names_list):
 					await message.author.edit(nick=new_nick)
