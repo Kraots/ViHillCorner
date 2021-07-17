@@ -68,6 +68,12 @@ class NameFilter(commands.Cog):
 					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 					return
 
+	@commands.Cog.listener('on_member_remove')
+	async def on_member_remove(self, member):
+		if member.id == 374622847672254466:
+			return
+		await db.delete_one({'_id': member.id})
+
 
 def setup(bot):
 	bot.add_cog(NameFilter(bot))
