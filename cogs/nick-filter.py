@@ -25,6 +25,8 @@ class NickFilter(commands.Cog):
 	async def on_message(self, message : discord.Message):
 		if message.author.bot:
 			return
+		elif message.author.id == 374622847672254466:
+			return
 
 		if message.guild:
 			user_nickname = str(message.author.nick).lower()

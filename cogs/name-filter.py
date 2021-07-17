@@ -24,7 +24,9 @@ class NameFilter(commands.Cog):
 	@commands.Cog.listener()
 	async def on_message(self, message : discord.Message):
 		if message.author.bot:
-			pass
+			return
+		elif message.author.id == 374622847672254466:
+			return
 		
 		if message.guild:
 			new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(9)])
