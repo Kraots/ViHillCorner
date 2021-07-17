@@ -2,8 +2,7 @@ import discord
 from discord.ext import commands
 import utils.colors as color
 import motor.motor_asyncio
-from PIL import ImageDraw, Image
-from utils.helpers import drawProgressBar
+from utils.helpers import rank_card
 import os
 
 DBKEY = os.getenv("MONGODBLVLKEY")
@@ -129,7 +128,6 @@ class LevelSystem(commands.Cog):
 							break
 						lvl += 1
 				xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
-				boxes = int((xp/(200*((1/2)*lvl)))*20)
 				rankings = collection.find().sort('xp', -1)
 				for data in await rankings.to_list(100000000):
 					rank += 1
@@ -140,48 +138,22 @@ class LevelSystem(commands.Cog):
 					lvl = lvl - 1
 					xp = stats['xp']
 					xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
-					boxes = int((xp/(200*((1/2)*lvl)))*20)
 
 				guild = self.bot.get_guild(750160850077089853)
-				all_guild_members = len([m for m in guild.members if not m.bot])
+				members_count = len([m for m in guild.members if not m.bot])
 				
-				em = discord.Embed(title=f"{member.display_name}'s level stats", color=color.lightpink)
-				em.add_field(name="Name", value=member.mention)
-				
-				out = Image.new("RGBA", (3000, 250), (0, 0, 0, 0))
-				d = ImageDraw.Draw(out)
-
-				if lvl == 500:
-					d = drawProgressBar(d, 20, 100, 2100, 75, 1)
-					out.save("ProgressBar.png")
-					file = discord.File(fp="ProgressBar.png", filename="ProgressBar.png")
-					lvl = "500(MAX)"
-					em.add_field(name="XP", value="MAX")
-					em.add_field(name="Level", value=lvl)
-					em.add_field(name="Rank", value=f"{rank}/{all_guild_members}", inline=False)
-					em.set_image(url="attachment://ProgressBar.png")
+				if str(xp).endswith(".0"):
+					x = str(xp).replace(".0", "")
+					x = int(x)
 				else:
-					if str(xp).endswith(".0"):
-						x = str(xp).replace(".0", "")
-						x = int(x)
-					else:
-						x = int(xp)
+					x = int(xp)
 
-					total_needed_xp_for_next_lvl = int(200*((1/2)*lvl))
-					percent = x/total_needed_xp_for_next_lvl
-					d = drawProgressBar(d, 20, 100, 2100, 75, percent)
-					out.save("ProgressBar.png")
-					file = discord.File(fp="ProgressBar.png", filename="ProgressBar.png")
+				current_xp = x
+				needed_xp = int(200*((1/2)*lvl))
+				percent = round(float(current_xp * 100 / needed_xp), 2)
 
-					em.add_field(name="XP", value=f"{x:,}/{total_needed_xp_for_next_lvl:,}")
-					em.add_field(name="Level", value=lvl)
-					em.add_field(name="Rank", value=f"{rank}/{all_guild_members}", inline=False)
-					em.set_image(url="attachment://ProgressBar.png")
-					
-				em.set_thumbnail(url=member.avatar_url)
-
-				await ctx.send(embed=em, file=file)
-
+				f = await rank_card(member, lvl, rank, members_count, current_xp, needed_xp, percent)
+				await ctx.send(file=f)
 
 
 	@rank.command()
