@@ -16,7 +16,7 @@ class All(commands.Cog):
 			self.bot.load_extension(extension)
 			await ctx.reply(f":inbox_tray: `{extension}`")
 
-	@commands.group(invoke_without_command=True, case_insensitive=True)
+	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['reload'])
 	@commands.is_owner()
 	async def _reload(self, ctx, extension):
 			self.bot.unload_extension(extension)
