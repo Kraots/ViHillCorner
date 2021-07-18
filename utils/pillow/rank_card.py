@@ -1,4 +1,3 @@
-from discord.ext.buttons import Paginator
 from PIL import Image, ImageFont, ImageDraw
 import numpy as np
 import discord
