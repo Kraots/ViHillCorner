@@ -151,7 +151,8 @@ class command(commands.Cog):
 	async def membercount(self, ctx):
 			guild = self.bot.get_guild(750160850077089853)
 			member_count = len([m for m in guild.members if not m.bot])
-			await ctx.send(f'`{member_count}` members.', reference=ctx.replied_reference) 
+			member_count = f'`{member_count}` members.'
+			await ctx.send(member_count, reference=ctx.replied_reference) 
 
 	@commands.command(hidden=True, aliases=["av", "avatar"])
 	async def _av(self, ctx, member: discord.Member = None):
