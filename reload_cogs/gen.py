@@ -18,7 +18,7 @@ class All(commands.Cog):
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.is_owner()
-	async def reload(self, ctx, extension):
+	async def _reload(self, ctx, extension):
 			self.bot.unload_extension(extension)
 			self.bot.load_extension(extension)
 			await ctx.reply(f":repeat: `{extension}`")
@@ -31,7 +31,7 @@ class All(commands.Cog):
 
 
 
-	@reload.command(aliases=["all"])
+	@_reload.command(aliases=["all"])
 	@commands.is_owner()
 	async def reload_all(self, ctx):
 		cogs_list = []
