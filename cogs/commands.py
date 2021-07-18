@@ -158,11 +158,11 @@ class command(commands.Cog):
 		if member is None:
 			member = ctx.author
 			
-		avatar = discord.Embed(title=f"{member.name}", url=f"{member.avatar_url}", color=color.blue)
+		avatar = discord.Embed(title=f"Here's {member.display_name}'s avatar", url=member.avatar_url, color=color.blue)
 		avatar.set_image(url=member.avatar_url)
 		avatar.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
-		await ctx.send(embed=avatar)
+		await ctx.send(embed=avatar, reference=ctx.reference)
 
 	@commands.command()
 	async def ee(self, ctx, emoji: discord.PartialEmoji):
