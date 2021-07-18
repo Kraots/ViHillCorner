@@ -101,7 +101,7 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
 	draw = ImageDraw.Draw(_level)
 	font = ImageFont.truetype(TTF_FONT, 35)
 	if max_lvl != True:
-		draw.text((0, 0), f"     Level:\n       {level}", font=font)
+		draw.text((0, 0), f"     Level:\n        {level}", font=font)
 	else:
 		draw.text((0, 0), f"     Level:\n       500(Max)", font=font)
 
