@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import utils.colors as color
 import motor.motor_asyncio
-from utils.helpers import rank_card
+from utils.pillow import rank_card
 import os
 
 DBKEY = os.getenv("MONGODBLVLKEY")
