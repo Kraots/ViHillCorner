@@ -17,6 +17,7 @@ ORANGE = (255, 128, 0)
 TRANSPARENT = (0, 0, 0, 0)
 BLUE = (22, 160, 245)
 BLACK = (0, 0, 0)
+TTF_FONT = ".heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf"
 
 class Pag(Paginator):
 	async def teardown(self):
@@ -143,15 +144,15 @@ def format_balance(balance):
 
 def get_font(text, image):
 	fontsize = 1
-	font = ImageFont.truetype(".heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf", fontsize)
+	font = ImageFont.truetype(TTF_FONT, fontsize)
 	while font.getsize(text)[0] < image.size[0]:
 		fontsize += 1
-		font = ImageFont.truetype(".heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf", fontsize)
+		font = ImageFont.truetype(TTF_FONT, fontsize)
 	while font.getsize(text)[1] > image.size[1]:
 		fontsize -= 1
-		font = ImageFont.truetype(".heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf", fontsize)
+		font = ImageFont.truetype(TTF_FONT, fontsize)
 	fontsize -= 1
-	font = ImageFont.truetype(".heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf", fontsize)
+	font = ImageFont.truetype(TTF_FONT, fontsize)
 	return font
 
 async def rank_card(user, level: int, rank: int, members_count: int, current_xp: int, needed_xp: int, percentage: float):
@@ -185,12 +186,12 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
 
 	has_xp = Image.new("RGBA", (200, 40), TRANSPARENT)
 	draw = ImageDraw.Draw(has_xp)
-	font = ImageFont.truetype('.heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf', 35)
+	font = ImageFont.truetype(TTF_FONT, 35)
 	draw.text((0, 0), f"{current_xp:,}xp", font=font, fill=BLACK)
 
 	percent = Image.new("RGBA", (130, 40), TRANSPARENT)
 	draw = ImageDraw.Draw(percent)
-	font = ImageFont.truetype('.heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf', 35)
+	font = ImageFont.truetype(TTF_FONT, 35)
 	if max_lvl != True:
 		draw.text((10, 0), f"{percentage}%", font=font, fill=BLACK)
 	else:
@@ -198,7 +199,7 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
 
 	next_xp = Image.new("RGBA", (200, 40), TRANSPARENT)
 	draw = ImageDraw.Draw(next_xp)
-	font = ImageFont.truetype('.heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf', 35)
+	font = ImageFont.truetype(TTF_FONT, 35)
 	if len(str(needed_xp)) == 3:
 		z = f"    {needed_xp:,}xp"
 	else:
@@ -211,12 +212,12 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
 
 	_rank = Image.new("RGBA", (235, 100))
 	draw = ImageDraw.Draw(_rank)
-	font = ImageFont.truetype('.heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf', 35)
+	font = ImageFont.truetype(TTF_FONT, 35)
 	draw.text((0, 0), f"     Rank:\n        {rank}/{members_count}", font=font)
 
 	_level = Image.new("RGBA", (235, 100))
 	draw = ImageDraw.Draw(_level)
-	font = ImageFont.truetype('.heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf', 35)
+	font = ImageFont.truetype(TTF_FONT, 35)
 	if max_lvl != True:
 		draw.text((0, 0), f"     Level:\n       {level}", font=font)
 	else:
