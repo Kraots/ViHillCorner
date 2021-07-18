@@ -162,7 +162,7 @@ class command(commands.Cog):
 		avatar.set_image(url=member.avatar_url)
 		avatar.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 
-		await ctx.send(embed=avatar, reference=ctx.reference)
+		await ctx.send(embed=avatar, reference=ctx.replied_reference)
 
 	@commands.command()
 	async def ee(self, ctx, emoji: discord.PartialEmoji):
