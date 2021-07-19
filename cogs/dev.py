@@ -43,7 +43,7 @@ class developer(commands.Cog):
 			await asyncio.sleep(60)
 
 
-	@commands.command(aliases=['eval', 'evaluate', 'exec', 'execute', 'e'])
+	@commands.command(aliases=['eval', 'e'])
 	@commands.is_owner()
 	async def _eval(self, ctx, *, content = None):
 		if content is None:

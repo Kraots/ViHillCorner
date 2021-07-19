@@ -167,7 +167,7 @@ class Help(commands.Cog):
 				]
 		
 		self.developerCommands = [
-				{'_name': ['eval', 'evaluate'], 'name': '!eval <code>', 'help': 'Evaluate some code.', 'hasChild': False, 'devOnly': True, 'staffOnly': False}, 
+				{'_name': ['eval', 'e'], 'name': '!eval <code>', 'help': 'Evaluate some code.', 'hasChild': False, 'devOnly': True, 'staffOnly': False}, 
 				{'_name': ['load'], 'name': '!load cogs.<cog_name>', 'help': 'Loads the cog.', 'hasChild': True, 'devOnly': True, 'staffOnly': False}, 
 				{'_name': ['unload'], 'name': '!unload cogs.<cog_name>', 'help': 'Unloads the cog.', 'hasChild': True, 'devOnly': True, 'staffOnly': False}, 
 				{'_name': ['reload'], 'name': '!reload cogs.<cog_name>', 'help': 'Reloads the cog.', 'hasChild': True, 'devOnly': True, 'staffOnly': False}, 
