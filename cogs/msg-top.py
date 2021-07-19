@@ -48,8 +48,8 @@ class MessageTop(commands.Cog):
 			await collection.update_one({'_id': _2ndplace.id}, {'$inc':{'xp': 30000}})
 			await collection.update_one({'_id': _3rdplace.id}, {'$inc':{'xp': 20000}})
 			await _1stplace.send(f"Congrats. You placed `1st` in the weekly top! Your reward is **50,000** XP.\nThe others placed:\n\u2800• **{_2ndplace}** -> `2nd`\n\u2800• **{_3rdplace}** -> `3rd`")
-			await _1stplace.send(f"Congrats. You placed `2nd` in the weekly top! Your reward is **30,000** XP.\nThe others placed:\n\u2800• **{_1stplace}** -> `1st`\n\u2800• **{_3rdplace}** -> `3rd`")
-			await _1stplace.send(f"Congrats. You placed `3rd` in the weekly top! Your reward is **20,000** XP.\nThe others placed:\n\u2800• **{_1stplace}** -> `1st`\n\u2800• **{_2ndplace}** -> `2nd`")
+			await _2ndplace.send(f"Congrats. You placed `2nd` in the weekly top! Your reward is **30,000** XP.\nThe others placed:\n\u2800• **{_1stplace}** -> `1st`\n\u2800• **{_3rdplace}** -> `3rd`")
+			await _3rdplace.send(f"Congrats. You placed `3rd` in the weekly top! Your reward is **20,000** XP.\nThe others placed:\n\u2800• **{_1stplace}** -> `1st`\n\u2800• **{_2ndplace}** -> `2nd`")
 
 			await collection.update_many({}, {"$set": {"messages_count": 0}})
 			x = dateNow + relativedelta(weeks = 1)
