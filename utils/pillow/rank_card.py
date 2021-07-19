@@ -46,6 +46,7 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
 	
 	await user.avatar_url_as(format='jpg').save(fp='avatar.png')
 	av = Image.open('avatar.png')
+	av = av.resize((250, 250))
 	h, w = av.size
 	npImage = np.array(av)
 	new_img = Image.new('L', av.size, 0)
