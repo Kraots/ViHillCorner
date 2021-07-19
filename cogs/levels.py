@@ -1,14 +1,7 @@
 import discord
 from discord.ext import commands
 import utils.colors as color
-import motor.motor_asyncio
 from utils.pillow import rank_card
-import os
-
-DBKEY = os.getenv("MONGODBLVLKEY")
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster['ViHillCornerDB']
-collection = db['Levels']
 
 bot_channel = [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]
 no_talk_channels = [750160852006469807, 780374324598145055]
@@ -21,6 +14,7 @@ class LevelSystem(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db2['Levels']
 		self.prefix = "!"
 	def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -33,20 +27,20 @@ class LevelSystem(commands.Cog):
 			if not ch_id in no_talk_channels:
 				if not message.author.bot:
 					guild = self.bot.get_guild(750160850077089853)
-					stats = await collection.find_one({"_id": message.author.id})
+					stats = await self.db.find_one({"_id": message.author.id})
 					if stats is None:
 						newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0}
-						await collection.insert_one(newuser)
+						await self.db.insert_one(newuser)
 					else:			
 						
-						kraotsDocument = await collection.find_one({'_id':374622847672254466})
+						kraotsDocument = await self.db.find_one({'_id':374622847672254466})
 						membersMultiplier = kraotsDocument['xp multiplier']
 						boostersMultiplier = kraotsDocument['booster xp multiplier']
 						modMultiplier = kraotsDocument['mod xp multiplier']
 						kraotsMultiplier = kraotsDocument['kraots xp multiplier']
 						
 						if not ch_id in botsChannels:
-							await collection.update_one({"_id": message.author.id}, {"$inc": {"messages_count": 1}})
+							await self.db.update_one({"_id": message.author.id}, {"$inc": {"messages_count": 1}})
 						xp = stats['xp']
 						lvl = 0
 						while True:
@@ -74,7 +68,7 @@ class LevelSystem(commands.Cog):
 							if message.author.id == 374622847672254466:
 								xp = stats['xp'] + (30 * kraotsMultiplier)
 
-							await collection.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
+							await self.db.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
 							lvl = 0
 							while True:
 								if xp < ((50*(lvl**2))+ (50*(lvl-1))):
@@ -108,7 +102,7 @@ class LevelSystem(commands.Cog):
 			member = ctx.author
 		
 		if ctx.channel.id in bot_channel:
-			stats = await collection.find_one({"_id": member.id})
+			stats = await self.db.find_one({"_id": member.id})
 			if stats is None:
 				if member.id == ctx.author.id:
 					await ctx.send("You haven't sent any messages, therefore you don't have a level.")
@@ -128,8 +122,8 @@ class LevelSystem(commands.Cog):
 							break
 						lvl += 1
 				xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
-				rankings = collection.find().sort('xp', -1)
-				for data in await rankings.to_list(100000000):
+				rankings = await self.db.find().sort('xp', -1).to_list(100000)
+				for data in rankings:
 					rank += 1
 					if stats['_id'] == data['_id']:
 						break
@@ -163,7 +157,7 @@ class LevelSystem(commands.Cog):
 			member = ctx.author
 
 		xp = ((50*((lvl-1)**2))+(50*(lvl-1)))
-		await collection.update_one({"_id": member.id}, {"$set":{"xp": xp}})
+		await self.db.update_one({"_id": member.id}, {"$set":{"xp": xp}})
 		await ctx.send("Set level `{}` for **{}**.".format(lvl, member.display_name))
 
 
@@ -171,10 +165,10 @@ class LevelSystem(commands.Cog):
 	@rank.command(aliases=['lb', 'top'])
 	async def leaderboard(self, ctx):
 		if ctx.channel.id in bot_channel:
-			results = collection.find().sort([('xp', -1)])
+			results = await self.db.find().sort([('xp', -1)]).to_list(10)
 			index = 0
 			em = discord.Embed(color=color.lightpink, title="Top 10 highest level people\n _ _")
-			for result in await results.to_list(10):
+			for result in results:
 				xp = result['xp']
 				user = result['_id']
 				user = self.bot.get_user(user)
@@ -210,7 +204,7 @@ class LevelSystem(commands.Cog):
 
 	@commands.group(invoke_without_command = True, case_insensitive = True, aliases=['multipliers'])
 	async def multiplier(self, ctx):
-		kraotsDocument = await collection.find_one({'_id':374622847672254466})
+		kraotsDocument = await self.db.find_one({'_id':374622847672254466})
 		membersMultiplier = float(kraotsDocument['xp multiplier'])
 		boostersMultiplier = float(kraotsDocument['booster xp multiplier'])
 		modMultiplier = float(kraotsDocument['mod xp multiplier'])
@@ -249,30 +243,30 @@ class LevelSystem(commands.Cog):
 				x = multiplier
 			
 			if group in ['mod', 'staff', 'mods']:
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'mod xp multiplier': multiplier}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'mod xp multiplier': multiplier}})
 				await ctx.send("Set the multiplier for Mods/Staff members to **%s**." % (x))
 				return
 			
 			elif group in ['booster', 'boosters', 'serverbooster', 'serverboosters']:
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'booster xp multiplier': multiplier}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'booster xp multiplier': multiplier}})
 				await ctx.send("Set the multiplier for Server Boosters to **%s**." % (x))
 				return
 			
 			elif group in ['member', 'members']:
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': multiplier}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': multiplier}})
 				await ctx.send("Set the multiplier for Members to **%s**." % (x))
 				return
 			
 			elif group in ['kraots', 'kraot']:
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': multiplier}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': multiplier}})
 				await ctx.send("Set the multiplier for Kraots to **%s**." % (x))
 				return
 			
 			elif group == "all":
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'mod xp multiplier': multiplier}})
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'booster xp multiplier': multiplier}})
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': multiplier}})
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': multiplier}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'mod xp multiplier': multiplier}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'booster xp multiplier': multiplier}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': multiplier}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': multiplier}})
 				await ctx.send("Set the multiplier for every group to **%s**." % (x))
 
 	@multiplier.command()
@@ -286,37 +280,37 @@ class LevelSystem(commands.Cog):
 			group = group.lower()
 			
 			if group in ['mod', 'staff', 'mods']:
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'mod xp multiplier': 1}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'mod xp multiplier': 1}})
 				await ctx.send("Set the multiplier for Mods/Staff members back to **1**.")
 				return
 			
 			elif group in ['booster', 'boosters', 'serverbooster', 'serverboosters']:
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'booster xp multiplier': 1}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'booster xp multiplier': 1}})
 				await ctx.send("Set the multiplier for Server Boosters back to **1**.")
 				return
 			
 			elif group in ['member', 'members']:
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': 1}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': 1}})
 				await ctx.send("Set the multiplier for Members back to **1**.")
 				return
 			
 			elif group in ['kraots', 'kraot']:
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': 1}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': 1}})
 				await ctx.send("Set the multiplier for Kraots to **1**.")
 				return
 
 			elif group == "all":
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'mod xp multiplier': 1}})
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'booster xp multiplier': 1}})
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': 1}})
-				await collection.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': 1}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'mod xp multiplier': 1}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'booster xp multiplier': 1}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'xp multiplier': 1}})
+				await self.db.update_one({'_id':374622847672254466}, {'$set':{'kraots xp multiplier': 1}})
 				await ctx.send("Set the multiplier for every group back to **1**.")
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		await collection.delete_one({"_id": member.id})
+		await self.db.delete_one({"_id": member.id})
 
 def setup(bot):
 	bot.add_cog(LevelSystem(bot))

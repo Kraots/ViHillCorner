@@ -6,15 +6,7 @@ from discord.ext.commands import Greedy
 from discord import Member 
 from utils.paginator import SimplePages
 import pymongo
-from pymongo import MongoClient
-import os
 import hmtai
-
-DBKEY = os.getenv("MONGODBKEY")
-
-cluster = MongoClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["NSFW blocks"]
 
 class TagPageEntry:
 	def __init__(self, entry):
@@ -33,6 +25,7 @@ class NSFW(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db1['NSFW blocks']
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -76,10 +69,7 @@ class NSFW(commands.Cog):
 		guild = self.bot.get_guild(750160850077089853)
 		nsfwchannel = guild.get_channel(780374324598145055)
 
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
+		result = await self.db.find_one({'_id': user.id})
 
 		if choice == "remove":
 			try:
@@ -90,7 +80,7 @@ class NSFW(commands.Cog):
 				return
 
 		elif choice == "add":
-			if user.id in all_users:
+			if result != None:
 				await ctx.send("You are restricted from using that command, therefore your permissions have not been changed! {}".format(user.mention))
 				return
 
@@ -117,9 +107,9 @@ class NSFW(commands.Cog):
 			blocked_list.append(a)
 			blocked_members = " | ".join(blocked_list)
 
-			post = {"_id": member.id}
+			post = {'_id': member.id}
 			try:
-				collection.insert_one(post)
+				await self.db.insert_one(post)
 			except pymongo.errors.DuplicateKeyError:
 				pass
 
@@ -129,7 +119,7 @@ class NSFW(commands.Cog):
 	@commands.has_role("Staff")
 	async def blocks(self, ctx):
 		try:
-			entries = collection.find({})
+			entries = await self.db.find().to_list(100000)
 			p = TagPages(entries = entries, per_page = 7)
 			await p.start(ctx)
 		except:
@@ -138,11 +128,6 @@ class NSFW(commands.Cog):
 	@nsfw.command()
 	@commands.has_role("Staff")
 	async def unblock(self, ctx, members : Greedy[Member]):
-		all_users = []
-		results = collection.find()
-		for result in results:
-			all_users.append(result['_id'])
-
 		blocked_list = []
 		for member in members:
 			
@@ -150,7 +135,7 @@ class NSFW(commands.Cog):
 			blocked_list.append(a)
 			blocked_members = " | ".join(blocked_list)
 
-			collection.delete_one({"_id": member.id})
+			await self.db.delete_one({'_id': member.id})
 			await member.send("Your acces for using the `!nsfw me` command has ben re-approved.")
 			
 
@@ -174,7 +159,7 @@ class NSFW(commands.Cog):
 		if member.id == 374622847672254466:
 			return
 			
-		collection.delete_one({"_id": member.id})
+		await self.db.delete_one({'_id': member.id})
 
 
 

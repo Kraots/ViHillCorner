@@ -1,13 +1,7 @@
-import motor.motor_asyncio
-import os
 import asyncio
 from discord.ext import commands
 import utils.colors as color
 from utils.paginator import ToDoMenu
-
-DBKEY = os.getenv("MONGODBLVLKEY")
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster['ViHillCornerDB']['Todo Data']
 
 class ToDoPageEntry:
 	def __init__(self, entry):
@@ -26,6 +20,7 @@ class ToDo(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db2['Todo Data']
 		self.prefix = "!"
 	def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -37,7 +32,7 @@ class ToDo(commands.Cog):
 	
 	@todo.command()
 	async def add(self, ctx, *, todo: str):
-		user = await db.find_one({'_id': ctx.author.id})
+		user = await self.db.find_one({'_id': ctx.author.id})
 		if user is None:
 			post = {
 			'_id': ctx.author.id,
@@ -47,7 +42,7 @@ class ToDo(commands.Cog):
 					}
 					]
 				}
-			await db.insert_one(post)
+			await self.db.insert_one(post)
 			await ctx.reply("Successfully added to your todo list.")
 			return
 
@@ -56,13 +51,13 @@ class ToDo(commands.Cog):
 				'data': todo
 				}
 		array.append(todo)
-		await db.update_one({'_id': ctx.author.id}, {'$set':{'data': array}})
+		await self.db.update_one({'_id': ctx.author.id}, {'$set':{'data': array}})
 		await ctx.reply("Successfully added to your todo list.")
 		return
 	
 	@todo.command(aliases=['list'])
 	async def _list(self, ctx):
-		entries = await db.find_one({'_id': ctx.author.id})
+		entries = await self.db.find_one({'_id': ctx.author.id})
 		if entries is None:
 			return await ctx.reply("You do not have any todo list.")
 
@@ -82,7 +77,7 @@ class ToDo(commands.Cog):
 		except ValueError:
 			return await ctx.reply("That is not a number.")
 		
-		user = await db.find_one({'_id': ctx.author.id})
+		user = await self.db.find_one({'_id': ctx.author.id})
 		if user is None:
 			return await ctx.reply("You do not have any todo list.")
 		
@@ -98,14 +93,14 @@ class ToDo(commands.Cog):
 				new_data.append(data[i])
 		
 		if len(new_data) == 0:
-			await db.delete_one({'_id': ctx.author.id})
+			await self.db.delete_one({'_id': ctx.author.id})
 		else:
-			await db.update_one({'_id': ctx.author.id}, {'$set':{'data': new_data}})
+			await self.db.update_one({'_id': ctx.author.id}, {'$set':{'data': new_data}})
 		await ctx.reply("Operation successful.")
 
 	@todo.command()
 	async def clear(self, ctx):
-		user = await db.find_one({'_id': ctx.author.id})
+		user = await self.db.find_one({'_id': ctx.author.id})
 		if user is None:
 			return await ctx.reply("You do not have any todo list.")
 		def check(reaction, user):
@@ -125,7 +120,7 @@ class ToDo(commands.Cog):
 		
 		else:
 			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				await db.delete_one({'_id': ctx.author.id})
+				await self.db.delete_one({'_id': ctx.author.id})
 				e = "Succesfully deleted your todo list. %s" % (ctx.author.mention)
 				await msg.edit(content=e)
 				await msg.clear_reactions()
@@ -141,7 +136,7 @@ class ToDo(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		await db.delete_one({'_id': member.id})
+		await self.db.delete_one({'_id': member.id})
 
 
 def setup(bot):

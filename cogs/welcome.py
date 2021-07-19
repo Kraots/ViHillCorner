@@ -4,21 +4,14 @@ import utils.colors as color
 import asyncio
 from random import randint
 from utils import time
-import motor.motor_asyncio
-import os
-
-DBKEY = os.getenv("MONGODBKEY")
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["Intros"]
-mutes_collection = db['Moderation Mutes']
-filter_mutes = db["Filter Mutes"]
 
 class on_join(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db1 = bot.db1['Intros']
+		self.db2 = bot.db1['Moderation Mutes']
+		self.db3 = bot.db1['Filter Mutes']
 
 	@commands.Cog.listener('on_member_join')
 	async def on_member_join(self, member):
@@ -119,14 +112,14 @@ class on_join(commands.Cog):
 			elif choice == 19:
 				await member.add_roles(color19)
 
-			results = await mutes_collection.find_one({'_id': member.id})
+			results = await self.db2.find_one({'_id': member.id})
 			if results != None:
 				guild = self.bot.get_guild(750160850077089853)
 
 				mute_role = guild.get_role(750465726069997658)
 				await member.add_roles(mute_role)
 			
-			resultss = await filter_mutes.find_one({'_id': member.id})
+			resultss = await self.db3.find_one({'_id': member.id})
 			if resultss != None:
 				guild = self.bot.get_guild(750160850077089853)
 
@@ -290,7 +283,7 @@ class on_join(commands.Cog):
 												"intro_id": intro_msg.id
 												}
 												
-											await collection.insert_one(post)
+											await self.db1.insert_one(post)
 
 											return
 

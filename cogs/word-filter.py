@@ -1,20 +1,11 @@
 import re
 import discord
 from discord.ext import commands
-from secrets import choice
-import string
 import asyncio
 import json
-import os
-import motor.motor_asyncio
 import datetime
-DBKEY = os.getenv("MONGODBKEY")
 
 no_mute_these = [374622847672254466, 751724369683677275]
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["Filter Mutes"]
 
 bad_words = [
 				"nigga",
@@ -68,9 +59,11 @@ class FilterCog(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db1['Filter Mutes']
+		self.db2 = bot.db2['InvalidName Filter']
 
 	@commands.Cog.listener()
-	async def on_message(self,message):
+	async def on_message(self, message):
 		if message.author.id in no_mute_these:
 			return
 		guild = self.bot.get_guild(750160850077089853)
@@ -79,8 +72,24 @@ class FilterCog(commands.Cog):
 			mod = guild.get_role(750162714407600228)
 			muted = guild.get_role(750465726069997658)
 			user = message.author
-			new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
-			new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
+			_user = await self.db2.find_one({'_id': message.author.id})
+			if _user is None:
+				kr = await self.db2.find_one({'_id': 374622847672254466})
+				new_index = kr['TotalInvalidNames'][-1] + 1
+				old_list = kr['TotalInvalidNames']
+				new_list = old_list + [new_index]
+				post = {
+					'_id': message.author.id,
+					'InvalidNameIndex': new_index
+				}
+				await self.db2.insert_one(post)
+				await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+				new_nick = f'UnpingableName{new_index}'
+				new_nick_again = new_nick
+			else:
+				new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
+				new_nick_again = new_nick
+
 			words = None
 			zalgos = None
 			wordss = None
@@ -141,7 +150,7 @@ class FilterCog(commands.Cog):
 
 
 									try:
-										await collection.insert_one(post)
+										await self.db.insert_one(post)
 									except:
 										return
 									await message.author.add_roles(muted, reason="Bad Words")
@@ -170,7 +179,7 @@ class FilterCog(commands.Cog):
 
 
 									try:
-										await collection.insert_one(post)
+										await self.db.insert_one(post)
 									except:
 										return
 									await message.author.add_roles(muted, reason="Bad Words")
@@ -238,8 +247,23 @@ class FilterCog(commands.Cog):
 			mod = guild.get_role(750162714407600228)
 			muted = guild.get_role(750465726069997658)
 			user = after.author
-			new_nick = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
-			new_nick_again = ''.join([choice(string.ascii_lowercase) for _ in range(7)])
+			_user = await self.db2.find_one({'_id': after.author.id})
+			if _user is None:
+				kr = await self.db2.find_one({'_id': 374622847672254466})
+				new_index = kr['TotalInvalidNames'][-1] + 1
+				old_list = kr['TotalInvalidNames']
+				new_list = old_list + [new_index]
+				post = {
+					'_id': after.author.id,
+					'InvalidNameIndex': new_index
+				}
+				await self.db2.insert_one(post)
+				await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+				new_nick = f'UnpingableName{new_index}'
+				new_nick_again = new_nick
+			else:
+				new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
+				new_nick_again = new_nick
 			words = None
 			zalgos = None
 			wordss = None
@@ -300,7 +324,7 @@ class FilterCog(commands.Cog):
 
 
 									try:
-										await collection.insert_one(post)
+										await self.db.insert_one(post)
 									except:
 										return
 									
@@ -330,7 +354,7 @@ class FilterCog(commands.Cog):
 
 
 									try:
-										await collection.insert_one(post)
+										await self.db.insert_one(post)
 									except:
 										return
 									await after.author.add_roles(muted, reason="Bad Words")

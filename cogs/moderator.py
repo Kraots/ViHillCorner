@@ -3,18 +3,10 @@ import asyncio
 import utils.colors as color
 import re
 from utils.helpers import time_phaser
-import motor.motor_asyncio
-import os
 import datetime
 from discord.ext import commands, tasks
 from dateutil.relativedelta import relativedelta
 from utils import time
-DBKEY = os.getenv("MONGODBKEY")
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["Moderation Mutes"]
-collection2 = db['Filter Mutes']
 
 time_regex = re.compile("(?:(\d{1,5})(h|s|m|d))+?")
 time_dict = {"h":3600, "s":1, "m":60, "d":86400}
@@ -37,6 +29,8 @@ class Moderation(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db1 = bot.db1['Moderation Mutes']
+		self.db2 = bot.db1['Filter Mutes']
 		self.prefix = "!"
 		self.check_current_mutes.start()
 	async def cog_check(self, ctx):
@@ -58,9 +52,9 @@ class Moderation(commands.Cog):
 	async def check_current_mutes(self):
 		await self.bot.wait_until_ready()
 		currentTime = datetime.datetime.now()
-		results = collection.find()
-		results2 = collection2.find()
-		for result in await results.to_list(99999999999999999):
+		results = await self.db1.find().to_list(100000)
+		results2 = await self.db2.find().to_list(100000)
+		for result in results:
 			unmuteTime = result['mutedAt'] + relativedelta(seconds=result['muteDuration'])
 
 			if currentTime >= unmuteTime:
@@ -74,11 +68,11 @@ class Moderation(commands.Cog):
 						await member.remove_roles(mute_role)
 						await member.send("You have been unmuted in `ViHill Corner`.")
 					
-					await collection.delete_one({"_id": member.id})
+					await self.db1.delete_one({"_id": member.id})
 				else:
-					await collection.delete_one({"_id": result['_id']})
+					await self.db1.delete_one({"_id": result['_id']})
 
-		for result2 in await results2.to_list(99999999999999999):
+		for result2 in results2:
 			unmuteTime = result2['mutedAt'] + relativedelta(seconds=result2['muteDuration'])
 
 			if currentTime >= unmuteTime:
@@ -92,9 +86,9 @@ class Moderation(commands.Cog):
 						await member.remove_roles(mute_role)
 						await member.send("You have been unmuted in `ViHill Corner`.")
 					
-					await collection2.delete_one({"_id": member.id})
+					await self.db2.delete_one({"_id": member.id})
 				else:
-					await collection2.delete_one({"_id": result2['_id']})
+					await self.db2.delete_one({"_id": result2['_id']})
 
 
 	# SLOWMODE
@@ -421,7 +415,7 @@ class Moderation(commands.Cog):
 						}
 
 						try:
-							await collection.insert_one(post)
+							await self.db1.insert_one(post)
 						except:
 							await ctx.send("User is already muted!")
 							return
@@ -489,8 +483,8 @@ class Moderation(commands.Cog):
 						await ctx.send("%s cannot be unmuted ;)))))" % (id.mention))
 						return
 				
-				result = await collection.find_one({'_id':id.id})
-				resultt = await collection2.find_one({'_id': id.id})
+				result = await self.db1.find_one({'_id':id.id})
+				resultt = await self.db2.find_one({'_id': id.id})
 
 				if result != None:
 					mutedBy = result['mutedBy']
@@ -511,7 +505,7 @@ class Moderation(commands.Cog):
 				
 				if not staff in id.roles:
 					if not id in failed_users:
-						await collection.delete_one({"_id": id.id})
+						await self.db1.delete_one({"_id": id.id})
 						msg="You were unmuted in `ViHill Corner`."
 						a = id
 						mem_list.append(a)
@@ -589,7 +583,7 @@ class Moderation(commands.Cog):
 						}
 
 					try:
-						await collection.insert_one(post)
+						await self.db1.insert_one(post)
 					except:
 						await ctx.send("User is already muted!")
 						return
@@ -620,7 +614,7 @@ class Moderation(commands.Cog):
 					await asyncio.sleep(muted_time)
 					if muted in member.roles:
 						await member.remove_roles(muted)
-						await collection.delete_one({"_id": member.id})
+						await self.db1.delete_one({"_id": member.id})
 						try:
 							await member.send("You have been unmuted in `ViHill Corner`.")
 						except discord.HTTPException:

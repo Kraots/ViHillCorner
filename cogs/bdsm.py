@@ -1,20 +1,14 @@
 import discord
 from discord.ext import commands
-import motor.motor_asyncio
-import os
 import asyncio
 import datetime
-DBKEY = os.getenv('MONGODBLVLKEY')
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster['ViHillCornerDB']
-collection = db['bdsm results']
-collection2 = db['Confesscord Restrictions']
 
 class BdsmResults(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db1 = bot.db2['bdsm results']
+		self.db2 = bot.db2['Confesscord Restrictions']
 		self.prefix = "!"
 	def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -31,7 +25,7 @@ class BdsmResults(commands.Cog):
 		
 		await ctx.send("Please send the screenshot of your BDSM results. %s" % (ctx.author.mention))
 		
-		hasBdsm = await collection.find_one({'_id': ctx.author.id})
+		hasBdsm = await self.db1.find_one({'_id': ctx.author.id})
 
 		try:
 			while True:
@@ -44,8 +38,8 @@ class BdsmResults(commands.Cog):
 					BDSMresult = raw_result.attachments[0].url
 
 					if hasBdsm != None:
-						await collection.update_one({'_id': ctx.author.id}, {'$set':{'BDSMresult': BDSMresult}})
-						await collection.update_one({'_id': ctx.author.id}, {'$set':{'timestamp': datetime.datetime.utcnow()}})
+						await self.db1.update_one({'_id': ctx.author.id}, {'$set':{'BDSMresult': BDSMresult}})
+						await self.db1.update_one({'_id': ctx.author.id}, {'$set':{'timestamp': datetime.datetime.utcnow()}})
 						await ctx.send("Succesfully updated your bdsm result. To check your bdsm results or others, you can type `!bdsm results <member>`.")
 						return
 					
@@ -53,7 +47,7 @@ class BdsmResults(commands.Cog):
 							'BDSMresult': BDSMresult,
 							'timestamp': datetime.datetime.utcnow()
 							}
-					await collection.insert_one(post)
+					await self.db1.insert_one(post)
 
 					await ctx.send("Succesfully set your bdsm result. To check your bdsm results or others, you can type `!bdsm results <member>`.")
 					return
@@ -70,7 +64,7 @@ class BdsmResults(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		BDSMresult = await collection.find_one({'_id': member.id})
+		BDSMresult = await self.db1.find_one({'_id': member.id})
 		
 		if BDSMresult != None:
 			em = discord.Embed(color=member.color, title="Here's `%s` bdsm results:" % (member.display_name))
@@ -93,7 +87,7 @@ class BdsmResults(commands.Cog):
 		msg = await ctx.send("Are you sure you want to remove your bdsm results? %s" % (user.mention))
 		await msg.add_reaction('<:agree:797537027469082627>')
 		await msg.add_reaction('<:disagree:797537030980239411>')
-		hasBdsm = await collection.find_one({'_id': user.id})
+		hasBdsm = await self.db1.find_one({'_id': user.id})
 
 		if hasBdsm != None:			
 			try:
@@ -107,7 +101,7 @@ class BdsmResults(commands.Cog):
 			
 			else:
 				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					await collection.delete_one({'_id': user.id})
+					await self.db1.delete_one({'_id': user.id})
 					e = "Succesfully removed your bdsm results. %s" % (user.mention)
 					await msg.edit(content=e)
 					await msg.clear_reactions()
@@ -130,8 +124,8 @@ class BdsmResults(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		await collection.delete_one({'_id': member.id})
-		await collection2.delete_one({'_id': member.id})
+		await self.db1.delete_one({'_id': member.id})
+		await self.db2.delete_one({'_id': member.id})
 
 def setup(bot):
 	bot.add_cog(BdsmResults(bot))

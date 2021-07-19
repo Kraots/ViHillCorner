@@ -4,16 +4,9 @@ import utils.colors as color
 from utils.helpers import BotChannels
 from utils.paginator import SimplePages
 import pymongo
-from pymongo import MongoClient
-import os
 from discord.ext.commands import Greedy
 from discord import Member
 import asyncio
-
-DBKEY = os.getenv("MONGODBLVLKEY")
-
-cluster = MongoClient(DBKEY)
-db = cluster["ViHillCornerDB"]['Suggestions blocks']
 
 class TagPageEntry:
 	def __init__(self, entry):
@@ -31,6 +24,7 @@ class TagPages(SimplePages):
 class Suggest(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db2['Suggestion blocks']
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -40,7 +34,7 @@ class Suggest(commands.Cog):
 	@commands.check(BotChannels)
 	@commands.cooldown(1, 60, commands.BucketType.user)
 	async def suggest(self, ctx, *, args):
-		result = db.find_one({'_id': ctx.author.id})
+		result = await self.db.find_one({'_id': ctx.author.id})
 		if result != None:
 			await ctx.send("You are blocked from using this command. %s" % (ctx.author.mention))
 			ctx.command.reset_cooldown(ctx)
@@ -96,7 +90,7 @@ class Suggest(commands.Cog):
 			blocked_list.append(a)
 			post = {'_id': member.id}
 			try:
-				db.insert_one(post)
+				await self.db.insert_one(post)
 			except pymongo.errors.DuplicateKeyError:
 				pass
 			await member.send("You are not able to use the command `!suggest` anymore, you have been blocked from using it due to abuse or innapropriate use.")
@@ -114,7 +108,7 @@ class Suggest(commands.Cog):
 			a = f"{member.name}#{member.discriminator}"
 			unblocked_list.append(a)
 			post = {'_id': member.id}
-			db.delete_one(post)
+			await self.db.delete_one(post)
 			await member.send("You are able to use the command `!suggest` again. Do **not** abuse it and do **not** use it for innapropriate things that will result in your access being taken away again.")
 		unblocked_users = " | ".join(unblocked_list)
 		await ctx.send("`%s` have been allowed to use the command **!suggest** again." % (unblocked_users))
@@ -123,7 +117,7 @@ class Suggest(commands.Cog):
 	@commands.is_owner()
 	async def blocks(self, ctx):
 		try:
-			entries = db.find({})
+			entries = await self.db.find().to_list(100000)
 			p = TagPages(entries = entries, per_page = 7)
 			await p.start(ctx)
 		except:

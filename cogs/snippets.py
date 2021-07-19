@@ -4,14 +4,6 @@ import asyncio
 from utils.paginator import SimplePages
 import datetime
 import utils.colors as color
-from pymongo import MongoClient
-import os
-import utils.colors as color
-DBKEY = os.getenv("MONGODBKEY")
-
-cluster = MongoClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["Snippets"]
 
 nono_names = ["huggles", "grouphug", "eat", "chew", "sip", "clap", "cry", "rofl", "lol", "kill", "pat", "rub", "nom", "catpat", "hug", "pillow", "spray", "hype", "specialkiss", "kiss", "ily", "nocry", "shrug", "smug", "bearhug", "moan"]
 
@@ -33,13 +25,14 @@ class Snippets(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db1['Snippets']
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['snippets'], ignore_extra = False)
 	async def snippet(self, ctx):
-		entries = collection.find({})
+		entries = await self.db.find().to_list(100000)
 		
 		p = SnippetPages(entries = entries, per_page = 7, color=color.reds)
 		await p.start(ctx)
@@ -48,7 +41,7 @@ class Snippets(commands.Cog):
 	@snippet.command()
 	async def search(self, ctx, *, query):
 		query = str(query).lower()
-		entries = collection.find({'_id': {'$regex': query, '$options': 'i'}})
+		entries = await self.db.find({'_id': {'$regex': query, '$options': 'i'}}).to_list(100000)
 		try:
 			p = SnippetPages(entries = entries, per_page = 7, color=color.reds)
 			await p.start(ctx)
@@ -59,7 +52,7 @@ class Snippets(commands.Cog):
 
 	@snippet.command(aliases=['lb'])
 	async def leaderboard(self, ctx):
-		results = collection.find({}).sort([("uses_count", -1)]).limit(10)
+		results = await self.db.find().to_list(100000).sort([("uses_count", -1)]).limit(10)
 		index = 0
 		em = discord.Embed(color=color.reds)
 		for result in results:
@@ -76,7 +69,7 @@ class Snippets(commands.Cog):
 	async def _list(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
-		entries = collection.find({'snippet_credits': member.id})
+		entries = await self.db.find({'snippet_credits': member.id}).to_list(100000)
 		try:
 			p = SnippetPages(entries = entries, per_page = 7, color=color.reds)
 			await p.start(ctx)
@@ -87,16 +80,13 @@ class Snippets(commands.Cog):
 	async def info(self, ctx, *, snippet_name : str = None):
 		if snippet_name is None:
 			return await ctx.reply("**!snippet info <snippet_name>**")
+
+		data = await self.db.find_one({'_id': snippet_name.lower()})
 		
-		data = {}
-		get_data = collection.find({'_id': snippet_name.lower()})
-		for i in get_data:
-			data = i
-		
-		if len(data) == 0:
+		if data is None:
 			return await ctx.send("Snippet **%s** does not exist! %s" % (snippet_name, ctx.author.mention))
 
-		sortSnippets = collection.find({}).sort([('uses_count', -1)])
+		sortSnippets = await self.db.find().sort([('uses_count', -1)]).to_list(100000)
 		rank = 0
 		for e in sortSnippets:
 			if e['_id'] == data['_id']:
@@ -134,11 +124,8 @@ class Snippets(commands.Cog):
 			except asyncio.TimeoutError:
 				return await ctx.reply("Ran out of time")
 
-		data = {}
-		results = collection.find({'_id': snippet_name.lower()})
-		for i in results:
-			data = i
-		if len(data) > 0:
+		data = await self.db.find_one({'_id': snippet_name.lower()})
+		if data != None:
 			return await ctx.send("Snippet name (`%s`) is already taken. %s" % (snippet_name, ctx.author.mention))
 		for x in ['kraots', 'carrots', 'carots', 'carot', 'carrot']:
 			if x in snippet_name.lower():
@@ -183,7 +170,7 @@ class Snippets(commands.Cog):
 				"uses_count": 0
 				}
 		
-		collection.insert_one(post)
+		self.db.insert_one(post)
 		await ctx.send("Snippet Added!")
 
 
@@ -196,11 +183,8 @@ class Snippets(commands.Cog):
 		def check(reaction, user):
 			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
 
-		data = {}
-		results = collection.find({'_id': snippet_name.lower()})
-		for i in results:
-			data = i
-		if len(data) == 0:
+		data = await self.db.find_one({'_id': snippet_name.lower()})
+		if data is None:
 			return await ctx.send("Snippet `%s` does not exist! %s" % (snippet_name, ctx.author.mention))
 
 		if ctx.author.id != 374622847672254466:
@@ -223,7 +207,7 @@ class Snippets(commands.Cog):
 			
 			else:
 				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					collection.delete_one({"_id": data['_id']})
+					self.db.delete_one({"_id": data['_id']})
 
 					e = f"`{snippet_name}` deleted succesfully! {ctx.author.mention}"
 					await msg.edit(content=e)
@@ -242,10 +226,7 @@ class Snippets(commands.Cog):
 	async def remove(self, ctx, *, snippet_name : str = None):
 		if snippet_name is None:
 			return await ctx.reply("You must give the name of the snippet you wish to remove too.")
-		data = {}
-		results = collection.find({'_id': snippet_name.lower()})
-		for i in results:
-			data = i
+		data = await self.db.find_one({'_id': snippet_name.lower()})
 		if len(data) == 0:
 			return await ctx.send("Snippet **%s** does not exist. %s" % (snippet_name, ctx.author.mention))
 		
@@ -256,7 +237,7 @@ class Snippets(commands.Cog):
 			snippet_created_at = data['created_at']
 			uses = data['uses_count']
 
-			collection.delete_one({"_id": data['_id']})
+			self.db.delete_one({"_id": data['_id']})
 
 			em = discord.Embed(title="Snippet Removed", color=color.red)
 			em.add_field(name = "Name", value = the_snippet_name)
@@ -275,18 +256,15 @@ class Snippets(commands.Cog):
 		presnippet_name = message.content.lower()
 		snippet_name = "".join(presnippet_name.split(";", 1))
 		
-		data = {}
-		results = collection.find({'_id': snippet_name})
-		for i in results:
-			data = i
-		if len(data) == 0:
+		data = await self.db.find_one({'_id': snippet_name})
+		if data is None:
 			return
 
 		snippet = data['snippet_content']
 		get_credits_info = data['snippet_credits']
 		credits_user = self.bot.get_user(get_credits_info)
 		credits_avatar = credits_user.avatar_url
-		collection.update_one({"_id": data['_id']}, {"$inc":{"uses_count": 1}})
+		self.db.update_one({"_id": data['_id']}, {"$inc":{"uses_count": 1}})
 
 		if message.content.lower().startswith(f";{snippet_name}"):
 			em = discord.Embed(color=discord.Color.red())
@@ -298,7 +276,7 @@ class Snippets(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		collection.delete_many({"snippet_credits": member.id})
+		self.db.delete_many({"snippet_credits": member.id})
 
 
 

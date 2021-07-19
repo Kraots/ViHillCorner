@@ -5,13 +5,6 @@ import datetime
 import utils.colors as color
 from utils.paginator import SimplePages
 import re
-from pymongo import MongoClient
-import os
-DBKEY = os.getenv("MONGODBKEY")
-
-cluster = MongoClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["Tags"]
 
 filter_invite = re.compile("(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 
@@ -34,6 +27,7 @@ class Tags(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db1['Tags']
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -44,31 +38,24 @@ class Tags(commands.Cog):
 			command = self.bot.get_command('help')
 			await ctx.invoke(command, 'tag')
 			return
-		data = {}
 
-		get_by_name = collection.find({'the_tag_name': tag_name.lower()})
-		for i in get_by_name:
-			data = i
-		if len(data) == 0:
-			get_by_alias = collection.find({'aliases': tag_name.lower()})
-			for i in get_by_alias:
-				data = i
-		if len(data) == 0:
+		data = await self.db.find_one({'the_tag_name': tag_name.lower()})
+		if data is None:
+			data = await self.db.find_one({'aliases': tag_name.lower()})
+		if data is None:
 			try:
-				get_by_id = collection.find({'_id': int(tag_name)})
-				for i in get_by_id:
-					data = i
+				data = await self.db.find_one({'_id': int(tag_name)})
 			except ValueError:
 				return await ctx.send("No tag found. %s" % (ctx.author.mention))
 		
-		collection.update_one({'_id': data['_id']}, {'$inc':{'uses_count': 1}})
+		await self.db.update_one({'_id': data['_id']}, {'$inc':{'uses_count': 1}})
 		await ctx.send(data['tag_content'], reference=ctx.replied_reference)
 
 
 	@tag.command()
 	async def search(self, ctx, *, query):
 		query = str(query).lower()
-		entries = collection.find({'the_tag_name': {'$regex': query, '$options': 'i'}})
+		entries = await self.db.find({'the_tag_name': {'$regex': query, '$options': 'i'}}).to_list(100000)
 		try:
 			p = TagPages(entries = entries, per_page = 7)
 			await p.start(ctx)
@@ -80,7 +67,7 @@ class Tags(commands.Cog):
 	async def _list(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
-		entries = collection.find({'tag_owner_id': member.id})
+		entries = await self.db.find({'tag_owner_id': member.id}).to_list(100000)
 		try:
 			p = TagPages(entries = entries, per_page = 7)
 			await p.start(ctx)
@@ -90,14 +77,14 @@ class Tags(commands.Cog):
 
 	@tag.command()
 	async def all(self, ctx):
-		entries = collection.find({})
+		entries = await self.db.find().to_list(100000)
 		p = TagPages(entries = entries, per_page = 7)
 		await p.start(ctx)
 	
 
 	@tag.command(aliases=['lb'])
 	async def leaderboard(self, ctx):
-		results = collection.find({}).sort([("uses_count", -1)]).limit(10)
+		results = await self.db.find().sort([("uses_count", -1)]).to_list(10)
 		index = 0
 		em = discord.Embed(color=discord.Color.blurple())
 		for result in results:
@@ -115,26 +102,18 @@ class Tags(commands.Cog):
 		if tag_name is None:
 			return await ctx.reply("**!tag info <tag_name>**")
 
-		data = {}
-		results_name = collection.find({'the_tag_name': tag_name.lower()})
-		for e in results_name:
-			data = e
-		if len(data) == 0:
+		data = await self.db.find_one({'the_tag_name': tag_name.lower()})
+		if data is None:
 			try:
-				results_id = collection.find({'_id': int(tag_name)})
-				for e in results_id:
-					data = e
+				data = await self.db.find_one({'_id': int(tag_name)})
 			except ValueError:
 				pass
-		if len(data) == 0:
-			results_aliases = collection.find({'aliases': tag_name.lower()})
-			for e in results_aliases:
-				data = e
-		
-		if len(data) == 0:
+		if data is None:
+			data = await self.db.find_one({'aliases': tag_name.lower()})
+		if data is None:
 			return await ctx.send("Tag **%s** does not exist. %s" % (tag_name, ctx.author.mention))
 			
-		sortTags = collection.find({}).sort([('uses_count', -1)])
+		sortTags = await self.db.find().sort([('uses_count', -1)]).to_list(100000)
 		rank = 0
 		for i in sortTags:
 			if i['_id'] == data['_id']:
@@ -167,12 +146,9 @@ class Tags(commands.Cog):
 		
 		try:
 			tag = int(tag)
-			get_tags = collection.find({'_id': tag})
-			data = {}
-			for i in get_tags:
-				data = i
+			data = await self.db.find_one({'_id': tag})
 		
-			if len(data) <= 0:
+			if data is None:
 				return await ctx.send("This is not a valid tag's id or this tag does not exist. %s" % (ctx.author.mention))
 			try:
 				_list = []
@@ -196,12 +172,9 @@ class Tags(commands.Cog):
 	
 		except ValueError:
 			tag = str(tag).lower()
-			results = collection.find({'the_tag_name': tag})
-			data = {}
-			for i in results:
-				data = i
+			data = await self.db.find_one({'the_tag_name': tag})
 
-			if len(data) <= 0:
+			if data is None:
 				return await ctx.send(f"No tag named **{tag}** found. {ctx.author.mention}")
 			
 			try:
@@ -230,7 +203,7 @@ class Tags(commands.Cog):
 			return await ctx.reply("You must give the tag's name. %s" % (ctx.author.mention))
 
 		all_names = []
-		names = collection.find()
+		names = await self.db.find().to_list(100000)
 		allAliases = []
 		for name in names:
 			all_names.append(name['the_tag_name'])
@@ -238,12 +211,9 @@ class Tags(commands.Cog):
 
 		try:
 			tag = int(tag)
-			results = collection.find({'_id': tag})
-			data = {}
-			for i in results:
-				data = i
+			data = await self.db.find_one({'_id': tag})
 			
-			if len(data) <= 0:
+			if data is None:
 				return await ctx.send("This is not a valid tag's id or this tag does not exist. %s" % (ctx.author.mention))
 			
 			if ctx.author.id != 374622847672254466:
@@ -275,20 +245,17 @@ class Tags(commands.Cog):
 				elif len(alias_name.content) > 75:
 					return await ctx.send("Alias cannot be longer than `75` characters!")
 				if len(tagAliases) == 0:
-					collection.update_one({'_id': tag}, {'$set':{'aliases': [str(alias_name.content).lower()]}})
+					await self.db.update_one({'_id': tag}, {'$set':{'aliases': [str(alias_name.content).lower()]}})
 				else:
 					tagAliases.append(str(alias_name.content).lower())
-					collection.update_one({'_id': tag}, {'$set':{'aliases': tagAliases}})
+					await self.db.update_one({'_id': tag}, {'$set':{'aliases': tagAliases}})
 				await ctx.send(f"{ctx.author.mention} Successfully added the alias `{str(alias_name.content).lower()}` for tag **{data['the_tag_name']}**")
 		
 		except ValueError:
 			tag = str(tag).lower()
-			results = collection.find({'the_tag_name': tag})
-			data = {}
-			for i in results:
-				data = i
+			data = await self.db.find_one({'the_tag_name': tag})
 			
-			if len(data) <= 0:
+			if data is None:
 				return await ctx.send("This is not a valid tag's id or this tag does not exist. %s" % (ctx.author.mention))
 
 			if ctx.author.id != 374622847672254466:
@@ -320,10 +287,10 @@ class Tags(commands.Cog):
 				elif len(alias_name.content) > 75:
 					return await ctx.send("Alias cannot be longer than `75` characters!")
 				if len(tagAliases) == 0:
-					collection.update_one({'the_tag_name': tag}, {'$set':{'aliases': [str(alias_name.content).lower()]}})
+					await self.db.update_one({'the_tag_name': tag}, {'$set':{'aliases': [str(alias_name.content).lower()]}})
 				else:
 					tagAliases.append(str(alias_name.content).lower())
-					collection.update_one({'the_tag_name': tag}, {'$set':{'aliases': tagAliases}})
+					await self.db.update_one({'the_tag_name': tag}, {'$set':{'aliases': tagAliases}})
 				await ctx.send(f"{ctx.author.mention} Successfully added the alias `{str(alias_name.content).lower()}` for tag **{data['the_tag_name']}**")
 
 	@_aliases.command(aliases=['delete'])
@@ -331,7 +298,7 @@ class Tags(commands.Cog):
 	async def _delete(self, ctx, *, alias: str = None):
 		if alias is None:
 			return await ctx.reply("You must specify the name of the alias you wish to delete. %s" % (ctx.author.mention))
-		results = collection.find({'aliases': alias.lower()})
+		results = await self.db.find_one({'aliases': alias.lower()})
 		try:
 			for result in results:
 				aliases = result['aliases']
@@ -364,7 +331,7 @@ class Tags(commands.Cog):
 						for _alias in aliases:
 							if not _alias == alias.lower():
 								new_aliases.append(_alias)
-						collection.update_one({'the_tag_name': tagName}, {'$set':{'aliases': new_aliases}})
+						await self.db.update_one({'the_tag_name': tagName}, {'$set':{'aliases': new_aliases}})
 						e = f"{ctx.author.mention} Successfully removed the alias `{alias}` from tag **{tagName}**!"
 						await msg.edit(content=e)
 						await msg.clear_reactions()
@@ -400,12 +367,9 @@ class Tags(commands.Cog):
 				await ctx.send("No invites or what so ever.")
 				return
 
-		results = collection.find({'the_tag_name': str(tag_name).lower()})
-		data = {}
-		for i in results:
-			data = i
+		data = await self.db.find_one({'the_tag_name': str(tag_name).lower()})
 
-		if len(data) > 0:
+		if data != None:
 			await ctx.send("Tag name already taken.")
 			return
 		
@@ -440,7 +404,7 @@ class Tags(commands.Cog):
 		
 		else:
 			get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-			get_sorted = collection.find({}).sort([("_id", -1)]).limit(1)
+			get_sorted = await self.db.find().sort([("_id", -1)]).to_list(1)
 			for x in get_sorted:
 				last_id = x['_id']
 
@@ -453,7 +417,7 @@ class Tags(commands.Cog):
 					"aliases": []
 					}
 				
-			collection.insert_one(post)
+			await self.db.insert_one(post)
 			
 			await ctx.send("Tag `{}` Successfully created!".format(tag_name))
 
@@ -462,19 +426,14 @@ class Tags(commands.Cog):
 	async def delete(self, ctx, *, tag_name: str = None):
 		if tag_name is None:
 			return await ctx.reply("**!tag delete <tag_name>**")
-		
-		data = {}
-		results = collection.find({'the_tag_name': tag_name.lower()})
-		for i in results:
-			data = i
-		if len(data) == 0:
+
+		data = await self.db.find_one({'the_tag_name': tag_name.lower()})
+		if data is None:
 			try:
-				result = collection.find({'_id': int(tag_name)})
-				for i in result:
-					data = i
+				data = await self.db.find_one({'_id': int(tag_name)})
 			except ValueError:
 				return await ctx.send("That tag does not exist. %s" % (ctx.author.mention))
-		if len(data) == 0:
+		if data is None:
 			return await ctx.send("That tag does not exist. %s" % (ctx.author.mention))
 		if ctx.author.id != 374622847672254466:
 			if ctx.author.id != data['tag_owner_id']:
@@ -496,7 +455,7 @@ class Tags(commands.Cog):
 		
 		else:
 			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				collection.delete_one({'_id': data['_id']})
+				await self.db.delete_one({'_id': data['_id']})
 				e = "Successfully deleted the tag **%s**. %s" % (data['the_tag_name'], ctx.author.mention)
 				await msg.clear_reactions()
 				await msg.edit(content=e)
@@ -516,19 +475,14 @@ class Tags(commands.Cog):
 	async def remove(self, ctx, *, tag_name: str = None):
 		if tag_name is None:
 			return await ctx.reply("**!tag remove <tag_name>**")
-		
-		data = {}
-		results = collection.find({'the_tag_name': tag_name.lower()})
-		for i in results:
-			data = i
-		if len(data) == 0:
+
+		data = await self.db.find_one({'the_tag_name': tag_name.lower()})
+		if data is None:
 			try:
-				result = collection.find({'_id': int(tag_name)})
-				for i in result:
-					data = i
+				data = await self.db.find_one({'_id': int(tag_name)})
 			except ValueError:
 				return await ctx.send("That tag does not exist in the database. %s" % (ctx.author.mention))
-		if len(data) == 0:
+		if data is None:
 			return await ctx.send("That tag does not exist in the database. %s" % (ctx.author.mention))
 			
 		get_tag_owner = data['tag_owner_id']
@@ -537,7 +491,7 @@ class Tags(commands.Cog):
 		tag_created_at = data['created_at']
 		uses = data['uses_count']
 
-		collection.delete_one({"_id": data['_id']})
+		await self.db.delete_one({"_id": data['_id']})
 
 		em = discord.Embed(title="Tag Removed", color=color.red)
 		em.add_field(name = "Name", value = the_tag_name)
@@ -554,7 +508,7 @@ class Tags(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		collection.delete_many({"tag_owner_id": member.id})
+		await self.db.delete_many({"tag_owner_id": member.id})
 
 
 	async def cog_command_error(self, ctx, error):

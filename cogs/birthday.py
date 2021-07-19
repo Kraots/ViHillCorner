@@ -1,22 +1,16 @@
 import discord
 from discord.ext import commands, tasks
-import motor.motor_asyncio
-import os
 from utils import time
 import datetime
 from dateutil.relativedelta import relativedelta
 import asyncio
-DBKEY = os.getenv("MONGODBKEY")
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["Birthdays"]
 
 
 class Birthdays(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db1['Birthdays']
 		self.prefix = "!"
 		self.check_bdays.start()
 	async def cog_check(self, ctx):
@@ -27,8 +21,8 @@ class Birthdays(commands.Cog):
 	async def check_bdays(self):
 		await self.bot.wait_until_ready()
 		currentTime = datetime.datetime.utcnow()
-		results = collection.find()
-		for result in await results.to_list(9999999999999999):
+		results = await self.db.find().to_list(100000)
+		for result in results:
 			preBday = result['birthdaydate']
 			bdayDate = result['region_birthday']
 			user = result['_id']
@@ -46,7 +40,7 @@ class Birthdays(commands.Cog):
 				
 				new_birthday = bdayDate + relativedelta(years = 1)
 				new_preBday = preBday + relativedelta(years = 1)
-				await collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": new_preBday, "region_birthday": new_birthday}})
+				await self.db.update_one({"_id": user.id}, {"$set":{"birthdaydate": new_preBday, "region_birthday": new_birthday}})
 			
 
 			
@@ -56,7 +50,7 @@ class Birthdays(commands.Cog):
 		if member is None:
 			member = ctx.author
 		user = member
-		results = await collection.find_one({"_id": user.id})
+		results = await self.db.find_one({"_id": user.id})
 
 		if results is None:
 			if user.id == ctx.author.id:
@@ -84,8 +78,8 @@ class Birthdays(commands.Cog):
 
 		em = discord.Embed(color=discord.Color.blurple(), title="***Top `5` upcoming birthdays***\n _ _ ") 
 
-		results = collection.find().sort([("birthdaydate", 1)])
-		for result in await results.to_list(5):
+		results = await self.db.find().sort([("birthdaydate", 1)]).to_list(5)
+		for result in results:
 			user = self.bot.get_user(result['_id'])
 			index += 1
 			em.add_field(name=f"`{index}`. _ _ _ _ {user.name}", value=f"{format_date(result['region_birthday'], result['birthdaydate'])}", inline = False) 
@@ -102,7 +96,7 @@ class Birthdays(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			return
 		user = ctx.author
-		results = await collection.find_one({"_id": user.id})
+		results = await self.db.find_one({"_id": user.id})
 
 		z = datetime.datetime.utcnow().strftime('%Y')
 		pre = f'{z}/{bday}'
@@ -203,7 +197,7 @@ class Birthdays(commands.Cog):
 
 
 			if results != None:
-				await collection.update_one({"_id": user.id}, {"$set":{"birthdaydate": birthday, "region": region, "region_birthday": region_birthday}})
+				await self.db.update_one({"_id": user.id}, {"$set":{"birthdaydate": birthday, "region": region, "region_birthday": region_birthday}})
 				await ctx.message.delete()
 				await msg.delete()
 				await pre_region.delete()
@@ -216,7 +210,7 @@ class Birthdays(commands.Cog):
 						"region": region,
 						"region_birthday": region_birthday
 						}
-				await collection.insert_one(post)
+				await self.db.insert_one(post)
 
 				await ctx.message.delete()
 				await msg.delete()
@@ -233,7 +227,7 @@ class Birthdays(commands.Cog):
 
 	@birthday.command(aliases=['remove'])
 	async def delete(self, ctx):
-		results = await collection.find_one({"_id": ctx.author.id})
+		results = await self.db.find_one({"_id": ctx.author.id})
 		if results != None:
 			def check(reaction, user):
 				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
@@ -251,7 +245,7 @@ class Birthdays(commands.Cog):
 			
 			else:
 				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					await collection.delete_one({"_id": ctx.author.id})
+					await self.db.delete_one({"_id": ctx.author.id})
 					e = "Succesfully removed your birthday from the list! {}".format(ctx.author.mention)
 					await msg.edit(content=e)
 					await msg.clear_reactions()
@@ -273,7 +267,7 @@ class Birthdays(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		await collection.delete_one({"_id": member.id})
+		await self.db.delete_one({"_id": member.id})
 
 
 

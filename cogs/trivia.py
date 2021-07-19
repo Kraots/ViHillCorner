@@ -1,24 +1,15 @@
-from trivia import trivia
 import asyncio
 import utils.colors as color
 from discord.ext import commands
-import motor.motor_asyncio
-import os
 import discord
 import games
 bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
-
-
-
-DBKEY = os.getenv('MONGODBLVLKEY')
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster['ViHillCornerDB']['Trivia']
 
 class TriviaCommands(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db2['Trivia']
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
@@ -34,7 +25,7 @@ class TriviaCommands(commands.Cog):
 		if member is None:
 			member = ctx.author
 		
-		user = await db.find_one({'_id': member.id})
+		user = await self.db.find_one({'_id': member.id})
 		if user is None:
 			if member == ctx.author:
 				await ctx.send("You never played trivia before! %s" % (ctx.author.mention))
@@ -43,8 +34,8 @@ class TriviaCommands(commands.Cog):
 			return
 		
 		rank = 0
-		rankings = db.find().sort('points', -1)
-		for data in await rankings.to_list(99999999999):
+		rankings = await self.db.find().sort('points', -1).to_list(100000)
+		for data in rankings:
 			rank += 1
 			if user['_id'] == data['_id']:
 				break
@@ -65,8 +56,8 @@ class TriviaCommands(commands.Cog):
 		rank = 0
 		em = discord.Embed(color=color.lightpink, title="Here's top `5` trivia users with most points:")
 		
-		rankings = db.find().sort('points', -1)
-		for data in await rankings.to_list(5):
+		rankings = await self.db.find().sort('points', -1).to_list(5)
+		for data in rankings:
 			rank += 1
 			user = ctx.guild.get_member(data['_id'])
 			em.add_field(name="`#%s` %s" % (rank, user.display_name), value="**%s** points" % (data['points']), inline=False)
@@ -79,12 +70,12 @@ class TriviaCommands(commands.Cog):
 		if user is None: 
 			user = ctx.author
 		
-		userDb = await db.find_one({'_id': user.id})
+		userDb = await self.db.find_one({'_id': user.id})
 		if userDb is None:
 			await ctx.send("The user has never played trivia before. His points cannot be changed since he is not registered in the database.")
 			return
 
-		await db.update_one({'_id': user.id}, {'$set':{'points': amount}})
+		await self.db.update_one({'_id': user.id}, {'$set':{'points': amount}})
 		await ctx.send("Succesfully set the points for user `%s` to **%s**." % (user.display_name, amount))
 
 	@points.command(aliases=['add'])
@@ -93,12 +84,12 @@ class TriviaCommands(commands.Cog):
 		if user is None: 
 			user = ctx.author
 		
-		userDb = await db.find_one({'_id': user.id})
+		userDb = await self.db.find_one({'_id': user.id})
 		if userDb is None:
 			await ctx.send("The user has never played trivia before. His points cannot be changed since he is not registered in the database.")
 			return
 
-		await db.update_one({'_id': user.id}, {'$inc':{'points': amount}})
+		await self.db.update_one({'_id': user.id}, {'$inc':{'points': amount}})
 		await ctx.send("Succesfully added **%s** points for user `%s`." % (amount, user.display_name))
 
 	@points.command(aliases=['reset'])
@@ -107,12 +98,12 @@ class TriviaCommands(commands.Cog):
 		if user is None: 
 			user = ctx.author
 		
-		userDb = await db.find_one({'_id': user.id})
+		userDb = await self.db.find_one({'_id': user.id})
 		if userDb is None:
 			await ctx.send("The user has never played trivia before. His points cannot be changed since he is not registered in the database.")
 			return
 
-		await db.update_one({'_id': user.id}, {'$set':{'points': 0}})
+		await self.db.update_one({'_id': user.id}, {'$set':{'points': 0}})
 		await ctx.send("Succesfully reset points for user `%s`." % (user.display_name))
 	
 	@points.command(aliases=['give'])
@@ -124,8 +115,8 @@ class TriviaCommands(commands.Cog):
 			await ctx.send("You cannot gift yourself... It doesn't really make any sense does it? %s" % (ctx.author.mention))
 			return
 		
-		user = await db.find_one({'_id': ctx.author.id})
-		memberDb = await db.find_one({'_id': member.id})
+		user = await self.db.find_one({'_id': ctx.author.id})
+		memberDb = await self.db.find_one({'_id': member.id})
 		if user is None:
 			await ctx.send("You have never played trivia before. You cannot use this command. %s" % (ctx.author.mention))
 			return
@@ -166,8 +157,8 @@ class TriviaCommands(commands.Cog):
 		
 		else:
 			if str(reaction.emoji) == '<:agree:797537027469082627>':		
-				await db.update_one({'_id': ctx.author.id}, {'$inc':{'points': -amount}})
-				await db.update_one({'_id': member.id}, {'$inc':{'points': amount}})
+				await self.db.update_one({'_id': ctx.author.id}, {'$inc':{'points': -amount}})
+				await self.db.update_one({'_id': member.id}, {'$inc':{'points': amount}})
 				e = "%s has accepted. Succesfully gifted the points %s" % (member.mention, ctx.author.mention)
 				await msg.clear_reactions()
 				await msg.edit(content=e)
@@ -189,7 +180,7 @@ class TriviaCommands(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		await db.delete_one({'_id': member.id})
+		await self.db.delete_one({'_id': member.id})
 
 def setup(bot):
 	bot.add_cog(TriviaCommands(bot))

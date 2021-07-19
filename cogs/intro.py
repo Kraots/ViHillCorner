@@ -2,19 +2,12 @@ import discord
 from discord.ext import commands
 import asyncio
 from utils.helpers import BotChannels, time_phaser
-import motor.motor_asyncio
-import os
-
-DBKEY = os.getenv("MONGODBKEY")
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["Intros"]
 
 class Intros(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db1['Intros']
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -26,7 +19,7 @@ class Intros(commands.Cog):
 	@commands.cooldown(1, 360, commands.BucketType.user)
 	@commands.check(BotChannels)
 	async def intro(self, ctx):
-		results = await collection.find_one({"_id": ctx.author.id})
+		results = await self.db.find_one({"_id": ctx.author.id})
 		
 		await ctx.message.delete()
 
@@ -196,7 +189,7 @@ class Intros(commands.Cog):
 											em.add_field(name="Interests", value=interests.content, inline=False)
 											intro_message = await introchannel.send(embed=em)
 
-											await collection.update_one({"_id": ctx.author.id}, {"$set": {"name": name.content, "location": location.content, "age": agenumber, "gender": gender.content, "status": status, "interests": interests.content, "intro_id": intro_message.id}})
+											await self.db.update_one({"_id": ctx.author.id}, {"$set": {"name": name.content, "location": location.content, "age": agenumber, "gender": gender.content, "status": status, "interests": interests.content, "intro_id": intro_message.id}})
 											
 											try:
 												intro_message = await introchannel.fetch_message(intro_id)
@@ -338,7 +331,7 @@ class Intros(commands.Cog):
 											"intro_id": intro_msg.id
 											}
 											
-									await collection.insert_one(post)
+									await self.db.insert_one(post)
 
 									return
 
@@ -346,7 +339,7 @@ class Intros(commands.Cog):
 
 	@intro.command(aliases=["remove"])
 	async def delete(self, ctx):
-		results = await collection.find_one({"_id": ctx.author.id})
+		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
 			def check(reaction, user):
@@ -365,7 +358,7 @@ class Intros(commands.Cog):
 			
 			else:
 				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					await collection.delete_one({"_id": ctx.author.id})
+					await self.db.delete_one({"_id": ctx.author.id})
 					try:
 						intro_id = results['intro_id']
 						channel = ctx.guild.get_channel(750160850593251449)
@@ -395,7 +388,7 @@ class Intros(commands.Cog):
 		if member is None:
 			member = ctx.author
 
-		results = await collection.find_one({"_id": member.id})
+		results = await self.db.find_one({"_id": member.id})
 		
 		user = member
 
@@ -435,7 +428,7 @@ class Intros(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		await collection.delete_one({"_id": member.id})
+		await self.db.delete_one({"_id": member.id})
 
 
 

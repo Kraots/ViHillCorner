@@ -5,20 +5,12 @@ import datetime
 from datetime import date
 import utils.colors as color
 from utils import time
-import motor.motor_asyncio
-import os
-
-DBKEY = os.getenv("MONGODBKEY")
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["Marry Data"]
-
 
 class MarryCommands(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db1['Marry Data']
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -39,19 +31,19 @@ class MarryCommands(commands.Cog):
 
 		else:
 			all_users = []
-			results = collection.find()
-			for result in await results.to_list(99999999999999999999999):
+			results = await self.db.find().to_list(1000000)
+			for result in results:
 				all_users.append(result['_id'])
 			
 			if member.id in all_users:
-				get_mem = await collection.find_one({"_id": member.id})
+				get_mem = await self.db.find_one({"_id": member.id})
 				member_married_to = get_mem["married_to"]
 				they_already_married_to = self.bot.get_user(member_married_to)
 				await ctx.send("`{}` is already married to `{}`.".format(member.display_name, they_already_married_to.display_name))
 				return
 
 			elif ctx.author.id in all_users:
-					get_auth = await collection.find_one({"_id": ctx.author.id})
+					get_auth = await self.db.find_one({"_id": ctx.author.id})
 					author_married_to = get_auth["married_to"]
 					author_already_married_to = self.bot.get_user(author_married_to)
 					await ctx.send("You are already married to `{}`.".format(author_already_married_to.display_name))
@@ -82,7 +74,7 @@ class MarryCommands(commands.Cog):
 						save_auth = {"_id": ctx.author.id, "married_to": member.id, "marry_date": married_since_save_time}
 						save_mem = {"_id": member.id, "married_to": ctx.author.id, "marry_date": married_since_save_time}
 						
-						await collection.insert_many([save_auth, save_mem])
+						await self.db.insert_many([save_auth, save_mem])
 
 						await ctx.send("`{}` married `{}`!!! :tada: :tada:".format(ctx.author.display_name, member.display_name))
 						await msg.delete()
@@ -98,7 +90,7 @@ class MarryCommands(commands.Cog):
 	async def divorce(self, ctx):
 		user = ctx.author	
 
-		results = await collection.find_one({"_id": user.id})	
+		results = await self.db.find_one({"_id": user.id})	
 
 		if results == None:	
 			await ctx.send("You are not married to anyone.")	
@@ -127,8 +119,8 @@ class MarryCommands(commands.Cog):
 				if str(reaction.emoji) == '<:agree:797537027469082627>':
 					auth = {"_id": ctx.author.id} 	
 					mem = {"_id": the_married_to_user.id}	
-					await collection.delete_one(auth)	
-					await collection.delete_one(mem)	
+					await self.db.delete_one(auth)	
+					await self.db.delete_one(mem)	
 
 					e = "You divorced `{}`. :cry:".format(the_married_to_user.display_name)
 					await msg.edit(content=e)
@@ -145,7 +137,7 @@ class MarryCommands(commands.Cog):
 		if member == None:
 			member = ctx.author
 
-		results = await collection.find_one({"_id": member.id})
+		results = await self.db.find_one({"_id": member.id})
 	
 		user = member
 		
@@ -196,8 +188,8 @@ class MarryCommands(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		await collection.delete_one({"_id": member.id})
-		await collection.delete_one({'married_to': member.id})
+		await self.db.delete_one({"_id": member.id})
+		await self.db.delete_one({'married_to': member.id})
 
 def setup(bot):
 	bot.add_cog(MarryCommands(bot))

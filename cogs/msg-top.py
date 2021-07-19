@@ -1,7 +1,5 @@
 import discord
 from discord.ext import commands, tasks
-import motor.motor_asyncio
-import os
 import utils.colors as color
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -10,16 +8,11 @@ import asyncio
 
 BotChannels = [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]
 
-DBKEY = os.getenv("MONGODBLVLKEY")
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["Levels"]
-
 class MessageTop(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db2['Levels']
 		self.weekly_reset.start()
 		self.prefix = "!"
 	def cog_check(self, ctx):
@@ -28,7 +21,7 @@ class MessageTop(commands.Cog):
 	@tasks.loop(minutes=1)
 	async def weekly_reset(self):
 		await self.bot.wait_until_ready()
-		results = await collection.find_one({"_id": 374622847672254466})
+		results = await self.db.find_one({"_id": 374622847672254466})
 		resetWhen = results['weekly_reset']
 		a = datetime.datetime.utcnow().strftime('%Y-%m-%d')
 		dateNow = datetime.datetime.strptime(a, '%Y-%m-%d')
@@ -36,24 +29,24 @@ class MessageTop(commands.Cog):
 		if dateNow >= resetWhen:
 			users = {}
 			index = 0 
-			results = collection.find().sort([("messages_count", -1)])
-			for result in await results.to_list(3):
+			results = await self.db.find().sort([("messages_count", -1)]).to_list(3)
+			for result in results:
 				index += 1
 				user = self.bot.get_user(result['_id'])
 				users[index] = user
 			_1stplace = users[1]
 			_2ndplace = users[2]
 			_3rdplace = users[3]
-			await collection.update_one({'_id': _1stplace.id}, {'$inc':{'xp': 50000}})
-			await collection.update_one({'_id': _2ndplace.id}, {'$inc':{'xp': 30000}})
-			await collection.update_one({'_id': _3rdplace.id}, {'$inc':{'xp': 20000}})
+			await self.db.update_one({'_id': _1stplace.id}, {'$inc':{'xp': 50000}})
+			await self.db.update_one({'_id': _2ndplace.id}, {'$inc':{'xp': 30000}})
+			await self.db.update_one({'_id': _3rdplace.id}, {'$inc':{'xp': 20000}})
 			await _1stplace.send(f"Congrats. You placed `1st` in the weekly top! Your reward is **50,000** XP.\nThe others placed:\n\u2800• **{_2ndplace}** -> `2nd`\n\u2800• **{_3rdplace}** -> `3rd`")
 			await _2ndplace.send(f"Congrats. You placed `2nd` in the weekly top! Your reward is **30,000** XP.\nThe others placed:\n\u2800• **{_1stplace}** -> `1st`\n\u2800• **{_3rdplace}** -> `3rd`")
 			await _3rdplace.send(f"Congrats. You placed `3rd` in the weekly top! Your reward is **20,000** XP.\nThe others placed:\n\u2800• **{_1stplace}** -> `1st`\n\u2800• **{_2ndplace}** -> `2nd`")
 
-			await collection.update_many({}, {"$set": {"messages_count": 0}})
+			await self.db.update_many({}, {"$set": {"messages_count": 0}})
 			x = dateNow + relativedelta(weeks = 1)
-			await collection.update_one({'_id': 374622847672254466}, {'$set':{'weekly_reset': x}})
+			await self.db.update_one({'_id': 374622847672254466}, {'$set':{'weekly_reset': x}})
 
 
 
@@ -63,15 +56,15 @@ class MessageTop(commands.Cog):
 		def format_time(dt):
 			return time.human_timedelta(dt)
 
-		data = await collection.find_one({"_id": 374622847672254466})
+		data = await self.db.find_one({"_id": 374622847672254466})
 
 		em = discord.Embed(color=color.lightpink)
 		
 		index = 0
 		guild = self.bot.get_guild(750160850077089853)
 		
-		results = collection.find().sort([("messages_count", -1)])
-		for result in await results.to_list(15):
+		results = await self.db.find().sort([("messages_count", -1)]).to_list(15)
+		for result in results:
 			if result['messages_count'] != 0:
 				index += 1
 				mem = guild.get_member(result['_id'])
@@ -104,7 +97,7 @@ class MessageTop(commands.Cog):
 			
 		else:
 			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				await collection.update_one({'_id': member.id}, {'$set':{'messages_count': 0}})
+				await self.db.update_one({'_id': member.id}, {'$set':{'messages_count': 0}})
 				await msg.clear_reactions()
 				await msg.edit(content='The message count for this week for member **%s** has been reset successfully.' % (member))
 			elif str(reaction.emoji) == '<:disagree:797537030980239411>':

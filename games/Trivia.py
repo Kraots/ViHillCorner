@@ -1,17 +1,12 @@
 from trivia import trivia
 import asyncio
 import utils.colors as color
-import motor.motor_asyncio
-import os
 import discord
 import random
-DBKEY = os.getenv('MONGODBLVLKEY')
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster['ViHillCornerDB']['Trivia']
 
 class Trivia:
 	def __init__(self, ctx):
+		self.db = ctx.bot.db2['Trivia']
 		self.bot = ctx.bot
 		self.player = ctx.author
 		self.ctx = ctx
@@ -19,7 +14,7 @@ class Trivia:
 		self.points2 = 0
 	
 	async def update_db(self, user, points):
-		await db.update_one({'_id': user.id}, {'$inc':{'points': points}})
+		await self.db.update_one({'_id': user.id}, {'$inc':{'points': points}})
 
 	async def get_mode(self) -> str:
 		await self.ctx.send(f"{self.player.mention} Please pick a mode:\n\u2800• **Solo**\n\u2800• **Competitive**\n\n*To cancel type `!cancel`*")
@@ -87,7 +82,7 @@ class Trivia:
 		def check(m):
 			return m.channel.id == self.ctx.channel.id and m.author.id == self.player.id
 		await self.ctx.send(f"How many points do you want to bet? {self.player.mention}")
-		user = await db.find_one({'_id': self.player.id})
+		user = await self.db.find_one({'_id': self.player.id})
 		if user is None:
 			raise Exception("You have never played this game before, therefore cannot play this gamemode.")
 		try:
@@ -144,7 +139,7 @@ class Trivia:
 			raise Exception(f'Took too much to respond {self.player.mention}')
 		
 		else:
-			opponent_db = await db.find_one({'_id': opponent.id})
+			opponent_db = await self.db.find_one({'_id': opponent.id})
 			if opponent_db is None:
 				raise Exception(f"The opponent you chose has never played trivia before. You cannot challenge this person. {self.player.mention}")
 			elif opponent_db['points'] < wager_amount:
@@ -322,7 +317,7 @@ class Trivia:
 			final_result = f"You got **{self.points}** points. Congratulations"
 			final_color = discord.Color.green()
 
-		user = await db.find_one({'_id': self.player.id})
+		user = await self.db.find_one({'_id': self.player.id})
 		if user is None:
 			before_points = 0
 			after_points = self.points
@@ -330,7 +325,7 @@ class Trivia:
 				'_id': self.player.id,
 				'points': self.points
 					}
-			await db.insert_one(post)
+			await self.db.insert_one(post)
 		else:
 			before_points = user['points']
 			after_points = before_points + self.points
@@ -390,8 +385,8 @@ class Trivia:
 			answer = await self.get_answer(opponent, 1, rand, question, result['jump_url'])
 			await self.check_answer(opponent, answer, difficulty, 1, question, question_type2, result['correct_choice'])
 
-		user = await db.find_one({'_id': self.player.id})
-		opponentDb = await db.find_one({'_id': opponent.id})
+		user = await self.db.find_one({'_id': self.player.id})
+		opponentDb = await self.db.find_one({'_id': opponent.id})
 
 		draw = False
 		if self.points > self.points2:		# USER/AUTHOR WIN

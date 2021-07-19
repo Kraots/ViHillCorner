@@ -2,13 +2,6 @@ import discord
 from discord.ext import commands
 import re
 
-import os
-import motor.motor_asyncio
-
-DBKEY = os.getenv("MONGODBLVLKEY")
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster['ViHillCornerDB']['InvalidName Filter']
-
 def remove_emoji(string):
     emoji_pattern = re.compile("["
                            u"\U0001F600-\U0001F64F"  # emoticons
@@ -25,6 +18,7 @@ class NameFilter(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db2['InvalidName Filter']
 
 	@commands.Cog.listener()
 	async def on_message(self, message : discord.Message):
@@ -36,9 +30,9 @@ class NameFilter(commands.Cog):
 		if message.guild:
 			user_name = str(message.author.name).lower()
 			
-			user = await db.find_one({'_id': message.author.id})
+			user = await self.db.find_one({'_id': message.author.id})
 			if user is None:
-				kr = await db.find_one({'_id': 374622847672254466})
+				kr = await self.db.find_one({'_id': 374622847672254466})
 				new_index = kr['TotalInvalidNames'][-1] + 1
 				old_list = kr['TotalInvalidNames']
 				new_list = old_list + [new_index]
@@ -46,8 +40,8 @@ class NameFilter(commands.Cog):
 					'_id': message.author.id,
 					'InvalidNameIndex': new_index
 				}
-				await db.insert_one(post)
-				await db.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+				await self.db.insert_one(post)
+				await self.db.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
 				new_nick = f'UnpingableName{new_index}'
 			else:
 				new_nick = f"UnpingableName{user['InvalidNameIndex']}"
@@ -72,7 +66,7 @@ class NameFilter(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		await db.delete_one({'_id': member.id})
+		await self.db.delete_one({'_id': member.id})
 
 
 def setup(bot):

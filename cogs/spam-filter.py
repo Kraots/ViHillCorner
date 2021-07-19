@@ -2,22 +2,16 @@ import discord
 from discord.ext import commands
 import json
 import asyncio
-import os
-import motor.motor_asyncio
 import datetime
 no_mute_these = [374622847672254466]
 ignored_channels = [790310516266500098, 780374324598145055, 750160851822182487, 750160851822182486, 750160852006469807, 750160852006469810, 790309304422629386, 750160852006469806]
 
-DBKEY = os.getenv("MONGODBKEY")
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["Filter Mutes"]
 
 class RepeatedTextFilter(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db1['Filter Mutes']
 
 	@commands.Cog.listener()
 	async def on_message(self, message : discord.Message):
@@ -92,7 +86,7 @@ class RepeatedTextFilter(commands.Cog):
 
 
 						try:
-							await collection.insert_one(post)
+							await self.db.insert_one(post)
 						except:
 							return
 
@@ -122,7 +116,7 @@ class RepeatedTextFilter(commands.Cog):
 
 
 						try:
-							await collection.insert_one(post)
+							await self.db.insert_one(post)
 						except:
 							return
 						await user.add_roles(muted)
@@ -200,7 +194,7 @@ class SpamFilter(commands.Cog):
 
 
 							try:
-								await collection.insert_one(post)
+								await self.db.insert_one(post)
 							except:
 								return
 							await user.remove_roles(staff, mod)
@@ -229,7 +223,7 @@ class SpamFilter(commands.Cog):
 
 
 							try:
-								await collection.insert_one(post)
+								await self.db.insert_one(post)
 							except:
 								return
 							await user.add_roles(muted)

@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands
 from utils.paginator import CustomMenu
-import motor.motor_asyncio
-import os
 import utils.colors as color
 import asyncio
 
@@ -19,23 +17,21 @@ class ReclistPages(CustomMenu):
 		converted = [ReclistPageEntry(entry) for entry in entries]
 		super().__init__(converted, per_page=per_page, color=color, title=title)
 
-DBKEY = os.getenv("MONGODBKEY")
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["Reclist"]
-
 class Reclist(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db1['Reclist']
+		self.prefix = '!'
+	def cog_check(self, ctx):
+		return ctx.prefix == self.prefix
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	async def reclist(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
 
-		results = await collection.find_one({"_id": member.id})
+		results = await self.db.find_one({"_id": member.id})
 
 		user = member
 		if results != None:
@@ -56,13 +52,13 @@ class Reclist(commands.Cog):
 	@reclist.command(aliases=['set'])
 	async def _set(self, ctx, *, args: str):
 		user = ctx.author
-		results = await collection.find_one({"_id": user.id})
+		results = await self.db.find_one({"_id": user.id})
 		reclist = list(filter(bool, args.splitlines()))
 		if results == None:
 			post = {"_id": user.id, "reclist": reclist}
-			await collection.insert_one(post)
+			await self.db.insert_one(post)
 		else:
-			await collection.update_one({"_id": user.id}, {"$set":{"reclist": reclist}})
+			await self.db.update_one({"_id": user.id}, {"$set":{"reclist": reclist}})
 		await ctx.message.delete()
 		await ctx.send(f"Reclist set! {user.mention}")
 
@@ -70,14 +66,14 @@ class Reclist(commands.Cog):
 	@reclist.command()
 	async def add(self, ctx, *, args: str):
 		user = ctx.author
-		results = await collection.find_one({"_id": user.id})
+		results = await self.db.find_one({"_id": user.id})
 		reclist = list(filter(bool, args.splitlines()))
 		if results == None:
 			post = {"_id": user.id, "reclist": reclist}
-			await collection.insert_one(post)
+			await self.db.insert_one(post)
 		else:
 			rec = results['reclist']
-			await collection.update_one({"_id": user.id}, {"$set":{"reclist": rec + reclist}})
+			await self.db.update_one({"_id": user.id}, {"$set":{"reclist": rec + reclist}})
 		await ctx.message.delete()
 		await ctx.send("Succesfully added to your reclist! {}".format(user.mention))
 
@@ -88,7 +84,7 @@ class Reclist(commands.Cog):
 			nr = int(nr)
 		except ValueError:
 			return await ctx.send("Must be a number. %s" % (ctx.author.mention))
-		results = await collection.find_one({'_id': ctx.author.id})
+		results = await self.db.find_one({'_id': ctx.author.id})
 		if results == None:
 			return await ctx.send("You do not have a reclist. %s" % (ctx.author.mention))
 		n = nr - 1
@@ -101,7 +97,7 @@ class Reclist(commands.Cog):
 			else:
 				rec = results['reclist'][i]
 		
-		await collection.update_one({'_id': ctx.author.id}, {'$set':{'reclist': new_reclist}})
+		await self.db.update_one({'_id': ctx.author.id}, {'$set':{'reclist': new_reclist}})
 		if rec != None:
 			return await ctx.send(f"Successfully removed **{rec}** from your reclist. {ctx.author.mention}")
 		await ctx.send(f"No recommendation with that number found. {ctx.author.mention}")
@@ -110,7 +106,7 @@ class Reclist(commands.Cog):
 
 	@reclist.command()
 	async def clear(self, ctx):
-		results = await collection.find_one({"_id": ctx.author.id})
+		results = await self.db.find_one({"_id": ctx.author.id})
 		
 		if results != None:
 			def check(reaction, user):
@@ -130,7 +126,7 @@ class Reclist(commands.Cog):
 			
 			else:
 				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					await collection.delete_one({"_id": ctx.author.id})
+					await self.db.delete_one({"_id": ctx.author.id})
 					e = "Succesfully deleted your reclist! %s" % (ctx.author.mention)
 					await msg.edit(content=e)
 					await msg.clear_reactions()
@@ -153,10 +149,10 @@ class Reclist(commands.Cog):
 	@commands.is_owner()
 	async def remove(self, ctx, user : discord.Member):
 
-		results = await collection.find_one({"_id": user.id})
+		results = await self.db.find_one({"_id": user.id})
 		
 		if results != None:
-			await collection.delete_one({"_id": user.id})
+			await self.db.delete_one({"_id": user.id})
 			await ctx.send("Succesfully removed `{}`'s reclist from the database.".format(user.display_name))
 		
 		else:
@@ -167,7 +163,7 @@ class Reclist(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		await collection.delete_one({"_id": member.id})
+		await self.db.delete_one({"_id": member.id})
 
 
 def setup(bot):

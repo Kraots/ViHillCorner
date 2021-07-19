@@ -1,16 +1,8 @@
 import discord
 from discord.ext import commands
 import asyncio
-import motor.motor_asyncio
-import os
 import datetime
 from utils import time
-
-DBKEY = os.getenv("MONGODBKEY")
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster["ViHillCornerDB"]
-collection = db["Custom Roles"]
 
 nono_list = [
 				"staff",
@@ -21,6 +13,10 @@ class CustomRoles(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db1['Custom Roles']
+		self.prefix = '!'
+	def cog_check(self, ctx):
+		return ctx.prefix == self.prefix
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")	
@@ -37,7 +33,7 @@ class CustomRoles(commands.Cog):
 		channel = ctx.message.channel
 		usercheck = ctx.author.id
 
-		results = await collection.find_one({"_id": user.id})
+		results = await self.db.find_one({"_id": user.id})
 		def check(message):
 			return message.author.id == usercheck and message.channel.id == channel.id
 
@@ -111,7 +107,7 @@ class CustomRoles(commands.Cog):
 							"shares": 0,
 							"createdAt": datetime.datetime.utcnow()
 							}
-					await collection.insert_one(post)
+					await self.db.insert_one(post)
 
 					positions = {
 						newcr: 125
@@ -130,7 +126,7 @@ class CustomRoles(commands.Cog):
 		user = ctx.author
 		guild = self.bot.get_guild(750160850077089853)
 		
-		results = await collection.find_one({"_id": user.id})
+		results = await self.db.find_one({"_id": user.id})
 
 		if results is None:
 			await ctx.send("You must have a custom role to edit! Type: `!cr create` to create your custom role.")
@@ -167,7 +163,7 @@ class CustomRoles(commands.Cog):
 		user = ctx.author
 		guild = self.bot.get_guild(750160850077089853)
 
-		results = await collection.find_one({"_id": user.id})
+		results = await self.db.find_one({"_id": user.id})
 
 		if results == None:
 			await ctx.send("You must have a custom role to edit! Type: `!cr create` to create your custom role.")
@@ -187,7 +183,7 @@ class CustomRoles(commands.Cog):
 			return
 
 		else:
-			await collection.update_one({"_id": ctx.author.id}, {"$set":{"CustomRoleName": new_name}})
+			await self.db.update_one({"_id": ctx.author.id}, {"$set":{"CustomRoleName": new_name}})
 			await crname.edit(name=new_name)
 			em.add_field(name="New Name", value=f"`{new_name}`")
 			em.color = crname.color
@@ -202,7 +198,7 @@ class CustomRoles(commands.Cog):
 		user = ctx.author
 		guild = self.bot.get_guild(750160850077089853)
 
-		results = await collection.find_one({"_id": user.id})
+		results = await self.db.find_one({"_id": user.id})
 
 		if results is None:
 			await ctx.send("You do not have a custom role to share!")
@@ -231,7 +227,7 @@ class CustomRoles(commands.Cog):
 			return
 		else:
 			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				await collection.update_one({'roleID': crname.id}, {'$inc':{'shares': 1}})
+				await self.db.update_one({'roleID': crname.id}, {'$inc':{'shares': 1}})
 				await member.add_roles(crname)
 				em = discord.Embed(color=user.color, title=f"{member} has accepted your role")
 				em.set_image(url="https://blog.hubspot.com/hubfs/giphy_1-1.gif")
@@ -249,7 +245,7 @@ class CustomRoles(commands.Cog):
 			await ctx.send("You must give the role ID, to get it use `!role-id <role_name>`")
 			return
 		
-		result = await collection.find_one({'roleID': role})
+		result = await self.db.find_one({'roleID': role})
 
 		createdAt = result['createdAt']
 		shares = result['shares']
@@ -284,7 +280,7 @@ class CustomRoles(commands.Cog):
 		guild = self.bot.get_guild(750160850077089853)
 		cr = guild.get_role(role)
 		
-		results = await collection.find_one({"CustomRoleName": cr.name})
+		results = await self.db.find_one({"CustomRoleName": cr.name})
 		if results is None:
 			await ctx.send("That is not a custom role!")
 			return
@@ -306,9 +302,9 @@ class CustomRoles(commands.Cog):
 	@cr.command()
 	async def clean(self, ctx):
 		all_cr = []
-		results = collection.find()
+		results = await self.db.find().to_list(100000)
 		guild = self.bot.get_guild(750160850077089853)
-		for result in await results.to_list(999999999999):
+		for result in results:
 			user = str(result['_id'])
 			if str(ctx.author.id) != user:
 				all_cr.append(result['CustomRoleName'])
@@ -338,7 +334,7 @@ class CustomRoles(commands.Cog):
 		user = ctx.author
 		guild = self.bot.get_guild(750160850077089853)
 
-		results = await collection.find_one({"_id": user.id})
+		results = await self.db.find_one({"_id": user.id})
 
 		if results is None:
 			await ctx.send("You do not have a custom role! Type: `!cr create` to create your role!")
@@ -372,7 +368,7 @@ class CustomRoles(commands.Cog):
 
 			elif str(reaction.emoji) == '<:agree:797537027469082627>':
 				await crname.delete()
-				await collection.delete_one({"_id": ctx.author.id})
+				await self.db.delete_one({"_id": ctx.author.id})
 				e = "Succesfully deleted your custom role! {}".format(ctx.author.mention)
 				await msg.edit(content=e)
 				await msg.clear_reactions()
@@ -424,12 +420,12 @@ class CustomRoles(commands.Cog):
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
 		guild = self.bot.get_guild(750160850077089853)
-		results = await collection.find_one({"_id": member.id})
+		results = await self.db.find_one({"_id": member.id})
 		if results != None:
 			get_role = results['CustomRoleName']
 			crname = discord.utils.get(guild.roles, name=get_role)
 			await crname.delete()
-			await collection.delete_one({"_id": member.id})
+			await self.db.delete_one({"_id": member.id})
 		
 
 

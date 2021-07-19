@@ -1,21 +1,14 @@
 import discord
 from discord.ext import commands
 import asyncio
-import motor.motor_asyncio
-import os
 import games
 bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
-
-DBKEY = os.getenv('MONGODBKEY')
-
-cluster = motor.motor_asyncio.AsyncIOMotorClient(DBKEY)
-db = cluster['ViHillCornerDB']['Economy']
 
 class TTT(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
+		self.db = bot.db1['Economy']
 		self.prefix = "!"
-	
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
 	
@@ -26,8 +19,8 @@ class TTT(commands.Cog):
 		elif member is ctx.author:
 			return await ctx.send(f"You cannot play with yourself. {ctx.author.mention}")
 
-		user = await db.find_one({'_id': ctx.author.id})
-		opponent = await db.find_one({'_id': member.id})
+		user = await self.db.find_one({'_id': ctx.author.id})
+		opponent = await self.db.find_one({'_id': member.id})
 		
 		if user is None:
 			await ctx.send(f"{ctx.author.mention} You must first register. To do that type `!register`")
