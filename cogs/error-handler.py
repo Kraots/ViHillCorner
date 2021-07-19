@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
 import asyncio
-from utils.helpers import Pag
 from traceback import format_exception
+import utils.colors as color
 
 class GlobalErrorHandler(commands.Cog):
 
@@ -32,11 +32,11 @@ class GlobalErrorHandler(commands.Cog):
 			return
 		
 		elif isinstance(error, commands.errors.MissingRequiredArgument):
-			await ctx.send("You are missing an argument!")
+			await ctx.send(f"You are missing an argument! See `!help {ctx.command}` if you do not know how to use this.")
 			return
 
 		elif isinstance(error, commands.errors.MemberNotFound):
-			await ctx.send("Member does not exist!")
+			await ctx.send("Could not find member.")
 			ctx.command.reset_cooldown(ctx)
 			return
 
@@ -44,20 +44,15 @@ class GlobalErrorHandler(commands.Cog):
 			return
 
 		else:
+			kraots = self.bot.get_user(self.bot.owner_id)
 			get_error = "".join(format_exception(error, error, error.__traceback__))
-			pager = Pag(
-			timeout=100,
-			entries=[get_error[i: i + 2000] for i in range(0, len(get_error), 2000)],
-			length=1,
-			title="___ERROR___",
-			prefix="```py\n",
-			suffix="```"
-			)
-			await pager.start(ctx)
-			
-			
-
-						# print(type(error))
+			em = discord.Embed(description=f'```py\n{get_error}\n```')
+			if ctx.guild.id == 750160850077089853:
+				await kraots.send(content=f"**An error occured with the command `{ctx.command}`, here is the error:**", embed=em)
+				em = discord.Embed(title='Oops... An error has occured.', description='An error has occured while invoking this command and has been sent to my master to fix it.', color=color.red)
+				await ctx.send(embed=em)
+			else:
+				await ctx.send(embed=em)
 
 def setup(bot):
 	bot.add_cog(GlobalErrorHandler(bot))
