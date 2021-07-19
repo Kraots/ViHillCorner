@@ -509,7 +509,7 @@ class EcoCommands(commands.Cog):
 				if str(reaction.emoji) == '<:agree:797537027469082627>':
 					await collection.update_one({"_id": author.id}, {"$inc":{"wallet": -amount}})
 					await collection.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
-					e = f"{member.mention} accepted and got {amount:,} <:carrots:822122757654577183> from {ctx.author.mention}."
+					e = f"{member.mention} accepted and got **{amount:,}** <:carrots:822122757654577183> from {ctx.author.mention}."
 					await msg.edit(content=e)
 					await msg.clear_reactions()
 					return
