@@ -2,11 +2,10 @@ import discord
 from discord.ext import commands
 import asyncio
 import datetime
-from datetime import date
 import utils.colors as color
 from utils import time
 
-class MarryCommands(commands.Cog):
+class Marriage(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
@@ -17,6 +16,8 @@ class MarryCommands(commands.Cog):
 
 	@commands.command()
 	async def marry(self, ctx, member : discord.Member = None):
+		"""Marry the member."""
+
 		if member == None:
 			await ctx.send("You must specifiy the user u want to marry.")
 			return
@@ -88,6 +89,8 @@ class MarryCommands(commands.Cog):
 
 	@commands.command()	
 	async def divorce(self, ctx):
+		"""Divorce the person you're married with in case you're married with someone."""
+
 		user = ctx.author	
 
 		results = await self.db.find_one({"_id": user.id})	
@@ -134,6 +137,8 @@ class MarryCommands(commands.Cog):
 
 	@commands.command()
 	async def marriedwho(self, ctx, member : discord.Member = None):
+		"""See with who are you married, if married with someone."""
+
 		if member == None:
 			member = ctx.author
 
@@ -192,4 +197,4 @@ class MarryCommands(commands.Cog):
 		await self.db.delete_one({'married_to': member.id})
 
 def setup(bot):
-	bot.add_cog(MarryCommands(bot))
+	bot.add_cog(Marriage(bot))

@@ -34,10 +34,10 @@ class Tags(commands.Cog):
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra = False, aliases=['tags'])
 	async def tag(self, ctx, *, tag_name: str = None):
+		"""Sends the tag's content."""
+
 		if tag_name is None:
-			command = self.bot.get_command('help')
-			await ctx.invoke(command, 'tag')
-			return
+			return await ctx.send_help('tag')
 
 		data = await self.db.find_one({'the_tag_name': tag_name.lower()})
 		if data is None:
@@ -52,8 +52,10 @@ class Tags(commands.Cog):
 		await ctx.send(data['tag_content'], reference=ctx.replied_reference)
 
 
-	@tag.command()
-	async def search(self, ctx, *, query):
+	@tag.command(name='search')
+	async def tag_search(self, ctx, *, query):
+		"""Search for tag matches based on the query that you've given."""
+
 		query = str(query).lower()
 		entries = await self.db.find({'the_tag_name': {'$regex': query, '$options': 'i'}}).to_list(100000)
 		try:
@@ -63,8 +65,10 @@ class Tags(commands.Cog):
 			await ctx.send('No tags found. %s' % (ctx.author.mention))
 	
 
-	@tag.command(aliases=['list'])
-	async def _list(self, ctx, member: discord.Member = None):
+	@tag.command(name='list')
+	async def tag_list(self, ctx, member: discord.Member = None):
+		"""See the list of all the tags that the member owns."""
+
 		if member is None:
 			member = ctx.author
 		entries = await self.db.find({'tag_owner_id': member.id}).to_list(100000)
@@ -75,15 +79,19 @@ class Tags(commands.Cog):
 			await ctx.send("`{}` has no tags.".format(member))
 
 
-	@tag.command()
-	async def all(self, ctx):
+	@tag.command(name='all')
+	async def tag_all(self, ctx):
+		"""See a list of all the existing tags."""
+
 		entries = await self.db.find().to_list(100000)
 		p = TagPages(entries = entries, per_page = 7)
 		await p.start(ctx)
 	
 
-	@tag.command(aliases=['lb'])
-	async def leaderboard(self, ctx):
+	@tag.command(name='leaderboard', aliases=['lb'])
+	async def tag_leaderboard(self, ctx):
+		"""See top **10** most used tags."""
+
 		results = await self.db.find().sort([("uses_count", -1)]).to_list(10)
 		index = 0
 		em = discord.Embed(color=discord.Color.blurple())
@@ -97,8 +105,10 @@ class Tags(commands.Cog):
 		
 		await ctx.send(embed=em)
 
-	@tag.command()
-	async def info(self, ctx, *, tag_name : str = None):
+	@tag.command(name='info')
+	async def tag_info(self, ctx, *, tag_name : str = None):
+		"""See some info about the tag."""
+
 		if tag_name is None:
 			return await ctx.reply("**!tag info <tag_name>**")
 
@@ -139,8 +149,10 @@ class Tags(commands.Cog):
 
 		await ctx.send(embed=em)
 
-	@tag.group(aliases=['alias', 'aliases'], invoke_without_command=True, case_insensitive=True, ignore_extra = False)
-	async def _aliases(self, ctx, *, tag : str = None):
+	@tag.group(name='aliases', aliases=['alias'], invoke_without_command=True, case_insensitive=True, ignore_extra = False)
+	async def tag_aliases(self, ctx, *, tag : str = None):
+		"""See all the aliases the tag has."""
+
 		if tag is None:
 			return await ctx.reply("You must give the tag's name. %s" % (ctx.author.mention))
 		
@@ -196,9 +208,11 @@ class Tags(commands.Cog):
 				em.description = f"• {aliases}"
 			await ctx.send(embed=em)
 		
-	@_aliases.command(aliases=['make', 'add', 'create'])
+	@tag_aliases.command(name='create', aliases=['make', 'add'])
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
-	async def _create(self, ctx, *, tag : str = None):
+	async def tag_alias_create(self, ctx, *, tag : str = None):
+		"""Create an alias for an existing tag that you own."""
+
 		if tag is None:
 			return await ctx.reply("You must give the tag's name. %s" % (ctx.author.mention))
 
@@ -293,9 +307,11 @@ class Tags(commands.Cog):
 					await self.db.update_one({'the_tag_name': tag}, {'$set':{'aliases': tagAliases}})
 				await ctx.send(f"{ctx.author.mention} Successfully added the alias `{str(alias_name.content).lower()}` for tag **{data['the_tag_name']}**")
 
-	@_aliases.command(aliases=['delete'])
+	@tag_aliases.command(name='delete')
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
-	async def _delete(self, ctx, *, alias: str = None):
+	async def tag_alias_delete(self, ctx, *, alias: str = None):
+		"""Delete an alias from a tag that you own."""
+
 		if alias is None:
 			return await ctx.reply("You must specify the name of the alias you wish to delete. %s" % (ctx.author.mention))
 		results = await self.db.find_one({'aliases': alias.lower()})
@@ -346,9 +362,11 @@ class Tags(commands.Cog):
 
 
 
-	@tag.command(aliases=['make', 'add'])
+	@tag.command(name='create', aliases=['make', 'add'])
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")	
-	async def create(self, ctx, *, tag_name : str = None):
+	async def tag_create(self, ctx, *, tag_name : str = None):
+		"""Create a tag."""
+
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 		if tag_name is None:
@@ -421,9 +439,11 @@ class Tags(commands.Cog):
 			
 			await ctx.send("Tag `{}` Successfully created!".format(tag_name))
 
-	@tag.command()
+	@tag.command(name='delete')
 	@commands.has_any_role('Mod', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
-	async def delete(self, ctx, *, tag_name: str = None):
+	async def tag_delete(self, ctx, *, tag_name: str = None):
+		"""Delete a tag that you own."""
+
 		if tag_name is None:
 			return await ctx.reply("**!tag delete <tag_name>**")
 
@@ -467,12 +487,11 @@ class Tags(commands.Cog):
 				await msg.edit(content=e)
 				return
 
-
-
-
-	@tag.command()
+	@tag.command(name='remove')
 	@commands.is_owner()
-	async def remove(self, ctx, *, tag_name: str = None):
+	async def tag_remove(self, ctx, *, tag_name: str = None):
+		"""Remove a tag from the database."""
+
 		if tag_name is None:
 			return await ctx.reply("**!tag remove <tag_name>**")
 

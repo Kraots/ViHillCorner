@@ -27,11 +27,15 @@ class ToDo(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def todo(self, ctx, *, todo: str):
+		"""Add to your todo list."""
+
 		cmd = self.bot.get_command('todo add')
 		await ctx.invoke(cmd, todo=todo)
 	
-	@todo.command()
-	async def add(self, ctx, *, todo: str):
+	@todo.command(name='add')
+	async def todo_add(self, ctx, *, todo: str):
+		"""Add to your todo list."""
+
 		user = await self.db.find_one({'_id': ctx.author.id})
 		if user is None:
 			post = {
@@ -55,8 +59,10 @@ class ToDo(commands.Cog):
 		await ctx.reply("Successfully added to your todo list.")
 		return
 	
-	@todo.command(aliases=['list'])
-	async def _list(self, ctx):
+	@todo.command(name='list')
+	async def todo_list(self, ctx):
+		"""See your todo list, if you have any."""
+
 		entries = await self.db.find_one({'_id': ctx.author.id})
 		if entries is None:
 			return await ctx.reply("You do not have any todo list.")
@@ -70,8 +76,10 @@ class ToDo(commands.Cog):
 		m = ToDoPages(entries=entries, per_page=10, title="Here's your todo list:", author_name=ctx.author, author_icon_url=ctx.author.avatar_url)
 		await m.start(ctx)
 
-	@todo.command(aliases=['delete'])
-	async def remove(self, ctx, index):
+	@todo.command(name='delete', aliases=['remove'])
+	async def todo_remove(self, ctx, index):
+		"""Remove a todo from your todo list based on its index."""
+
 		try:
 			index = int(index) - 1
 		except ValueError:
@@ -98,8 +106,10 @@ class ToDo(commands.Cog):
 			await self.db.update_one({'_id': ctx.author.id}, {'$set':{'data': new_data}})
 		await ctx.reply("Operation successful.")
 
-	@todo.command()
-	async def clear(self, ctx):
+	@todo.command(name='clear')
+	async def todo_clear(self, ctx):
+		"""Delete your todo list, completely."""
+
 		user = await self.db.find_one({'_id': ctx.author.id})
 		if user is None:
 			return await ctx.reply("You do not have any todo list.")

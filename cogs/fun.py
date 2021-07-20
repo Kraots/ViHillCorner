@@ -5,6 +5,8 @@ from random import randint
 from utils.helpers import time_phaser, BotChannels
 import asyncio
 import games
+import aiohttp
+import utils.colors as color
 
 class Fun(commands.Cog):
 
@@ -16,6 +18,8 @@ class Fun(commands.Cog):
 
 	@commands.command()
 	async def ppsize(self, ctx, member: discord.Member = None):
+		"""How big is your pp 😳"""
+
 		if member is None:
 			member = ctx.author
 		
@@ -34,6 +38,8 @@ class Fun(commands.Cog):
 
 	@commands.command()
 	async def gayrate(self, ctx, member : discord.Member=None):
+		"""Are you gay 🤔"""
+		
 		gayrate = randint(1, 100)
 		randomcolour = randint(0, 0xffffff)
 
@@ -65,6 +71,8 @@ class Fun(commands.Cog):
 
 	@commands.command()
 	async def simprate(self, ctx, member : discord.Member=None):
+		"""Are you a simp 🤔"""
+
 		simprate = randint(1, 100)
 		randomcolour = randint(0, 0xffffff)
 
@@ -93,6 +101,8 @@ class Fun(commands.Cog):
 
 	@commands.command()
 	async def straightrate(self, ctx, member : discord.Member=None):
+		"""Are you straight 🤔"""
+
 		simprate = randint(1, 100)
 		randomcolour = randint(0, 0xffffff)
 
@@ -122,6 +132,8 @@ class Fun(commands.Cog):
 
 	@commands.command()
 	async def hornyrate(self, ctx, member : discord.Member=None):
+		"""How horny are you 😳 😏"""
+
 		simprate = randint(1, 100)
 		randomcolour = randint(0, 0xffffff)
 
@@ -152,6 +164,8 @@ class Fun(commands.Cog):
 
 	@commands.command()
 	async def boomerrate(self, ctx, member : discord.Member=None):
+		"""Are you a boomer 🤔"""
+
 		simprate = randint(1, 100)
 		randomcolour = randint(0, 0xffffff)
 
@@ -181,8 +195,10 @@ class Fun(commands.Cog):
 				embed2 = discord.Embed(title='Boomer rating machine', description=f'{member.name} is {simprate}% boomer ', color=randomcolour)
 			await ctx.send(embed=embed2)
 
-	@commands.command(aliases=['8ball'])
+	@commands.command(name='8ball')
 	async def _8ball(self, ctx, *, question):
+		"""Ask a question and i shall give you an answer."""
+
 		responses = [
 					"it is certain",
 					"it is undoubtedly so",
@@ -427,6 +443,8 @@ class Fun(commands.Cog):
 	@commands.check(BotChannels)
 	@commands.command()
 	async def fight(self, ctx, p2: discord.Member):
+		"""Have an interactive fight with someone."""
+
 		p1 = ctx.author
 		msg = await ctx.send(f"**{p1.display_name}** wants to have a fight with you, do you accept? {p2.mention}")
 		def check(reaction, user):
@@ -456,6 +474,8 @@ class Fun(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 60, commands.BucketType.user)
 	async def vampify(self, ctx, *args):
+		"""Adds a <:vampy:773535195210973237> between each word of your text."""
+
 		vampify = " <:vampy:773535195210973237> ".join(args)
 		await ctx.send(vampify)
 		await ctx.message.delete()
@@ -463,9 +483,60 @@ class Fun(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 60, commands.BucketType.user)
 	async def clapify(self, ctx, *args):
+		"""Adds a 👏 between each word of your text."""
+
 		clapify = " 👏 ".join(args)
 		await ctx.send(clapify)
 		await ctx.message.delete()
+
+	@commands.command()
+	async def cat(self, ctx):
+		"""Get a random image of a cat ❤️"""
+
+		async with aiohttp.ClientSession() as cs:
+			async with cs.get("http://aws.random.cat/meow") as r:
+				data = await r.json()
+
+			imgUrl = data['file']
+
+			embed = discord.Embed(title="Cat", url=imgUrl, color=color.orange, timestamp=ctx.message.created_at)
+			embed.set_image(url=imgUrl)
+			embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			msg = await ctx.send(embed=embed)
+			await msg.add_reaction("❤️")
+			await msg.add_reaction("😸")
+
+	@commands.command()
+	async def dog(self, ctx): 
+		"""Sends a random image of a dog ❤️"""
+
+		async with aiohttp.ClientSession() as cs:
+			async with cs.get("http://random.dog/woof.json") as r:
+				data = await r.json()
+
+			embed = discord.Embed(title="Dog", url=data['url'], color=color.orange, timestamp=ctx.message.created_at)
+			embed.set_image(url=data['url'])
+			embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			msg = await ctx.send(embed=embed)
+			await msg.add_reaction("❤️")
+			await msg.add_reaction("🐶")
+
+	@commands.command()
+	async def meme(self, ctx):
+		"""Get a random meme"""
+		
+		async with aiohttp.ClientSession() as cs:
+			async with cs.get('https://www.reddit.com/r/dankmemes/random/.json') as r:
+				res = await r.json()
+				imgUrl = res[0]['data']['children'] [0]['data']
+				linkUrl = imgUrl['url']
+				titleUrl = imgUrl['title']
+				
+				embed = discord.Embed(color=color.orange, title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at)
+				embed.set_image(url=linkUrl)
+				embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+
+				await ctx.send(embed=embed)
 
 	@vampify.error
 	async def vampify_error(self, ctx, error):

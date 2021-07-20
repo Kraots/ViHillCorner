@@ -19,6 +19,8 @@ class RemindersClass(commands.Cog):
 	
 	@commands.group(invoke_without_command = True, case_insensitive = True, aliases=['reminder'])
 	async def remind(self, ctx, *, when: time.UserFriendlyTime(commands.clean_content, default='\u2026')):
+		"""Set your reminder."""
+		
 		results = await self.db.find().sort([("_id", -1)]).to_list(1)
 
 		for result in results:
@@ -42,8 +44,10 @@ class RemindersClass(commands.Cog):
 		delta = time.human_timedelta(when.dt, accuracy=3)
 		await ctx.send(f"Alright {ctx.author.mention}, in **{delta}**: {when.arg}")
 	
-	@remind.command(aliases=['list'])
-	async def _list(self, ctx):
+	@remind.command(name='list')
+	async def remind_list(self, ctx):
+		"""See your list of reminders, if you have any."""
+
 		results = await self.db.find({"userID": ctx.author.id}).sort([("remindWhen", 1)]).to_list(10)
 		em = discord.Embed(color=color.lightpink, title="Reminders")
 		index = 0
@@ -64,8 +68,10 @@ class RemindersClass(commands.Cog):
 		em.set_footer(text="Showing %s/%s reminders." % (index, total_reminders))
 		await ctx.send(embed=em)
 	
-	@remind.command(aliases=['delete', 'cancel'], ignore_extra = False)
-	async def remove(self, ctx, id: int):
+	@remind.command(name='remove', aliases=['delete', 'cancel'])
+	async def remind_remove(self, ctx, id: int):
+		"""Remove a reminder from your list based on its id."""
+
 		results = await self.db.find_one({"_id": id})
 		if results != None:
 			if results['userID'] == ctx.author.id:
@@ -103,8 +109,10 @@ class RemindersClass(commands.Cog):
 			await ctx.send("No reminder with that ID.")
 			return
 
-	@remind.command(ignore_extra = False)
-	async def clear(self, ctx):
+	@remind.command(name='clear')
+	async def remind_clear(self, ctx):
+		"""Delete all of your reminders."""
+
 		results = await self.db.find_one({"userID": ctx.author.id})
 		if results != None:
 			def check(reaction, user):
@@ -163,12 +171,8 @@ class RemindersClass(commands.Cog):
 	async def on_member_remove(self, member):
 		await self.db.delete_many({"userID": member.id})
 	
-	@remind.error
-	async def remind_error(self, ctx, error):
-		await ctx.send(error)
-	
-	@remove.error
-	async def remove_error(self, ctx, error):
+	@remind_remove.error
+	async def remind_remove_error(self, ctx, error):
 		if isinstance(error, commands.errors.TooManyArguments):
 			return
 

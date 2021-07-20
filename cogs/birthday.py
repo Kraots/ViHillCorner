@@ -47,6 +47,8 @@ class Birthdays(commands.Cog):
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bday', 'b-day'])
 	async def birthday(self, ctx, member: discord.Member = None):
+		"""See when the member's birthday is, if any"""
+
 		if member is None:
 			member = ctx.author
 		user = member
@@ -69,8 +71,10 @@ class Birthdays(commands.Cog):
 
 
 
-	@birthday.command(aliases=['upcoming'])
-	async def top(self, ctx):
+	@birthday.command(name='top', aliases=['upcoming'])
+	async def bday_top(self, ctx):
+		"""See top 5 upcoming birthdays"""
+
 		index = 0
 
 		def format_date(dt1, dt2):
@@ -88,9 +92,11 @@ class Birthdays(commands.Cog):
 
 
 
-	@birthday.command(aliases=['add'])
+	@birthday.command(name='set', aliases=['add'])
 	@commands.cooldown(1, 10, commands.BucketType.user)
-	async def set(self, ctx, *, bday = None):
+	async def bday_set(self, ctx, *, bday = None):
+		"""Set your birthday"""
+
 		if bday is None:
 			await ctx.send("Please insert a birthday! Please type `!birthday set month/day`.\n**Example:**\n\u2800`!birthday set 01/16`")
 			ctx.command.reset_cooldown(ctx)
@@ -225,8 +231,10 @@ class Birthdays(commands.Cog):
 
 
 
-	@birthday.command(aliases=['remove'])
-	async def delete(self, ctx):
+	@birthday.command(name='delete', aliases=['remove'])
+	async def bday_delete(self, ctx):
+		"""Delete your birthday"""
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 		if results != None:
 			def check(reaction, user):
@@ -272,8 +280,8 @@ class Birthdays(commands.Cog):
 
 
 
-	@set.error
-	async def bday_set(self, ctx, error):
+	@bday_set.error
+	async def bday_set_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandOnCooldown):
 			await ctx.send(f"You are on cooldown! Please try again in `{str(error.retry_after)[:4]}` seconds.")
 

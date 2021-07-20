@@ -13,7 +13,7 @@ bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
 
 rps = ['rock', 'paper', 'scissors']
 
-class EcoCommands(commands.Cog):
+class Economy(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
@@ -22,11 +22,10 @@ class EcoCommands(commands.Cog):
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
 
-
-			# DAILY
-
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def daily(self, ctx):
+		"""Get your daily 75.00K <:carrots:822122757654577183>."""
+
 		user = ctx.author
 		results = await self.db.find_one({"_id": user.id})
 
@@ -60,10 +59,11 @@ class EcoCommands(commands.Cog):
 			
 			await ctx.send("Daily successfully claimed, `75,000` <:carrots:822122757654577183>  have been put into your wallet. Come back in **24 hours** for the next one. %s" % (ctx.author.mention))	
 
-
-	@daily.group(invoke_without_command = True, case_insensitive = True, aliases=['reset'])
+	@daily.group(name='reset', invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
-	async def _reset(self, ctx, member: discord.Member = None):
+	async def daily_reset(self, ctx, member: discord.Member = None):
+		"""Reset the daily for a user. This means that the amount of time that they have to wait until they can get their daily will be reset."""
+
 		if member is None:
 			member = ctx.author
 		
@@ -76,18 +76,19 @@ class EcoCommands(commands.Cog):
 		await self.db.update_one({"_id": member.id}, {"$set":{"daily": NewDaily}})
 		await ctx.send("Cooldown for the daily command has been reset for user `{}`.".format(member))
 
-	@_reset.command(aliases=['all', 'everyone'])
+	@daily_reset.command(name='everyone', aliases=['all'])
 	@commands.is_owner()
-	async def _all(self, ctx):
+	async def daily_reset_everyone(self, ctx):
+		"""Reset the daily cooldown for `everyone`"""
+
 		NewDaily = datetime.datetime.utcnow()
 		await self.db.update_many({}, {"$set":{"daily": NewDaily}})
 		await ctx.send("Cooldown for the daily command has been reset for everyone.")
 
-			# REGISTER
-
-
-	@commands.command()
-	async def register(self, ctx):
+	@commands.command(name='register')
+	async def eco_register(self, ctx):
+		"""Register yourself to be able to use the economy commands."""
+		
 		user = ctx.author
 
 		post = {"_id": user.id, "wallet": 0, "bank": 0, "daily": datetime.datetime.utcnow()}
@@ -99,12 +100,10 @@ class EcoCommands(commands.Cog):
 		except pymongo.errors.DuplicateKeyError:
 			await ctx.send("You are already registered! %s" % (ctx.author.mention))
 	
+	@commands.command(name='unregister')
+	async def eco_unregister(self, ctx):
+		"""Unregister yourself, you won't be able to use the economy commands anymore."""
 
-			# UNREGISTER
-
-
-	@commands.command()
-	async def unregister(self, ctx):
 		user = ctx.author
 		results = await self.db.find_one({"_id": user.id})
 		if results == None:
@@ -113,14 +112,11 @@ class EcoCommands(commands.Cog):
 
 		await self.db.delete_one({"_id": user.id})
 		await ctx.send("Succesfully unregistered! %s" % (ctx.author.mention))
-		  
-		  
-		    # BALANCE
 
-
-
-	@commands.group(invoke_without_command=True, aliases=['bal'])
+	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bal'])
 	async def balance(self, ctx, member: discord.Member = None):
+		"""Check your or another user's balance."""
+
 		if member is None:
 			member = ctx.author
 
@@ -175,10 +171,10 @@ class EcoCommands(commands.Cog):
 
 		await ctx.send(embed=em)
 
-			# LEADERBOARD
+	@balance.command(name='leaderboard', aliases=['lb', 'baltop'])
+	async def eco_bal_leaderboard(self, ctx):
+		"""See top `10` richest people."""
 
-	@commands.command(aliases=['lb', 'baltop'])
-	async def leaderboard(self, ctx):
 		results = await self.db.find().to_list(100000)
 		leader_board = {}
 
@@ -191,7 +187,7 @@ class EcoCommands(commands.Cog):
 		
 		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True)  
 		
-		em = discord.Embed(title=f'Top 10 richest people\n _ _', color=color.lightpink) 
+		em = discord.Embed(title=f'Top 10 richest people', color=color.lightpink) 
 		
 		for index, (mem, amt) in enumerate(leader_board[:10], start=1): 
 			
@@ -220,10 +216,11 @@ class EcoCommands(commands.Cog):
 			
 		await ctx.send(embed=em)
 
-
-	@balance.command(aliases=['add-bank'])
+	@balance.command(name='add-bank')
 	@commands.is_owner()
 	async def add_bank(self, ctx, amount = None, member: discord.Member = None):
+		"""Add <:carrots:822122757654577183> in the user's bank."""
+
 		if member is None:
 			member = ctx.author
 
@@ -233,7 +230,7 @@ class EcoCommands(commands.Cog):
 			return
 
 		if amount is None:
-			await ctx.send("Please specify the amount of money you want to add!")
+			await ctx.send("Please specify the amount of carrots you want to add!")
 			return
 
 		user = member
@@ -247,9 +244,11 @@ class EcoCommands(commands.Cog):
 			
 		await ctx.send("Successfully added **{:,}** <:carrots:822122757654577183> , and deposited them into the bank for `{}`!".format(amount, member))
 
-	@balance.command(aliases=['add-wallet'])
+	@balance.command(name='add-wallet')
 	@commands.is_owner()
 	async def add_wallet(self, ctx, amount = None, member: discord.Member = None):
+		"""Add <:carrots:822122757654577183> in the member's wallet."""
+
 		if member is None:
 			member = ctx.author
 
@@ -259,7 +258,7 @@ class EcoCommands(commands.Cog):
 			return
 
 		if amount is None:
-			await ctx.send("Please specify the amount of money you want to add!")
+			await ctx.send("Please specify the amount of carrots you want to add!")
 			return
 
 		user = member
@@ -273,10 +272,11 @@ class EcoCommands(commands.Cog):
 			
 		await ctx.send("Successfully added **{:,}** <:carrots:822122757654577183>  to the wallet for `{}`!".format(amount, member))
 
-
-	@balance.command(aliases=['set-bank'])
+	@balance.command(name='set-bank')
 	@commands.is_owner()
 	async def set_bank(self, ctx, amount = None, member: discord.Member = None):
+		"""Set the amount of <:carrots:822122757654577183> in the member's bank."""
+
 		if member is None:
 			member = ctx.author
 
@@ -286,7 +286,7 @@ class EcoCommands(commands.Cog):
 			return
 
 		if amount is None:
-			await ctx.send("Please specify the amount of money you want to set!")
+			await ctx.send("Please specify the amount of carrots you want to set!")
 			return
 
 		user = member
@@ -298,9 +298,11 @@ class EcoCommands(commands.Cog):
 
 		await ctx.send("Balance successfully set to **{:,}** <:carrots:822122757654577183>  in the bank for `{}`!".format(amount, member))
 
-	@balance.command()
+	@balance.command(name='reset')
 	@commands.is_owner()
-	async def reset(self, ctx, member: discord.Member = None):
+	async def eco_bal_reset(self, ctx, member: discord.Member = None):
+		"""Reset the user's <:carrots:822122757654577183>."""
+
 		if member is None:
 			member = ctx.author
 
@@ -316,11 +318,12 @@ class EcoCommands(commands.Cog):
 		await self.db.update_one({"_id": user.id}, {"$set":{"bank": 0}})
 
 		await ctx.send(f"Reseted balance for `{member}`.")
-	
 
-	@balance.command(aliases=['set-wallet'])
+	@balance.command(name='set-wallet')
 	@commands.is_owner()
 	async def set_wallet(self, ctx, amount = None, member: discord.Member = None):
+		"""Set the amount of <:carrots:822122757654577183> in the user's wallet."""
+
 		if member is None:
 			member = ctx.author
 
@@ -330,7 +333,7 @@ class EcoCommands(commands.Cog):
 			return
 
 		if amount is None:
-			await ctx.send("Please specify the amount of money you want to set!")
+			await ctx.send("Please specify the amount of carrots you want to set!")
 			return
 
 		user = member
@@ -342,12 +345,10 @@ class EcoCommands(commands.Cog):
 
 		await ctx.send("Balance successfully set to **{:,}** <:carrots:822122757654577183>  in the wallet for `{}`!".format(amount, member))
 
-
- 			# WITHDRAW
-
-
 	@commands.group(aliases=['with'])
 	async def withdraw(self, ctx, amount = None):
+		"""Withdraw the amount of <:carrots:822122757654577183> from your bank."""
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -371,11 +372,11 @@ class EcoCommands(commands.Cog):
 				return await ctx.reply("Not a number!")
 
 			if amount > bal:
-				await ctx.send('You do not own that much money! %s' % (ctx.author.mention))
+				await ctx.send('You do not own that much carrots! %s' % (ctx.author.mention))
 				return
 
 			elif bal < 1:
-				await ctx.send("{} You do not have that much money in your bank. Money in bank: **{:,}**".format(ctx.author.mention, bal))
+				await ctx.send("{} You do not have that much carrots in your bank. Carrots in bank: **{:,}**".format(ctx.author.mention, bal))
 				return
 
 			elif amount < 1:
@@ -392,11 +393,9 @@ class EcoCommands(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			return
 
-			# DEPOSIT
-
-
 	@commands.command(aliases=['dep'])
 	async def deposit(self, ctx, amount = None):
+		"""Deposit the amount of <:carrots:822122757654577183> in your bank."""
 		
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -420,15 +419,15 @@ class EcoCommands(commands.Cog):
 				return await ctx.reply("Not a number!")
 
 			if amount > bal:
-				await ctx.send('You do not own that much money! %s' % (ctx.author.mention))
+				await ctx.send('You do not own that much carrots! %s' % (ctx.author.mention))
 				return
 
 			elif bal < 1:
-				await ctx.send("{} You do not have that much money in your wallet. Money in wallet: **{:,}**".format(ctx.author.mention, bal))
+				await ctx.send("{} You do not have that much carrots in your wallet. Carrots in wallet: **{:,}**".format(ctx.author.mention, bal))
 				return
 
 			elif amount < 1:
-				await ctx.send('Invalid amount. You cannot deposit **0** or **negative number** amount of <:carrots:822122757654577183> . %s' % (ctx.author.mention))
+				await ctx.send('Invalid amount. You cannot deposit **0** or **negative number** amount of <:carrots:822122757654577183>. %s' % (ctx.author.mention))
 				return
 
 			await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -amount}})
@@ -441,11 +440,9 @@ class EcoCommands(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			return
 
-			# GIVE
-
-
-	@commands.command(aliases=['gift'])
-	async def give(self, ctx, member : discord.Member, amount = None):
+	@commands.command(name='gift', aliases=['give'])
+	async def bal_eco_give(self, ctx, member : discord.Member, amount = None):
+		"""Be a kind person and give some of your <:carrots:822122757654577183> from your **bank** to someone else's."""
 		
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -471,11 +468,11 @@ class EcoCommands(commands.Cog):
 				return await ctx.reply("Not a number!")
 
 			if amount > bal:
-				await ctx.send('You do not own that much money! %s' % (ctx.author.mention))
+				await ctx.send('You do not own that much carrots! %s' % (ctx.author.mention))
 				return
 
 			elif bal < 100:
-				await ctx.send("{} You do not have that much money in your wallet. Money in wallet: **{:,}**".format(ctx.author.mention, bal))
+				await ctx.send("{} You do not have that much carrots in your wallet. Carrots in wallet: **{:,}**".format(ctx.author.mention, bal))
 				return
 
 			if amount < 100:
@@ -485,7 +482,7 @@ class EcoCommands(commands.Cog):
 			def check(reaction, user):
 				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
 
-			msg = await ctx.send(f"{ctx.author.mention} wants to give you some money. Do you accept them {member.mention}?")
+			msg = await ctx.send(f"{ctx.author.mention} wants to give you some carrots. Do you accept them {member.mention}?")
 			await msg.add_reaction('<:agree:797537027469082627>')
 			await msg.add_reaction('<:disagree:797537030980239411>')
 
@@ -516,14 +513,12 @@ class EcoCommands(commands.Cog):
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 			return
-			
-
-			# ROB
-
 
 	@commands.command(aliases=["steal"])
 	@commands.cooldown(1, 20, commands.BucketType.user)
 	async def rob(self, ctx, member : discord.Member = None):
+		"""Rob someone of their <:carrots:822122757654577183> from their wallet."""
+
 		if member is None:
 			await ctx.send("You must specify the person you want to rob/steal from. %s" % (ctx.author.mention))
 			ctx.command.reset_cooldown(ctx)
@@ -598,12 +593,11 @@ class EcoCommands(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			return
 
-			# SLOTS
-
-
 	@commands.command()
 	@commands.cooldown(1, 7, commands.BucketType.user)
 	async def slots(self, ctx, amount = None):
+		"""Gamble your <:carrots:822122757654577183>."""
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -627,12 +621,12 @@ class EcoCommands(commands.Cog):
 				return await ctx.reply("Not a number!")
 
 			if amount > bal:
-				await ctx.send('You do not own that much money! %s' % (ctx.author.mention))
+				await ctx.send('You do not own that much carrots! %s' % (ctx.author.mention))
 				ctx.command.reset_cooldown(ctx)
 				return
 
 			if amount < 300:
-				await ctx.send('You must bet more than `300` <:carrots:822122757654577183> . %s' % (ctx.author.mention))
+				await ctx.send('You must bet more than `300` <:carrots:822122757654577183>. %s' % (ctx.author.mention))
 				ctx.command.reset_cooldown(ctx)
 				return
 
@@ -669,7 +663,7 @@ class EcoCommands(commands.Cog):
 				await msg.edit(embed=em)
 				
 				print("Reached final edit")
-				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of **{:,}** <:carrots:822122757654577183>  and won **{:,}** <:carrots:822122757654577183> . \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(line1, line2, line3, amount, earned, wallet_amt))
+				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of **{:,}** <:carrots:822122757654577183>  and won **{:,}** <:carrots:822122757654577183>. \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(line1, line2, line3, amount, earned, wallet_amt))
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=winembed)
 
@@ -690,7 +684,7 @@ class EcoCommands(commands.Cog):
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
-				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou won **{:,}** <:carrots:822122757654577183> . \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(final, amount, wallet_amt))
+				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou won **{:,}** <:carrots:822122757654577183>. \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(final, amount, wallet_amt))
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=winembed)
 
@@ -719,14 +713,11 @@ class EcoCommands(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			return
 
-
-
-			# BEG
-
-
 	@commands.command()
 	@commands.cooldown(1, 5, commands.BucketType.user)
 	async def beg(self, ctx):
+		"""Beg for some <:carrots:822122757654577183>."""
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -741,17 +732,16 @@ class EcoCommands(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			return
 
-			# WORK
-	
-
 	@commands.command()
 	@commands.cooldown(1, 3600, commands.BucketType.user)
 	async def work(self, ctx):
+		"""Work and get <:carrots:822122757654577183>."""
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
 
-			await ctx.send("You worked and got **5,000** <:carrots:822122757654577183> . The money have been deposited into your bank!")
+			await ctx.send("You worked and got **5,000** <:carrots:822122757654577183>. The carrots have been deposited into your bank!")
 
 			await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"bank": 5000}})
 		
@@ -760,12 +750,11 @@ class EcoCommands(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			return
 
-
-				# CRIME
-
 	@commands.command()
 	@commands.cooldown(1, 15, commands.BucketType.user)
 	async def crime(self, ctx):
+		"""Commit crimes that range between `small-medium-big`, and depending on which one you get, the more <:carrots:822122757654577183> you get, but be careful! You can lose the carrots as well."""
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -780,22 +769,22 @@ class EcoCommands(commands.Cog):
 			if aaaa == 2:
 				await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
 
-				await ctx.send("<:weird:773538796087803934> you commited a bigger crime and got **{:,}** <:carrots:822122757654577183> .".format(earnings))
+				await ctx.send("<:weird:773538796087803934> you commited a bigger crime and got **{:,}** <:carrots:822122757654577183>.".format(earnings))
 				return
 
 			if aaaa == 4:
 				await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
-				await ctx.send("<:weird:773538796087803934> you commited a smaller crime and got **{:,}** <:carrots:822122757654577183> .".format(earningss))
+				await ctx.send("<:weird:773538796087803934> you commited a smaller crime and got **{:,}** <:carrots:822122757654577183>.".format(earningss))
 				return
 
 			if aaaa == 6:
 				await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
-				await ctx.send("<:weird:773538796087803934> you commited a medium crime and got **{:,}** <:carrots:822122757654577183> .".format(earningsss))
+				await ctx.send("<:weird:773538796087803934> you commited a medium crime and got **{:,}** <:carrots:822122757654577183>.".format(earningsss))
 				return
 
 			if aaaa == 7:
 				await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
-				await ctx.send("<:weird:773538796087803934> you commited a large crime and got **{:,}** <:carrots:822122757654577183> .".format(earningssss))
+				await ctx.send("<:weird:773538796087803934> you commited a large crime and got **{:,}** <:carrots:822122757654577183>.".format(earningssss))
 				return
 
 			else:
@@ -808,12 +797,11 @@ class EcoCommands(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			return
 
-				# GUESS THE NUMBER
-
-
-	@commands.command(aliases=['guess'])
+	@commands.command(name='guess-the-number', aliases=['guess'])
 	@commands.cooldown(1, 3, commands.BucketType.user)
-	async def gtn(self, ctx):
+	async def eco_gtn(self, ctx):
+		"""Play a guess the number game and earn <:carrots:822122757654577183>."""
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -841,7 +829,7 @@ class EcoCommands(commands.Cog):
 					index += 1
 					if index == 3:
 						await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -lost_amt}})
-						await msg.reply(content=f"You didn't get it and lost **{lost_amt}** <:carrots:822122757654577183> . The number was **{number}**.")
+						await msg.reply(content=f"You didn't get it and lost **{lost_amt}** <:carrots:822122757654577183>. The number was **{number}**.")
 						return
 					await msg.reply('Try going lower.')
 
@@ -850,7 +838,7 @@ class EcoCommands(commands.Cog):
 					index += 1
 					if index == 3:
 						await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -lost_amt}})
-						await msg.reply(content=f"You didn't get it and lost **{lost_amt}** <:carrots:822122757654577183> . The number was **{number}**.")
+						await msg.reply(content=f"You didn't get it and lost **{lost_amt}** <:carrots:822122757654577183>. The number was **{number}**.")
 						return
 					await msg.reply('Try going higher.')
 
@@ -858,19 +846,18 @@ class EcoCommands(commands.Cog):
 
 				else:
 					await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": win_amt}})
-					await msg.reply(f'You guessed it! Good job! You got **{win_amt}** <:carrots:822122757654577183> . The number was **{number}**.')
+					await msg.reply(f'You guessed it! Good job! You got **{win_amt}** <:carrots:822122757654577183>. The number was **{number}**.')
 					return
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 			ctx.command.reset_cooldown(ctx)
 			return
-
-
-                # PP SUCK (credigs : PANDIE)
 	
 	@commands.command()
 	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def ppsuck(self, ctx):
+		"""Suck some pp 😳 for some quick <:carrots:822122757654577183>."""
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -888,28 +875,28 @@ class EcoCommands(commands.Cog):
 					earned = earningssssss	
 					await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
 
-					await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got **{:,}** <:carrots:822122757654577183> .".format(earned))
+					await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got **{:,}** <:carrots:822122757654577183>.".format(earned))
 					return
 						
 				elif aaaa == 1:
 					earned = earnings	
 					await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
-					await ctx.send(":yum: you sucked ur dad's pp and got **{:,}** <:carrots:822122757654577183> .".format(earned))
+					await ctx.send(":yum: you sucked ur dad's pp and got **{:,}** <:carrots:822122757654577183>.".format(earned))
 					return
 
 				elif aaaa == 4:
 					earned = earningss	
 					await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 
-					await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got **{:,}** <:carrots:822122757654577183> .".format(earned))
+					await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got **{:,}** <:carrots:822122757654577183>.".format(earned))
 					return
 				
 				elif aaaa == 6:
 					earned = earningsss	
 					await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
 				
-					await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got **{:,}** <:carrots:822122757654577183> .".format(earned))
+					await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got **{:,}** <:carrots:822122757654577183>.".format(earned))
 					return
 				
 				elif aaaa == 7:
@@ -933,6 +920,8 @@ class EcoCommands(commands.Cog):
 	@commands.command()
 	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def race(self, ctx):
+		"""Participate in a race and earn <:carrots:822122757654577183>."""
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -948,27 +937,27 @@ class EcoCommands(commands.Cog):
 
 			if aaaa == 1:
 				await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
-				await ctx.send(":third_place: you won the race 3rd place an won: **{:,}** <:carrots:822122757654577183> .".format(earnings))
+				await ctx.send(":third_place: you won the race 3rd place an won: **{:,}** <:carrots:822122757654577183>.".format(earnings))
 				return
 
 			elif aaaa == 4:
 				await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
-				await ctx.send("U were close to lose the race by getting 5th place. You got a total of: **{:,}** <:carrots:822122757654577183> .".format(earningss))
+				await ctx.send("U were close to lose the race by getting 5th place. You got a total of: **{:,}** <:carrots:822122757654577183>.".format(earningss))
 				return
 
 			elif aaaa == 6:
 				await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
-				await ctx.send("After winning on 4th place you got: **{:,}** <:carrots:822122757654577183> .".format(earningsss))
+				await ctx.send("After winning on 4th place you got: **{:,}** <:carrots:822122757654577183>.".format(earningsss))
 				return
 
 			elif aaaa == 7:
 				await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
-				await ctx.send(":sparkles: :second_place: after winning on the 2nd place, you won: **{:,}** <:carrots:822122757654577183> .".format(earningssss))
+				await ctx.send(":sparkles: :second_place: after winning on the 2nd place, you won: **{:,}** <:carrots:822122757654577183>.".format(earningssss))
 				return
 
 			elif bbbb == 1:
 				await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssssss}})
-				await ctx.send(":sparkles: :first_place: :medal: :sparkles: after winning the race on the first place you won a total of: **{:,}** <:carrots:822122757654577183> .".format(earningssssss))
+				await ctx.send(":sparkles: :first_place: :medal: :sparkles: after winning the race on the first place you won a total of: **{:,}** <:carrots:822122757654577183>.".format(earningssssss))
 				return
 
 			else:
@@ -982,9 +971,11 @@ class EcoCommands(commands.Cog):
 			return
 
 
-	@commands.command(aliases=['rps', 'rockpaperscissors', 'rock-paper-scissors'])
+	@commands.command(name='rock-paper-scissors', aliases=['rps', 'rockpaperscissors'])
 	@commands.cooldown(1, 15, commands.BucketType.user)
-	async def _rps(self, ctx):
+	async def eco_rps(self, ctx):
+		"""Play a game of rock-paper-scissors with the bot and earn <:carrots:822122757654577183> if you win or lose some if you lose the game."""
+
 		user = ctx.author
 		results = await self.db.find_one({"_id": user.id})
 		if results == None:
@@ -1010,11 +1001,11 @@ class EcoCommands(commands.Cog):
 
 			if user_rps == "rock":
 				if bot_rps == "paper":
-					await ctx.send("You chose `rock`, and i chose `paper`. You lost **325** <:carrots:822122757654577183> . %s" % (user.mention))
+					await ctx.send("You chose `rock`, and i chose `paper`. You lost **325** <:carrots:822122757654577183>. %s" % (user.mention))
 					await self.db.update_one({'_id': user.id}, {'$inc':{'wallet': -325}})
 					return
 				elif bot_rps == "scissors":
-					await ctx.send("You chose `rock`, and i chose `scissors`. You won **{:,}** <:carrots:822122757654577183> . {}".format(earned, user.mention))
+					await ctx.send("You chose `rock`, and i chose `scissors`. You won **{:,}** <:carrots:822122757654577183>. {}".format(earned, user.mention))
 					await self.db.update_one({'_id': user.id}, {'$inc':{'wallet': earned}})
 					return
 				elif bot_rps == "rock":
@@ -1025,11 +1016,11 @@ class EcoCommands(commands.Cog):
 			
 			elif user_rps == "paper":
 				if bot_rps == "scissors":
-					await ctx.send("You chose `paper`, and i chose `scissors`. You lost **325** <:carrots:822122757654577183> . %s" % (user.mention))
+					await ctx.send("You chose `paper`, and i chose `scissors`. You lost **325** <:carrots:822122757654577183>. %s" % (user.mention))
 					await self.db.update_one({'_id': user.id}, {'$inc':{'wallet': -325}})
 					return
 				elif bot_rps == "rock":
-					await ctx.send("You chose `paper`, and i chose `rock`. You won **{:,}** <:carrots:822122757654577183> . {}".format(earned, user.mention))
+					await ctx.send("You chose `paper`, and i chose `rock`. You won **{:,}** <:carrots:822122757654577183>. {}".format(earned, user.mention))
 					await self.db.update_one({'_id': user.id}, {'$inc':{'wallet': earned}})
 					return
 				elif bot_rps == "paper":
@@ -1039,11 +1030,11 @@ class EcoCommands(commands.Cog):
 			
 			elif user_rps == "scissors":
 				if bot_rps == "rock":
-					await ctx.send("You chose `scissors`, and i chose `rock`. You lost **325** <:carrots:822122757654577183> . %s" % (user.mention))
+					await ctx.send("You chose `scissors`, and i chose `rock`. You lost **325** <:carrots:822122757654577183>. %s" % (user.mention))
 					await self.db.update_one({'_id': user.id}, {'$inc':{'wallet': -325}})
 					return
 				elif bot_rps == "paper":
-					await ctx.send("You chose `scissors`, and i chose `paper`. You won **{:,}** <:carrots:822122757654577183> . {}".format(earned, user.mention))
+					await ctx.send("You chose `scissors`, and i chose `paper`. You won **{:,}** <:carrots:822122757654577183>. {}".format(earned, user.mention))
 					await self.db.update_one({'_id': user.id}, {'$inc':{'wallet': earned}})
 					return
 				elif bot_rps == "scissors":
@@ -1051,7 +1042,7 @@ class EcoCommands(commands.Cog):
 					ctx.command.reset_cooldown(ctx)
 					return
 
-	@_rps.error
+	@eco_rps.error
 	async def rps_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f"Please wait: **{time_phaser(error.retry_after)}** before playing rps again. {ctx.author.mention}"
@@ -1069,7 +1060,7 @@ class EcoCommands(commands.Cog):
 				msg = f"{ctx.author.mention} OK OK CHILLE, IK U WANT TO SUCK ON SOMETHING BUT PLEASE WAIT **{time_phaser(error.retry_after)}**."
 				await ctx.send(msg)
 
-	@gtn.error
+	@eco_gtn.error
 	async def gtn_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
 				msg = f"{ctx.author.mention} You've already played the game, come back in **{time_phaser(error.retry_after)}**."
@@ -1106,7 +1097,7 @@ class EcoCommands(commands.Cog):
 	@slots.error
 	async def slots_error(self, ctx, error):
 		if isinstance(error, commands.CommandOnCooldown):
-				msg = f'{ctx.author.mention} You can bet your money in the slots machine in **{time_phaser(error.retry_after)}**.'
+				msg = f'{ctx.author.mention} You can bet your carrots in the slots machine in **{time_phaser(error.retry_after)}**.'
 				await ctx.send(msg)
 
 		elif isinstance(error, commands.errors.MissingRequiredArgument):
@@ -1123,4 +1114,4 @@ class EcoCommands(commands.Cog):
 
 
 def setup(bot):
-	bot.add_cog(EcoCommands(bot))	
+	bot.add_cog(Economy(bot))

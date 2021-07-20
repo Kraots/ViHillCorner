@@ -15,13 +15,17 @@ class TriviaCommands(commands.Cog):
 		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
 
 
-	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False, aliases=['trivia'])
-	async def _trivia(self, ctx):
+	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
+	async def trivia(self, ctx):
+		"""Start your trivia game."""
+
 		trivia = games.Trivia(ctx)
 		await trivia.start()
 
-	@_trivia.group(invoke_without_command=True, case_insensitive=True)
-	async def points(self, ctx, member: discord.Member = None):
+	@trivia.group(name='points', invoke_without_command=True, case_insensitive=True)
+	async def trivia_points(self, ctx, member: discord.Member = None):
+		"""See how many points the member has."""
+
 		if member is None:
 			member = ctx.author
 		
@@ -51,8 +55,10 @@ class TriviaCommands(commands.Cog):
 		em.add_field(name="Rank:", value="`#%s`" % (rank), inline=False)
 		await ctx.send(embed=em)
 	
-	@_trivia.command(aliases=['lb', 'leaderboard', 'top'])
-	async def __lb(self, ctx):
+	@trivia.command(name='leaderboard', aliases=['lb', 'top'])
+	async def trivia_leaderboard(self, ctx):
+		"""See the top 5 members with the most amount of trivia points."""
+
 		rank = 0
 		em = discord.Embed(color=color.lightpink, title="Here's top `5` trivia users with most points:")
 		
@@ -64,50 +70,58 @@ class TriviaCommands(commands.Cog):
 		
 		await ctx.send(embed=em)
 	
-	@points.command(aliases=['set'])
+	@trivia_points.command(name='set')
 	@commands.is_owner()
-	async def __set(self, ctx, amount: int, user: discord.Member = None):
-		if user is None: 
-			user = ctx.author
+	async def tiriva_points_set(self, ctx, amount: int, member: discord.Member = None):
+		"""Set the trivia points for the member."""
+
+		if member is None: 
+			member = ctx.author
 		
-		userDb = await self.db.find_one({'_id': user.id})
+		userDb = await self.db.find_one({'_id': member.id})
 		if userDb is None:
 			await ctx.send("The user has never played trivia before. His points cannot be changed since he is not registered in the database.")
 			return
 
-		await self.db.update_one({'_id': user.id}, {'$set':{'points': amount}})
-		await ctx.send("Succesfully set the points for user `%s` to **%s**." % (user.display_name, amount))
+		await self.db.update_one({'_id': member.id}, {'$set':{'points': amount}})
+		await ctx.send("Succesfully set the points for user `%s` to **%s**." % (member.display_name, amount))
 
-	@points.command(aliases=['add'])
+	@trivia_points.command(name='add')
 	@commands.is_owner()
-	async def __add(self, ctx, amount: int, user: discord.Member = None):
-		if user is None: 
-			user = ctx.author
+	async def trivia_points_add(self, ctx, amount: int, member: discord.Member = None):
+		"""Add trivia points to the member."""
+
+		if member is None: 
+			member = ctx.author
 		
-		userDb = await self.db.find_one({'_id': user.id})
+		userDb = await self.db.find_one({'_id': member.id})
+		if userDb is None:
+			await ctx.send("The member has never played trivia before. His points cannot be changed since he is not registered in the database.")
+			return
+
+		await self.db.update_one({'_id': member.id}, {'$inc':{'points': amount}})
+		await ctx.send("Succesfully added **%s** points for member `%s`." % (amount, member.display_name))
+
+	@trivia_points.command(name='reset')
+	@commands.is_owner()
+	async def trivia_points_reset(self, ctx, member: discord.Member = None):
+		"""Reset the points for the member."""
+
+		if member is None: 
+			member = ctx.author
+		
+		userDb = await self.db.find_one({'_id': member.id})
 		if userDb is None:
 			await ctx.send("The user has never played trivia before. His points cannot be changed since he is not registered in the database.")
 			return
 
-		await self.db.update_one({'_id': user.id}, {'$inc':{'points': amount}})
-		await ctx.send("Succesfully added **%s** points for user `%s`." % (amount, user.display_name))
-
-	@points.command(aliases=['reset'])
-	@commands.is_owner()
-	async def __reset(self, ctx, user: discord.Member = None):
-		if user is None: 
-			user = ctx.author
-		
-		userDb = await self.db.find_one({'_id': user.id})
-		if userDb is None:
-			await ctx.send("The user has never played trivia before. His points cannot be changed since he is not registered in the database.")
-			return
-
-		await self.db.update_one({'_id': user.id}, {'$set':{'points': 0}})
-		await ctx.send("Succesfully reset points for user `%s`." % (user.display_name))
+		await self.db.update_one({'_id': member.id}, {'$set':{'points': 0}})
+		await ctx.send("Succesfully reset points for user `%s`." % (member.display_name))
 	
-	@points.command(aliases=['give'])
-	async def gift(self, ctx, amount: str, member: discord.Member = None):
+	@trivia_points.command(name='gift', aliases=['give'])
+	async def trivia_points_gift(self, ctx, amount: str, member: discord.Member = None):
+		"""Gift some of your points to the other member."""
+
 		if member is None:
 			await ctx.send("You must specify the member you wish to give points to %s." % (ctx.author.mention))
 			return
@@ -168,7 +182,7 @@ class TriviaCommands(commands.Cog):
 				await msg.edit(content=e)
 				await msg.clear_reactions()
 
-	@_trivia.error
+	@trivia.error
 	async def trivia_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.send(error.original)

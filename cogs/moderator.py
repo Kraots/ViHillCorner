@@ -46,8 +46,6 @@ class Moderation(commands.Cog):
 		r = g.get_role(750465726069997658)
 		await m.remove_roles(r)
 
-		# LOOP FOR MUTES
-	
 	@tasks.loop(seconds=30)
 	async def check_current_mutes(self):
 		await self.bot.wait_until_ready()
@@ -90,11 +88,11 @@ class Moderation(commands.Cog):
 				else:
 					await self.db2.delete_one({"_id": result2['_id']})
 
-
-	# SLOWMODE
 	@commands.command()
-	@commands.has_role('Staff')
+	@commands.has_role(754676705741766757)
 	async def slowmode(self, ctx, *, how_much: TimeConverter):
+		"""Set the slowmode time for the channel that you are using this command in."""
+
 		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 		await ctx.message.delete()
@@ -122,216 +120,90 @@ class Moderation(commands.Cog):
 			
 			await log_channel.send(embed=em)
 
-
-		# SAY
-
 	@commands.command()
-	@commands.is_owner()
-	async def say(self, ctx, *, arg):
-		await ctx.message.delete()
-		await ctx.send(arg)
-	
+	@commands.has_role(754676705741766757)
+	async def kick(self, ctx, member: discord.Member, *, reason: str = None):
+		"""Kicks the member with the specified reason, if any."""
 
-		# KICK
+		if reason is None:
+			reason = "Reason not specified"
 
-	@commands.command()
-	@commands.has_role('Staff')
-	async def kick(self, ctx):
 		guild = self.bot.get_guild(750160850077089853)
 		staff = guild.get_role(754676705741766757)
 		log_channel = guild.get_channel(788377362739494943)
-		mem_list = []
 		
-		def check(m):
-			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+		if staff in member.roles:
+			return await ctx.reply("Cannot kick staff members.")
 
-		await ctx.send("What member(s) do you wish to kick? To cancel type `cancel`")
 		try:
-			before_members = await self.bot.wait_for('message', timeout=180, check=check)
-			if before_members.content.lower() == "cancel":
-				await ctx.send("Canceled.")
-				return
-			else:
-				kicked_members = before_members.mentions
-
-		except asyncio.TimeoutError:
-			return
+			await member.send("You have been kicked from `ViHill Corner!`")
+		except discord.HTTPException:
+			pass
 		
-		else:
-			await ctx.send("What's the reason for the kick?")
-			try:
-				before_reason = await self.bot.wait_for('message', timeout=360, check=check)
-				if before_reason.content.lower() == "cancel":
-					await ctx.send("Canceled.")
-					return
-				else:
-					kicked_reason = before_reason.content
+		await guild.kick(member, reason=f'{ctx.author}: "{reason}"')
 
-			except asyncio.TimeoutError:
-				return
-			
-			else:
-				for id in kicked_members:
-						a = id
-						if not staff in a.roles:
-							mem_list.append(a)
-							mem_list_final = " | ".join(str(id) for id in mem_list)
-
-							try:
-								await id.send("You have been kicked from `ViHill Corner!`")
-							except discord.HTTPException:
-								pass
-							await guild.kick(id, reason=f"{ctx.author} ---> {kicked_reason}")
-
-		ban = discord.Embed(description=f"The user(s) have been kicked from the server.\n**Reason:** **[{kicked_reason}]({ctx.message.jump_url})**" , color=discord.Color.red())
+		ban = discord.Embed(description=f"{member} was successfully kicked" , color=discord.Color.red())
 
 		await ctx.send(embed=ban)
 
 		em = discord.Embed(color=color.reds, title="___KICK___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
 		em.add_field(name="Action", value="`Used the kick command.`", inline=False)	
-		try:
-			em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)
-		except UnboundLocalError:
-			em.add_field(name="Member(s)", value="`Invalid Users!`", inline=False)
-		em.add_field(name="Reason", value=f"**[{kicked_reason}]({ctx.message.jump_url})**", inline=False)	
+		em.add_field(name="Member", value=f"`{member}`", inline=False)
+		em.add_field(name="Reason", value=f"**[{reason}]({ctx.message.jump_url})**", inline=False)	
 		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)	
 
 		await log_channel.send(embed=em)
 
-
-			# ID BAN
-
 	@commands.command()
-	async def idban(self, ctx, member: int):
-		guild = self.bot.get_guild(750160850077089853)
-		get_member = await self.bot.fetch_user(member)
-		await guild.ban(get_member)
-		em = discord.Embed(color=discord.Color.red(), description=f"`{get_member}` was banned succesfully.")
-		await ctx.send(embed=em)
+	@commands.has_role(754676705741766757)
+	async def ban(self, ctx, user: discord.User, *, reason: str = None):
+		"""Bans the user with the specified reason, if any."""
 
+		if reason is None:
+			reason = "Reason not specified."
 
-		# ID UNBAN
-
-	@commands.command()
-	async def idunban(self, ctx, member: int):
-		guild = self.bot.get_guild(750160850077089853)
-		get_member = await self.bot.fetch_user(member)
-		await guild.unban(get_member)
-		em = discord.Embed(color=discord.Color.red(), description=f"`{get_member}` was unbanned succesfully.")
-		await ctx.send(embed=em)
-
-
-			# BAN
-
-	@commands.command()
-	@commands.has_role('Staff')
-	async def ban(self, ctx):
 		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 		staff = guild.get_role(754676705741766757)
-		mem_list = []
-		reasonn = discord.Embed(description="**Unban appeal server** \n https://discord.gg/5SratjPmGc")
-		reasonn.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
+
+		try:
+			member = guild.get_member(user.id)
+			if staff in member.roles:
+				return await ctx.reply("Cannot perform this action against staff members.")
+		except:
+			pass
+
+		_reason = discord.Embed(description="**Unban appeal server** \n https://discord.gg/5SratjPmGc")
+		_reason.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
 		msg="You have been banned from `ViHill Corner`. If you think that this has been applied in error please submit a detailed appeal at the following link."
 		
-		def check(m):
-			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
-
-		await ctx.send("What member(s) do you wish to ban? To cancel type `cancel`")
 		try:
-			before_members = await self.bot.wait_for('message', timeout=180, check=check)
-			if before_members.content.lower() in ["cancel", "!cancel"]:
-				await ctx.send("Canceled.")
-				return
-			else:	
-				banned_members = before_members.mentions
-				for i in range(len(banned_members)):
-					await self._mute(banned_members[i])
-
-		except asyncio.TimeoutError:
-			return
-		
-		else:
-			await ctx.send("What's the reason for the ban?")
-			try:
-				before_reason = await self.bot.wait_for('message', timeout=360, check=check)
-				if before_reason.content.lower() in ["cancel", "!cancel"]:
-					for i in range(len(banned_members)):
-						await self._unmute(banned_members[i])
-					await ctx.send("Canceled.")
-					return
-				else:
-					banned_reason = before_reason.content
-
-			except asyncio.TimeoutError:
-				return
-			
-			else:
-				await ctx.send("How many days worth of messages from the user do you wish to delete? `0-7` days")
-				try:
-					while True:
-						nr_dayss = await self.bot.wait_for('message', timeout=360, check=check)
-						try:
-							nr_days = int(nr_dayss.content)
-							if -1 > nr_days or nr_days > 7:
-								await ctx.send("You can only delete from 0-7 days, no more or less! %s" % (ctx.author.mention))
-							else:
-								break
-						except ValueError:
-							if nr_dayss.content.lower() in ["cancel", "!cancel"]:
-								await ctx.send("Canceled.")
-								for i in range(len(banned_members)):
-									await self._unmute(banned_members[i])
-								return
-							else:
-								nr_days = 0
-								await nr_dayss.reply("Since there was no number the amount of messages that will be deleted is equivalent to `0` days")
-								break				
-				
-				except asyncio.TimeoutError:
-					await ctx.send("Ran out of time. %s" % (ctx.author.mention))
-					return
-
-				else:
-					for id in banned_members:
-						a = id
-						if not staff in a.roles:
-							mem_list.append(a)
-							mem_list_final = " | ".join(str(id) for id in mem_list)
-							try:
-								await id.send(msg, embed=reasonn)
-							except discord.HTTPException:
-								pass
-							await guild.ban(id, reason=f"{ctx.author} --->{banned_reason}", delete_message_days=nr_days)
+			await user.send(msg, embed=_reason)
+		except discord.HTTPException:
+			pass
+		await guild.ban(user, reason=f'{ctx.author}: "{reason}"', delete_message_days=0)
 
 
-		ban = discord.Embed(description=f"The user(s) have been banned from the server.\n**Reason:** **[{banned_reason}]({ctx.message.jump_url})**\n**Deleted:** `{nr_days}` days worth of messages.", color=discord.Color.red())
+		ban = discord.Embed(description=f"The user(s) have been banned from the server.\n**Reason:** **[{reason}]({ctx.message.jump_url})**.", color=discord.Color.red())
 
 		await ctx.send(embed=ban)
 
 		em = discord.Embed(color=color.reds, title="___BAN___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
 		em.add_field(name="Action", value="`Used the ban command.`", inline=False)	
-		try:
-			em.add_field(name="Member(s)", value=f"`{mem_list_final}`", inline=False)	
-		except UnboundLocalError:
-			em.add_field(name="Member(s)", value="`Invalid Users!`", inline=False)
-		em.add_field(name="Reason", value=f"**[{banned_reason}]({ctx.message.jump_url})**", inline=False)	
+		em.add_field(name="Member", value=f"`{user}`", inline=False)
+		em.add_field(name="Reason", value=f"**[{reason}]({ctx.message.jump_url})**", inline=False)	
 		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
-		em.add_field(name="Days worth of messages that got deleted:", value=f"**{nr_days}**", inline=False)
 
 		await log_channel.send(embed=em)
 
-
-		# UNBAN
-
 	@commands.command()
-	@commands.has_role('Staff')
+	@commands.has_role(754676705741766757)
 	async def unban(self, ctx, member: discord.User):
+		"""Unban's the user."""
+
 		guild = self.bot.get_guild(750160850077089853)
-		if ctx.guild == guild:
-			return await ctx.reply("This command can only be performed in the ban appeal server.")
 		guild2 = self.bot.get_guild(788384492175884299)
 		if ctx.channel.id == 788488359306592316:
 			return await ctx.reply("This command cannot be performed in the staff chat. Please go in the chat where the member you wish to unban exists.")
@@ -350,25 +222,26 @@ class Moderation(commands.Cog):
 		em = discord.Embed(color=color.reds, title="___UNBAN___", timestamp = ctx.message.created_at)
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
 		em.add_field(name="Action", value="`Used the unban command`", inline=False)
-		try:
-			em.add_field(name="Member", value=f"`{member}`", inline=False)
-		except UnboundLocalError:
-			em.add_field(name="Member(s)", value="`Invalid Users!`", inline=False)
+		em.add_field(name="Member", value=f"`{member}`", inline=False)
 		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
 
 		await log_channel.send(embed=em)
 
-
-		msg="Congrats! You have been unbanned from `ViHill Corner`. Come back: https://discord.gg/mFm5GrQ"
-		await member.send(msg)
-		await guild2.kick(member)
-
-	
-		# MUTE
+		try:
+			msg="Congrats! You have been unbanned from `ViHill Corner`. Come back: https://discord.gg/mFm5GrQ"
+			await member.send(msg)
+		except:
+			pass
+		try:
+			await guild2.kick(member)
+		except:
+			pass
 
 	@commands.command()
-	@commands.has_role('Staff')
+	@commands.has_role(754676705741766757)
 	async def mute(self, ctx):
+		"""Mute someone permanently until you decide to unmute them... if you remember to."""
+
 		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 		mem_list = []
@@ -446,12 +319,11 @@ class Moderation(commands.Cog):
 
 		await log_channel.send(embed=em)
 
-
-		# UNMUTE
-
 	@commands.command()
-	@commands.has_role('Staff')
+	@commands.has_role(754676705741766757)
 	async def unmute(self, ctx):
+		"""Unmute someone."""
+
 		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 		mem_list = []
@@ -539,14 +411,13 @@ class Moderation(commands.Cog):
 
 		await log_channel.send(embed=em)
 
-
-		# TEMP MUTE
-
 	@commands.command()
-	@commands.has_role("Staff")
+	@commands.has_role(754676705741766757)
 	async def tempmute(self, ctx, member : discord.Member, *, muted_time : TimeConverter = None):
-		"""Mutes a member for the specified time- time in 2d 10h 3m 2s format ex:
-		!mute @Someone 1d"""
+		"""
+		Mutes a member for the specified time- time in 2d 10h 3m 2s format ex:
+		!mute @Someone 1d
+		"""
 
 		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
@@ -626,36 +497,24 @@ class Moderation(commands.Cog):
 			await ctx.send("You can't mute mods or take any moderator action against them.")
 			return
 
+	@commands.command(name='purge', aliases=['clear'])
+	@commands.has_role(754676705741766757)
+	async def mod_purge(self, ctx, amount=0):
+		"""Delete the amount of messages from the chat"""
 
-		# CLEAR  /  PURGE
+		await ctx.message.delete()
+		await ctx.channel.purge(limit=amount)
 
-	@commands.command()
-	@commands.has_role('Staff')
-	async def clear(self, ctx, amount=0):
-			await ctx.message.delete()
-			await ctx.channel.purge(limit=amount)
+		guild = self.bot.get_guild(750160850077089853)
+		log_channel = guild.get_channel(788377362739494943)
 
-			guild = self.bot.get_guild(750160850077089853)
-			log_channel = guild.get_channel(788377362739494943)
+		em = discord.Embed(color=color.reds, title="___PURGE / CLEAR___", timestamp = ctx.message.created_at)
+		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+		em.add_field(name="Action", value="`Used the clear / purge command`", inline=False)
+		em.add_field(name="Amount", value=f"`{amount}` messages", inline=False)
+		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
 
-			em = discord.Embed(color=color.reds, title="___PURGE / CLEAR___", timestamp = ctx.message.created_at)
-			em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-			em.add_field(name="Action", value="`Used the clear / purge command`", inline=False)
-			em.add_field(name="Amount", value=f"`{amount}` messages", inline=False)
-			em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
-
-			await log_channel.send(embed=em)
-
-
-			# ERROR HANDLERS
-	
-	@unban.error
-	async def unban_error(self, ctx, error):
-		if isinstance(error, commands.errors.UserNotFound):
-			await ctx.reply("User not found")
-
-
-
+		await log_channel.send(embed=em)
 
 def setup(bot):
 	bot.add_cog(Moderation(bot))

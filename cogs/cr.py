@@ -21,13 +21,16 @@ class CustomRoles(commands.Cog):
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")	
 	async def cr(self, ctx):
-		command = self.bot.get_command('help')
-		await ctx.invoke(command, 'cr')
+		"""Invokes this command."""
+
+		await ctx.send_help('cr')
 
 
-	@cr.command()
+	@cr.command(name='create')
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
-	async def create(self, ctx):
+	async def cr_create(self, ctx):
+		"""Create your custom role."""
+
 		guild = self.bot.get_guild(750160850077089853)
 		user = ctx.author
 		channel = ctx.message.channel
@@ -116,13 +119,17 @@ class CustomRoles(commands.Cog):
 
 					await ctx.send("The role has been created and now you have it!")
 
-	@cr.group(invoke_without_command = True, case_insensitive = True)
+	@cr.group(invoke_without_command = True, case_insensitive = True, name='edit')
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
-	async def edit(self, ctx):
-		await ctx.send("`!cr edit color <new_color>`\n`!cr edit name <new_name>`")
+	async def cr_edit(self, ctx):
+		"""Invokes `!help cr edit`."""
 
-	@edit.command()
+		await ctx.send_help('cr edit')
+
+	@cr_edit.command()
 	async def color(self, ctx, new_color: str = None):
+		"""Edit the colour of your custom role."""
+
 		user = ctx.author
 		guild = self.bot.get_guild(750160850077089853)
 		
@@ -158,8 +165,10 @@ class CustomRoles(commands.Cog):
 			except ValueError:
 				await ctx.send("Invalid Color Hex!\nExample: `#ffffff`")
 
-	@edit.command()
+	@cr_edit.command()
 	async def name(self, ctx, *, new_name: str = None):
+		"""Edit the name of your custom role."""
+
 		user = ctx.author
 		guild = self.bot.get_guild(750160850077089853)
 
@@ -192,6 +201,8 @@ class CustomRoles(commands.Cog):
 	@cr.command()
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
 	async def share(self, ctx, member: discord.Member = None):
+		"""Share your custom role with a member."""
+
 		if member is None:
 			await ctx.send("You must specify the user that you're sharing the role to!")
 			return
@@ -239,8 +250,10 @@ class CustomRoles(commands.Cog):
 				return
 
 
-	@cr.command(aliases=['info'])
-	async def _info(self, ctx, *, role: int = None):
+	@cr.command(name='info')
+	async def cr_info(self, ctx, *, role: int = None):
+		"""Get some data about a custom role, it doesn't have to be yours, but the <role> parameter must be a ingere (the role's id)."""
+
 		if role == None:
 			await ctx.send("You must give the role ID, to get it use `!role-id <role_name>`")
 			return
@@ -274,6 +287,8 @@ class CustomRoles(commands.Cog):
 
 	@cr.command()
 	async def unrole(self, ctx, *, role : int = None):
+		"""Remove a custom role from your roles, the <role> parameter must be a integer (role's id)."""
+
 		if role == None:
 			await ctx.send("You must give the role ID, to get it use `!role-id <role_name>`")
 			return
@@ -301,6 +316,8 @@ class CustomRoles(commands.Cog):
 
 	@cr.command()
 	async def clean(self, ctx):
+		"""Remove all of your custom roles from your roles ***except*** your own custom role."""
+
 		all_cr = []
 		results = await self.db.find().to_list(100000)
 		guild = self.bot.get_guild(750160850077089853)
@@ -328,9 +345,11 @@ class CustomRoles(commands.Cog):
 		await ctx.author.edit(roles=Roles)
 		await ctx.send("Succesfully cleaned all the cr's on your profile.")
 
-	@cr.command()
+	@cr.command(name='delete')
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
-	async def delete(self, ctx):
+	async def cr_delete(self, ctx):
+		"""Delete your custom role."""
+
 		user = ctx.author
 		guild = self.bot.get_guild(750160850077089853)
 
@@ -377,8 +396,10 @@ class CustomRoles(commands.Cog):
 
 
 
-	@commands.command(aliases=['role-id'])
+	@commands.command(name='role-id')
 	async def _role_id(self, ctx, *, role_name : str = None):
+		"""Get the role id from the name of a role."""
+
 		if role_name is None:
 			await ctx.send("You must give the role name that you want the ID for!")
 			return
@@ -391,7 +412,7 @@ class CustomRoles(commands.Cog):
 			await ctx.send("That is not a valid role!")
 
 
-	@delete.error
+	@cr_delete.error
 	async def delete_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.send("You do not have any custom role! What are you trying to delete???\nType `!cr create` to create your custom role!")
@@ -402,7 +423,7 @@ class CustomRoles(commands.Cog):
 			await ctx.send("That is not a role id! To get the role's ID please type `!role-id <role_name>`")
 			return
 
-	@_info.error
+	@cr_info.error
 	async def info_error(self, ctx, error):
 		if isinstance(error, commands.errors.BadArgument):
 			await ctx.send("That is not a role id! To get the role's ID please type `!role-id <role_name>`")

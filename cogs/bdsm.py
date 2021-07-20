@@ -3,7 +3,7 @@ from discord.ext import commands
 import asyncio
 import datetime
 
-class BdsmResults(commands.Cog):
+class Bdsm(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
@@ -15,11 +15,14 @@ class BdsmResults(commands.Cog):
 
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def bdsm(self, ctx):
-		command = self.bot.get_command('help')
-		await ctx.invoke(command, 'bdsm')
+		"""Invokes this command"""
+
+		await ctx.send_help('bdsm')
 	
-	@bdsm.command()
-	async def set(self, ctx):
+	@bdsm.command(name='set')
+	async def bdsm_set(self, ctx):
+		"""Set your bdsm results"""
+
 		def check(m):
 			return m.author == ctx.author and m.channel == ctx.channel
 		
@@ -59,8 +62,10 @@ class BdsmResults(commands.Cog):
 			await ctx.send("You ran out of time, type the command again to set your bdsm results. %s " % (ctx.author.mention))
 			return
 	
-	@bdsm.command(aliases=['result'])
-	async def results(self, ctx, member: discord.Member = None):
+	@bdsm.command(name='results', aliases=['result'])
+	async def bdsm_results(self, ctx, member: discord.Member = None):
+		"""See the member's bdsm results"""
+
 		if member is None:
 			member = ctx.author
 
@@ -77,8 +82,10 @@ class BdsmResults(commands.Cog):
 		else:
 			await ctx.send("That user did not set their bdsm results.")
 
-	@bdsm.command(aliases=['delete'])
-	async def remove(self, ctx):
+	@bdsm.command(name='remove', aliases=['delete'])
+	async def bdsm_remove(self, ctx):
+		"""Remove your bdsm results"""
+
 		user = ctx.author
 		
 		def check(reaction, user):
@@ -116,8 +123,10 @@ class BdsmResults(commands.Cog):
 		else:
 			await ctx.send("There are no bdsm results to delete, you don't have them set. To set your bdsm results type `!bdsm set`, and then send the screenshot of your results. %s" % (user.mention))
 
-	@bdsm.command()
-	async def test(self, ctx):
+	@bdsm.command(name='test')
+	async def bdsm_test(self, ctx):
+		"""Get a link to go and do your bdsm test to get your results."""
+
 		await ctx.send("Click the link below to take your bdsm test: \nhttps://bdsmtest.org")
 
 	@commands.Cog.listener()
@@ -128,4 +137,4 @@ class BdsmResults(commands.Cog):
 		await self.db2.delete_one({'_id': member.id})
 
 def setup(bot):
-	bot.add_cog(BdsmResults(bot))
+	bot.add_cog(Bdsm(bot))

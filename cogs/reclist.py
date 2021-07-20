@@ -28,6 +28,8 @@ class Reclist(commands.Cog):
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	async def reclist(self, ctx, member: discord.Member = None):
+		"""See the member's anime recommendations list."""
+
 		if member is None:
 			member = ctx.author
 
@@ -49,8 +51,11 @@ class Reclist(commands.Cog):
 
 
 
-	@reclist.command(aliases=['set'])
-	async def _set(self, ctx, *, args: str):
+	@reclist.command(name='set')
+	async def reclist_set(self, ctx, *, rec: str):
+		"""Set your anime recommendations list."""
+
+		args = rec
 		user = ctx.author
 		results = await self.db.find_one({"_id": user.id})
 		reclist = list(filter(bool, args.splitlines()))
@@ -63,8 +68,11 @@ class Reclist(commands.Cog):
 		await ctx.send(f"Reclist set! {user.mention}")
 
 
-	@reclist.command()
-	async def add(self, ctx, *, args: str):
+	@reclist.command(name='add')
+	async def reclist_add(self, ctx, *, rec: str):
+		"""Add to your anime recommendations list."""
+
+		args = rec
 		user = ctx.author
 		results = await self.db.find_one({"_id": user.id})
 		reclist = list(filter(bool, args.splitlines()))
@@ -78,10 +86,12 @@ class Reclist(commands.Cog):
 		await ctx.send("Succesfully added to your reclist! {}".format(user.mention))
 
 
-	@reclist.command()
-	async def delete(self, ctx, nr: str):
+	@reclist.command(name='delete')
+	async def reclist_delete(self, ctx, index: str):
+		"""Delete the recommendation at the given index."""
+
 		try:
-			nr = int(nr)
+			nr = int(index)
 		except ValueError:
 			return await ctx.send("Must be a number. %s" % (ctx.author.mention))
 		results = await self.db.find_one({'_id': ctx.author.id})
@@ -104,8 +114,10 @@ class Reclist(commands.Cog):
 
 
 
-	@reclist.command()
-	async def clear(self, ctx):
+	@reclist.command(name='clear')
+	async def reclist_clear(self, ctx):
+		"""Delete your reclist, completely."""
+		
 		results = await self.db.find_one({"_id": ctx.author.id})
 		
 		if results != None:
@@ -145,15 +157,16 @@ class Reclist(commands.Cog):
 
 
 
-	@reclist.command()
+	@reclist.command(name='remove')
 	@commands.is_owner()
-	async def remove(self, ctx, user : discord.Member):
+	async def reclist_remove(self, ctx, member: discord.Member):
+		"""Remove the member from the database."""
 
-		results = await self.db.find_one({"_id": user.id})
+		results = await self.db.find_one({"_id": member.id})
 		
 		if results != None:
-			await self.db.delete_one({"_id": user.id})
-			await ctx.send("Succesfully removed `{}`'s reclist from the database.".format(user.display_name))
+			await self.db.delete_one({"_id": member.id})
+			await ctx.send("Succesfully removed `{}`'s reclist from the database.".format(member.display_name))
 		
 		else:
 			await ctx.send("User does not have a reclist!")

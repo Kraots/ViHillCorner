@@ -12,8 +12,10 @@ class TTT(commands.Cog):
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
 	
-	@commands.command(aliases=['ttt', 'tic-tac-toe'])
-	async def tictactoe(self, ctx, member: discord.Member = None):
+	@commands.command(name='tic-tac-toe', aliases=['ttt'])
+	async def _tictactoe(self, ctx, member: discord.Member = None):
+		"""Play a game of tictactoe against someone."""
+
 		if member is None:
 			return await ctx.send(f"You must mention the person you wish to have a tic-tac-toe game with. {ctx.author.mention}")
 		elif member is ctx.author:
@@ -62,7 +64,7 @@ class TTT(commands.Cog):
 				await ctx.reply(f"**{member.mention}** does not want to play tic-tac-toe with you.")
 				await msg.delete()
 
-	@tictactoe.error
+	@_tictactoe.error
 	async def ttt_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.send(error.original)

@@ -34,6 +34,8 @@ class Suggest(commands.Cog):
 	@commands.check(BotChannels)
 	@commands.cooldown(1, 60, commands.BucketType.user)
 	async def suggest(self, ctx, *, args):
+		"""Make a suggestion in <#858997857968193596>."""
+
 		result = await self.db.find_one({'_id': ctx.author.id})
 		if result != None:
 			await ctx.send("You are blocked from using this command. %s" % (ctx.author.mention))
@@ -78,9 +80,11 @@ class Suggest(commands.Cog):
 				await msg1.clear_reactions()
 				return
 	
-	@suggest.command()
+	@suggest.command(name='block')
 	@commands.is_owner()
-	async def block(self, ctx, members: Greedy[Member]):
+	async def suggest_block(self, ctx, members: Greedy[Member]):
+		"""Block the members from using the suggest command."""
+
 		blocked_list = []
 		if len(members) < 1:
 			await ctx.send("You have not given any member to block.")
@@ -97,9 +101,11 @@ class Suggest(commands.Cog):
 		blocked_users = " | ".join(blocked_list)
 		await ctx.send("`%s` have been blocked from using the command **!suggest**." % (blocked_users))
 
-	@suggest.command()
+	@suggest.command(name='unblock')
 	@commands.is_owner()
-	async def unblock(self, ctx, members: Greedy[Member]):
+	async def suggest_unblock(self, ctx, members: Greedy[Member]):
+		"""Unblock the members from using the suggest command."""
+
 		unblocked_list = []
 		if len(members) < 1:
 			await ctx.send("You have not given any member to block.")
@@ -113,9 +119,11 @@ class Suggest(commands.Cog):
 		unblocked_users = " | ".join(unblocked_list)
 		await ctx.send("`%s` have been allowed to use the command **!suggest** again." % (unblocked_users))
 
-	@suggest.command()
+	@suggest.command(name='blocks')
 	@commands.is_owner()
-	async def blocks(self, ctx):
+	async def suggest_blocks(self, ctx):
+		"""Get a list with all the members who have been blocked from using the command suggest."""
+
 		try:
 			entries = await self.db.find().to_list(100000)
 			p = TagPages(entries = entries, per_page = 7)

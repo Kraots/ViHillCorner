@@ -8,7 +8,7 @@ import asyncio
 
 BotChannels = [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]
 
-class MessageTop(commands.Cog):
+class WeeklyTop(commands.Cog):
 	
 	def __init__(self, bot):
 		self.bot = bot
@@ -50,8 +50,9 @@ class MessageTop(commands.Cog):
 
 
 
-	@commands.group(invoke_without_command = True, case_insensitive = True, aliases=['msg-top', 'top-msg'])
-	async def top(self, ctx):
+	@commands.group(name='msg-top', invoke_without_command = True, case_insensitive = True, aliases=['top'])
+	async def msg_top(self, ctx):
+		"""See the top 15 most active members of the server and when the top restarts."""
 		
 		def format_time(dt):
 			return time.human_timedelta(dt)
@@ -77,9 +78,11 @@ class MessageTop(commands.Cog):
 
 		await ctx.send(embed = em)
 	
-	@top.command(aliases = ['reset'])
+	@msg_top.command(name='reset')
 	@commands.is_owner()
-	async def __reset(self, ctx, member: discord.Member):
+	async def msg_top_reset(self, ctx, member: discord.Member):
+		"""Reset the amount of messages from the top for the member."""
+
 		def check(reaction, user):
 			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
 		
@@ -105,8 +108,10 @@ class MessageTop(commands.Cog):
 				await msg.edit(content="Command to reset the message count for user `%s` has been canceled." % (member))
 
 
-	@top.command(aliases=['reward'])
+	@msg_top.command(aliases=['reward'])
 	async def rewards(self, ctx):
+		"""See what rewards you can get from the weekly messages top."""
+
 		em = discord.Embed(color=color.lightpink, title="Here are the rewards for the weekly top:")
 		em.add_field(name="`1st Place`", value="**50k XP**", inline=False)
 		em.add_field(name="`2nd Place`", value="**30k XP**", inline=False)
@@ -115,4 +120,4 @@ class MessageTop(commands.Cog):
 		await ctx.send(embed=em)
 
 def setup(bot):
-	bot.add_cog(MessageTop(bot))
+	bot.add_cog(WeeklyTop(bot))

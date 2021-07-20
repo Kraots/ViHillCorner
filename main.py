@@ -5,6 +5,7 @@ from utils import context
 import datetime
 import aiohttp
 import motor.motor_asyncio
+from utils.HelpCommand import PaginatedHelpCommand
 
 token = os.environ.get('DISCORD_BOT_SECRET')
 
@@ -20,12 +21,10 @@ class ViHillCorner(commands.Bot):
 	def __init__(self):
 		allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)
 		intents = discord.Intents.all()
-		super().__init__(command_prefix=('!', ';'), allowed_mentions=allowed_mentions, intents=intents, case_insensitive=True)
+		super().__init__(help_command=PaginatedHelpCommand(), command_prefix=('!', ';'), allowed_mentions=allowed_mentions, intents=intents, case_insensitive=True)
 		self.session = aiohttp.ClientSession(loop=self.loop)
 		self.db1 = database1
 		self.db2 = database2
-
-		self.remove_command('help')
 
 		for filename in os.listdir('./cogs'):
 			if filename.endswith('.py'):

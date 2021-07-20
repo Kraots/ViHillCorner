@@ -4,7 +4,6 @@ import psutil
 import os
 import utils.colors as color
 from utils import time
-from typing import Union
 import datetime
 import random
 import sys
@@ -55,7 +54,7 @@ addd = """
 
 nono_list = ["pornhub.com", "hentaiheaven.com", "nhentai.net", "hanime.tv", "xvideos.com", "hentai.com", "hentai.net"]
 
-class command(commands.Cog):
+class General(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
@@ -66,6 +65,8 @@ class command(commands.Cog):
 
 	@commands.command(aliases=["ss"])
 	async def scrs(self, ctx, site):
+		"""Take a screenshot of the website"""
+
 		if ctx.author.id != 374622847672254466:
 			if str(site) in nono_list:
 				await ctx.send("( ͡° ͜ʖ ͡°)")
@@ -81,52 +82,62 @@ class command(commands.Cog):
 
 	@commands.command()
 	async def vote(self, ctx):
+		"""Get the link to vote for the server"""
+
 		em = discord.Embed(title="Click Here", url="https://top.gg/servers/750160850077089853/vote", color=color.lightpink)
 		
 		await ctx.send(embed=em)
 
-	@commands.command(aliases=["perm-calc"])
+	@commands.command(name="perm-calc")
 	async def perm_calc(self, ctx):
+		"""Sends the link for the permission calculator for bots"""
+
 		em = discord.Embed(color=color.lightpink, title= " Here's the link to the permission calculator for bots. ", description = "https://discordapi.com/permissions.html#2147483647")
 		await ctx.send(embed=em)
 
 
-	@commands.command(aliases=["dev-portal"])
+	@commands.command(name="dev-portal")
 	async def dev_portal(self, ctx):
+		"""Sends a link for the developer portal"""
+
 		em = discord.Embed(color=color.lightpink, title = " Here's the link to dev portal. ", description="https://discord.com/developers/applications")
 		await ctx.send(embed=em)
 
 	@commands.command()
-	async def joined(self, ctx, user: Union[discord.Member, discord.User]=None):
-		if user is None:
-			user = ctx.author
+	async def joined(self, ctx, member: discord.Member=None):
+		"""See when the member has joined the server"""
+
+		if member is None:
+			member = ctx.author
 
 		def format_date(dt):
 			if dt is None:
 				return 'N/A'
 			return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-		if user.id == 374622847672254466:
+		if member.id == 374622847672254466:
 			x = "2020-09-01 01:11"
 			kraots_joined = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
 			embed = discord.Embed(color=color.lightpink)
-			embed.add_field(name='Join Date:', value=f"{user} **--->** {format_date(kraots_joined)}")
+			embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(kraots_joined)}")
 			await ctx.send(embed=embed)
 		
-		elif user.id == 747329236695777340:
+		elif member.id == 747329236695777340:
 			x = "2020-09-30 12:12"
 			twil_joined = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
 			embed = discord.Embed(color=color.lightpink)
-			embed.add_field(name='Join Date:', value=f"{user} **--->** {format_date(twil_joined)}")
+			embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(twil_joined)}")
 			await ctx.send(embed=embed)
 
 		else:
 			embed = discord.Embed(color=color.lightpink)
-			embed.add_field(name='Join Date:', value=f"{user} **--->** {format_date(getattr(user, 'joined_at', None))}")
+			embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(getattr(member, 'joined_at', None))}")
 			await ctx.send(embed=embed)
 
 	@commands.command()
-	async def created(self, ctx, user: Union[discord.Member, discord.User]=None):
+	async def created(self, ctx, user: discord.User=None):
+		"""See when a user created their account"""
+
 		if user is None:
 			user = ctx.author
 
@@ -139,23 +150,31 @@ class command(commands.Cog):
 		embed.add_field(name='Create Date:', value=f"{user} **--->** {format_date(user.created_at)}")
 		await ctx.send(embed=embed)
 
-	@commands.command(help="Get a list of all snippets", aliases=["inv", "invite"])
-	async def _invite(self, ctx):
+	@commands.command(help="Get a list of all snippets", aliases=["inv"])
+	async def invite(self, ctx):
+		"""Get the invite for the server"""
 
-			version = discord.Embed(title="https://discord.gg/Uf2kA8q", color=color.lightpink)
-			version.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
+		inv = discord.Embed(title="https://discord.gg/Uf2kA8q", color=color.lightpink)
+		inv.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
 
-			await ctx.send(embed=version)
+		await ctx.send(embed=inv)
 
-	@commands.command(hidden=True)
+	@commands.command()
 	async def membercount(self, ctx):
-			guild = self.bot.get_guild(750160850077089853)
-			member_count = len([m for m in guild.members if not m.bot])
-			member_count = f'`{member_count}` members.'
-			await ctx.send(member_count, reference=ctx.replied_reference) 
+		"""
+		See how many members there are in the server
+		*This does not include bots, only human members
+		"""
 
-	@commands.command(hidden=True, aliases=["av", "avatar"])
+		guild = self.bot.get_guild(750160850077089853)
+		member_count = len([m for m in guild.members if not m.bot])
+		member_count = f'`{member_count}` members.'
+		await ctx.send(member_count, reference=ctx.replied_reference) 
+
+	@commands.command(name='av', aliases=["avatar"])
 	async def _av(self, ctx, member: discord.Member = None):
+		"""Get an embedded image of the member's avatar"""
+
 		if member is None:
 			member = ctx.author
 			
@@ -167,6 +186,8 @@ class command(commands.Cog):
 
 	@commands.command()
 	async def ee(self, ctx, emoji: discord.PartialEmoji):
+		"""Get an embedded image of the emoji"""
+
 		await ctx.message.delete()
 
 		embed = discord.Embed(color=color.lightpink)
@@ -177,6 +198,8 @@ class command(commands.Cog):
 
 	@commands.command(aliases=['ad'])
 	async def serverad(self, ctx):
+		"""See the server's ad"""
+
 		await ctx.message.delete()
 		ad = discord.Embed(color=color.lightpink, title="Here's the ad to the server:", description=addd)
 		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
@@ -185,6 +208,8 @@ class command(commands.Cog):
 
 	@commands.command(aliases=["ra"])
 	async def rawad(self, ctx):
+		"""See the server's ad but in raw format"""
+
 		await ctx.message.delete()
 		ad = discord.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```%s```" % (addd))
 		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
@@ -193,12 +218,29 @@ class command(commands.Cog):
 
 	@commands.command(aliases=["untill-partner"])
 	async def up(self, ctx):
+		"""See how many members there are left until the server can apply for the discord partnership program"""
+
 		guild = self.bot.get_guild(750160850077089853)
 		member_count = len([m for m in guild.members if not m.bot])
 		await ctx.send(f'Members left untill the server can apply for the *discord partnership program:* \n\n`{500 - member_count}`')
 
 	@commands.command(aliases=['randomnr', 'randomnumber', 'random', 'rn'])
 	async def number(self, ctx, num1: int = None, num2: int = None, num3: int = None):
+		"""
+		Get a random number depending on the amount of numbers you give
+		If you don't provide any number, the bot will give a random number between `0` and the `largest positive integer supported by the machine`.
+
+		If you provide only one number, then the bot will give a random number between `0` and `your chosen number (num1)`.
+
+		If you provide two numbers only, then the bot will give you a random number between `your first number (num1)` and `your second number (num2)`.
+
+		If you provide all three numbers, then the bot will give a random number between `your first number (num1)` and `your second number (num2)`, that is not `your third number (num3)`, this can be used if you want a random number between 2 numbers that is not a specific one, here's some examples:
+		• `10 15 13 - will give a number between 10 and 15 that is not 13`
+		• `0 10 5 - will give a number between 0 and 10 that is not 5`
+		• `20 100 50 - will give a number between 20 and 100 that is not 50`
+		• `10 20 15 - will give a number between 10 and 20 that is not 15`
+		"""
+
 		if num1 == None and num2 == None:
 			number = random.randint(0, sys.maxsize)
 			await ctx.send("Random number between `0` and the largest positive integer supported by the machine is: \n`%s`" % (number))
@@ -225,6 +267,8 @@ class command(commands.Cog):
 
 	@commands.command()
 	async def source(self, ctx, *, command: str = None):
+		"""Sends the source of code for the specified command if any, if not then just the link to the github repository"""
+
 		source_url = 'https://github.com/Kraots/ViHillCorner'
 		branch = 'master'
 		if command is None:
@@ -248,4 +292,4 @@ class command(commands.Cog):
 		await ctx.send(final_url)
 
 def setup(bot):
-	bot.add_cog(command(bot))
+	bot.add_cog(General(bot))

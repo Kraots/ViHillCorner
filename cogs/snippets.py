@@ -32,14 +32,21 @@ class Snippets(commands.Cog):
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['snippets'], ignore_extra = False)
 	async def snippet(self, ctx):
+		"""
+		Get a list with all the snippets.
+		To use a snippet you must type `;snippet_name`
+		"""
+
 		entries = await self.db.find().to_list(100000)
 		
 		p = SnippetPages(entries = entries, per_page = 7, color=color.reds)
 		await p.start(ctx)
 
 
-	@snippet.command()
-	async def search(self, ctx, *, query):
+	@snippet.command(name='search')
+	async def snippet_search(self, ctx, *, query):
+		"""Search for snippet matches based on the query that you've given."""
+
 		query = str(query).lower()
 		entries = await self.db.find({'_id': {'$regex': query, '$options': 'i'}}).to_list(100000)
 		try:
@@ -50,8 +57,10 @@ class Snippets(commands.Cog):
 
 
 
-	@snippet.command(aliases=['lb'])
-	async def leaderboard(self, ctx):
+	@snippet.command(name='leaderboard', aliases=['lb'])
+	async def snippet_leaderboard(self, ctx):
+		"""See top **10** most used snippets."""
+
 		results = await self.db.find().to_list(100000).sort([("uses_count", -1)]).limit(10)
 		index = 0
 		em = discord.Embed(color=color.reds)
@@ -65,8 +74,10 @@ class Snippets(commands.Cog):
 		
 		await ctx.send(embed=em)
 
-	@snippet.command(aliases=['list'])
-	async def _list(self, ctx, member: discord.Member = None):
+	@snippet.command(name='list')
+	async def snippet_list(self, ctx, member: discord.Member = None):
+		"""Get a list with all the snippets that the member has."""
+
 		if member is None:
 			member = ctx.author
 		entries = await self.db.find({'snippet_credits': member.id}).to_list(100000)
@@ -76,8 +87,10 @@ class Snippets(commands.Cog):
 		except:
 			await ctx.send('You do not own any snippets. %s' % (ctx.author.mention))
 
-	@snippet.command()
-	async def info(self, ctx, *, snippet_name : str = None):
+	@snippet.command(name='info')
+	async def snippet_info(self, ctx, *, snippet_name : str = None):
+		"""Get some info about the snippet."""
+
 		if snippet_name is None:
 			return await ctx.reply("**!snippet info <snippet_name>**")
 
@@ -111,9 +124,11 @@ class Snippets(commands.Cog):
 
 
 
-	@snippet.command(aliases=['make', 'add'])
+	@snippet.command(name='create', aliases=['make', 'add'])
 	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
-	async def create(self, ctx, *, snippet_name : str = None):
+	async def snippet_create(self, ctx, *, snippet_name : str = None):
+		"""Create a snippet."""
+
 		if snippet_name is None:
 			def check(m):
 				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
@@ -174,9 +189,11 @@ class Snippets(commands.Cog):
 		await ctx.send("Snippet Added!")
 
 
-	@snippet.command()
+	@snippet.command(name='delete')
 	@commands.has_any_role('Mod', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
-	async def delete(self, ctx, *, snippet_name : str = None):
+	async def snippet_delete(self, ctx, *, snippet_name : str = None):
+		"""Delete a snippet, you must own it."""
+
 		if snippet_name is None:
 			return await ctx.reply("**!snippet delete <snippet_name>**")
 		
@@ -221,9 +238,11 @@ class Snippets(commands.Cog):
 					return
 
 
-	@snippet.command()
+	@snippet.command(name='remove')
 	@commands.is_owner()
-	async def remove(self, ctx, *, snippet_name : str = None):
+	async def snippet_remove(self, ctx, *, snippet_name : str = None):
+		"""Remove a snippet from the database."""
+
 		if snippet_name is None:
 			return await ctx.reply("You must give the name of the snippet you wish to remove too.")
 		data = await self.db.find_one({'_id': snippet_name.lower()})

@@ -33,6 +33,8 @@ class NSFW(commands.Cog):
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	@commands.check(NSFW)
 	async def nsfw(self, ctx, nsfwType: str = None):
+		"""Get nsfw image 😏"""
+
 		if nsfwType is None:
 			em = discord.Embed(title="Here are all the available nsfw categories:", description="**ass** • **bdsm** • **cum** • **manga/doujin** • **femdom** • **hentai** • **masturbation** • **ero** • **orgy** • **yuri** • **pantsu/panties** • **glasses** • **cuckold** • **blowjob/bj** • **foot** • **thighs** • **vagina** • **ahegao** • **uniform** • **tentacles**", color=color.lightpink)
 			await ctx.send(embed=em)
@@ -65,6 +67,11 @@ class NSFW(commands.Cog):
 
 	@nsfw.command()
 	async def me(self, ctx, choice : str):
+		"""
+		The choice must be either `add` or `remove`.
+		If you're blocked you won't be able to use any.
+		"""
+
 		user = ctx.author
 		guild = self.bot.get_guild(750160850077089853)
 		nsfwchannel = guild.get_channel(780374324598145055)
@@ -90,9 +97,11 @@ class NSFW(commands.Cog):
 				await ctx.message.delete()
 
 
-	@nsfw.group()
-	@commands.has_role("Staff")
-	async def block(self, ctx, members : Greedy[Member]):
+	@nsfw.group(name='block')
+	@commands.has_role(754676705741766757)
+	async def nsfw_block(self, ctx, members : Greedy[Member]):
+		"""Blocks the members from accessing the nsfw channel."""
+
 		guild = self.bot.get_guild(750160850077089853)
 		nsfwchannel = guild.get_channel(780374324598145055)
 
@@ -115,9 +124,11 @@ class NSFW(commands.Cog):
 
 		await ctx.send(f"`{blocked_members}` have been blocked from seeing the nsfw channel.")
 
-	@nsfw.command()
-	@commands.has_role("Staff")
-	async def blocks(self, ctx):
+	@nsfw.command(name='blocks')
+	@commands.has_role(754676705741766757)
+	async def nsfw_blocks(self, ctx):
+		"""Sends a list with the blocked users for the nsfw channel."""
+
 		try:
 			entries = await self.db.find().to_list(100000)
 			p = TagPages(entries = entries, per_page = 7)
@@ -125,9 +136,11 @@ class NSFW(commands.Cog):
 		except:
 			await ctx.send("There are no members whose acces has been restricted.")
 
-	@nsfw.command()
-	@commands.has_role("Staff")
-	async def unblock(self, ctx, members : Greedy[Member]):
+	@nsfw.command(name='unblock')
+	@commands.has_role(754676705741766757)
+	async def nsfw_unblock(self, ctx, members : Greedy[Member]):
+		"""Unblock the members from accessing the nsfw channel."""
+
 		blocked_list = []
 		for member in members:
 			
@@ -146,7 +159,7 @@ class NSFW(commands.Cog):
 	@nsfw.error
 	async def nsfw_error(self, ctx, error):
 		if isinstance(error, commands.CheckFailure):
-			if "Staff" in [role.name for role in ctx.message.author.roles]:
+			if 754676705741766757 in [role.id for role in ctx.message.author.roles]:
 				await ctx.send('Invalid format!\nUse: `!nsfw block <users>` or `!nsfw unblock <users>`!')
 			else:
 
@@ -161,10 +174,5 @@ class NSFW(commands.Cog):
 			
 		await self.db.delete_one({'_id': member.id})
 
-
-
-
-
-# https://www.reddit.com/r/hentai/random/.json
 def setup(bot):
 	bot.add_cog(NSFW(bot))

@@ -18,6 +18,8 @@ class Metrics(commands.Cog):
 	@commands.command()
 	@commands.is_owner()
 	async def metrics(self, ctx):
+		"""A lot of useful system information."""
+
 		kraots = self.bot.get_user(374622847672254466)
 		memory_usage = self.process.memory_full_info().uss / 1024**2
 		cpu_usage = self.process.cpu_percent() / psutil.cpu_count()

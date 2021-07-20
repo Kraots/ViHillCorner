@@ -12,13 +12,12 @@ class Intros(commands.Cog):
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 
-
-
-
 	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
 	@commands.cooldown(1, 360, commands.BucketType.user)
 	@commands.check(BotChannels)
 	async def intro(self, ctx):
+		"""Create a new intro if you don't have one or edit an existing one."""
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 		
 		await ctx.message.delete()
@@ -32,14 +31,6 @@ class Intros(commands.Cog):
 		
 		def check(message):
 			return message.author.id == usercheck and message.channel.id == channel.id
-
-		def checkk(message):
-			return message.author.id == usercheck and message.channel.id == channel.id
-			try:
-				int(message.content)
-				return True
-			except ValueError:
-				return False
 
 		def alreadyhas(reaction, user):
 			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
@@ -337,8 +328,13 @@ class Intros(commands.Cog):
 
 
 
-	@intro.command(aliases=["remove"])
-	async def delete(self, ctx):
+	@intro.command(name='delete', aliases=["remove"])
+	async def intro_delete(self, ctx):
+		"""
+		Delete your intro.
+		This will also delete your intro message in the intros channel.
+		"""
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -385,6 +381,8 @@ class Intros(commands.Cog):
 	@commands.command(aliases=['wi'])
 	@commands.cooldown(1, 20, commands.BucketType.user)
 	async def whois(self, ctx, member: discord.Member= None):
+		"""Check the member's intro if they have one."""
+	
 		if member is None:
 			member = ctx.author
 
@@ -435,11 +433,7 @@ class Intros(commands.Cog):
 
 	@whois.error
 	async def wi_error(self, ctx, error):
-		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send("User does not have any intro!")
-			ctx.command.reset_cooldown(ctx)
-
-		elif isinstance(error, commands.CommandOnCooldown):
+		if isinstance(error, commands.CommandOnCooldown):
 				msg = f'Please wait {time_phaser(error.retry_after)}.'
 				await ctx.send(msg)
 
