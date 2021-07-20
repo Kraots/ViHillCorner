@@ -122,7 +122,7 @@ class FilterCog(commands.Cog):
 								with open("words-warns.json", "w", encoding="utf-8") as f:
 									json.dump(users, f, ensure_ascii = False, indent = 4)
 
-								if "Staff" in [role.name for role in message.author.roles]:
+								if 754676705741766757 in [role.id for role in message.author.roles]:
 									post = {
 											'_id': user.id,
 											'mutedAt': datetime.datetime.now(),
@@ -351,7 +351,7 @@ class FilterCog(commands.Cog):
 									json.dump(users, f, ensure_ascii = False, indent = 4)
 
 								
-								if "Staff" in [role.name for role in after.author.roles]:
+								if 754676705741766757 in [role.id for role in after.author.roles]:
 									post = {
 											'_id': user.id,
 											'mutedAt': datetime.datetime.now(),

@@ -76,7 +76,7 @@ class RepeatedTextFilter(commands.Cog):
 					with open("repeated-text-filter.json", "w", encoding="utf-8") as f:
 						json.dump(users, f, ensure_ascii = False, indent = 4)
 
-					if "Staff" in [role.name for role in message.author.roles]:
+					if 754676705741766757 in [role.id for role in message.author.roles]:
 						post = {
 								'_id': user.id,
 								'mutedAt': datetime.datetime.now(),
@@ -184,7 +184,7 @@ class SpamFilter(commands.Cog):
 						with open("spam-warns.json", "w", encoding="utf-8") as f:
 							json.dump(users, f, ensure_ascii = False, indent = 4)
 
-						if "Staff" in [role.name for role in message.author.roles]:
+						if 754676705741766757 in [role.id for role in message.author.roles]:
 							post = {
 								'_id': user.id,
 								'mutedAt': datetime.datetime.now(),

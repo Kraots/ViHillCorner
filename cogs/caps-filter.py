@@ -63,7 +63,7 @@ class CapsFilter(commands.Cog):
 						with open("caps-warns.json", "w", encoding="utf-8") as f:
 							json.dump(users, f, ensure_ascii = False, indent = 4)
 
-						if "Staff" in [role.name for role in user.roles]:
+						if 754676705741766757 in [role.id for role in user.roles]:
 							post = {
 									'_id': user.id,
 									'mutedAt': datetime.datetime.now(),
