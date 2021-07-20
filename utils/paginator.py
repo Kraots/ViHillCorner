@@ -1,6 +1,5 @@
 import asyncio
 import discord
-from discord.colour import Color
 from discord.ext.commands import Paginator as CommandPaginator
 from discord.ext import menus
 
