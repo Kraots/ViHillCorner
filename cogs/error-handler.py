@@ -40,6 +40,11 @@ class GlobalErrorHandler(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			return
 
+		elif isinstance(error, commands.errors.UserNotFound):
+			await ctx.send("Could not find user.")
+			ctx.command.reset_cooldown(ctx)
+			return
+
 		elif isinstance(error, commands.errors.CheckFailure):
 			return
 
