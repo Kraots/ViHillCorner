@@ -72,24 +72,6 @@ class FilterCog(commands.Cog):
 			mod = guild.get_role(750162714407600228)
 			muted = guild.get_role(750465726069997658)
 			user = message.author
-			_user = await self.db2.find_one({'_id': message.author.id})
-			if _user is None:
-				kr = await self.db2.find_one({'_id': 374622847672254466})
-				new_index = kr['TotalInvalidNames'][-1] + 1
-				old_list = kr['TotalInvalidNames']
-				new_list = old_list + [new_index]
-				post = {
-					'_id': message.author.id,
-					'InvalidNameIndex': new_index
-				}
-				await self.db2.insert_one(post)
-				await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
-				new_nick = f'UnpingableName{new_index}'
-				new_nick_again = new_nick
-			else:
-				new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
-				new_nick_again = new_nick
-
 			words = None
 			zalgos = None
 			wordss = None
@@ -197,6 +179,24 @@ class FilterCog(commands.Cog):
 				try:
 					if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', message.author.nick):
 						try:
+							_user = await self.db2.find_one({'_id': message.author.id})
+							if _user is None:
+								kr = await self.db2.find_one({'_id': 374622847672254466})
+								new_index = kr['TotalInvalidNames'][-1] + 1
+								old_list = kr['TotalInvalidNames']
+								new_list = old_list + [new_index]
+								post = {
+									'_id': message.author.id,
+									'InvalidNameIndex': new_index
+								}
+								await self.db2.insert_one(post)
+								await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+								new_nick = f'UnpingableName{new_index}'
+								new_nick_again = new_nick
+							else:
+								new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
+								new_nick_again = new_nick
+
 							await message.author.edit(nick=new_nick_again)
 							await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 						except:
@@ -204,6 +204,24 @@ class FilterCog(commands.Cog):
 
 					elif re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', message.author.name):
 						try:
+							_user = await self.db2.find_one({'_id': message.author.id})
+							if _user is None:
+								kr = await self.db2.find_one({'_id': 374622847672254466})
+								new_index = kr['TotalInvalidNames'][-1] + 1
+								old_list = kr['TotalInvalidNames']
+								new_list = old_list + [new_index]
+								post = {
+									'_id': message.author.id,
+									'InvalidNameIndex': new_index
+								}
+								await self.db2.insert_one(post)
+								await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+								new_nick = f'UnpingableName{new_index}'
+								new_nick_again = new_nick
+							else:
+								new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
+								new_nick_again = new_nick
+
 							await message.author.edit(nick=new_nick_again)
 							await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 						except:
@@ -222,6 +240,24 @@ class FilterCog(commands.Cog):
 					if message.author.nick:
 						if re.search(r'(?i)(\b' + r'+\W*'.join(wordd) + f'|{wordd})', message.author.nick):
 							try:
+								_user = await self.db2.find_one({'_id': message.author.id})
+								if _user is None:
+									kr = await self.db2.find_one({'_id': 374622847672254466})
+									new_index = kr['TotalInvalidNames'][-1] + 1
+									old_list = kr['TotalInvalidNames']
+									new_list = old_list + [new_index]
+									post = {
+										'_id': message.author.id,
+										'InvalidNameIndex': new_index
+									}
+									await self.db2.insert_one(post)
+									await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+									new_nick = f'UnpingableName{new_index}'
+									new_nick_again = new_nick
+								else:
+									new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
+									new_nick_again = new_nick
+
 								await message.author.edit(nick=new_nick)
 								await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 							except:
@@ -229,6 +265,24 @@ class FilterCog(commands.Cog):
 				
 					elif re.search(r'(?i)(\b' + r'+\W*'.join(wordd) + f'|{wordd})', message.author.name):
 						try:
+							_user = await self.db2.find_one({'_id': message.author.id})
+							if _user is None:
+								kr = await self.db2.find_one({'_id': 374622847672254466})
+								new_index = kr['TotalInvalidNames'][-1] + 1
+								old_list = kr['TotalInvalidNames']
+								new_list = old_list + [new_index]
+								post = {
+									'_id': message.author.id,
+									'InvalidNameIndex': new_index
+								}
+								await self.db2.insert_one(post)
+								await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+								new_nick = f'UnpingableName{new_index}'
+								new_nick_again = new_nick
+							else:
+								new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
+								new_nick_again = new_nick
+
 							await message.author.edit(nick=new_nick)
 							await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 						except:
@@ -247,23 +301,6 @@ class FilterCog(commands.Cog):
 			mod = guild.get_role(750162714407600228)
 			muted = guild.get_role(750465726069997658)
 			user = after.author
-			_user = await self.db2.find_one({'_id': after.author.id})
-			if _user is None:
-				kr = await self.db2.find_one({'_id': 374622847672254466})
-				new_index = kr['TotalInvalidNames'][-1] + 1
-				old_list = kr['TotalInvalidNames']
-				new_list = old_list + [new_index]
-				post = {
-					'_id': after.author.id,
-					'InvalidNameIndex': new_index
-				}
-				await self.db2.insert_one(post)
-				await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
-				new_nick = f'UnpingableName{new_index}'
-				new_nick_again = new_nick
-			else:
-				new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
-				new_nick_again = new_nick
 			words = None
 			zalgos = None
 			wordss = None
@@ -372,6 +409,23 @@ class FilterCog(commands.Cog):
 				try:
 					if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', after.author.nick):
 						try:
+							_user = await self.db2.find_one({'_id': after.author.id})
+							if _user is None:
+								kr = await self.db2.find_one({'_id': 374622847672254466})
+								new_index = kr['TotalInvalidNames'][-1] + 1
+								old_list = kr['TotalInvalidNames']
+								new_list = old_list + [new_index]
+								post = {
+									'_id': after.author.id,
+									'InvalidNameIndex': new_index
+								}
+								await self.db2.insert_one(post)
+								await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+								new_nick = f'UnpingableName{new_index}'
+								new_nick_again = new_nick
+							else:
+								new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
+								new_nick_again = new_nick
 							await after.author.edit(nick=new_nick_again)
 							await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 						except:
@@ -379,6 +433,24 @@ class FilterCog(commands.Cog):
 
 					elif re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', after.author.name):
 						try:
+							_user = await self.db2.find_one({'_id': after.author.id})
+							if _user is None:
+								kr = await self.db2.find_one({'_id': 374622847672254466})
+								new_index = kr['TotalInvalidNames'][-1] + 1
+								old_list = kr['TotalInvalidNames']
+								new_list = old_list + [new_index]
+								post = {
+									'_id': after.author.id,
+									'InvalidNameIndex': new_index
+								}
+								await self.db2.insert_one(post)
+								await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+								new_nick = f'UnpingableName{new_index}'
+								new_nick_again = new_nick
+							else:
+								new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
+								new_nick_again = new_nick
+
 							await after.author.edit(nick=new_nick_again)
 							await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 						except:
@@ -396,6 +468,23 @@ class FilterCog(commands.Cog):
 				try:
 					if re.search(r'(?i)(\b' + r'+\W*'.join(wordd) + f'|{wordd})', after.author.nick):
 						try:
+							_user = await self.db2.find_one({'_id': after.author.id})
+							if _user is None:
+								kr = await self.db2.find_one({'_id': 374622847672254466})
+								new_index = kr['TotalInvalidNames'][-1] + 1
+								old_list = kr['TotalInvalidNames']
+								new_list = old_list + [new_index]
+								post = {
+									'_id': after.author.id,
+									'InvalidNameIndex': new_index
+								}
+								await self.db2.insert_one(post)
+								await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+								new_nick = f'UnpingableName{new_index}'
+								new_nick_again = new_nick
+							else:
+								new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
+								new_nick_again = new_nick
 							await after.author.edit(nick=new_nick)
 							await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 						except:
@@ -403,6 +492,23 @@ class FilterCog(commands.Cog):
 
 					elif re.search(r'(?i)(\b' + r'+\W*'.join(wordd) + f'|{wordd})', after.author.name):
 						try:
+							_user = await self.db2.find_one({'_id': after.author.id})
+							if _user is None:
+								kr = await self.db2.find_one({'_id': 374622847672254466})
+								new_index = kr['TotalInvalidNames'][-1] + 1
+								old_list = kr['TotalInvalidNames']
+								new_list = old_list + [new_index]
+								post = {
+									'_id': after.author.id,
+									'InvalidNameIndex': new_index
+								}
+								await self.db2.insert_one(post)
+								await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+								new_nick = f'UnpingableName{new_index}'
+								new_nick_again = new_nick
+							else:
+								new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
+								new_nick_again = new_nick
 							await after.author.edit(nick=new_nick)
 							await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 						except:
