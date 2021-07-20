@@ -3,7 +3,7 @@ from discord.ext import commands
 import os
 import utils.colors as color
 
-class All(commands.Cog):
+class Cogs(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.prefix = '!'
@@ -16,7 +16,7 @@ class All(commands.Cog):
 			self.bot.load_extension(extension)
 			await ctx.reply(f":inbox_tray: `{extension}`")
 
-	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['reload'])
+	@commands.group(name='reload', invoke_without_command=True, case_insensitive=True)
 	@commands.is_owner()
 	async def _reload(self, ctx, extension):
 			self.bot.unload_extension(extension)
@@ -108,4 +108,4 @@ class All(commands.Cog):
 
 
 def setup(bot):
-	bot.add_cog(All(bot))
+	bot.add_cog(Cogs(bot))
