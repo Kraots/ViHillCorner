@@ -49,8 +49,7 @@ class Developer(commands.Cog):
 		"""Evaluate code."""
 
 		if content is None:
-			await ctx.send("Please give code that you want to evaluate!")
-			return
+			return await ctx.send("Please give code that you want to evaluate!")
 
 		code = clean_code(content)
 
@@ -79,6 +78,7 @@ class Developer(commands.Cog):
 			result = "".join(format_exception(e, e, e.__traceback__))
 
 		pager = Pag(
+			ctx=ctx,
 			timeout=100,
 			entries=[result[i: i + 4000] for i in range(0, len(result), 4000)],
 			length=1,

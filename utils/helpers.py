@@ -11,9 +11,18 @@ import typing
 import pkg_resources
 
 class Pag(Paginator):
+	def __init__(self, *, title: str = '', length: int = 10, entries: list = None,
+				extra_pages: list = None, prefix: str = '', suffix: str = '', format: str = '',
+				colour: Union[int, discord.Colour] = discord.Embed.Empty,
+				color: Union[int, discord.Colour] = discord.Embed.Empty, use_defaults: bool = True, embed: bool = True,
+				joiner: str = '\n', timeout: int = 180, thumbnail: str = None, ctx):
+		super().__init__(title=title, length=length, entries=entries, extra_pages=extra_pages, prefix=prefix, suffix=suffix, format=format, colour=colour, color=color, use_defaults=use_defaults, embed=embed, joiner=joiner, timeout=timeout, thumbnail=thumbnail)
+		self.ctx = ctx
+
 	async def teardown(self):
 		try:
-			await self.page.clear_reactions()
+			await self.ctx.message.delete()
+			await self.page.delete()
 		except discord.HTTPException:
 			pass
 
