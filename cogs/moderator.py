@@ -258,9 +258,10 @@ class Moderation(commands.Cog):
 			result1 = await self.db1.find_one({'_id': member.id})
 			result2 = await self.db2.find_one({'_id': member.id})
 			
-			if result1 is None:
-				if result2 is None:
-					return await ctx.reply("Member is already muted.")
+			if result1 != None:
+				return await ctx.reply("Member is already muted.")
+			elif result2 != None:
+				return await ctx.reply("Member is already muted.")
 
 			def format_time(dt):
 				return time.human_timedelta(dt, accuracy = 3)
