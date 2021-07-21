@@ -255,6 +255,13 @@ class Moderation(commands.Cog):
 
 		if not 754676705741766757 in [role.id for role in member.roles]:
 			
+			result1 = await self.db1.find_one({'_id': member.id})
+			result2 = await self.db2.find_one({'_id': member.id})
+			
+			if result1 is None:
+				if result2 is None:
+					return await ctx.reply("Member is already muted.")
+
 			def format_time(dt):
 				return time.human_timedelta(dt, accuracy = 3)
 
@@ -278,11 +285,7 @@ class Moderation(commands.Cog):
 						'guildId': ctx.guild.id,
 					}
 
-				try:
-					await self.db1.insert_one(post)
-				except:
-					await ctx.send("User is already muted!")
-					return
+				await self.db1.insert_one(post)
 
 				if muted_time != None:
 					muted_for = datetime.datetime.utcnow() + relativedelta(seconds = muted_time)
@@ -392,6 +395,7 @@ class Moderation(commands.Cog):
 		except discord.HTTPException:
 			pass
 		await member.remove_roles(muted, reason='{}: "Unmute"'.format(ctx.author))
+		await ctx.send(embed=discord.Embed(color=color.red, description=f"`{member}` has been unmuted."))
 
 		em = discord.Embed(color=color.reds, title="___UNMUTE___", timestamp = ctx.message.created_at)	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
