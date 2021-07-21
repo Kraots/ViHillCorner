@@ -277,7 +277,6 @@ class General(commands.Cog):
 			return await ctx.send("That is an extension's command, code unavailable.")
 		elif command.lower() == 'help':
 			src = type(self.bot.help_command)
-			module = src.__module__
 			filename = inspect.getsourcefile(src)
 		else:
 			obj = self.bot.get_command(command.replace('.', ' '))
