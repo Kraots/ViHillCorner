@@ -340,7 +340,7 @@ class Moderation(commands.Cog):
 			await ctx.send("You can't mute mods or take any moderator action against them.")
 			return
 
-	@commands.command(name='checkmute', aliases=['checkmutes'])
+	@commands.command(name='checkmute', aliases=['checkmutes', 'mutecheck', 'mutescheck'])
 	async def check_mutes(self, ctx, member: discord.Member = None):
 		"""Check to see if the member is muted if specified any, or in case no member is specified then see all the members that are muted if any."""
 
