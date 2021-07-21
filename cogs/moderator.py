@@ -353,7 +353,7 @@ class Moderation(commands.Cog):
 				return await ctx.reply("No members muted currently.")
 			for result in results:
 				if result['muteDuration'] != None:
-					_time = datetime.datetime.utcnow() + relativedelta(seconds = result['muteDuration'])
+					_time = result['mutedAt'] + relativedelta(seconds = result['muteDuration'])
 					_time = f"Time Left: {time.human_timedelta(_time, suffix=False, brief=True)}"
 				else:
 					_time = "Time Left: Eternity"
@@ -371,7 +371,7 @@ class Moderation(commands.Cog):
 					return await ctx.reply("That member is not muted.")
 
 			if result['muteDuration'] != None:
-				_time = datetime.datetime.utcnow() + relativedelta(seconds = result['muteDuration'])
+				_time = result['mutedAt'] + relativedelta(seconds = result['muteDuration'])
 				_time = f"Time Left: {time.human_timedelta(_time, suffix=False)}"
 			else:
 				_time = "Eternity"
