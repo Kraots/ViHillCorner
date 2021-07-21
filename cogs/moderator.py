@@ -369,20 +369,17 @@ class Moderation(commands.Cog):
 		result = await self.db1.find_one({'_id': member.id})
 		resultt = await self.db2.find_one({'_id': member.id})
 
-		if result == None:
-			return await ctx.reply("Member is not muted.")
-		if resultt == None:
-			return await ctx.reply("Member is not muted.")
-
 		if result != None:
 			mutedBy = result['mutedBy']
 			if mutedBy == 374622847672254466 and ctx.author.id != 374622847672254466:
 				return await ctx.send(f"`{member}` cannot be unmuted since the one who muted them was none other than my master <:yamete:857163308427902987>")
-		
-		if resultt != None:
-			if ctx.author.id != 374622847672254466:
-				return await ctx.send("Members muted by filters cannot be unmuted by anyone except from my master <:yamete:857163308427902987>")
-		
+		else:
+			if resultt != None:
+				if ctx.author.id != 374622847672254466:
+					return await ctx.send("Members muted by filters cannot be unmuted by anyone except from my master <:yamete:857163308427902987>")
+			else:
+				return await ctx.reply("Member is not muted.")
+
 		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 		muted = guild.get_role(750465726069997658)
