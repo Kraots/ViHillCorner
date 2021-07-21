@@ -19,12 +19,45 @@ class Pag(Paginator):
 		super().__init__(title=title, length=length, entries=entries, extra_pages=extra_pages, prefix=prefix, suffix=suffix, format=format, colour=colour, color=color, use_defaults=use_defaults, embed=embed, joiner=joiner, timeout=timeout, thumbnail=thumbnail)
 		self.ctx = ctx
 
+	async def cancel(self):
+		self._cancelled = True
+		self._session_task.cancel()
+		await self.page.clear_reactions()
+
 	async def teardown(self):
+		self._cancelled = True
+		
 		try:
-			await self.ctx.message.delete()
 			await self.page.delete()
+			await self.ctx.message.delete()
 		except discord.HTTPException:
 			pass
+		
+		self._session_task.cancel()
+
+	async def _default_indexer(self, control, ctx, member):
+		previous = self._index
+
+		if control == 'stop':
+			return await self.teardown()
+
+		if control == 'end':
+			self._index = len(self._pages) - 1
+		elif control == 'start':
+			self._index = 0
+		else:
+			self._index += control
+
+		if self._index > len(self._pages) - 1 or self._index < 0:
+			self._index = previous
+
+		if self._index == previous:
+			return
+
+		if isinstance(self._pages[self._index], discord.Embed):
+			await self.page.edit(embed=self._pages[self._index])
+		else:
+			await self.page.edit(content=self._pages[self._index])
 
 def get_user_image(user: discord.User):
 	if str(user.avatar_url_as(static_format='png'))[54:].startswith('a_'):
