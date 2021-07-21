@@ -12,7 +12,7 @@ import io
 import os
 from utils import fuzzy, time, embedlinks, topicslist
 import random
-from datetime import datetime
+import datetime
 from dateutil.relativedelta import relativedelta
 
 snipes = {}
@@ -335,7 +335,7 @@ class Misc(commands.Cog):
 			return
 
 		if isinstance(member.activities[0],discord.activity.Spotify):
-			diff = relativedelta(datetime.utcnow(), member.activities[0].created_at)
+			diff = relativedelta(datetime.datetime.utcnow(), member.activities[0].created_at)
 			m =discord.Embed(title=f"{member.name} activity:")
 			m.add_field(name="Listening to :",value=member.activities[0].title, inline=False)
 			m.add_field(name="By:",value=member.activities[0].artist, inline=False)
@@ -351,7 +351,7 @@ class Misc(commands.Cog):
 			await ctx.send(embed=m)
 		
 		elif isinstance(member.activities[1], discord.activity.Spotify):
-			diff = relativedelta(datetime.utcnow(), member.activities[1].created_at)
+			diff = relativedelta(datetime.datetime.utcnow(), member.activities[1].created_at)
 			
 			m =discord.Embed(title=f"{member.name} activity:")
 			m.add_field(name="Listening to :",value=member.activities[1].title, inline=False)
