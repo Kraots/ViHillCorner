@@ -372,7 +372,7 @@ class Moderation(commands.Cog):
 
 			if result['muteDuration'] != None:
 				_time = result['mutedAt'] + relativedelta(seconds = result['muteDuration'])
-				_time = f"Time Left: {time.human_timedelta(_time, suffix=False)}"
+				_time = time.human_timedelta(_time, suffix=False)
 			else:
 				_time = "Eternity"
 			
