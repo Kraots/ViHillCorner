@@ -137,7 +137,8 @@ class SpamFilter(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
-	
+		self.db = bot.db1['Filter Mutes']
+
 	@commands.Cog.listener()
 	async def on_message(self, message: discord.Message):
 		if message.author.id in no_mute_these:
@@ -192,7 +193,6 @@ class SpamFilter(commands.Cog):
 								'guildId': message.guild.id,
 								}
 
-
 							try:
 								await self.db.insert_one(post)
 							except:
@@ -220,7 +220,6 @@ class SpamFilter(commands.Cog):
 								'muteDuration': 840,
 								'guildId': message.guild.id,
 								}
-
 
 							try:
 								await self.db.insert_one(post)
