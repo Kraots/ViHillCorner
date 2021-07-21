@@ -273,20 +273,21 @@ class General(commands.Cog):
 		branch = 'master'
 		if command is None:
 			return await ctx.send(source_url)
-		if command.lower() in ['jsk', 'jishaku']:
+		elif command.lower() in ['jsk', 'jishaku']:
 			return await ctx.send("That is an extension's command, code unavailable.")
+		elif command.lower() == 'help':
+			src = type(self.bot.help_command)
+			module = src.__module__
+			filename = inspect.getsourcefile(src)
+		else:
+			obj = self.bot.get_command(command.replace('.', ' '))
+			if obj is None:
+				return await ctx.send('Could not find command.')
+			src = obj.callback.__code__
+			filename = src.co_filename
+			lines, firstlineno = inspect.getsourcelines(src)
 
-		obj = self.bot.get_command(command.replace('.', ' '))
-		if obj is None:
-			return await ctx.send('Could not find command.')
-
-		src = obj.callback.__code__
-		filename = src.co_filename
-
-		lines, firstlineno = inspect.getsourcelines(src)
-		
 		location = os.path.relpath(filename).replace('\\', '/')
-
 		final_url = f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>'
 		
 		await ctx.send(final_url)
