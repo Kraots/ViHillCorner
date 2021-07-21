@@ -12,7 +12,7 @@ from utils.paginator import CustomMenu
 class MutePageEntry:
 	def __init__(self, entry):
 		
-		self.name = entry['name']
+		self.name = entry['username']
 		self.time_left = entry['time_left']
 	
 	def __str__(self):
