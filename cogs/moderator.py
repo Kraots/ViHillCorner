@@ -349,7 +349,7 @@ class Moderation(commands.Cog):
 			results1 = await self.db1.find().to_list(100000)
 			results2 = await self.db2.find().to_list(100000)
 			results = results1+results2
-			if results == None:
+			if len(results) == 0:
 				return await ctx.reply("No members muted currently.")
 			for result in results:
 				if result['muteDuration'] != None:
