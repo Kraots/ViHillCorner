@@ -192,7 +192,7 @@ class Moderation(commands.Cog):
 		await guild.ban(user, reason=f'{ctx.author}: "{reason}"', delete_message_days=0)
 
 
-		ban = discord.Embed(description=f"The user(s) have been banned from the server.\n**Reason:** **[{reason}]({ctx.message.jump_url})**.", color=discord.Color.red())
+		ban = discord.Embed(description=f"`{user}` has been banned.\n**Reason:** **[{reason}]({ctx.message.jump_url})**.", color=discord.Color.red())
 
 		await ctx.send(embed=ban)
 
