@@ -126,10 +126,9 @@ class Tags(commands.Cog):
 		sortTags = await self.db.find().sort([('uses_count', -1)]).to_list(100000)
 		rank = 0
 		for i in sortTags:
+			rank += 1
 			if i['_id'] == data['_id']:
 				break
-			
-			rank += 1
 		
 		tag_name = data["the_tag_name"]
 		tag_owner_id = data["tag_owner_id"]
