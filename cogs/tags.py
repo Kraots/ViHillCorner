@@ -88,7 +88,7 @@ class Tags(commands.Cog):
 		await p.start(ctx)
 	
 
-	@tag.command(name='leaderboard', aliases=['lb'])
+	@tag.command(name='leaderboard', aliases=['lb', 'top'])
 	async def tag_leaderboard(self, ctx):
 		"""See top **10** most used tags."""
 
