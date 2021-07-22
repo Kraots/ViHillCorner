@@ -115,7 +115,7 @@ class Economy(commands.Cog):
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bal'])
 	async def balance(self, ctx, member: discord.Member = None):
-		"""Check your or another user's balance."""
+		"""Check your or another member's balance."""
 
 		if member is None:
 			member = ctx.author
@@ -171,7 +171,7 @@ class Economy(commands.Cog):
 
 		await ctx.send(embed=em)
 
-	@balance.command(name='leaderboard', aliases=['lb', 'baltop'])
+	@balance.command(name='leaderboard', aliases=['lb', 'top'])
 	async def eco_bal_leaderboard(self, ctx):
 		"""See top `10` richest people."""
 
@@ -219,7 +219,7 @@ class Economy(commands.Cog):
 	@balance.command(name='add-bank')
 	@commands.is_owner()
 	async def add_bank(self, ctx, amount = None, member: discord.Member = None):
-		"""Add <:carrots:822122757654577183> in the user's bank."""
+		"""Add <:carrots:822122757654577183> in the member's bank."""
 
 		if member is None:
 			member = ctx.author
@@ -301,7 +301,7 @@ class Economy(commands.Cog):
 	@balance.command(name='reset')
 	@commands.is_owner()
 	async def eco_bal_reset(self, ctx, member: discord.Member = None):
-		"""Reset the user's <:carrots:822122757654577183>."""
+		"""Reset the member's <:carrots:822122757654577183>."""
 
 		if member is None:
 			member = ctx.author
@@ -322,7 +322,7 @@ class Economy(commands.Cog):
 	@balance.command(name='set-wallet')
 	@commands.is_owner()
 	async def set_wallet(self, ctx, amount = None, member: discord.Member = None):
-		"""Set the amount of <:carrots:822122757654577183> in the user's wallet."""
+		"""Set the amount of <:carrots:822122757654577183> in the member's wallet."""
 
 		if member is None:
 			member = ctx.author
