@@ -57,11 +57,11 @@ class Snippets(commands.Cog):
 
 
 
-	@snippet.command(name='leaderboard', aliases=['lb'])
+	@snippet.command(name='leaderboard', aliases=['lb','top'])
 	async def snippet_leaderboard(self, ctx):
 		"""See top **10** most used snippets."""
 
-		results = await self.db.find().sort([("uses_count", -1)]).to_list(100000)
+		results = await self.db.find().sort([("uses_count", -1)]).to_list(10)
 		index = 0
 		em = discord.Embed(color=color.reds)
 		for result in results:
