@@ -61,7 +61,7 @@ class Snippets(commands.Cog):
 	async def snippet_leaderboard(self, ctx):
 		"""See top **10** most used snippets."""
 
-		results = await self.db.find().to_list(100000).sort([("uses_count", -1)]).limit(10)
+		results = await self.db.find().sort([("uses_count", -1)]).to_list(100000)
 		index = 0
 		em = discord.Embed(color=color.reds)
 		for result in results:
@@ -102,9 +102,9 @@ class Snippets(commands.Cog):
 		sortSnippets = await self.db.find().sort([('uses_count', -1)]).to_list(100000)
 		rank = 0
 		for e in sortSnippets:
+			rank += 1
 			if e['_id'] == data['_id']:
 				break
-			rank += 1
 
 		snippet_name = data['_id']
 		snippet_owner_id = data['snippet_credits']
