@@ -189,6 +189,9 @@ class TriviaCommands(commands.Cog):
 		
 		elif isinstance(error, commands.TooManyArguments):
 			return
+
+		else:
+			raise error
 	
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):

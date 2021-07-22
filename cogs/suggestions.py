@@ -151,7 +151,7 @@ class Suggest(commands.Cog):
 			await ctx.send(msg, delete_after=3)
 
 		else:
-				raise error
+			raise error
 
 def setup(bot):
 	bot.add_cog(Suggest(bot))

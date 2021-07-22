@@ -68,7 +68,8 @@ class TTT(commands.Cog):
 	async def ttt_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.send(error.original)
-
+		else:
+			raise error
 
 def setup(bot):
 	bot.add_cog(TTT(bot))

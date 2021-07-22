@@ -416,23 +416,28 @@ class CustomRoles(commands.Cog):
 	async def delete_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.send("You do not have any custom role! What are you trying to delete???\nType `!cr create` to create your custom role!")
+		else:
+			raise error
 
 	@unrole.error
 	async def unrole_error(self, ctx, error):
 		if isinstance(error, commands.errors.BadArgument):
 			await ctx.send("That is not a role id! To get the role's ID please type `!role-id <role_name>`")
-			return
+		else:
+			raise error
 
 	@cr_info.error
 	async def info_error(self, ctx, error):
 		if isinstance(error, commands.errors.BadArgument):
 			await ctx.send("That is not a role id! To get the role's ID please type `!role-id <role_name>`")
-			return
+		else:
+			raise error
 
 	async def cog_command_error(self, ctx, error):
 		if isinstance(error, commands.errors.MissingAnyRole):
 			await ctx.send("You must be at least `level 40+` in order to use this command! %s" % (ctx.author.mention))
-
+		else:
+			raise error
 
 
 

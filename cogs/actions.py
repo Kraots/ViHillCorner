@@ -540,7 +540,8 @@ class Actions(commands.Cog):
 	async def cog_command_error(self, ctx, error):
 		if isinstance(error, commands.errors.MissingAnyRole):
 			await ctx.send("You must be at least `level 15+` in order to use this command! %s" % (ctx.author.mention))
-
+		else:
+			raise error
 
 def setup(bot):
 	bot.add_cog(Actions(bot))

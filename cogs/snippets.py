@@ -185,7 +185,7 @@ class Snippets(commands.Cog):
 				"uses_count": 0
 				}
 		
-		self.db.insert_one(post)
+		await self.db.insert_one(post)
 		await ctx.send("Snippet Added!")
 
 
@@ -224,7 +224,7 @@ class Snippets(commands.Cog):
 			
 			else:
 				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					self.db.delete_one({"_id": data['_id']})
+					await self.db.delete_one({"_id": data['_id']})
 
 					e = f"`{snippet_name}` deleted succesfully! {ctx.author.mention}"
 					await msg.edit(content=e)
@@ -256,7 +256,7 @@ class Snippets(commands.Cog):
 			snippet_created_at = data['created_at']
 			uses = data['uses_count']
 
-			self.db.delete_one({"_id": data['_id']})
+			await self.db.delete_one({"_id": data['_id']})
 
 			em = discord.Embed(title="Snippet Removed", color=color.red)
 			em.add_field(name = "Name", value = the_snippet_name)
@@ -283,7 +283,7 @@ class Snippets(commands.Cog):
 		get_credits_info = data['snippet_credits']
 		credits_user = self.bot.get_user(get_credits_info)
 		credits_avatar = credits_user.avatar_url
-		self.db.update_one({"_id": data['_id']}, {"$inc":{"uses_count": 1}})
+		await self.db.update_one({"_id": data['_id']}, {"$inc":{"uses_count": 1}})
 
 		if message.content.lower().startswith(f";{snippet_name}"):
 			em = discord.Embed(color=discord.Color.red())
@@ -295,14 +295,15 @@ class Snippets(commands.Cog):
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
-		self.db.delete_many({"snippet_credits": member.id})
+		await self.db.delete_many({"snippet_credits": member.id})
 
 
 
 	async def cog_command_error(self, ctx, error):
 		if isinstance(error, commands.errors.MissingAnyRole):
 			await ctx.send("You must be at least `level 55+` in order to use this command! %s" % (ctx.author.mention))
-
+		else:
+			raise error
 
 def setup(bot):
 	bot.add_cog(Snippets(bot))
