@@ -12,6 +12,7 @@ import contextlib
 import io
 import textwrap
 from traceback import format_exception
+import time
 	
 def restart_program():
 	python = sys.executable
@@ -63,9 +64,9 @@ class Developer(commands.Cog):
 			"_guild": ctx.guild,
 			"_message": ctx.message
 		}
+		start = time.perf_counter()
 
 		stdout = io.StringIO()
-
 		try:
 			with contextlib.redirect_stdout(stdout):
 				exec(
@@ -76,14 +77,19 @@ class Developer(commands.Cog):
 				result = f"{stdout.getvalue()}\n-- {obj}\n"
 		except Exception as e:
 			result = "".join(format_exception(e, e, e.__traceback__))
-
+		
+		end = time.perf_counter()
+		took = f"{end-start:.3f}"
+		if took == "0.000":
+			took = f"{end-start:.7f}"
 		pager = Pag(
 			ctx=ctx,
 			timeout=180,
 			entries=[result[i: i + 4000] for i in range(0, len(result), 4000)],
 			length=1,
 			prefix="```py\n",
-			suffix="```"
+			suffix="```",
+			footer=f"Took {took}s"
 		)
 
 		await pager.start(ctx)

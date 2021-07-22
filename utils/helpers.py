@@ -6,6 +6,7 @@ from typing import Union
 from utils import time, formats
 import os, datetime
 from discord.ext.buttons import Paginator
+from discord.ext import commands
 
 import typing
 import pkg_resources
@@ -15,9 +16,10 @@ class Pag(Paginator):
 				extra_pages: list = None, prefix: str = '', suffix: str = '', format: str = '',
 				colour: Union[int, discord.Colour] = discord.Embed.Empty,
 				color: Union[int, discord.Colour] = discord.Embed.Empty, use_defaults: bool = True, embed: bool = True,
-				joiner: str = '\n', timeout: int = 180, thumbnail: str = None, ctx):
+				joiner: str = '\n', timeout: int = 180, thumbnail: str = None, ctx, footer: str = ''):
 		super().__init__(title=title, length=length, entries=entries, extra_pages=extra_pages, prefix=prefix, suffix=suffix, format=format, colour=colour, color=color, use_defaults=use_defaults, embed=embed, joiner=joiner, timeout=timeout, thumbnail=thumbnail)
 		self.ctx = ctx
+		self.footer = footer
 
 	async def cancel(self):
 		self._cancelled = True
@@ -58,6 +60,38 @@ class Pag(Paginator):
 			await self.page.edit(embed=self._pages[self._index])
 		else:
 			await self.page.edit(content=self._pages[self._index])
+
+	async def _paginate(self, ctx: commands.Context):
+		if not self.entries and not self.extra_pages:
+			raise AttributeError('You must provide atleast one entry or page for pagination.')  # ^^
+
+		if self.entries:
+			self.entries = [self.formatting(entry) for entry in self.entries]
+			entries = list(self.chunker())
+		else:
+			entries = []
+
+		for chunk in entries:
+			if not self.use_embed:
+				self._pages.append(self.joiner.join(chunk))
+			else:
+				embed = discord.Embed(title=self.title, description=self.joiner.join(chunk), colour=self.colour)
+
+				if self.thumbnail:
+					embed.set_thumbnail(url=self.thumbnail)
+				if self.footer:
+					embed.set_footer(text=self.footer)
+
+				self._pages.append(embed)
+
+		self._pages = self._pages + self.extra_pages
+
+		if isinstance(self._pages[0], discord.Embed):
+			self.page = await ctx.send(embed=self._pages[0])
+		else:
+			self.page = await ctx.send(self._pages[0])
+
+		self._session_task = ctx.bot.loop.create_task(self._session(ctx))
 
 def get_user_image(user: discord.User):
 	if str(user.avatar_url_as(static_format='png'))[54:].startswith('a_'):
