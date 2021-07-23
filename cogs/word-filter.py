@@ -66,11 +66,8 @@ class FilterCog(commands.Cog):
 	async def on_message(self, message):
 		if message.author.id in no_mute_these:
 			return
-		guild = self.bot.get_guild(750160850077089853)
+
 		if message.guild:
-			staff = guild.get_role(754676705741766757)
-			mod = guild.get_role(750162714407600228)
-			muted = guild.get_role(750465726069997658)
 			user = message.author
 			words = None
 			zalgos = None
@@ -122,55 +119,32 @@ class FilterCog(commands.Cog):
 								with open("words-warns.json", "w", encoding="utf-8") as f:
 									json.dump(users, f, ensure_ascii = False, indent = 4)
 
+								isStaff = False
 								if 754676705741766757 in [role.id for role in message.author.roles]:
-									post = {
-											'_id': user.id,
-											'mutedAt': datetime.datetime.now(),
-											'muteDuration': 840,
-											'guildId': message.guild.id,
-											}
-
-
-									try:
-										await self.db.insert_one(post)
-									except:
-										return
-									await message.author.add_roles(muted, reason="Bad Words")
-									await message.author.remove_roles(staff, mod)
-									msg1 = "You have been muted in `ViHill Corner`."
-									em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
-									await message.author.send(msg1, embed=em1)
-									msg2 = f"**{message.author}** has been muted."
-									em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
-									await message.channel.send(msg2, embed=em2)
-									await asyncio.sleep(840)
-									if muted in user.roles:
-										await message.author.remove_roles(muted)
-										await message.author.add_roles(staff, muted)
-										await message.author.send("You have been unmuted in `ViHill Corner`")
-									else:
-										pass
-
+									isStaff = True
+								post = {
+										'_id': user.id,
+										'mutedAt': datetime.datetime.now(),
+										'muteDuration': 3600,
+										'guildId': message.guild.id,
+										'staff': isStaff
+										}
+								try:
+									await self.db.insert_one(post)
+								except:
+									return
+								guild = self.bot.get_guild(750160850077089853)
+								muted = guild.get_role(750465726069997658)
+								if isStaff == True:
+									new_roles = [role for role in message.author.roles if not role.id in [754676705741766757, 750162714407600228]] + [muted]
 								else:
-									post = {
-											'_id': user.id,
-											'mutedAt': datetime.datetime.now(),
-											'muteDuration': 840,
-											'guildId': message.guild.id,
-											}
-
-
-									try:
-										await self.db.insert_one(post)
-									except:
-										return
-									await message.author.add_roles(muted, reason="Bad Words")
-									msg1 = "You have been muted in `ViHill Corner`."
-									em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
-									await message.author.send(msg1, embed=em1)
-									msg2 = f"**{message.author}** has been muted."
-									em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
-									await message.channel.send(msg2, embed=em2)
+									new_roles = [role for role in message.author.roles] + [muted]
+								await message.author.edit(roles=new_roles, reason='Filter Mute (bad words)')
+								msg1 = "You have been muted in `ViHill Corner`."
+								em = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
+								await message.author.send(msg1, embed=em)
+								msg2 = f"**{message.author}** has been muted."
+								await message.channel.send(msg2, embed=em)
 							else:
 								return
 						except:
@@ -295,11 +269,8 @@ class FilterCog(commands.Cog):
 	async def on_message_edit(self,before,after):
 		if after.author.id in no_mute_these:
 			return
-		guild = self.bot.get_guild(750160850077089853)
-		staff = guild.get_role(754676705741766757)
+
 		if after.guild:
-			mod = guild.get_role(750162714407600228)
-			muted = guild.get_role(750465726069997658)
 			user = after.author
 			words = None
 			zalgos = None
@@ -350,57 +321,32 @@ class FilterCog(commands.Cog):
 								with open("words-warns.json", "w", encoding="utf-8") as f:
 									json.dump(users, f, ensure_ascii = False, indent = 4)
 
-								
+								isStaff = False
 								if 754676705741766757 in [role.id for role in after.author.roles]:
-									post = {
-											'_id': user.id,
-											'mutedAt': datetime.datetime.now(),
-											'muteDuration': 840,
-											'guildId': after.guild.id,
-											}
-
-
-									try:
-										await self.db.insert_one(post)
-									except:
-										return
-									
-									await after.author.add_roles(muted, reason="Bad Words")
-									await after.author.remove_roles(staff, mod)
-									msg1 = "You have been muted in `ViHill Corner`."
-									em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-									await after.author.send(msg1, embed=em1)
-									msg2 = f"**{after.author}** has been muted."
-									em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-									await after.channel.send(msg2, embed=em2)
-									await asyncio.sleep(840)
-									if muted in user.roles:
-										await after.author.remove_roles(muted)
-										await after.author.add_roles(staff, muted)
-										await after.author.send("You have been unmuted in `ViHill Corner`")
-									else:
-										pass
-								
+									isStaff = True
+								post = {
+										'_id': user.id,
+										'mutedAt': datetime.datetime.now(),
+										'muteDuration': 3600,
+										'guildId': after.guild.id,
+										'staff': isStaff
+										}
+								try:
+									await self.db.insert_one(post)
+								except:
+									return
+								guild = self.bot.get_guild(750160850077089853)
+								muted = guild.get_role(750465726069997658)
+								if isStaff == True:
+									new_roles = [role for role in after.author.roles if not role.id in [754676705741766757, 750162714407600228]] + [muted]
 								else:
-									post = {
-											'_id': user.id,
-											'mutedAt': datetime.datetime.now(),
-											'muteDuration': 840,
-											'guildId': after.guild.id,
-											}
-
-
-									try:
-										await self.db.insert_one(post)
-									except:
-										return
-									await after.author.add_roles(muted, reason="Bad Words")
-									msg1 = "You have been muted in `ViHill Corner`."
-									em1 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-									await after.author.send(msg1, embed=em1)
-									msg2 = f"**{after.author}** has been muted."
-									em2 = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
-									await after.channel.send(msg2, embed=em2)
+									new_roles = [role for role in after.author.roles] + [muted]
+								await after.author.edit(roles=new_roles, reason='Filter Mute (bad words)')
+								msg1 = "You have been muted in `ViHill Corner`."
+								em = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+								await after.author.send(msg1, embed=em)
+								msg2 = f"**{after.author}** has been muted."
+								await after.channel.send(msg2, embed=em)
 							else:
 								return
 						except:
