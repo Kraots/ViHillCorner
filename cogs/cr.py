@@ -260,6 +260,9 @@ class CustomRoles(commands.Cog):
 		
 		result = await self.db.find_one({'roleID': role})
 
+		# if result is None:
+		# 	return await ctx.send("That is not a custom role.")
+
 		createdAt = result['createdAt']
 		shares = result['shares']
 		roleName = result['CustomRoleName']
@@ -393,9 +396,6 @@ class CustomRoles(commands.Cog):
 				await msg.clear_reactions()
 				return
 
-
-
-
 	@commands.command(name='role-id')
 	async def _role_id(self, ctx, *, role_name : str = None):
 		"""Get the role id from the name of a role."""
@@ -416,32 +416,20 @@ class CustomRoles(commands.Cog):
 	async def delete_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.send("You do not have any custom role! What are you trying to delete???\nType `!cr create` to create your custom role!")
-		else:
-			raise error
 
 	@unrole.error
 	async def unrole_error(self, ctx, error):
 		if isinstance(error, commands.errors.BadArgument):
 			await ctx.send("That is not a role id! To get the role's ID please type `!role-id <role_name>`")
-		else:
-			raise error
 
 	@cr_info.error
 	async def info_error(self, ctx, error):
 		if isinstance(error, commands.errors.BadArgument):
 			await ctx.send("That is not a role id! To get the role's ID please type `!role-id <role_name>`")
-		else:
-			raise error
 
 	async def cog_command_error(self, ctx, error):
 		if isinstance(error, commands.errors.MissingAnyRole):
 			await ctx.send("You must be at least `level 40+` in order to use this command! %s" % (ctx.author.mention))
-		else:
-			raise error
-
-
-
-
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):

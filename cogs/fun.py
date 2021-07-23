@@ -545,8 +545,7 @@ class Fun(commands.Cog):
 		elif isinstance(error, commands.MissingRequiredArgument):
 			ctx.command.reset_cooldown(ctx)
 			raise error
-		else:
-			raise error
+		 
 
 
 	@clapify.error
@@ -556,15 +555,13 @@ class Fun(commands.Cog):
 		elif isinstance(error, commands.MissingRequiredArgument):
 			ctx.command.reset_cooldown(ctx)
 			raise error
-		else:
-			raise error
+		 
 
 	@fight.error
 	async def fight_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.send(error.original)
-		else:
-			raise error
+		 
 
 
 def setup(bot):

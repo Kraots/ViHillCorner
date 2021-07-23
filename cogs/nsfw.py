@@ -165,8 +165,7 @@ class NSFW(commands.Cog):
 
 				msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
 				await ctx.send(msg)
-		else:
-			raise error
+		 
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):

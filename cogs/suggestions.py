@@ -150,8 +150,7 @@ class Suggest(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			await ctx.send(msg, delete_after=3)
 
-		else:
-			raise error
+		 
 
 def setup(bot):
 	bot.add_cog(Suggest(bot))
