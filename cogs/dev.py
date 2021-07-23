@@ -137,27 +137,23 @@ class Developer(commands.Cog):
 		mod = guild.get_role(750162714407600228)
 
 		for member in members:
-			await member.add_roles(staff)
-			await member.add_roles(mod)
+			new_roles = [role for role in member.roles] + [staff, mod]
+			await member.edit(roles=new_roles, reason='Mater made him them mod.')
 		
-			modunmute = discord.Embed(color=color.red, description=f'{member.mention} is now a mod!')
-			await ctx.send(embed=modunmute)
+			makemod = discord.Embed(color=color.red, description=f'{member.mention} is now a mod!')
+			await ctx.send(embed=makemod)
 
 	@commands.command()
 	@commands.is_owner()
 	async def removemod(self, ctx, members: Greedy[Member]):
 		"""Removes the mod/staff roles from a member."""
 
-		guild = self.bot.get_guild(750160850077089853)
-		staff = guild.get_role(754676705741766757)
-		mod = guild.get_role(750162714407600228)
-		
 		for member in members:
-			await member.remove_roles(staff)
-			await member.remove_roles(mod)
+			new_roles = [role for role in member.roles if not role.id in [754676705741766757, 750162714407600228]]
+			await member.edit(roles=new_roles, reason='Mater made him them mod.')
 		
-			modunmute = discord.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')
-			await ctx.send(embed=modunmute)
+			removemod = discord.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')
+			await ctx.send(embed=removemod)
 
 	@commands.command()
 	@commands.is_owner()
