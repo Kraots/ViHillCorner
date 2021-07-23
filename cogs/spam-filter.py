@@ -77,7 +77,7 @@ class RepeatedTextFilter(commands.Cog):
 					post = {
 						'_id': user.id,
 						'mutedAt': datetime.datetime.now(),
-						'muteDuration': 840,
+						'muteDuration': 3600,
 						'guildId': message.guild.id,
 						'staff': isStaff
 						}
@@ -156,7 +156,7 @@ class SpamFilter(commands.Cog):
 						post = {
 							'_id': user.id,
 							'mutedAt': datetime.datetime.now(),
-							'muteDuration': 840,
+							'muteDuration': 3600,
 							'guildId': message.guild.id,
 							'staff': isStaff
 							}
