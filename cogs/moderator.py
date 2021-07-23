@@ -64,13 +64,18 @@ class Moderation(commands.Cog):
 				if currentTime >= unmuteTime:
 					guild = self.bot.get_guild(result['guildId'])
 					member = guild.get_member(result['_id'])
+					isStaff = result['staff']
 
-					mute_role = guild.get_role(750465726069997658)
+					if isStaff == True:
+						staff = guild.get_role(754676705741766757)
+						mod = guild.get_role(750162714407600228)
+						new_roles = [role for role in member.roles if role.id != 750465726069997658] + [staff, mod]
+					else:
+						new_roles = [role for role in member.roles if role.id != 750465726069997658]
 					
 					if member != None:
-						if mute_role in member.roles:
-							await member.remove_roles(mute_role)
-							await member.send("You have been unmuted in `ViHill Corner`.")
+						await member.edit(roles=new_roles, reason='Auto-Unmute because of mute time expiration.')
+						await member.send("You have been unmuted in `ViHill Corner`.")
 						
 						await self.db1.delete_one({"_id": member.id})
 					else:
@@ -83,13 +88,18 @@ class Moderation(commands.Cog):
 				if currentTime >= unmuteTime:
 					guild = self.bot.get_guild(result2['guildId'])
 					member = guild.get_member(result2['_id'])
-
-					mute_role = guild.get_role(750465726069997658)
+					isStaff = result2['staff']
+					
+					if isStaff == True:
+						staff = guild.get_role(754676705741766757)
+						mod = guild.get_role(750162714407600228)
+						new_roles = [role for role in member.roles if role.id != 750465726069997658] + [staff, mod]
+					else:
+						new_roles = [role for role in member.roles if role.id != 750465726069997658]
 					
 					if member != None:
-						if mute_role in member.roles:
-							await member.remove_roles(mute_role)
-							await member.send("You have been unmuted in `ViHill Corner`.")
+						await member.edit(roles=new_roles, reason='Auto-Unmute because of mute time expiration.')
+						await member.send("You have been unmuted in `ViHill Corner`.")
 						
 						await self.db2.delete_one({"_id": member.id})
 					else:
@@ -252,74 +262,76 @@ class Moderation(commands.Cog):
 		!mute @Someone 1d
 		"""
 
-
-		if not 754676705741766757 in [role.id for role in member.roles]:
+		isStaff = False
+		if 754676705741766757 in [role.id for role in member.roles]:
+			if ctx.author.id != self.bot.owner_id:
+				return await ctx.send("You can't mute mods or take any moderator action against them.")
+			isStaff = True
 			
-			result1 = await self.db1.find_one({'_id': member.id})
-			result2 = await self.db2.find_one({'_id': member.id})
-			
-			if result1 != None:
-				return await ctx.reply("Member is already muted.")
-			elif result2 != None:
-				return await ctx.reply("Member is already muted.")
+		result1 = await self.db1.find_one({'_id': member.id})
+		result2 = await self.db2.find_one({'_id': member.id})
+		
+		if result1 != None:
+			return await ctx.reply("Member is already muted.")
+		elif result2 != None:
+			return await ctx.reply("Member is already muted.")
 
-			def format_time(dt):
-				return time.human_timedelta(dt, accuracy = 3)
+		def format_time(dt):
+			return time.human_timedelta(dt, accuracy = 3)
 
-			def check(m):
-				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
-			
-			await ctx.send("What's the reason?")
-			try:
-				get_reason = await self.bot.wait_for('message', timeout=180, check=check)
-				reason_content = get_reason.content
+		def check(m):
+			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+		
+		await ctx.send("What's the reason?")
+		try:
+			get_reason = await self.bot.wait_for('message', timeout=180, check=check)
+			reason_content = get_reason.content
 
-			except asyncio.TimeoutError:
-				return await ctx.reply("Reason is something you must give!")
-			
-			else:
-				post = {
-						'_id': member.id,
-						'mutedAt': datetime.datetime.utcnow(),
-						'muteDuration': muted_time,
-						'mutedBy': ctx.author.id,
-						'guildId': ctx.guild.id,
-					}
-
-				await self.db1.insert_one(post)
-
-				if muted_time != None:
-					muted_for = datetime.datetime.utcnow() + relativedelta(seconds = muted_time)
-					muted_for = format_time(muted_for)
-				else:
-					muted_for = "Eternity"
-
-				guild = self.bot.get_guild(750160850077089853)
-				log_channel = guild.get_channel(788377362739494943)
-				muted = guild.get_role(750465726069997658)
-				await member.add_roles(muted, reason=f'{ctx.author}: "{reason_content}"')
-				msg = "You have been muted in `ViHill Corner`"
-				em = discord.Embed(description=f"Time: `{muted_for}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=color.inviscolor)
-				try:
-					await member.send(msg, embed=em)
-				except discord.HTTPException:
-					pass
-
-
-				_mute = discord.Embed(description= f'{member.mention} has been muted. \n\nTime: `{muted_for}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**' , color=color.red)
-				
-				await ctx.send(embed=_mute)
-
-				log = discord.Embed(color=color.reds, title="___Mute___", timestamp = ctx.message.created_at)
-				log.add_field(name="Member", value=f"`{member}`", inline=False)
-				log.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
-				log.add_field(name="Time", value=f"`{muted_for}`", inline=False)
-				log.add_field(name="Reason", value=f"**[{reason_content}]({ctx.message.jump_url})**", inline=False)
-				await log_channel.send(embed=log)
-
+		except asyncio.TimeoutError:
+			return await ctx.reply("Reason is something you must give!")
+		
 		else:
-			await ctx.send("You can't mute mods or take any moderator action against them.")
-			return
+			post = {
+					'_id': member.id,
+					'mutedAt': datetime.datetime.utcnow(),
+					'muteDuration': muted_time,
+					'mutedBy': ctx.author.id,
+					'guildId': ctx.guild.id,
+					'staff': isStaff
+				}
+
+			await self.db1.insert_one(post)
+
+			if muted_time != None:
+				muted_for = datetime.datetime.utcnow() + relativedelta(seconds = muted_time)
+				muted_for = format_time(muted_for)
+			else:
+				muted_for = "Eternity"
+
+			guild = self.bot.get_guild(750160850077089853)
+			log_channel = guild.get_channel(788377362739494943)
+			muted = guild.get_role(750465726069997658)
+			if isStaff == True:
+				new_roles = [role for role in member.roles if not role.id in [754676705741766757, 750162714407600228]] + [muted]
+			else:
+				new_roles = [role for role in member.roles] + [muted]
+			await member.edit(roles=new_roles, reason=f'{ctx.author}: "{reason_content}"')
+			msg = "You have been muted in `ViHill Corner`"
+			em = discord.Embed(description=f"Time: `{muted_for}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=color.inviscolor)
+			try:
+				await member.send(msg, embed=em)
+			except discord.HTTPException:
+				pass
+
+			_mute = discord.Embed(description= f'{member.mention} has been muted. \n\nTime: `{muted_for}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**' , color=color.red)
+			await ctx.send(embed=_mute)
+
+			log = discord.Embed(color=color.reds, title="___Mute___", timestamp = ctx.message.created_at)
+			log.add_field(name="Member", value=f"`{member}`", inline=False)
+			log.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
+			log.add_field(name="Time", value=f"`{muted_for}`", inline=False)
+			log.add_field(name="Reason", value=f"**[{reason_content}]({ctx.message.jump_url})**", inline=False)
+			await log_channel.send(embed=log)
 
 	@commands.command(name='checkmute', aliases=['checkmutes', 'mutecheck', 'mutescheck'])
 	async def check_mutes(self, ctx, member: discord.Member = None):
@@ -369,16 +381,17 @@ class Moderation(commands.Cog):
 	async def unmute(self, ctx, member: discord.Member):
 		"""Unmute the member."""
 
-
 		result = await self.db1.find_one({'_id': member.id})
 		resultt = await self.db2.find_one({'_id': member.id})
 
 		if result != None:
+			isStaff = result['staff']
 			mutedBy = result['mutedBy']
 			if mutedBy == 374622847672254466 and ctx.author.id != 374622847672254466:
 				return await ctx.send(f"`{member}` cannot be unmuted since the one who muted them was none other than my master <:yamete:857163308427902987>")
 		else:
 			if resultt != None:
+				isStaff = result['staff']
 				if ctx.author.id != 374622847672254466:
 					return await ctx.send("Members muted by filters cannot be unmuted by anyone except from my master <:yamete:857163308427902987>")
 			else:
@@ -386,8 +399,12 @@ class Moderation(commands.Cog):
 
 		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
-		muted = guild.get_role(750465726069997658)
-		
+		if isStaff == True:
+			staff = guild.get_role(754676705741766757)
+			mod = guild.get_role(750162714407600228)
+			new_roles = [role for role in member.roles if role.id != 750465726069997658] + [staff, mod]
+		else:
+			new_roles = [role for role in member.roles if role.id != 750465726069997658]
 		await self.db1.delete_one({'_id': member.id})
 		await self.db2.delete_one({'_id': member.id})
 		msg="You were unmuted in `ViHill Corner`."
@@ -395,7 +412,7 @@ class Moderation(commands.Cog):
 			await member.send(msg)
 		except discord.HTTPException:
 			pass
-		await member.remove_roles(muted, reason='{}: "Unmute"'.format(ctx.author))
+		await member.edit(roles=new_roles, reason='{}: "Unmute"'.format(ctx.author))
 		await ctx.send(embed=discord.Embed(color=color.red, description=f"`{member}` has been unmuted."))
 
 		em = discord.Embed(color=color.reds, title="___UNMUTE___", timestamp = ctx.message.created_at)	
