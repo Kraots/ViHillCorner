@@ -138,7 +138,7 @@ class Developer(commands.Cog):
 
 		for member in members:
 			new_roles = [role for role in member.roles] + [staff, mod]
-			await member.edit(roles=new_roles, reason='Mater made him them mod.')
+			await member.edit(roles=new_roles, reason='Mater gave them staff/mod.')
 		
 			makemod = discord.Embed(color=color.red, description=f'{member.mention} is now a mod!')
 			await ctx.send(embed=makemod)
@@ -150,7 +150,7 @@ class Developer(commands.Cog):
 
 		for member in members:
 			new_roles = [role for role in member.roles if not role.id in [754676705741766757, 750162714407600228]]
-			await member.edit(roles=new_roles, reason='Mater made him them mod.')
+			await member.edit(roles=new_roles, reason='Mater removed their staff/mod.')
 		
 			removemod = discord.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')
 			await ctx.send(embed=removemod)
