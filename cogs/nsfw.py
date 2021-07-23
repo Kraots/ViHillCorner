@@ -8,6 +8,11 @@ from utils.paginator import SimplePages
 import pymongo
 import hmtai
 
+nsfw_url = 'https://nekobot.xyz/api/image?type='
+nsfw_categs = ['hentai', 'ass', 'thigh', 'hass', 'hboobs', 'pgif', 'paizuri', 'boobs', 'pussy', 'hyuri', 'hthigh', 'lewdneko', 'anal', 'hmidriff', 'feet', 'gonewild', 'hkitsune', '4k', 'blowjob', 'tentacle', 'hentai_anal']
+real_categs = ['ass', 'thigh', 'pgif', 'boobs', 'pussy', 'anal', 'feet', 'gonewild', '4k', 'blowjob']
+hentai_categs = ['hentai', 'hass', 'hboobs', 'paizuri', 'hyuri', 'hthigh', 'lewdneko', 'hmidriff', 'hkitsune', 'tentacle', 'hentai_anal']
+
 class TagPageEntry:
 	def __init__(self, entry):
 
@@ -29,18 +34,24 @@ class NSFW(commands.Cog):
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
-	
+
 	@commands.group(invoke_without_command=True, case_insensitive=True)
+	async def nsfw(self, ctx):
+		"""See the types of nsfw 😏"""
+
+		return await ctx.send("There are only 3 types: `real`, `hentai` and `old`\nType `!nsfw <type>` to see all the categories of a type.\n***Keep in mind that these only work in the nsfw channel.***")
+
+	@nsfw.command(name='old')
 	@commands.check(NSFW)
-	async def nsfw(self, ctx, nsfwType: str = None):
+	async def nsfw_old(self, ctx, category: str = None):
 		"""Get nsfw image 😏"""
 
-		if nsfwType is None:
-			em = discord.Embed(title="Here are all the available nsfw categories:", description="**ass** • **bdsm** • **cum** • **manga/doujin** • **femdom** • **hentai** • **masturbation** • **ero** • **orgy** • **yuri** • **pantsu/panties** • **glasses** • **cuckold** • **blowjob/bj** • **foot** • **thighs** • **vagina** • **ahegao** • **uniform** • **tentacles**", color=color.lightpink)
-			await ctx.send(embed=em)
-			return
+		if category is None:
+			categs = "ass **•** bdsm **•** cum **•** manga/doujin **•** femdom **•** hentai **•** masturbation **•** ero **•** orgy **•** yuri **•** pantsu/panties **•** glasses **•** cuckold **•** blowjob/bj **•** foot **•** thighs **•** vagina **•** ahegao **•** uniform **•** tentacles"
+			em = discord.Embed(title="Here are all the categories for the old nsfw:", description=categs, color=color.blue)
+			return await ctx.send(embed=em)
 
-		nsfwType = nsfwType.lower()
+		nsfwType = category.lower()
 		if nsfwType == 'tentacle':
 			nsfwType = 'tentacles'
 		elif nsfwType in ['doujin', 'doujins']:
@@ -55,15 +66,96 @@ class NSFW(commands.Cog):
 			nsfwType = 'foot'
 		
 		elif nsfwType == 'gangbang':
-			await ctx.send("This category is not supported.")
-			return
+			return	await ctx.send("This category is not supported.")
+
 		result = hmtai.useHM(version='v2', category=nsfwType)
 		
-		em = discord.Embed(timestamp=ctx.message.created_at, color=color.pastel)
+		em = discord.Embed(color=color.pastel)
 		em.set_image(url=result)
 		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 		await ctx.send(embed=em)
 
+	@nsfw.command(name='real')
+	@commands.check(NSFW)
+	async def nsfw_real(self, ctx, category: str = None):
+		"""Get a real porn random image based on the chosen category 😏"""
+		
+		if category is None:
+			categs = "ass **•** thigh **•** gif **•** boobs **•** pussy **•** anal **•** feet **•** wild **•** 4k **•** bj/blowjob"
+			em = discord.Embed(color=color.blue, title="Here are all the categories for real porn:", description=categs)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			return await ctx.send(embed=em)
+
+		categ = category.lower()
+		if not categ in real_categs:
+			if categ == 'thighs':
+				categ = 'thigh'
+			elif categ == 'bj':
+				categ = 'blowjob'
+			elif categ == 'gif':
+				categ = 'pgif'
+			elif categ == 'wild':
+				categ = 'gonewild'
+			elif categ == 'boob':
+				categ = 'boobs'
+			else:
+				return await ctx.reply("Not in the existing real nsfw categories.")
+		
+		async with self.bot.session.get(nsfw_url + categ) as resp:
+			if resp.status != 200:
+				kraots = self.bot.get_user(self.bot.owner_id)
+				await kraots.send(f"`{ctx.command} {categ}` returned **{resp.status}**")
+				return await ctx.send("There has been an error from the **API**, please try again later.")
+			content = await resp.json()
+			url = content['message']
+		em = discord.Embed(color=color.pastel)
+		em.set_image(url=url)
+		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+		await ctx.send(embed=em)
+
+	@nsfw.command(name='hentai')
+	@commands.check(NSFW)
+	async def nsfw_hentai(self, ctx, category: str = None):
+		"""Get a hentai random image based on the chosen category 😏"""
+
+		if category is None:
+			categs = f"hentai **•** paizuri **•** yuri **•** thighs **•** neko **•** anal **•** hmidriff **•** kitsune **•** tentacle **•** anal"
+			em = discord.Embed(color=color.blue, title="Here are all the categories for hentai:", description=categs)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			return await ctx.send(embed=em)
+
+		categ = category.lower()
+		if not categ in hentai_categs:
+			if categ == 'ass':
+				categ = 'hass'
+			elif categ in ['boob', 'boobs']:
+				categ = 'hboobs'
+			elif categ == 'yuri':
+				categ = 'hyuri'
+			elif categ in ['thigh', 'thighs']:
+				categ = 'hthigh'
+			elif categ == 'neko':
+				categ = 'lewdneko'
+			elif categ == 'anal':
+				categ = 'hentai_anal'
+			elif categ == 'kitsune':
+				categ = 'hkitsune'
+			elif categ == 'tentacles':
+				categ = 'tentacle'
+			else:
+				return await ctx.reply("Not in the existing hentai categories.")
+
+		async with self.bot.session.get(nsfw_url + categ) as resp:
+			if resp.status != 200:
+				kraots = self.bot.get_user(self.bot.owner_id)
+				await kraots.send(f"`{ctx.command} {categ}` returned **{await resp.json()}**")
+				return await ctx.send("There has been an error from the **API**, please try again later.")
+			content = await resp.json()
+			url = content['message']
+		em = discord.Embed(color=color.pastel)
+		em.set_image(url=url)
+		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+		await ctx.send(embed=em)
 
 	@nsfw.command()
 	async def me(self, ctx, choice : str):
@@ -161,11 +253,21 @@ class NSFW(commands.Cog):
 		if isinstance(error, commands.CheckFailure):
 			if 754676705741766757 in [role.id for role in ctx.message.author.roles]:
 				await ctx.send('Invalid format!\nUse: `!nsfw block <users>` or `!nsfw unblock <users>`!')
-			else:
-
-				msg = f"This command is only usable in a nsfw marked channel!\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ {ctx.author.mention}"
-				await ctx.send(msg)
-		 
+	
+	@nsfw_old.error
+	async def nsfw_old_error(self, ctx, error):
+		if isinstance(error, commands.errors.CheckFailure):
+			await ctx.reply('This command is only usable in a nsfw marked channel.')
+	
+	@nsfw_real.error
+	async def nsfw_real_error(self, ctx, error):
+		if isinstance(error, commands.errors.CheckFailure):
+			await ctx.reply('This command is only usable in a nsfw marked channel.')
+	
+	@nsfw_hentai.error
+	async def nsfw_hentai_error(self, ctx, error):
+		if isinstance(error, commands.errors.CheckFailure):
+			await ctx.reply('This command is only usable in a nsfw marked channel.')
 
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
