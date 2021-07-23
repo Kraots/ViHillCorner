@@ -30,11 +30,6 @@ class RepeatedTextFilter(commands.Cog):
 			user = message.author
 			users = await get_repeated_text_warns_data()
 
-			guild = self.bot.get_guild(750160850077089853)
-			muted = guild.get_role(750465726069997658)
-			staff = guild.get_role(754676705741766757)
-			mod = guild.get_role(750162714407600228)
-
 			if message.guild:
 				if message.channel.id in ignored_channels:
 					return
@@ -76,56 +71,32 @@ class RepeatedTextFilter(commands.Cog):
 					with open("repeated-text-filter.json", "w", encoding="utf-8") as f:
 						json.dump(users, f, ensure_ascii = False, indent = 4)
 
+					isStaff = False
 					if 754676705741766757 in [role.id for role in message.author.roles]:
-						post = {
-								'_id': user.id,
-								'mutedAt': datetime.datetime.now(),
-								'muteDuration': 840,
-								'guildId': message.guild.id,
-								}
-
-
-						try:
-							await self.db.insert_one(post)
-						except:
-							return
-
-						await user.remove_roles(staff, mod)
-						await user.add_roles(muted)
-						msg1 = "You have been muted in `ViHill Corner`."
-						em1 = discord.Embed(description=f"**Reason:** [Repeated text]({message.jump_url})")
-						await user.send(msg1, embed=em1)
-						msg2 = f"**{user}** has been muted."
-						em2= discord.Embed(description=f"**Reason:** [Repeated text]({message.jump_url})")
-						await message.channel.send(msg2, embed=em2)
-						await asyncio.sleep(840)
-						if muted in user.roles:
-							await user.remove_roles(muted)
-							await user.add_roles(staff, mod)
-							await user.send("You have been unmuted.")
-						else:
-							pass
-
+						isStaff = True
+					post = {
+						'_id': user.id,
+						'mutedAt': datetime.datetime.now(),
+						'muteDuration': 840,
+						'guildId': message.guild.id,
+						'staff': isStaff
+						}
+					try:
+						await self.db.insert_one(post)
+					except:
+						return
+					guild = self.bot.get_guild(750160850077089853)
+					muted = guild.get_role(750465726069997658)
+					if isStaff == True:
+						new_roles = [role for role in message.author.roles if not role.id in [754676705741766757, 750162714407600228]] + [muted]
 					else:
-						post = {
-								'_id': user.id,
-								'mutedAt': datetime.datetime.now(),
-								'muteDuration': 840,
-								'guildId': message.guild.id,
-								}
-
-
-						try:
-							await self.db.insert_one(post)
-						except:
-							return
-						await user.add_roles(muted)
-						msg1 = "You have been muted in `ViHill Corner`."
-						em1 = discord.Embed(description=f"**Reason:** [Repeated text]({message.jump_url})")
-						await user.send(msg1, embed=em1)
-						msg2 = f"**{user}** has been muted."
-						em2= discord.Embed(description=f"**Reason:** [Repeated text]({message.jump_url})")
-						await message.channel.send(msg2, embed=em2)
+						new_roles = [role for role in message.author.roles] + [muted]
+					await message.author.edit(roles=new_roles, reason='Filter Mute (Repeated Text)')
+					msg1 = "You have been muted in `ViHill Corner`."
+					em = discord.Embed(description=f"**Reason:** [Repeated Text]({message.jump_url})")
+					await user.send(msg1, embed=em)
+					msg2 = f"**{user}** has been muted."
+					await message.channel.send(msg2, embed=em)
 				else:
 					return
 
@@ -143,17 +114,12 @@ class SpamFilter(commands.Cog):
 	async def on_message(self, message: discord.Message):
 		if message.author.id in no_mute_these:
 			return
-		if message.author.bot :
+		if message.author.bot:
 			return
 		
 		else:
 			user = message.author
 			users = await get_spam_warns_data()
-
-			guild = self.bot.get_guild(750160850077089853)
-			muted = guild.get_role(750465726069997658)
-			staff = guild.get_role(754676705741766757)
-			mod = guild.get_role(750162714407600228)
 
 			if message.guild:
 				if message.channel.id in ignored_channels:
@@ -168,10 +134,10 @@ class SpamFilter(commands.Cog):
 						return
 
 					else:
-							users[str(user.id)]["warns"] += 1
+						users[str(user.id)]["warns"] += 1
 
-							with open("spam-warns.json", "w", encoding="utf-8") as f:
-								json.dump(users, f, ensure_ascii = False, indent = 4)
+						with open("spam-warns.json", "w", encoding="utf-8") as f:
+							json.dump(users, f, ensure_ascii = False, indent = 4)
 
 
 					total_warns = users[str(user.id)]["warns"]
@@ -180,59 +146,36 @@ class SpamFilter(commands.Cog):
 						await message.delete()
 					
 					if total_warns > 4:
-
 						del users[str(user.id)]
 						with open("spam-warns.json", "w", encoding="utf-8") as f:
 							json.dump(users, f, ensure_ascii = False, indent = 4)
-
+						
+						isStaff = False
 						if 754676705741766757 in [role.id for role in message.author.roles]:
-							post = {
-								'_id': user.id,
-								'mutedAt': datetime.datetime.now(),
-								'muteDuration': 840,
-								'guildId': message.guild.id,
-								}
-
-							try:
-								await self.db.insert_one(post)
-							except:
-								return
-							await user.remove_roles(staff, mod)
-							await user.add_roles(muted)
-							msg1 = "You have been muted in `ViHill Corner`."
-							em1 = discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")
-							await user.send(msg1, embed=em1)
-							msg2 = f"**{user}** has been muted."
-							em2= discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")
-							await message.channel.send(msg2, embed=em2)
-							await asyncio.sleep(840)
-							if muted in user.roles:
-								await user.remove_roles(muted)
-								await user.add_roles(staff, mod)
-								await user.send("You have been unmuted.")
-							else:
-								pass
-								
+							isStaff = True
+						post = {
+							'_id': user.id,
+							'mutedAt': datetime.datetime.now(),
+							'muteDuration': 840,
+							'guildId': message.guild.id,
+							'staff': isStaff
+							}
+						try:
+							await self.db.insert_one(post)
+						except:
+							return
+						guild = self.bot.get_guild(750160850077089853)
+						muted = guild.get_role(750465726069997658)
+						if isStaff == True:
+							new_roles = [role for role in message.author.roles if not role.id in [754676705741766757, 750162714407600228]] + [muted]
 						else:
-							post = {
-								'_id': user.id,
-								'mutedAt': datetime.datetime.now(),
-								'muteDuration': 840,
-								'guildId': message.guild.id,
-								}
-
-							try:
-								await self.db.insert_one(post)
-							except:
-								return
-							await user.add_roles(muted)
-							msg1 = "You have been muted in `ViHill Corner`."
-							em1 = discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")
-							await user.send(msg1, embed=em1)
-							msg2 = f"**{user}** has been muted."
-							em2= discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")
-							await message.channel.send(msg2, embed=em2)
-
+							new_roles = [role for role in message.author.roles] + [muted]
+						await message.author.edit(roles=new_roles, reason='Filter Mute (Spam)')
+						msg1 = "You have been muted in `ViHill Corner`."
+						em = discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")
+						await user.send(msg1, embed=em)
+						msg2 = f"**{user}** has been muted."
+						await message.channel.send(msg2, embed=em)
 					else:
 						return
 
