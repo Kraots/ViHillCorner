@@ -38,7 +38,7 @@ class GlobalErrorHandler(commands.Cog):
 			return
 
 		elif isinstance(error, commands.errors.CheckFailure):
-			await ctx.send('e')
+			return
 
 		else:
 			kraots = self.bot.get_user(self.bot.owner_id)
