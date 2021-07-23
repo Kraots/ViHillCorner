@@ -127,44 +127,6 @@ class Developer(commands.Cog):
 				await member.send(f'{args}')
 				await ctx.message.add_reaction('<:agree:797537027469082627>')
 
-
-	@commands.command()
-	@commands.is_owner()
-	async def modmute(self, ctx, members: Greedy[Member]):
-		"""Mute the mod, this command is exclusive to mods since it also removes their staff/mod roles."""
-
-		guild = self.bot.get_guild(750160850077089853)
-		staff = guild.get_role(754676705741766757)
-		mod = guild.get_role(750162714407600228)
-		mute = guild.get_role(750465726069997658)
-		
-		for member in members:
-			await member.add_roles(mute)
-			await member.remove_roles(staff)
-			await member.remove_roles(mod)
-
-			modmute = discord.Embed(color=color.red, description=f'Mod {member.mention} has been muted!')
-			await ctx.send(embed=modmute)
-
-
-	@commands.command()
-	@commands.is_owner()
-	async def modunmute(self, ctx, members: Greedy[Member]):
-		"""Unmute the mod, this command is exclusive to mods since it also adds their staff/mod roles."""
-
-		guild = self.bot.get_guild(750160850077089853)
-		staff = guild.get_role(754676705741766757)
-		mod = guild.get_role(750162714407600228)
-		mute = guild.get_role(750465726069997658)
-		
-		for member in members: 
-			await member.add_roles(staff)
-			await member.add_roles(mod)
-			await member.remove_roles(mute)
-		
-			modunmute = discord.Embed(color=color.red, description=f'Mod {member.mention} has been unmuted!')
-			await ctx.send(embed=modunmute)
-
 	@commands.command()
 	@commands.is_owner()
 	async def makemod(self, ctx, members: Greedy[Member]):
