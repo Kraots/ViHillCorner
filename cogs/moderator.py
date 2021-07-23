@@ -40,7 +40,7 @@ class TimeConverter(commands.Converter):
 				raise commands.BadArgument("{} is not a number!".format(v))
 		return time
 
-class Moderation(commands.Cog):
+class Moderator(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
@@ -443,4 +443,4 @@ class Moderation(commands.Cog):
 		await log_channel.send(embed=em)
 
 def setup(bot):
-	bot.add_cog(Moderation(bot))
+	bot.add_cog(Moderator(bot))
