@@ -254,14 +254,14 @@ class CustomRoles(commands.Cog):
 	async def cr_info(self, ctx, *, role: int = None):
 		"""Get some data about a custom role, it doesn't have to be yours, but the <role> parameter must be a ingere (the role's id)."""
 
-		if role == None:
-			await ctx.send("You must give the role ID, to get it use `!role-id <role_name>`")
-			return
-		
-		result = await self.db.find_one({'roleID': role})
-
-		if result is None:
-			return await ctx.send("That is not a custom role.")
+		if role is None:
+			result = await self.db.find_one({'_id': ctx.author.id})
+			if result is None:
+				return await ctx.send("You do not have a custom role.")
+		else:
+			result = await self.db.find_one({'roleID': role})
+			if result is None:
+				return await ctx.send("That is not a custom role.")
 
 		createdAt = result['createdAt']
 		shares = result['shares']
