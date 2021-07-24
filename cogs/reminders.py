@@ -175,6 +175,8 @@ class RemindersClass(commands.Cog):
 	async def remind_remove_error(self, ctx, error):
 		if isinstance(error, commands.errors.TooManyArguments):
 			return
+		else:
+			await self.bot.reraise(ctx, error)
 		 
 
 def setup(bot):

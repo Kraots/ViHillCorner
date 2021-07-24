@@ -189,6 +189,9 @@ class TriviaCommands(commands.Cog):
 		
 		elif isinstance(error, commands.TooManyArguments):
 			return
+		
+		else:
+			await self.bot.reraise(ctx, error)
 
 		 
 	

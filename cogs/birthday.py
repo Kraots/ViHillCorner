@@ -284,7 +284,8 @@ class Birthdays(commands.Cog):
 	async def bday_set_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandOnCooldown):
 			await ctx.send(f"You are on cooldown! Please try again in `{str(error.retry_after)[:4]}` seconds.")
-		 
+		else:
+			await self.bot.reraise(ctx, error)
 
 
 

@@ -441,19 +441,22 @@ class Misc(commands.Cog):
 				await ctx.send("Bots **do not** have permission to change guild owner's nickname!")
 			else:
 				await ctx.send("The nickname is too long. Please choose a nickname that's 32 characters or less!")
-		 
+		else:
+			await self.bot.reraise(ctx, error)
 
 	@nick_remove.error
 	async def off_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			if ctx.author.id == ctx.guild.owner.id:
 				await ctx.send("Bots **do not** have permission to change guild owner's nickname!")
-		 
+		else:
+			await self.bot.reraise(ctx, error) 
 
 	async def cog_command_error(self, ctx, error):
 		if isinstance(error, commands.errors.MissingAnyRole):
 			await ctx.send("You must be at least `level 3+` in order to use this command! %s" % (ctx.author.mention))
-		 
+		else:
+			await self.bot.reraise(ctx, error)
 
 def setup(bot):
 	bot.add_cog(Misc(bot))

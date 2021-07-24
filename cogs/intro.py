@@ -436,13 +436,14 @@ class Intros(commands.Cog):
 		if isinstance(error, commands.CommandOnCooldown):
 			msg = f'Please wait {time_phaser(error.retry_after)}.'
 			await ctx.send(msg)
-		 
+		else:
+			await self.bot.reraise(ctx, error)
 
 	@intro.error
 	async def intro_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			ctx.command.reset_cooldown(ctx)
-			raise error
+			await self.bot.reraise(ctx, error)
 
 		elif isinstance(error, commands.CommandOnCooldown):
 			msg = f'Please wait {time_phaser(error.retry_after)}.'
@@ -450,10 +451,8 @@ class Intros(commands.Cog):
 
 		elif isinstance(error, commands.TooManyArguments):
 			ctx.command.reset_cooldown(ctx)
-
-		 
-
-
+		else:
+			await self.bot.reraise(ctx, error)
 
 
 def setup(bot):

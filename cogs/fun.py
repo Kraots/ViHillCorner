@@ -544,7 +544,9 @@ class Fun(commands.Cog):
 			await ctx.send(f"You're on cooldown, try again in {time_phaser(error.retry_after)}.")
 		elif isinstance(error, commands.MissingRequiredArgument):
 			ctx.command.reset_cooldown(ctx)
-			raise error
+			await self.bot.reraise(ctx, error)
+		else:
+			await self.bot.reraise(ctx, error)
 		 
 
 
@@ -554,14 +556,17 @@ class Fun(commands.Cog):
 			await ctx.send(f"You're on cooldown, try again in {time_phaser(error.retry_after)}.")
 		elif isinstance(error, commands.MissingRequiredArgument):
 			ctx.command.reset_cooldown(ctx)
-			raise error
+			await self.bot.reraise(ctx, error)
+		else:
+			await self.bot.reraise(ctx, error)
 		 
 
 	@fight.error
 	async def fight_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
 			await ctx.send(error.original)
-		 
+		else:
+			await self.bot.reraise(ctx, error)
 
 
 def setup(bot):
