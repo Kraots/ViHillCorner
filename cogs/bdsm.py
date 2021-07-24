@@ -15,9 +15,9 @@ class Bdsm(commands.Cog):
 
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def bdsm(self, ctx):
-		"""Invokes this command"""
+		"""Base command for all the bdsm commands."""
 
-		await ctx.send_help('bdsm')
+		await ctx.send("`!help bdsm` for a list of commands.")
 	
 	@bdsm.command(name='set')
 	async def bdsm_set(self, ctx):
