@@ -260,8 +260,8 @@ class CustomRoles(commands.Cog):
 		
 		result = await self.db.find_one({'roleID': role})
 
-		# if result is None:
-		# 	return await ctx.send("That is not a custom role.")
+		if result is None:
+			return await ctx.send("That is not a custom role.")
 
 		createdAt = result['createdAt']
 		shares = result['shares']
