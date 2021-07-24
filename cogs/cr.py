@@ -258,6 +258,7 @@ class CustomRoles(commands.Cog):
 			result = await self.db.find_one({'_id': ctx.author.id})
 			if result is None:
 				return await ctx.send("You do not have a custom role.")
+			role = result['roleID']
 		else:
 			result = await self.db.find_one({'roleID': role})
 			if result is None:
