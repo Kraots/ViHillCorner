@@ -113,7 +113,7 @@ class CustomRoles(commands.Cog):
 					await self.db.insert_one(post)
 
 					positions = {
-						newcr: 125
+						newcr: 129
 					}
 					await guild.edit_role_positions(positions=positions)
 
