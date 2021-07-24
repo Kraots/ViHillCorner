@@ -111,7 +111,7 @@ class Birthdays(commands.Cog):
 			birthday = datetime.datetime.strptime(pre, "%Y/%m/%d")
 
 		except ValueError:
-			await ctx.reply("That is not a valid date!\n**Valid Dates:**\n\u2800`-` 04/24\n\u2800`-` 01/09\n\u2800`-` 12/01\n\n**Example:**\n\u2800`!birthday set 04/27`")
+			return await ctx.reply("That is not a valid date!\n**Valid Dates:**\n\u2800`-` 04/24\n\u2800`-` 01/09\n\u2800`-` 12/01\n\n**Example:**\n\u2800`!birthday set 04/27`")
 			
 
 		dateNow = datetime.datetime.now().strftime("%Y/%m/%d")
