@@ -6,6 +6,7 @@ import datetime
 import aiohttp
 import motor.motor_asyncio
 from utils.HelpCommand import PaginatedHelpCommand
+from utils.helpers import reraise
 
 token = os.environ.get('DISCORD_BOT_SECRET')
 
@@ -25,6 +26,7 @@ class ViHillCorner(commands.Bot):
 		self.session = aiohttp.ClientSession(loop=self.loop)
 		self.db1 = database1
 		self.db2 = database2
+		self.reraise = reraise
 
 		for filename in os.listdir('./cogs'):
 			if filename.endswith('.py'):
