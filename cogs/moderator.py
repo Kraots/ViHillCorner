@@ -182,11 +182,10 @@ class Moderator(commands.Cog):
 
 		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
-		staff = guild.get_role(754676705741766757)
 
 		try:
 			member = guild.get_member(user.id)
-			if staff in member.roles:
+			if 754676705741766757 in [role.id for role in member.roles]:
 				return await ctx.reply("Cannot perform this action against staff members.")
 		except:
 			pass
