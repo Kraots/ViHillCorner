@@ -257,8 +257,8 @@ class Moderator(commands.Cog):
 	@commands.has_role(754676705741766757)
 	async def mute(self, ctx, member : discord.Member, *, muted_time : TimeConverter = None):
 		"""
-		Mutes a member for the specified time- time in 2d 10h 3m 2s format ex:
-		!mute @Someone 1d
+		Mute the member.
+		If the time is specified (1s|1m|1h|1d), the member will be unmuted after that amount of time expires.
 		"""
 
 		isStaff = False

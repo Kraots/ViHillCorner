@@ -65,7 +65,7 @@ class General(commands.Cog):
 
 	@commands.command(aliases=["ss"])
 	async def scrs(self, ctx, site):
-		"""Take a screenshot of the website"""
+		"""Take a screenshot of the website."""
 
 		if ctx.author.id != 374622847672254466:
 			if str(site) in nono_list:
@@ -82,7 +82,7 @@ class General(commands.Cog):
 
 	@commands.command()
 	async def vote(self, ctx):
-		"""Get the link to vote for the server"""
+		"""Get the link to vote for the server."""
 
 		em = discord.Embed(title="Click Here", url="https://top.gg/servers/750160850077089853/vote", color=color.lightpink)
 		
@@ -90,7 +90,7 @@ class General(commands.Cog):
 
 	@commands.command(name="perm-calc")
 	async def perm_calc(self, ctx):
-		"""Sends the link for the permission calculator for bots"""
+		"""Sends the link for the permission calculator for bots."""
 
 		em = discord.Embed(color=color.lightpink, title= " Here's the link to the permission calculator for bots. ", description = "https://discordapi.com/permissions.html#2147483647")
 		await ctx.send(embed=em)
@@ -98,14 +98,14 @@ class General(commands.Cog):
 
 	@commands.command(name="dev-portal")
 	async def dev_portal(self, ctx):
-		"""Sends a link for the developer portal"""
+		"""Sends a link for the developer portal."""
 
 		em = discord.Embed(color=color.lightpink, title = " Here's the link to dev portal. ", description="https://discord.com/developers/applications")
 		await ctx.send(embed=em)
 
 	@commands.command()
 	async def joined(self, ctx, member: discord.Member=None):
-		"""See when the member has joined the server"""
+		"""See when the member has joined the server."""
 
 		if member is None:
 			member = ctx.author
@@ -136,7 +136,7 @@ class General(commands.Cog):
 
 	@commands.command()
 	async def created(self, ctx, user: discord.User=None):
-		"""See when a user created their account"""
+		"""See when a user created their account."""
 
 		if user is None:
 			user = ctx.author
@@ -152,7 +152,7 @@ class General(commands.Cog):
 
 	@commands.command(help="Get a list of all snippets", aliases=["inv"])
 	async def invite(self, ctx):
-		"""Get the invite for the server"""
+		"""Get the invite for the server."""
 
 		inv = discord.Embed(title="https://discord.gg/Uf2kA8q", color=color.lightpink)
 		inv.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
@@ -173,7 +173,7 @@ class General(commands.Cog):
 
 	@commands.command(name='av', aliases=["avatar"])
 	async def _av(self, ctx, member: discord.Member = None):
-		"""Get an embedded image of the member's avatar"""
+		"""Get an embedded image of the member's avatar."""
 
 		if member is None:
 			member = ctx.author
@@ -186,7 +186,7 @@ class General(commands.Cog):
 
 	@commands.command()
 	async def ee(self, ctx, emoji: discord.PartialEmoji):
-		"""Get an embedded image of the emoji"""
+		"""Get an embedded image of the emoji."""
 
 		await ctx.message.delete()
 
@@ -198,7 +198,7 @@ class General(commands.Cog):
 
 	@commands.command(aliases=['ad'])
 	async def serverad(self, ctx):
-		"""See the server's ad"""
+		"""See the server's ad."""
 
 		await ctx.message.delete()
 		ad = discord.Embed(color=color.lightpink, title="Here's the ad to the server:", description=addd)
@@ -208,7 +208,7 @@ class General(commands.Cog):
 
 	@commands.command(aliases=["ra"])
 	async def rawad(self, ctx):
-		"""See the server's ad but in raw format"""
+		"""See the server's ad but in raw format."""
 
 		await ctx.message.delete()
 		ad = discord.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```%s```" % (addd))
@@ -218,14 +218,14 @@ class General(commands.Cog):
 
 	@commands.command(aliases=["untill-partner"])
 	async def up(self, ctx):
-		"""See how many members there are left until the server can apply for the discord partnership program"""
+		"""See how many members there are left until the server can apply for the discord partnership program."""
 
 		guild = self.bot.get_guild(750160850077089853)
 		member_count = len([m for m in guild.members if not m.bot])
 		await ctx.send(f'Members left untill the server can apply for the *discord partnership program:* \n\n`{500 - member_count}`')
 
-	@commands.command(aliases=['randomnr', 'randomnumber', 'random', 'rn'])
-	async def number(self, ctx, num1: int = None, num2: int = None, num3: int = None):
+	@commands.command(name='randomnumber', aliases=['rn'])
+	async def random_number(self, ctx, num1: int = None, num2: int = None, num3: int = None):
 		"""
 		Get a random number depending on the amount of numbers you give
 		If you don't provide any number, the bot will give a random number between `0` and the `largest positive integer supported by the machine`.
@@ -267,7 +267,7 @@ class General(commands.Cog):
 
 	@commands.command()
 	async def source(self, ctx, *, command: str = None):
-		"""Sends the source of code for the specified command if any, if not then just the link to the github repository"""
+		"""Sends the source of code for the specified command if any, if not then just the link to the github repository."""
 
 		source_url = 'https://github.com/Kraots/ViHillCorner'
 		branch = 'master'
