@@ -37,6 +37,8 @@ class OnBanAppealJoin(commands.Cog):
 			await m.pin()
 			await channel.purge(limit=1)
 			await channel.set_permissions(member, read_messages = True)
+			ch = member.guild.get_channel(788488359306592316)
+			await ch.send('A new member has joined the ban appeal. <@!374622847672254466> <@!747329236695777340>')
 	
 	@commands.Cog.listener('on_member_remove')
 	async def on_member_remove(self, member):
