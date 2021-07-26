@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import random
 from random import randint
-from utils.helpers import time_phaser, BotChannels
+from utils.helpers import time_phaser
 import asyncio
 import games
 import aiohttp
@@ -440,10 +440,12 @@ class Fun(commands.Cog):
 		await ctx.send(f':8ball:** | {ctx.author.name} asked:** {question}\n<:blank:788666214318735360>** | Answer:** {random.choice(responses)}')
 
 
-	@commands.check(BotChannels)
 	@commands.command()
 	async def fight(self, ctx, p2: discord.Member):
 		"""Have an interactive fight with someone."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		p1 = ctx.author
 		msg = await ctx.send(f"**{p1.display_name}** wants to have a fight with you, do you accept? {p2.mention}")

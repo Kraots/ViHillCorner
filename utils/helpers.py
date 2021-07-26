@@ -163,9 +163,6 @@ def Developer(ctx):
 def NSFW(ctx):
 	return ctx.channel.id == 780374324598145055
 
-def BotChannels(ctx):
-	return ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016]
-
 def clean_code(content):
 	if content.startswith("```") and content.endswith("```"):
 		return "\n".join(content.split("\n")[1:])[:-3]

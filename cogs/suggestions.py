@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 import utils.colors as color
-from utils.helpers import BotChannels
 from utils.paginator import SimplePages
 import pymongo
 from discord.ext.commands import Greedy
@@ -31,10 +30,12 @@ class Suggest(commands.Cog):
 
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
-	@commands.check(BotChannels)
 	@commands.cooldown(1, 60, commands.BucketType.user)
 	async def suggest(self, ctx, *, args):
-		"""Make a suggestion in <#858997857968193596>."""
+		"""Make a suggestion in <#750160850593251454>."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		result = await self.db.find_one({'_id': ctx.author.id})
 		if result != None:

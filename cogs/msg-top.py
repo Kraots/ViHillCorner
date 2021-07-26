@@ -6,8 +6,6 @@ from dateutil.relativedelta import relativedelta
 from utils import time
 import asyncio
 
-BotChannels = [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]
-
 class WeeklyTop(commands.Cog):
 	
 	def __init__(self, bot):
@@ -16,7 +14,7 @@ class WeeklyTop(commands.Cog):
 		self.weekly_reset.start()
 		self.prefix = "!"
 	def cog_check(self, ctx):
-		return ctx.prefix == self.prefix and ctx.channel.id in BotChannels
+		return ctx.prefix == self.prefix
 
 	@tasks.loop(minutes=1)
 	async def weekly_reset(self):
@@ -54,6 +52,9 @@ class WeeklyTop(commands.Cog):
 	async def msg_top(self, ctx):
 		"""See the top 15 most active members of the server and when the top restarts."""
 		
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
+
 		def format_time(dt):
 			return time.human_timedelta(dt)
 

@@ -1,7 +1,7 @@
 import discord 
 from discord.ext import commands
 import asyncio
-from utils.helpers import BotChannels, time_phaser
+from utils.helpers import time_phaser
 
 class Intros(commands.Cog):
 
@@ -14,9 +14,11 @@ class Intros(commands.Cog):
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
 	@commands.cooldown(1, 360, commands.BucketType.user)
-	@commands.check(BotChannels)
 	async def intro(self, ctx):
 		"""Create a new intro if you don't have one or edit an existing one."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 		
