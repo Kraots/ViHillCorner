@@ -4,6 +4,20 @@ import utils.colors as color
 import asyncio
 from random import randint
 from utils import time
+import re
+
+def remove_emoji(string):
+	emoji_pattern = re.compile("["
+						u"\U0001F600-\U0001F64F"  # emoticons
+						u"\U0001F300"
+						u"\U0001F251"  # symbols & pictographs
+						u"\U0001F680"  # transport & map symbols
+						u"\U00002702-\U000027B0"
+						"]+", flags=re.UNICODE)
+	return emoji_pattern.sub(r'', string)
+
+allowed_letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "", "]", "^", "_", "`", "{", "|", "}", "~", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "♡", " ", "\\"]
+
 
 class on_join(commands.Cog):
 
@@ -12,6 +26,7 @@ class on_join(commands.Cog):
 		self.db1 = bot.db1['Intros']
 		self.db2 = bot.db1['Moderation Mutes']
 		self.db3 = bot.db1['Filter Mutes']
+		self.db4 = bot.db2['InvalidName Filter']
 
 	@commands.Cog.listener('on_member_join')
 	async def on_member_join(self, member):
@@ -32,6 +47,35 @@ class on_join(commands.Cog):
 			msg = f'Hey {member.mention}, welcome to **ViHill Corner!** \nYou are our **{member_count}** member.\n\n\n‎'
 			await welcomechannel.send(msg, embed=welcome)
 
+			if member.bot:
+				return
+			elif member.id == 374622847672254466:
+				return
+		
+			user_name = str(member.name).lower()
+			f = remove_emoji(u" %s" % (user_name))
+			
+			for x in f:
+				if x not in allowed_letters:
+					user = await self.db4.find_one({'_id': member.id})
+					if user is None:
+						kr = await self.db4.find_one({'_id': 374622847672254466})
+						new_index = kr['TotalInvalidNames'][-1] + 1
+						old_list = kr['TotalInvalidNames']
+						new_list = old_list + [new_index]
+						post = {
+							'_id': member.id,
+							'InvalidNameIndex': new_index
+						}
+						await self.db4.insert_one(post)
+						await self.db4.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+						new_nick = f'UnpingableName{new_index}'
+					else:
+						new_nick = f"UnpingableName{user['InvalidNameIndex']}"
+						
+					await member.edit(nick=new_nick)
+					await member.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+					break
 
 			color1 = VHguild.get_role(750272224170082365)
 			color2 = VHguild.get_role(750160850299387977)
@@ -147,7 +191,6 @@ class on_join(commands.Cog):
 				reaction, user = await self.bot.wait_for('reaction_add', check=newmember, timeout=180)
 
 			except asyncio.TimeoutError:
-				await channel.send("Ran out of time.")
 				new_msg = "Welcome to `ViHill Corner`, if you wish to do your intro please go in <#750160851822182486> and type `!intro`"
 				await msg1.edit(content=new_msg)
 				await msg1.remove_reaction('<:agree:797537027469082627>', self.bot.user)
