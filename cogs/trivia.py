@@ -3,7 +3,6 @@ import utils.colors as color
 from discord.ext import commands
 import discord
 import games
-bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
 
 class TriviaCommands(commands.Cog):
 
@@ -12,12 +11,15 @@ class TriviaCommands(commands.Cog):
 		self.db = bot.db2['Trivia']
 		self.prefix = "!"
 	async def cog_check(self, ctx):
-		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
+		return ctx.prefix == self.prefix
 
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
 	async def trivia(self, ctx):
 		"""Start your trivia game."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		trivia = games.Trivia(ctx)
 		await trivia.start()
@@ -25,6 +27,9 @@ class TriviaCommands(commands.Cog):
 	@trivia.group(name='points', invoke_without_command=True, case_insensitive=True)
 	async def trivia_points(self, ctx, member: discord.Member = None):
 		"""See how many points the member has."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		if member is None:
 			member = ctx.author
@@ -58,6 +63,9 @@ class TriviaCommands(commands.Cog):
 	@trivia.command(name='leaderboard', aliases=['lb', 'top'])
 	async def trivia_leaderboard(self, ctx):
 		"""See the top 5 members with the most amount of trivia points."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		rank = 0
 		em = discord.Embed(color=color.lightpink, title="Here's top `5` trivia users with most points:")
@@ -121,6 +129,9 @@ class TriviaCommands(commands.Cog):
 	@trivia_points.command(name='gift', aliases=['give'])
 	async def trivia_points_gift(self, ctx, amount: str, member: discord.Member = None):
 		"""Gift some of your points to the other member."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		if member is None:
 			await ctx.send("You must specify the member you wish to give points to %s." % (ctx.author.mention))
