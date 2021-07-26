@@ -9,7 +9,6 @@ import pymongo
 import datetime
 from dateutil.relativedelta import relativedelta
 from utils import time
-bot_channels = [752164200222163016, 750160851822182486, 750160851822182487]
 
 rps = ['rock', 'paper', 'scissors']
 
@@ -20,11 +19,14 @@ class Economy(commands.Cog):
 		self.db = bot.db1['Economy']
 		self.prefix = "!"
 	async def cog_check(self, ctx):
-		return ctx.prefix == self.prefix and ctx.channel.id in bot_channels
+		return ctx.prefix == self.prefix
 
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def daily(self, ctx):
 		"""Get your daily 75.00K <:carrots:822122757654577183>."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		user = ctx.author
 		results = await self.db.find_one({"_id": user.id})
@@ -89,6 +91,9 @@ class Economy(commands.Cog):
 	async def eco_register(self, ctx):
 		"""Register yourself to be able to use the economy commands."""
 		
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
+
 		user = ctx.author
 
 		post = {"_id": user.id, "wallet": 0, "bank": 0, "daily": datetime.datetime.utcnow()}
@@ -104,6 +109,9 @@ class Economy(commands.Cog):
 	async def eco_unregister(self, ctx):
 		"""Unregister yourself, you won't be able to use the economy commands anymore."""
 
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
+
 		user = ctx.author
 		results = await self.db.find_one({"_id": user.id})
 		if results == None:
@@ -116,6 +124,9 @@ class Economy(commands.Cog):
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bal'])
 	async def balance(self, ctx, member: discord.Member = None):
 		"""Check your or another member's balance."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		if member is None:
 			member = ctx.author
@@ -174,6 +185,9 @@ class Economy(commands.Cog):
 	@balance.command(name='leaderboard', aliases=['lb', 'top'])
 	async def eco_bal_leaderboard(self, ctx):
 		"""See top `10` richest people."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		results = await self.db.find().to_list(100000)
 		leader_board = {}
@@ -345,9 +359,12 @@ class Economy(commands.Cog):
 
 		await ctx.send("Balance successfully set to **{:,}** <:carrots:822122757654577183>  in the wallet for `{}`!".format(amount, member))
 
-	@commands.group(aliases=['with'])
+	@commands.command(aliases=['with'])
 	async def withdraw(self, ctx, amount = None):
 		"""Withdraw the amount of <:carrots:822122757654577183> from your bank."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -397,6 +414,9 @@ class Economy(commands.Cog):
 	async def deposit(self, ctx, amount = None):
 		"""Deposit the amount of <:carrots:822122757654577183> in your bank."""
 		
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -444,6 +464,9 @@ class Economy(commands.Cog):
 	async def bal_eco_give(self, ctx, member : discord.Member, amount = None):
 		"""Be a kind person and give some of your <:carrots:822122757654577183> from your **bank** to someone else's."""
 		
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -518,6 +541,9 @@ class Economy(commands.Cog):
 	@commands.cooldown(1, 20, commands.BucketType.user)
 	async def rob(self, ctx, member : discord.Member = None):
 		"""Rob someone of their <:carrots:822122757654577183> from their wallet."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		if member is None:
 			await ctx.send("You must specify the person you want to rob/steal from. %s" % (ctx.author.mention))
@@ -597,6 +623,9 @@ class Economy(commands.Cog):
 	@commands.cooldown(1, 7, commands.BucketType.user)
 	async def slots(self, ctx, amount = None):
 		"""Gamble your <:carrots:822122757654577183>."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -718,6 +747,9 @@ class Economy(commands.Cog):
 	async def beg(self, ctx):
 		"""Beg for some <:carrots:822122757654577183>."""
 
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -737,6 +769,9 @@ class Economy(commands.Cog):
 	async def work(self, ctx):
 		"""Work and get <:carrots:822122757654577183>."""
 
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -754,6 +789,9 @@ class Economy(commands.Cog):
 	@commands.cooldown(1, 15, commands.BucketType.user)
 	async def crime(self, ctx):
 		"""Commit crimes that range between `small-medium-big`, and depending on which one you get, the more <:carrots:822122757654577183> you get, but be careful! You can lose the carrots as well."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -801,6 +839,9 @@ class Economy(commands.Cog):
 	@commands.cooldown(1, 3, commands.BucketType.user)
 	async def eco_gtn(self, ctx):
 		"""Play a guess the number game and earn <:carrots:822122757654577183>."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -857,6 +898,9 @@ class Economy(commands.Cog):
 	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def ppsuck(self, ctx):
 		"""Suck some pp 😳 for some quick <:carrots:822122757654577183>."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -922,6 +966,9 @@ class Economy(commands.Cog):
 	async def race(self, ctx):
 		"""Participate in a race and earn <:carrots:822122757654577183>."""
 
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
+
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
@@ -975,6 +1022,9 @@ class Economy(commands.Cog):
 	@commands.cooldown(1, 15, commands.BucketType.user)
 	async def eco_rps(self, ctx):
 		"""Play a game of rock-paper-scissors with the bot and earn <:carrots:822122757654577183> if you win or lose some if you lose the game."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
 
 		user = ctx.author
 		results = await self.db.find_one({"_id": user.id})
