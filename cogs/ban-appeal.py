@@ -15,7 +15,7 @@ class OnBanAppealJoin(commands.Cog):
 			bans = await vhc.bans()
 			for i in range(len(bans)):
 				if bans[i][1].id == member.id:
-					_ban_reason = bans[i][0].split('--->')
+					_ban_reason = bans[i][0].split(':', 1)
 					ban_reason = _ban_reason[1].rstrip()
 					moderator = _ban_reason[0].rstrip()
 					found = True
