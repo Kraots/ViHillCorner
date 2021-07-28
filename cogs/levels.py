@@ -33,7 +33,7 @@ class Levels(commands.Cog):
 						await self.db.insert_one(newuser)
 					else:			
 						
-						kraotsDocument = await self.db.find_one({'_id':374622847672254466})
+						kraotsDocument = await self.db.find_one({'_id': 374622847672254466})
 						membersMultiplier = kraotsDocument['xp multiplier']
 						boostersMultiplier = kraotsDocument['booster xp multiplier']
 						modMultiplier = kraotsDocument['mod xp multiplier']
@@ -56,17 +56,14 @@ class Levels(commands.Cog):
 							return
 						
 						else:
-							server_booster = guild.get_role(759475712867565629)
-							staff = guild.get_role(754676705741766757)
-							if server_booster in message.author.roles:
-								xp = stats['xp'] + (15 * boostersMultiplier)
-							elif staff in message.author.roles:
-								xp = stats['xp'] + (20 * modMultiplier)
-							else:
-								xp = stats['xp'] + (5 * membersMultiplier)
-							
 							if message.author.id == 374622847672254466:
 								xp = stats['xp'] + (30 * kraotsMultiplier)
+							elif 754676705741766757 in [role.id for role in message.author.roles]:
+								xp = stats['xp'] + (20 * modMultiplier)
+							elif 759475712867565629 in [role.id for role in message.author.roles]:
+								xp = stats['xp'] + (15 * boostersMultiplier)
+							else:
+								xp = stats['xp'] + (5 * membersMultiplier)
 
 							await self.db.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
 							lvl = 0
