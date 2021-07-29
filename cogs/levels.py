@@ -76,16 +76,16 @@ class Levels(commands.Cog):
 								xp = stats['xp']
 								xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
 							elif xp >= 0:
-								try:
-									role_id = levels[lvl]
-									roles_id = [role.id for role in message.author.roles if not role.id in [levels[k] for k in levels]] + [role_id]
-									newroles = []
-									for role in roles_id:
-										newrole = guild.get_role(role)
-										newroles.append(newrole)
-									await message.author.edit(roles=newroles)
-								except Exception as error:
-									if isinstance(error, KeyError):
+								if message.guild.id == 750160850077089853:
+									try:
+										role_id = levels[lvl]
+										roles_id = [role.id for role in message.author.roles if not role.id in [levels[k] for k in levels]] + [role_id]
+										newroles = []
+										for role in roles_id:
+											newrole = guild.get_role(role)
+											newroles.append(newrole)
+										await message.author.edit(roles=newroles)
+									except KeyError:
 										role_id = 0
 										for k in levels:
 											if k < lvl:
@@ -98,9 +98,6 @@ class Levels(commands.Cog):
 											newrole = guild.get_role(role)
 											newroles.append(newrole)
 										await message.author.edit(roles=newroles)
-									else:
-										owner = self.bot.get_user(self.bot.owner_id)
-										await owner.send(error)
 
 
 
