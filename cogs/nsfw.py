@@ -68,12 +68,15 @@ class NSFW(commands.Cog):
 		elif nsfwType == 'gangbang':
 			return	await ctx.send("This category is not supported.")
 
-		result = hmtai.useHM(version='v2', category=nsfwType)
+		try:
+			result = hmtai.useHM(version='v2', category=nsfwType)
 		
-		em = discord.Embed(color=color.pastel)
-		em.set_image(url=result)
-		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-		await ctx.send(embed=em)
+			em = discord.Embed(color=color.pastel)
+			em.set_image(url=result)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			await ctx.send(embed=em)
+		except:
+			return await ctx.send('Category does not exist.')
 
 	@nsfw.command(name='real')
 	@commands.check(NSFW)
