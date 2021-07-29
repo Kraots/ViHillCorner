@@ -37,6 +37,7 @@ class ViHillCorner(commands.Bot):
 				self.load_extension(f'reload_cogs.{filename[:-3]}')
 
 		self.load_extension('jishaku')
+		os.environ['JISHAKU_FORCE_PAGINATOR'] = '1'
 		
 	async def on_ready(self):
 		if not hasattr(self, 'uptime'):
