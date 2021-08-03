@@ -14,11 +14,51 @@ from utils import fuzzy, time, embedlinks, topicslist
 import random
 import datetime
 from dateutil.relativedelta import relativedelta
-from utils.paginator import SimplePages
+from utils.paginator import SimplePages, RoboPages
 import pymongo
 from discord.ext.commands import Greedy
 from discord import Member
 import asyncio
+from discord.ext import menus
+
+class UrbanDictionaryPageSource(menus.ListPageSource):
+	BRACKETED = re.compile(r'(\[(.+?)\])')
+	def __init__(self, data):
+		super().__init__(entries=data, per_page=1)
+
+	def cleanup_definition(self, definition, *, regex=BRACKETED):
+		def repl(m):
+			word = m.group(2)
+			return f'[{word}](http://{word.replace(" ", "-")}.urbanup.com)'
+
+		ret = regex.sub(repl, definition)
+		if len(ret) >= 2048:
+			return ret[0:2000] + ' [...]'
+		return ret
+
+	async def format_page(self, menu, entry):
+		maximum = self.get_max_pages()
+		title = f'{entry["word"]}: {menu.current_page + 1} out of {maximum}' if maximum else entry['word']
+		embed = discord.Embed(title=title, colour=color.lightpink, url=entry['permalink'])
+		embed.set_footer(text=f'by {entry["author"]}')
+		embed.description = self.cleanup_definition(entry['definition'])
+
+		try:
+			up, down = entry['thumbs_up'], entry['thumbs_down']
+		except KeyError:
+			pass
+		else:
+			embed.add_field(name='Votes', value=f'\N{THUMBS UP SIGN} {up} \N{THUMBS DOWN SIGN} {down}', inline=False)
+
+		try:
+			date = discord.utils.parse_time(entry['written_on'][0:-1])
+		except (ValueError, KeyError):
+			pass
+		else:
+			embed.timestamp = date
+
+		return embed
+
 
 class SuggestPageEntry:
 	def __init__(self, entry):
@@ -555,6 +595,28 @@ class Misc(commands.Cog):
 			await p.start(ctx)
 		except:
 			await ctx.send("There are no members whose access has been restricted.")
+
+	@commands.command()
+	async def urban(self, ctx, *, word):
+		"""Searches the urban dictionary for the word."""
+
+		url = 'http://api.urbandictionary.com/v0/define'
+		async with ctx.session.get(url, params={'term': word}) as resp:
+			if resp.status != 200:
+				kraots = self.bot.get_user(self.bot.owner_id)
+				await kraots.send(embed=discord.Embed(description=f"[`{ctx.command}`]({ctx.message.jump_url}) gave an error:\n\nWord: **{word}**\nStatus: **{resp.status}**\nReason: **{resp.reason}**"))
+				return await ctx.send(f'An error occurred. Please try again later.')
+
+			js = await resp.json()
+			data = js.get('list', [])
+			if not data:
+				return await ctx.send('No results found.')
+
+		pages = RoboPages(UrbanDictionaryPageSource(data))
+		try:
+			await pages.start(ctx)
+		except Exception as error:
+			await self.bot.reraise(ctx, error)
 
 	@suggest.error
 	async def suggest_error(self, ctx, error):
