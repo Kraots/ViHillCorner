@@ -613,7 +613,10 @@ class Misc(commands.Cog):
 				return await ctx.send('No results found.')
 
 		pages = RoboPages(UrbanDictionaryPageSource(data))
-		await pages.start(ctx)
+		try:
+			await pages.start(ctx)
+		except Exception as error:
+			await self.bot.reraise(ctx, error)
 
 	@suggest.error
 	async def suggest_error(self, ctx, error):
