@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import json
-import asyncio
+import utils.colors as color
 import datetime
 no_mute_these = [374622847672254466]
 ignored_channels = [790310516266500098, 780374324598145055, 750160851822182487, 750160851822182486, 750160852006469807, 750160852006469810, 790309304422629386, 750160852006469806]
@@ -96,7 +96,11 @@ class RepeatedTextFilter(commands.Cog):
 					em = discord.Embed(description=f"**Reason:** [Repeated Text]({message.jump_url})")
 					await user.send(msg1, embed=em)
 					msg2 = f"**{user}** has been muted."
-					await message.channel.send(msg2, embed=em)
+					ju = await message.channel.send(msg2, embed=em)
+					staff_channel = guild.get_channel(752164200222163016)
+					log = discord.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{message.author}`\nReason: [`Repeated Text`]({ju.jump_url})", timestamp=datetime.datetime.utcnow())
+					em.set_footer(text=f"User ID: {message.author.id}")
+					await staff_channel.send(embed=log)
 				else:
 					return
 
@@ -175,7 +179,11 @@ class SpamFilter(commands.Cog):
 						em = discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})")
 						await user.send(msg1, embed=em)
 						msg2 = f"**{user}** has been muted."
-						await message.channel.send(msg2, embed=em)
+						ju = await message.channel.send(msg2, embed=em)
+						staff_channel = guild.get_channel(752164200222163016)
+						log = discord.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{message.author}`\nReason: [`Spam`]({ju.jump_url})", timestamp=datetime.datetime.utcnow())
+						em.set_footer(text=f"User ID: {message.author.id}")
+						await staff_channel.send(embed=log)
 					else:
 						return
 

@@ -1,7 +1,7 @@
 import re
 import discord
 from discord.ext import commands
-import asyncio
+import utils.colors as color
 import json
 import datetime
 
@@ -144,7 +144,11 @@ class FilterCog(commands.Cog):
 								em = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
 								await message.author.send(msg1, embed=em)
 								msg2 = f"**{message.author}** has been muted."
-								await message.channel.send(msg2, embed=em)
+								ju = await message.channel.send(msg2, embed=em)
+								staff_channel = guild.get_channel(752164200222163016)
+								log = discord.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{message.author}`\nReason: [`Bad Words`]({ju.jump_url})", timestamp=datetime.datetime.utcnow())
+								em.set_footer(text=f"User ID: {message.author.id}")
+								await staff_channel.send(embed=log)
 							else:
 								return
 						except:
@@ -346,7 +350,11 @@ class FilterCog(commands.Cog):
 								em = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
 								await after.author.send(msg1, embed=em)
 								msg2 = f"**{after.author}** has been muted."
-								await after.channel.send(msg2, embed=em)
+								ju = await after.channel.send(msg2, embed=em)
+								staff_channel = guild.get_channel(752164200222163016)
+								log = discord.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{after.author}`\nReason: [`Zalgo`]({ju.jump_url})", timestamp=datetime.datetime.utcnow())
+								em.set_footer(text=f"User ID: {after.author.id}")
+								await staff_channel.send(embed=log)
 							else:
 								return
 						except:
