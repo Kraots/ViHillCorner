@@ -218,6 +218,7 @@ async def reraise(ctx, error):
 		return
 
 	elif isinstance(error, commands.errors.CheckFailure):
+		ctx.command.reset_cooldown(ctx)
 		return
 
 	else:
