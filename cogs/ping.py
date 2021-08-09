@@ -25,9 +25,10 @@ class Ping(commands.Cog):
 	@commands.command()
 	async def uptime(self, ctx):
 		"""See how long the bot has been online for."""
-
+		
+		kraots = self.bot.get_user(self.bot.owner_id)
 		uptime = discord.Embed(description=f"Bot has been online for: `{t.human_timedelta(dt=self.bot.uptime, suffix=False)}`", color=color.lightpink)
-		uptime.set_footer(text=f'Bot made by: Kraots#0001', icon_url=self.bot.user.avatar_url)
+		uptime.set_footer(text=f'Bot made by: {kraots}', icon_url=self.bot.user.avatar_url)
 		await ctx.send(embed=uptime)
 
 

@@ -20,7 +20,7 @@ class Metrics(commands.Cog):
 	async def metrics(self, ctx):
 		"""A lot of useful system information."""
 
-		kraots = self.bot.get_user(374622847672254466)
+		kraots = self.bot.get_user(self.bot.owner_id)
 		memory_usage = self.process.memory_full_info().uss / 1024**2
 		cpu_usage = self.process.cpu_percent() / psutil.cpu_count()
 		guilds = len(list(self.bot.guilds))
