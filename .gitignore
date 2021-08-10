@@ -1,4 +1,4 @@
 *.pyc
-/bot.py
-/.env
-/.vscode
+bot.py
+.env
+.vscode
