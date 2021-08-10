@@ -4,7 +4,7 @@ import json
 import utils.colors as color
 import datetime
 no_mute_these = [374622847672254466]
-ignored_channels = [790310516266500098, 780374324598145055, 750160851822182487, 750160851822182486, 750160852006469807, 750160852006469810, 790309304422629386, 750160852006469806]
+ignored_channels = [790310516266500098, 780374324598145055, 750160851822182487, 750160851822182486, 750160852006469807, 750160852006469810, 790309304422629386, 750160852006469806, 750160851822182484, 752164200222163016, 874614879611400192]
 
 
 class RepeatedTextFilter(commands.Cog):
@@ -17,16 +17,10 @@ class RepeatedTextFilter(commands.Cog):
 	async def on_message(self, message : discord.Message):
 		if message.author.id in no_mute_these:
 			return
-		if message.author.bot:
+		elif message.author.bot:
 			return
 
 		else:
-			if message.channel.id == 750160851822182484:
-				if message.content.lower().startswith("!meme"):
-					return
-				if message.content.lower().startswith("pls meme"):
-					return
-
 			user = message.author
 			users = await get_repeated_text_warns_data()
 
