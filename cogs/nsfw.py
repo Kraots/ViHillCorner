@@ -11,7 +11,8 @@ import hmtai
 nsfw_url = 'https://nekobot.xyz/api/image?type='
 nsfw_categs = ['hentai', 'ass', 'thigh', 'hass', 'hboobs', 'pgif', 'paizuri', 'boobs', 'pussy', 'hyuri', 'hthigh', 'lewdneko', 'anal', 'hmidriff', 'feet', 'gonewild', 'hkitsune', '4k', 'blowjob', 'tentacle', 'hentai_anal']
 real_categs = ['ass', 'thigh', 'pgif', 'boobs', 'pussy', 'anal', 'feet', 'gonewild', '4k', 'blowjob']
-hentai_categs = ['hentai', 'hass', 'hboobs', 'paizuri', 'hyuri', 'hthigh', 'lewdneko', 'hmidriff', 'hkitsune', 'tentacle', 'hentai_anal']
+hentai_categs_1 = ['hentai', 'hass', 'hboobs', 'paizuri', 'hyuri', 'hthigh', 'lewdneko', 'hmidriff', 'hkitsune', 'tentacle', 'hentai_anal']
+hentai_categs_2 = ['ass', 'ecchi', 'ero', 'hentai', 'maid', 'milf', 'oppai', 'oral', 'paizuri', 'selfies', 'uniform']
 
 class TagPageEntry:
 	def __init__(self, entry):
@@ -39,16 +40,14 @@ class NSFW(commands.Cog):
 	async def nsfw(self, ctx):
 		"""See the types of nsfw 😏"""
 
-		return await ctx.send("There are only 3 types: `real`, `hentai` and `old`\nType `!nsfw <type>` to see all the categories of a type.\n***Keep in mind that these only work in the nsfw channel.***")
+		return await ctx.send("There are only 2 types: `real`, `hentai`\nType `!nsfw <type>` to see all the categories of a type.\n***Keep in mind that these only work in the nsfw channel.***")
 
-	@nsfw.command(name='old')
-	@commands.check(NSFW)
-	async def nsfw_old(self, ctx, category: str = None):
-		"""Get nsfw image 😏"""
+	async def nsfw_hentai_0(self, ctx, category):
+		"""The old nsfw."""
 
 		if category is None:
 			categs = "ass **•** bdsm **•** cum **•** manga/doujin **•** femdom **•** hentai **•** masturbation **•** ero **•** orgy **•** yuri **•** pantsu/panties **•** glasses **•** cuckold **•** blowjob/bj **•** foot **•** thighs **•** vagina **•** ahegao **•** uniform **•** tentacles"
-			em = discord.Embed(title="Here are all the categories for the old nsfw:", description=categs, color=color.blue)
+			em = discord.Embed(title="Here are all the categories for hentai 0", description=categs, color=color.blue)
 			return await ctx.send(embed=em)
 
 		nsfwType = category.lower()
@@ -77,6 +76,105 @@ class NSFW(commands.Cog):
 			await ctx.send(embed=em)
 		except:
 			return await ctx.send('Category does not exist.')
+
+	async def nsfw_hentai_1(self, ctx, category):
+		"""The slightly new nsfw."""
+		
+		if category is None:
+			categs = "hentai **•** paizuri **•** yuri **•** thighs **•** neko **•** anal **•** hmidriff **•** kitsune **•** tentacle"
+			em = discord.Embed(color=color.blue, title="Here are all the categories for hentai 1:", description=categs)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			return await ctx.send(embed=em)
+
+		categ = category.lower()
+		if not categ in hentai_categs_1:
+			if categ == 'ass':
+				categ = 'hass'
+			elif categ in ['boob', 'boobs']:
+				categ = 'hboobs'
+			elif categ == 'yuri':
+				categ = 'hyuri'
+			elif categ in ['thigh', 'thighs']:
+				categ = 'hthigh'
+			elif categ == 'neko':
+				categ = 'lewdneko'
+			elif categ == 'anal':
+				categ = 'hentai_anal'
+			elif categ == 'kitsune':
+				categ = 'hkitsune'
+			elif categ == 'tentacles':
+				categ = 'tentacle'
+			else:
+				return await ctx.reply("Not in the existing hentai categories.")
+
+		async with self.bot.session.get(nsfw_url + categ) as resp:
+			if resp.status != 200:
+				kraots = self.bot.get_user(self.bot.owner_id)
+				await kraots.send(f"`{ctx.command} {categ}` returned\n**{await resp.json()}**")
+				return await ctx.send("There has been an error from the **API**, please try again later.")
+			content = await resp.json()
+			url = content['message']
+		em = discord.Embed(color=color.pastel)
+		em.set_image(url=url)
+		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+		await ctx.send(embed=em)
+
+	async def nsfw_hentai_2(self, ctx, gif, category):
+		"""The new nsfw."""
+
+		if category is None:
+			categs = "ass **•** ecchi **•** ero **•** hentai **•** maid **•** milf **•** oppai **•** oral **•** paizuri **•** selfies **•** uniform"
+			em = discord.Embed(color=color.blue, title="Here are all the categories for hentai 2:", description=categs)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			return await ctx.send(embed=em)
+
+		categ = category.lower()
+		if categ not in hentai_categs_2:
+			return await ctx.reply("Not in the existing hentai categories.")
+
+		async with self.bot.session.get('https://api.hori.ovh:8036/nsfw/' + categ + gif) as resp:
+			if resp.status != 200:
+				err = await resp.json()
+				if err['error'] == 'Sorry no image were found with the criteria you gave to the API, please retry with a different criteria.':
+					return await ctx.reply('No gif found for this type of category.')
+				kraots = self.bot.get_user(self.bot.owner_id)
+				await kraots.send(f"`{ctx.command} {categ}` returned\n**{err}**")
+				return await ctx.send("There has been an error from the **API**, please try again later.")
+			content = await resp.json()
+			url= content['url']
+		em = discord.Embed(color=color.pastel)
+		em.set_image(url=url)
+		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+		await ctx.send(embed=em)
+
+
+	@nsfw.command(name='hentai')
+	@commands.check(NSFW)
+	async def nsfw_hentai(self, ctx, API: int, category: str = None, gif: str = None):
+		"""Get the categories from one of the hentai APIs
+		APIs:
+		\u2800 • **0**
+		\u2800 • **1**
+		\u2800 • **2** (SUPPORTS GIF)
+		The gif param indicates whether to force the API to return a gif image. Only use this on the APIs that support it.
+		Example:
+		\u2800 !nsfw hentai 2 ass gif
+		"""
+
+		if gif == None:
+			gif = ''
+		else:
+			if gif.lower() in ('gif', 'true', '1'):
+				gif = '?gif=True'
+			else:
+				gif = ''
+
+		if API == 0:
+			return await self.nsfw_hentai_0(ctx, category)
+		elif API == 1:
+			return await self.nsfw_hentai_1(ctx, category)
+		elif API == 2:
+			return await self.nsfw_hentai_2(ctx, gif, category)
 
 	@nsfw.command(name='real')
 	@commands.check(NSFW)
@@ -107,7 +205,7 @@ class NSFW(commands.Cog):
 		async with self.bot.session.get(nsfw_url + categ) as resp:
 			if resp.status != 200:
 				kraots = self.bot.get_user(self.bot.owner_id)
-				await kraots.send(f"`{ctx.command} {categ}` returned **{resp.status}**")
+				await kraots.send(f"`{ctx.command} {categ}` returned\n**{resp.status}**")
 				return await ctx.send("There has been an error from the **API**, please try again later.")
 			content = await resp.json()
 			url = content['message']
@@ -116,49 +214,6 @@ class NSFW(commands.Cog):
 		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
 		await ctx.send(embed=em)
 
-	@nsfw.command(name='hentai')
-	@commands.check(NSFW)
-	async def nsfw_hentai(self, ctx, category: str = None):
-		"""Get a hentai random image based on the chosen category 😏"""
-
-		if category is None:
-			categs = f"hentai **•** paizuri **•** yuri **•** thighs **•** neko **•** anal **•** hmidriff **•** kitsune **•** tentacle **•** anal"
-			em = discord.Embed(color=color.blue, title="Here are all the categories for hentai:", description=categs)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-			return await ctx.send(embed=em)
-
-		categ = category.lower()
-		if not categ in hentai_categs:
-			if categ == 'ass':
-				categ = 'hass'
-			elif categ in ['boob', 'boobs']:
-				categ = 'hboobs'
-			elif categ == 'yuri':
-				categ = 'hyuri'
-			elif categ in ['thigh', 'thighs']:
-				categ = 'hthigh'
-			elif categ == 'neko':
-				categ = 'lewdneko'
-			elif categ == 'anal':
-				categ = 'hentai_anal'
-			elif categ == 'kitsune':
-				categ = 'hkitsune'
-			elif categ == 'tentacles':
-				categ = 'tentacle'
-			else:
-				return await ctx.reply("Not in the existing hentai categories.")
-
-		async with self.bot.session.get(nsfw_url + categ) as resp:
-			if resp.status != 200:
-				kraots = self.bot.get_user(self.bot.owner_id)
-				await kraots.send(f"`{ctx.command} {categ}` returned **{await resp.json()}**")
-				return await ctx.send("There has been an error from the **API**, please try again later.")
-			content = await resp.json()
-			url = content['message']
-		em = discord.Embed(color=color.pastel)
-		em.set_image(url=url)
-		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-		await ctx.send(embed=em)
 
 	@nsfw.command()
 	async def me(self, ctx, choice : str):
@@ -209,7 +264,6 @@ class NSFW(commands.Cog):
 			
 			a = f"{member.name}#{member.discriminator}"
 			blocked_list.append(a)
-			blocked_members = " | ".join(blocked_list)
 
 			post = {'_id': member.id}
 			try:
@@ -217,6 +271,7 @@ class NSFW(commands.Cog):
 			except pymongo.errors.DuplicateKeyError:
 				pass
 
+		blocked_members = " | ".join(blocked_list)
 		await ctx.send(f"`{blocked_members}` have been blocked from seeing the nsfw channel.")
 
 	@nsfw.command(name='blocks')
@@ -241,12 +296,11 @@ class NSFW(commands.Cog):
 			
 			a = f"{member.name}#{member.discriminator}"
 			blocked_list.append(a)
-			blocked_members = " | ".join(blocked_list)
 
 			await self.db.delete_one({'_id': member.id})
 			await member.send("Your acces for using the `!nsfw me` command has ben re-approved.")
 			
-
+		blocked_members = " | ".join(blocked_list)
 		await ctx.send(f"`{blocked_members}` have been unblocked from seeing the nsfw channel.")
 
 
@@ -256,13 +310,6 @@ class NSFW(commands.Cog):
 		if isinstance(error, commands.CheckFailure):
 			if 754676705741766757 in [role.id for role in ctx.message.author.roles]:
 				await ctx.send('Invalid format!\nUse: `!nsfw block <users>` or `!nsfw unblock <users>`!')
-		else:
-			await self.bot.reraise(ctx, error)
-
-	@nsfw_old.error
-	async def nsfw_old_error(self, ctx, error):
-		if isinstance(error, commands.errors.CheckFailure):
-			await ctx.reply('This command is only usable in a nsfw marked channel.')
 		else:
 			await self.bot.reraise(ctx, error)
 
