@@ -83,10 +83,15 @@ class Birthdays(commands.Cog):
 		em = discord.Embed(color=discord.Color.blurple(), title="***Top `5` upcoming birthdays***\n _ _ ") 
 
 		results = await self.db.find().sort([("birthdaydate", 1)]).to_list(5)
+		guild = self.bot.get_guild(750160850077089853)
 		for result in results:
-			user = self.bot.get_user(result['_id'])
+			user = guild.get_member(result['_id'])
 			index += 1
-			em.add_field(name=f"`{index}`. _ _ _ _ {user.display_name} ({user})", value=f"{format_date(result['region_birthday'], result['birthdaydate'])}", inline = False) 
+			if user.nick:
+				name = f'{user.display_name} ({user})'
+			else:
+				name = f'{user.name}'
+			em.add_field(name=f"`{index}`. _ _ _ _ {name}", value=f"{format_date(result['region_birthday'], result['birthdaydate'])}", inline = False) 
 
 		await ctx.send(embed=em)
 
