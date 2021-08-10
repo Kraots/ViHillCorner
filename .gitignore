@@ -1,4 +1,3 @@
 *.pyc
 bot.py
 .env
-.vscode
