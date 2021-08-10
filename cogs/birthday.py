@@ -86,7 +86,7 @@ class Birthdays(commands.Cog):
 		for result in results:
 			user = self.bot.get_user(result['_id'])
 			index += 1
-			em.add_field(name=f"`{index}`. _ _ _ _ {user.name}", value=f"{format_date(result['region_birthday'], result['birthdaydate'])}", inline = False) 
+			em.add_field(name=f"`{index}`. _ _ _ _ {user.display_name} ({user})", value=f"{format_date(result['region_birthday'], result['birthdaydate'])}", inline = False) 
 
 		await ctx.send(embed=em)
 
