@@ -43,12 +43,13 @@ class Intros(commands.Cog):
 			await msg.add_reaction('<:disagree:797537030980239411>')
 
 			try:
-				reaction, user = await self.bot.wait_for('reaction_add', check=alreadyhas, timeout=30)
+				reaction, user = await self.bot.wait_for('reaction_add', check=alreadyhas, timeout=180)
 
 			except asyncio.TimeoutError:
 				new_msg = f"{ctx.author.mention} Did not react in time."
 				await msg.edit(content=new_msg)
 				await msg.clear_reactions()
+				ctx.command.reset_cooldown(ctx)
 				return
 			
 			else:
@@ -352,6 +353,7 @@ class Intros(commands.Cog):
 				new_msg = f"{ctx.author.mention} Did not react in time."
 				await msg.edit(content=new_msg)
 				await msg.clear_reactions()
+				ctx.command.reset_cooldown(ctx)
 				return
 			
 			else:
