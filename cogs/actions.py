@@ -541,6 +541,8 @@ class Actions(commands.Cog):
 		if isinstance(error, commands.errors.MissingAnyRole):
 			await ctx.send("You must be at least `level 15+` in order to use this command! %s" % (ctx.author.mention))
 		else:
+			if hasattr(ctx.command, 'on_error'):
+				return
 			await self.bot.reraise(ctx, error)
 
 def setup(bot):

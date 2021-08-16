@@ -537,6 +537,8 @@ class Tags(commands.Cog):
 		if isinstance(error, commands.TooManyArguments):
 			return
 		else:
+			if hasattr(ctx.command, 'on_error'):
+				return
 			await self.bot.reraise(ctx, error)
 		 
 
