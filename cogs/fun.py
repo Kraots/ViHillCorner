@@ -71,6 +71,39 @@ class Fun(commands.Cog):
 			await ctx.send(embed=embed2)
 
 	@commands.command()
+	async def susrate(self, ctx, member : discord.Member=None):
+		"""Are you sus 🤔"""
+		
+		susrate = randint(1, 100)
+		randomcolour = randint(0, 0xffffff)
+
+		if member is None:
+			if ctx.author.id == 374622847672254466:
+				embed1 = discord.Embed(title='Sus rating machine', description='You are 0% sus <:pepe_sus:750751092459044926>', color=randomcolour)
+
+			else:
+				embed1 = discord.Embed(title='Sus rating machine', description=f'You are {susrate}% sus <:pepe_sus:750751092459044926>', color=randomcolour)
+			
+			await ctx.send(embed=embed1)
+
+		elif member is ctx.author:
+			if ctx.author.id == 374622847672254466:
+				embed1 = discord.Embed(title='Sus rating machine', description='You are 0% sus <:pepe_sus:750751092459044926>', color=randomcolour)
+
+			else:
+				embed1 = discord.Embed(title='Sus rating machine', description=f'You are {susrate}% sus <:pepe_sus:750751092459044926>', color=randomcolour)
+			
+			await ctx.send(embed=embed1)
+
+		else:
+			if member.id == 374622847672254466:
+				embed2 = discord.Embed(title='Sus rating machine', description=f'{member.name} is 0% sus <:pepe_sus:750751092459044926>', color=randomcolour)
+			
+			else:
+				embed2 = discord.Embed(title='Sus rating machine', description=f'{member.name} is {susrate}% sus <:pepe_sus:750751092459044926>', color=randomcolour)
+			await ctx.send(embed=embed2)
+
+	@commands.command()
 	async def simprate(self, ctx, member : discord.Member=None):
 		"""Are you a simp 🤔"""
 
