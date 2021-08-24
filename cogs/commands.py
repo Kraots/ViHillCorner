@@ -70,7 +70,7 @@ class General(commands.Cog):
 		else:
 			await self.bot.loop.run_in_executor(None, take_ss, url)
 			f = discord.File(fp='ss.png', filename='ss.png')
-			em = discord.Embed(color=color.lightpink, title="Here's your screen shot of `{}`".format(site))
+			em = discord.Embed(color=color.lightpink, title="Here's your screen shot of `{}`".format(url))
 			em.set_image(url='attachment://ss.png')
 			em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.avatar_url)
 			await ctx.send(embed=em, file=f)
