@@ -13,12 +13,7 @@ import inspect
 
 ss_key = os.getenv("SS_KEY")
 
-async def generate_screenshot_api_url(customer_key,  options):
-	api_url = 'https://api.screenshotmachine.com/?key=' + customer_key
-	api_url = api_url + '&' + urllib.parse.urlencode(options)
-	return api_url
-
-async def take_ss(url):
+def take_ss(url):
 	options = {
 				'url': str(url),
 				'dimension': '1920x1080',
@@ -28,7 +23,8 @@ async def take_ss(url):
 				'delay': '600',
 				'cacheLimit': '0.041666'
 				}
-	api_url = await generate_screenshot_api_url(ss_key, options)
+	api_url = 'https://api.screenshotmachine.com/?key=' + ss_key
+	api_url = api_url + '&' + urllib.parse.urlencode(options)
 	opener = urllib.request.build_opener()
 	opener.addheaders = [('User-agent', '-')]
 	urllib.request.install_opener(opener)
@@ -52,7 +48,7 @@ addd = """
 ° . · . ✧ °  .  ₊˚ˑ˚₊ . ° ✧ . · .°
 """
 
-nono_list = ["pornhub.com", "hentaiheaven.com", "nhentai.net", "hanime.tv", "xvideos.com", "hentai.com", "hentai.net"]
+nono_list = ['pornhub.com', 'https://pornhub.com', 'hentaiheaven.com', 'https://hentaiheaven.com', 'nhentai.net', 'https://nhentai.net', 'hanime.tv', 'https://hanime.tv', 'xvideos.com', 'https://xvideos.com', 'hentai.com', 'https://hentai.com', 'hentai.net', 'https://hentai.net', 'https://www.pornhub.com/', 'www.pornhub.com/']
 
 class General(commands.Cog):
 
@@ -64,16 +60,15 @@ class General(commands.Cog):
 		return ctx.prefix == self.prefix
 
 	@commands.command(aliases=["ss"])
-	async def scrs(self, ctx, site):
+	async def scrs(self, ctx, url):
 		"""Take a screenshot of the website."""
 
 		if ctx.author.id != 374622847672254466:
-			if str(site) in nono_list:
-				await ctx.send("( ͡° ͜ʖ ͡°)")
-				return
+			if str(url) in nono_list:
+				return await ctx.send("( ͡° ͜ʖ ͡°)")
 		
 		else:
-			ss = await take_ss(site)
+			await self.bot.loop.run_in_executor(None, take_ss, url)
 			f = discord.File(fp='ss.png', filename='ss.png')
 			em = discord.Embed(color=color.lightpink, title="Here's your screen shot of `{}`".format(site))
 			em.set_image(url='attachment://ss.png')
