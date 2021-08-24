@@ -84,7 +84,7 @@ class Birthdays(commands.Cog):
 
 		results = await self.db.find().sort([("birthdaydate", 1)]).to_list(5)
 		for result in results:
-			user = self.bot.get_member(result['_id'])
+			user = self.bot.get_user(result['_id'])
 			index += 1
 			em.add_field(name=f"`{index}`. _ _ _ _ {user.name}", value=f"{format_date(result['region_birthday'], result['birthdaydate'])}", inline = False) 
 
