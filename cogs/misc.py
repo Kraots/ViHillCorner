@@ -501,7 +501,7 @@ class Misc(commands.Cog):
 	async def snipe_index(self, ctx, index: int):
 		"""Just like the usual `!snipe` but instead of giving the latest deleted message it returns the full content of the deleted message at the given index."""
 
-		index += 1
+		index -= 1
 		try:
 			msg = self.bot.snipes[ctx.channel.id][index]
 		except KeyError:
