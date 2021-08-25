@@ -14,7 +14,7 @@ from utils import fuzzy, time, embedlinks, topicslist
 import random
 import datetime
 from dateutil.relativedelta import relativedelta
-from utils.paginator import SimplePages, RoboPages
+from utils.paginator import SimplePages, RoboPages, CustomMenu
 import pymongo
 from discord.ext.commands import Greedy
 from discord import Member
@@ -59,6 +59,19 @@ class UrbanDictionaryPageSource(menus.ListPageSource):
 
 		return embed
 
+class SnipesPageEntry:
+	def __init__(self, entry):
+
+		self.message = entry['message']
+		self.author = entry['author']
+
+	def __str__(self):
+		return f'*{self.message}* **-** ___{self.author}___'
+
+class SnipesPages(CustomMenu):
+	def __init__(self, entries, *, per_page=12):
+		converted = [SnipesPageEntry(entry) for entry in entries]
+		super().__init__(converted, per_page=per_page, color=color.lightpink)
 
 class SuggestPageEntry:
 	def __init__(self, entry):
@@ -72,8 +85,6 @@ class SuggestionPages(SimplePages):
 	def __init__(self, entries, *, per_page=12):
 		converted = [SuggestPageEntry(entry) for entry in entries]
 		super().__init__(converted, per_page=per_page)
-
-snipes = {}
 
 GoogleKey1 = os.getenv("GOOGLE_API_KEY_A")
 GoogleKey2 = os.getenv("GOOGLE_API_KEY_B")
@@ -437,18 +448,66 @@ class Misc(commands.Cog):
 		elif message.author.bot:
 			return
 		else:
-			snipes[message.channel.id] = message
-
+			try:
+				curr_snipes = self.bot.snipes[message.channel.id]
+			except KeyError:
+				self.bot.snipes[message.channel.id] = [message]
+			else:
+				if len(curr_snipes) == 500:
+					curr_snipes.pop(0)
+				curr_snipes.append(message)
+				self.bot.snipes[message.channel.id] = curr_snipes
 	
-	@commands.command()
+	@commands.group(invoke_without_command=True, case_insensitive=True)
 	async def snipe(self, ctx, *, channel: discord.TextChannel = None):
 		"""Get the last deleted message from the channel, if any."""
 		
 		channel = channel or ctx.channel
 		try:
-			msg = snipes[channel.id]
+			msg = self.bot.snipes[channel.id][-1]
 		except KeyError:
 			return await ctx.send('Nothing to snipe!')
+
+		embed = discord.Embed(description= msg.content, color=msg.author.color, timestamp=msg.created_at)
+		embed.set_author(name=msg.author, icon_url=msg.author.avatar_url)
+		embed.set_footer(text="Deleted in `{}`".format(msg.channel))
+		if msg.attachments:
+			embed.set_image(url=msg.attachments[0].proxy_url)
+		await ctx.send(embed=embed)
+
+	@snipe.command(name='list')
+	async def snipe_list(self, ctx, *, channel: discord.TextChannel = None):
+		"""See a list of all available snipes indexed with a brief view of their content."""
+
+		channel = channel or ctx.channel
+		try:
+			curr_snipes = self.bot.snipes[channel.id]
+		except KeyError:
+			return await ctx.send('That channel has no snipes!')
+		else:
+			snipes = []
+			for snipe in curr_snipes:
+				if len(snipe.content) > 50:
+					content = snipe.content[0:50] + '[...]'
+				else:
+					content = snipe.content
+
+				snipes.append({'message': content, 'author': snipe.author})
+
+			m = SnipesPages(entries=snipes, per_page=10)
+			await m.start(ctx)
+
+	@snipe.command(name='index')
+	async def snipe_index(self, ctx, index: int):
+		"""Just like the usual `!snipe` but instead of giving the latest deleted message it returns the full content of the deleted message at the given index."""
+
+		index += 1
+		try:
+			msg = self.bot.snipes[ctx.channel.id][index]
+		except KeyError:
+			return await ctx.send('This channel has no deleted messages.')
+		except IndexError:
+			return await ctx.send('There is no index with that number. For a list of all available indexes please use `!snipe list`')
 
 		embed = discord.Embed(description= msg.content, color=msg.author.color, timestamp=msg.created_at)
 		embed.set_author(name=msg.author, icon_url=msg.author.avatar_url)
@@ -467,7 +526,7 @@ class Misc(commands.Cog):
 
 	@nick.command(name='remove', aliases=['reset'])
 	async def nick_remove(self, ctx):
-		"""Reset your nickname."""
+		"""Remove your nickname."""
 
 		await ctx.author.edit(nick=None)
 		await ctx.send("Nickname succesfully removed!")

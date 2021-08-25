@@ -145,7 +145,7 @@ class General(commands.Cog):
 		embed.add_field(name='Create Date:', value=f"{user} **--->** {format_date(user.created_at)}")
 		await ctx.send(embed=embed)
 
-	@commands.command(help="Get a list of all snippets", aliases=["inv"])
+	@commands.command(aliases=["inv"])
 	async def invite(self, ctx):
 		"""Get the invite for the server."""
 
