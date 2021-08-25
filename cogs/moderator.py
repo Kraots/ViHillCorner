@@ -66,14 +66,14 @@ class Moderator(commands.Cog):
 					member = guild.get_member(result['_id'])
 					isStaff = result['staff']
 
-					if isStaff == True:
-						staff = guild.get_role(754676705741766757)
-						mod = guild.get_role(750162714407600228)
-						new_roles = [role for role in member.roles if role.id != 750465726069997658] + [staff, mod]
-					else:
-						new_roles = [role for role in member.roles if role.id != 750465726069997658]
-					
 					if member != None:
+						if isStaff == True:
+							staff = guild.get_role(754676705741766757)
+							mod = guild.get_role(750162714407600228)
+							new_roles = [role for role in member.roles if role.id != 750465726069997658] + [staff, mod]
+						else:
+							new_roles = [role for role in member.roles if role.id != 750465726069997658]
+					
 						await member.edit(roles=new_roles, reason='Auto-Unmute because of mute time expiration.')
 						await member.send("You have been unmuted in `ViHill Corner`.")
 						
@@ -90,14 +90,15 @@ class Moderator(commands.Cog):
 					member = guild.get_member(result2['_id'])
 					isStaff = result2['staff']
 					
-					if isStaff == True:
-						staff = guild.get_role(754676705741766757)
-						mod = guild.get_role(750162714407600228)
-						new_roles = [role for role in member.roles if role.id != 750465726069997658] + [staff, mod]
-					else:
-						new_roles = [role for role in member.roles if role.id != 750465726069997658]
 					
 					if member != None:
+						if isStaff == True:
+							staff = guild.get_role(754676705741766757)
+							mod = guild.get_role(750162714407600228)
+							new_roles = [role for role in member.roles if role.id != 750465726069997658] + [staff, mod]
+						else:
+							new_roles = [role for role in member.roles if role.id != 750465726069997658]
+						
 						await member.edit(roles=new_roles, reason='Auto-Unmute because of mute time expiration.')
 						await member.send("You have been unmuted in `ViHill Corner`.")
 						
