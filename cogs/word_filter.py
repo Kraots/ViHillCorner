@@ -4,6 +4,7 @@ from discord.ext import commands
 import utils.colors as color
 import json
 import datetime
+from .spam_filter import get_mute_time
 
 no_mute_these = [374622847672254466, 751724369683677275]
 
@@ -122,10 +123,13 @@ class FilterCog(commands.Cog):
 								isStaff = False
 								if 754676705741766757 in [role.id for role in message.author.roles]:
 									isStaff = True
+								
+								mute_time = get_mute_time(user.id)
+
 								post = {
 										'_id': user.id,
 										'mutedAt': datetime.datetime.now(),
-										'muteDuration': 3600,
+										'muteDuration': mute_time,
 										'guildId': message.guild.id,
 										'staff': isStaff
 										}
@@ -270,7 +274,7 @@ class FilterCog(commands.Cog):
 			
 
 	@commands.Cog.listener()
-	async def on_message_edit(self,before,after):
+	async def on_message_edit(self, before, after):
 		if after.author.id in no_mute_these:
 			return
 
@@ -328,10 +332,13 @@ class FilterCog(commands.Cog):
 								isStaff = False
 								if 754676705741766757 in [role.id for role in after.author.roles]:
 									isStaff = True
+								
+								mute_time = get_mute_time(user.id)
+
 								post = {
 										'_id': user.id,
 										'mutedAt': datetime.datetime.now(),
-										'muteDuration': 3600,
+										'muteDuration': mute_time,
 										'guildId': after.guild.id,
 										'staff': isStaff
 										}

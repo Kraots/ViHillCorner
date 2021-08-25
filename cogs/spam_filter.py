@@ -3,9 +3,33 @@ from discord.ext import commands
 import json
 import utils.colors as color
 import datetime
+
 no_mute_these = [374622847672254466]
 ignored_channels = [790310516266500098, 780374324598145055, 750160851822182487, 750160851822182486, 750160852006469807, 750160852006469810, 790309304422629386, 750160852006469806, 750160851822182484, 752164200222163016]
 
+muted_amount_count = {}
+
+def get_mute_time(user_id) -> int:
+	try:
+		curr_amount = muted_amount_count[user_id]
+		curr_amount += 1
+		muted_amount_count[user_id] = curr_amount
+	except KeyError:
+		curr_amount = 1
+		muted_amount_count[user_id] = 1
+
+	if curr_amount == 1:
+		return 900  # 15 mins
+	elif curr_amount == 2:
+		return 1800  # 30 mins
+	elif curr_amount == 3:
+		return 2700  # 45 mins
+	elif curr_amount == 4:
+		return 3600  # 60 mins
+	elif curr_amount == 5:
+		return 43200  # 12 hours
+	elif curr_amount == 6:
+		return 86400  # 24 hours
 
 class RepeatedTextFilter(commands.Cog):
 
@@ -27,7 +51,6 @@ class RepeatedTextFilter(commands.Cog):
 			if message.guild:
 				if message.channel.id in ignored_channels:
 					return
-
 
 				if not str(user.id) in users:
 					users[str(user.id)] = {}
@@ -51,9 +74,6 @@ class RepeatedTextFilter(commands.Cog):
 							json.dump(users, f, ensure_ascii = False, indent = 4)
 						return
 
-						
-
-
 				total_warns = users[str(user.id)]["warns"]
 
 				if total_warns > 1:
@@ -68,10 +88,13 @@ class RepeatedTextFilter(commands.Cog):
 					isStaff = False
 					if 754676705741766757 in [role.id for role in message.author.roles]:
 						isStaff = True
+					
+					mute_time = get_mute_time(message.author.id) 
+
 					post = {
 						'_id': user.id,
 						'mutedAt': datetime.datetime.now(),
-						'muteDuration': 3600,
+						'muteDuration': mute_time,
 						'guildId': message.guild.id,
 						'staff': isStaff
 						}
@@ -79,6 +102,7 @@ class RepeatedTextFilter(commands.Cog):
 						await self.db.insert_one(post)
 					except:
 						return
+
 					guild = self.bot.get_guild(750160850077089853)
 					muted = guild.get_role(750465726069997658)
 					if isStaff == True:
@@ -97,9 +121,6 @@ class RepeatedTextFilter(commands.Cog):
 					await staff_channel.send(embed=log)
 				else:
 					return
-
-
-
 
 
 class SpamFilter(commands.Cog):
@@ -137,7 +158,6 @@ class SpamFilter(commands.Cog):
 						with open("spam-warns.json", "w", encoding="utf-8") as f:
 							json.dump(users, f, ensure_ascii = False, indent = 4)
 
-
 					total_warns = users[str(user.id)]["warns"]
 
 					if total_warns > 2:
@@ -151,13 +171,17 @@ class SpamFilter(commands.Cog):
 						isStaff = False
 						if 754676705741766757 in [role.id for role in message.author.roles]:
 							isStaff = True
+						
+						mute_time = get_mute_time(message.author.id)
+
 						post = {
 							'_id': user.id,
 							'mutedAt': datetime.datetime.now(),
-							'muteDuration': 3600,
+							'muteDuration': mute_time,
 							'guildId': message.guild.id,
 							'staff': isStaff
 							}
+						
 						try:
 							await self.db.insert_one(post)
 						except:
