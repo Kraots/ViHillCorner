@@ -390,7 +390,7 @@ class Moderator(commands.Cog):
 				return await ctx.send(f"`{member}` cannot be unmuted since the one who muted them was none other than my master <:yamete:857163308427902987>")
 		else:
 			if resultt != None:
-				isStaff = result['staff']
+				isStaff = resultt['staff']
 				if ctx.author.id != 374622847672254466:
 					return await ctx.send("Members muted by filters cannot be unmuted by anyone except from my master <:yamete:857163308427902987>")
 			else:
