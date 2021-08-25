@@ -27,7 +27,6 @@ class ViHillCorner(commands.Bot):
 		self.db1 = database1
 		self.db2 = database2
 		self.reraise = reraise
-		self.snipes = {}
 
 		for filename in os.listdir('./cogs'):
 			if filename.endswith('.py'):

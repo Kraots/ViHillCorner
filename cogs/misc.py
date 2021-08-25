@@ -127,6 +127,7 @@ class Misc(commands.Cog):
 		self.bot = bot
 		self.db = bot.db1['Updates']
 		self.db2 = bot.db2['Suggestion blocks']
+		self.snipes = {}
 		self.prefix = '!'
 	def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
@@ -449,14 +450,14 @@ class Misc(commands.Cog):
 			return
 		else:
 			try:
-				curr_snipes = self.bot.snipes[message.channel.id]
+				curr_snipes = self.snipes[message.channel.id]
 			except KeyError:
-				self.bot.snipes[message.channel.id] = [message]
+				self.snipes[message.channel.id] = [message]
 			else:
-				if len(curr_snipes) == 500:
+				if len(curr_snipes) >= 500:
 					curr_snipes.pop(0)
 				curr_snipes.append(message)
-				self.bot.snipes[message.channel.id] = curr_snipes
+				self.snipes[message.channel.id] = curr_snipes
 	
 	@commands.group(invoke_without_command=True, case_insensitive=True)
 	async def snipe(self, ctx, *, channel: discord.TextChannel = None):
@@ -464,7 +465,7 @@ class Misc(commands.Cog):
 		
 		channel = channel or ctx.channel
 		try:
-			msg = self.bot.snipes[channel.id][-1]
+			msg = self.snipes[channel.id][-1]
 		except KeyError:
 			return await ctx.send('Nothing to snipe!')
 
@@ -481,7 +482,7 @@ class Misc(commands.Cog):
 
 		channel = channel or ctx.channel
 		try:
-			curr_snipes = self.bot.snipes[channel.id]
+			curr_snipes = self.snipes[channel.id]
 		except KeyError:
 			return await ctx.send('That channel has no snipes!')
 		else:
@@ -503,7 +504,7 @@ class Misc(commands.Cog):
 
 		index -= 1
 		try:
-			msg = self.bot.snipes[ctx.channel.id][index]
+			msg = self.snipes[ctx.channel.id][index]
 		except KeyError:
 			return await ctx.send('This channel has no deleted messages.')
 		except IndexError:
