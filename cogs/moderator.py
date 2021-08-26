@@ -455,7 +455,9 @@ class Moderator(commands.Cog):
 
 		role = channel.guild.default_role
 		if channel.id not in self.ignored_channels:
-			await channel.set_permissions(role, send_messages=False, reason=f'Channel locked by: "{ctx.author}"')
+			overwrites = channel.overwrites_for(role)
+			overwrites.send_messages = False
+			await channel.set_permissions(role, overwrite=overwrites, reason=f'Channel locked by: "{ctx.author}"')
 		else:
 			return await ctx.reply('That channel cannot be unlocked.')
 		await ctx.reply(f'Channel Locked! 🔒')
@@ -471,7 +473,9 @@ class Moderator(commands.Cog):
 		for channel in ctx.guild.text_channels:
 			if channel.id not in self.ignored_channels:
 				if channel.overwrites_for(role).send_messages != False:
-					await channel.set_permissions(role, send_messages=False, reason=f'Channel locked by: "{ctx.author}"')
+					overwrites = channel.overwrites_for(role)
+					overwrites.send_messages = False
+					await channel.set_permissions(role, overwrite=overwrites, reason=f'Channel locked by: "{ctx.author}"')
 		await ctx.reply(f'All the unlocked channels have been locked! 🔒')
 
 	@commands.group(name='unlock', invoke_without_command=True, case_insensitive=True)
@@ -485,7 +489,9 @@ class Moderator(commands.Cog):
 
 		role = channel.guild.default_role
 		if channel.id not in self.ignored_channels:
-			await channel.set_permissions(role, send_messages=None, reason=f'Channel unlocked by: "{ctx.author}"')
+			overwrites = channel.overwrites_for(role)
+			overwrites.send_messages = None
+			await channel.set_permissions(role, overwrite=overwrites, reason=f'Channel unlocked by: "{ctx.author}"')
 		else:
 			return await ctx.reply('That channel cannot be unlocked.')
 		await ctx.reply(f'Channel Unlocked! 🔓')
@@ -501,7 +507,9 @@ class Moderator(commands.Cog):
 		for channel in ctx.guild.text_channels:
 			if channel.id not in self.ignored_channels:
 				if channel.overwrites_for(role).send_messages != None:
-					await channel.set_permissions(role, send_messages=None, reason=f'Channel unlocked by: "{ctx.author}"')
+					overwrites = channel.overwrites_for(role)
+					overwrites.send_messages = None
+					await channel.set_permissions(role, overwrite=overwrites, reason=f'Channel unlocked by: "{ctx.author}"')
 		await ctx.reply(f'All locked channels have been unlocked! 🔓')
 
 def setup(bot):
