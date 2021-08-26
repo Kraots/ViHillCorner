@@ -30,13 +30,8 @@ class NameFilter(commands.Cog):
 		if message.guild:
 			user_name = str(message.author.name).lower()
 			
-			try:
-				user_nickname = message.author.nick
-	
-				if user_nickname:
-					return
-			except:
-				pass
+			if message.author.nick != None:
+				return
 
 			f = remove_emoji(u" %s" % (user_name))
 			
@@ -59,7 +54,7 @@ class NameFilter(commands.Cog):
 						new_nick = f"UnpingableName{user['InvalidNameIndex']}"
 						
 					await message.author.edit(nick=new_nick)
-					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
+					await message.author.send(f"Hello! Your `username` doesn't follow our naming policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 					return
 
 	@commands.Cog.listener('on_member_remove')
