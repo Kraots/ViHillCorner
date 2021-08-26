@@ -358,7 +358,7 @@ class Fun(commands.Cog):
 					"don't tell anyone but never ;x",
 					"yus.",
 					"yus friend...",
-					"only today!!"
+					"only today!!",
 					"hell no! UwU",
 					"hell yeah love...",
 					"sadly yes! .-.",
