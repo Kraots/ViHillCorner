@@ -426,11 +426,11 @@ class Moderator(commands.Cog):
 
 	@commands.command(name='purge', aliases=['clear'])
 	@commands.has_role(754676705741766757)
-	async def mod_purge(self, ctx, amount=0):
+	async def mod_purge(self, ctx, amount = None):
 		"""Delete the amount of messages from the chat."""
 
 		await ctx.message.delete()
-		await ctx.channel.purge(limit=amount)
+		await ctx.channel.purge(limit=amount or 0)
 
 		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
