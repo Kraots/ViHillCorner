@@ -426,7 +426,7 @@ class Moderator(commands.Cog):
 
 	@commands.command(name='purge', aliases=['clear'])
 	@commands.has_role(754676705741766757)
-	async def mod_purge(self, ctx, amount = None):
+	async def mod_purge(self, ctx, amount: int = None):
 		"""Delete the amount of messages from the chat."""
 
 		await ctx.message.delete()
