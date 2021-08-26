@@ -48,6 +48,7 @@ class Moderator(commands.Cog):
 		self.db2 = bot.db1['Filter Mutes']
 		self.prefix = "!"
 		self.check_current_mutes.start()
+		self.ignored_channels = [750645852237987891, 750160850303582236, 779388444304211991, 750160850303582237, 750160850593251449, 797867811967467560, 752164200222163016, 783304066691235850, 770209436488171530, 779280794530086952, 788377362739494943, 750160852380024895, 781777255885570049, 750432155179679815]
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
 
@@ -441,6 +442,67 @@ class Moderator(commands.Cog):
 		em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
 
 		await log_channel.send(embed=em)
+
+	@commands.group(name='lock', invoke_without_command=True, case_insensitive=True)
+	@commands.has_role(754676705741766757)
+	async def lock_channel(self, ctx, channel: discord.TextChannel = None):
+		"""
+		Locks the channel.
+		No one will be able to talk in that channel except the mods, but everyone will still see the channel.
+		"""
+
+		channel = channel or ctx.channel
+
+		role = channel.guild.default_role
+		if channel.id not in self.ignored_channels:
+			await channel.set_permissions(role, send_messages=False, reason=f'Channel locked by: "{ctx.author}"')
+		else:
+			return await ctx.reply('That channel cannot be unlocked.')
+		await ctx.reply(f'Channel Locked! 🔒')
+
+	@lock_channel.command(name='all')
+	@commands.has_role(754676705741766757)
+	async def lock_all_channels(self, ctx):
+		"""
+		Locks *all* the channels that are have not been locked, but omits the channels that the users can't see or talk in already.
+		"""
+
+		role = ctx.guild.default_role
+		for channel in ctx.guild.text_channels:
+			if channel.id not in self.ignored_channels:
+				if channel.overwrites_for(role).send_messages != False:
+					await channel.set_permissions(role, send_messages=False, reason=f'Channel locked by: "{ctx.author}"')
+		await ctx.reply(f'All the unlocked channels have been locked! 🔒')
+
+	@commands.group(name='unlock', invoke_without_command=True, case_insensitive=True)
+	@commands.has_role(754676705741766757)
+	async def unlock_channel(self, ctx, channel: discord.TextChannel = None):
+		"""
+		Unlocks the channel.
+		"""
+
+		channel = channel or ctx.channel
+
+		role = channel.guild.default_role
+		if channel.id not in self.ignored_channels:
+			await channel.set_permissions(role, send_messages=None, reason=f'Channel unlocked by: "{ctx.author}"')
+		else:
+			return await ctx.reply('That channel cannot be unlocked.')
+		await ctx.reply(f'Channel Unlocked! 🔓')
+
+	@unlock_channel.command(name='all')
+	@commands.has_role(754676705741766757)
+	async def unlock_all_channels(self, ctx):
+		"""
+		Unlocks *all the already locked* channels, but omits the channels that the users can't see or talk in already.
+		"""
+
+		role = ctx.guild.default_role
+		for channel in ctx.guild.text_channels:
+			if channel.id not in self.ignored_channels:
+				if channel.overwrites_for(role).send_messages != None:
+					await channel.set_permissions(role, send_messages=None, reason=f'Channel unlocked by: "{ctx.author}"')
+		await ctx.reply(f'All locked channels have been unlocked! 🔓')
 
 def setup(bot):
 	bot.add_cog(Moderator(bot))
