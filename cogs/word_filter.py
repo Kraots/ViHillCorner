@@ -4,7 +4,7 @@ from discord.ext import commands
 import utils.colors as color
 import json
 import datetime
-from .spam_filter import get_mute_time
+from .spam_filter import get_mute_time, time_convert
 
 no_mute_these = [374622847672254466, 751724369683677275]
 
@@ -145,12 +145,12 @@ class FilterCog(commands.Cog):
 									new_roles = [role for role in message.author.roles] + [muted]
 								await message.author.edit(roles=new_roles, reason='Filter Mute (bad words)')
 								msg1 = "You have been muted in `ViHill Corner`."
-								em = discord.Embed(description="**Reason:** [Bad Words]({})".format(message.jump_url))
+								em = discord.Embed(description="**Reason:** [Bad Words]({})\n**Time:** `{}`".format(message.jump_url, time_convert[mute_time]))
 								await message.author.send(msg1, embed=em)
 								msg2 = f"**{message.author}** has been muted."
 								ju = await message.channel.send(msg2, embed=em)
 								staff_channel = guild.get_channel(752164200222163016)
-								log = discord.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{message.author}`\nReason: [`Bad Words`]({ju.jump_url})", timestamp=datetime.datetime.utcnow())
+								log = discord.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{message.author}`\nReason: [`Bad Words`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`", timestamp=datetime.datetime.utcnow())
 								em.set_footer(text=f"User ID: {message.author.id}")
 								await staff_channel.send(embed=log)
 							else:
@@ -362,12 +362,12 @@ class FilterCog(commands.Cog):
 									new_roles = [role for role in after.author.roles] + [muted]
 								await after.author.edit(roles=new_roles, reason='Filter Mute (bad words)')
 								msg1 = "You have been muted in `ViHill Corner`."
-								em = discord.Embed(description="**Reason:** [Bad Words]({})".format(after.jump_url))
+								em = discord.Embed(description="**Reason:** [Bad Words]({})\n**Time:** `{}`".format(after.jump_url, time_convert[mute_time]))
 								await after.author.send(msg1, embed=em)
 								msg2 = f"**{after.author}** has been muted."
 								ju = await after.channel.send(msg2, embed=em)
 								staff_channel = guild.get_channel(752164200222163016)
-								log = discord.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{after.author}`\nReason: [`Zalgo`]({ju.jump_url})", timestamp=datetime.datetime.utcnow())
+								log = discord.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{after.author}`\nReason: [`Zalgo`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`", timestamp=datetime.datetime.utcnow())
 								em.set_footer(text=f"User ID: {after.author.id}")
 								await staff_channel.send(embed=log)
 							else:
