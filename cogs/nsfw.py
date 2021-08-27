@@ -7,6 +7,7 @@ from discord import Member
 from utils.paginator import SimplePages
 import pymongo
 import hmtai
+import aiohttp
 
 nsfw_url = 'https://nekobot.xyz/api/image?type='
 nsfw_categs = ['hentai', 'ass', 'thigh', 'hass', 'hboobs', 'pgif', 'paizuri', 'boobs', 'pussy', 'hyuri', 'hthigh', 'lewdneko', 'anal', 'hmidriff', 'feet', 'gonewild', 'hkitsune', '4k', 'blowjob', 'tentacle', 'hentai_anal']
@@ -106,18 +107,21 @@ class NSFW(commands.Cog):
 				categ = 'tentacle'
 			else:
 				return await ctx.reply("Not in the existing hentai categories.")
+		try:
+			async with self.bot.session.get(nsfw_url + categ) as resp:
+				if resp.status != 200:
+					kraots = self.bot.get_user(self.bot.owner_id)
+					await kraots.send(f"`{ctx.command} {categ}` returned\n**{await resp.json()}**")
+					return await ctx.send("There has been an error from the **API**, please try again later.")
+				content = await resp.json()
+				url = content['message']
+			em = discord.Embed(color=color.pastel)
+			em.set_image(url=url)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			await ctx.send(embed=em)
+		except aiohttp.ClientConnectorError:
+			await ctx.send('Error connecting to this nsfw API. There is no ETA until it will be fixed so please use the others available APIs for nsfw hentai.')
 
-		async with self.bot.session.get(nsfw_url + categ) as resp:
-			if resp.status != 200:
-				kraots = self.bot.get_user(self.bot.owner_id)
-				await kraots.send(f"`{ctx.command} {categ}` returned\n**{await resp.json()}**")
-				return await ctx.send("There has been an error from the **API**, please try again later.")
-			content = await resp.json()
-			url = content['message']
-		em = discord.Embed(color=color.pastel)
-		em.set_image(url=url)
-		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-		await ctx.send(embed=em)
 
 	async def nsfw_hentai_2(self, ctx, gif, category):
 		"""The new nsfw."""
@@ -132,20 +136,23 @@ class NSFW(commands.Cog):
 		if categ not in hentai_categs_2:
 			return await ctx.reply("Not in the existing hentai categories.")
 
-		async with self.bot.session.get('https://api.hori.ovh:8036/nsfw/' + categ + gif) as resp:
-			if resp.status != 200:
-				err = await resp.json()
-				if err['error'] == 'Sorry no image were found with the criteria you gave to the API, please retry with a different criteria.':
-					return await ctx.reply('No gif found for this type of category.')
-				kraots = self.bot.get_user(self.bot.owner_id)
-				await kraots.send(f"`{ctx.command} {categ}` returned\n**{err}**")
-				return await ctx.send("There has been an error from the **API**, please try again later.")
-			content = await resp.json()
-			url= content['url']
-		em = discord.Embed(color=color.pastel)
-		em.set_image(url=url)
-		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-		await ctx.send(embed=em)
+		try:
+			async with self.bot.session.get('https://api.hori.ovh:8036/nsfw/' + categ + gif) as resp:
+				if resp.status != 200:
+					err = await resp.json()
+					if err['error'] == 'Sorry no image were found with the criteria you gave to the API, please retry with a different criteria.':
+						return await ctx.reply('No gif found for this type of category.')
+					kraots = self.bot.get_user(self.bot.owner_id)
+					await kraots.send(f"`{ctx.command} {categ}` returned\n**{err}**")
+					return await ctx.send("There has been an error from the **API**, please try again later.")
+				content = await resp.json()
+				url= content['url']
+			em = discord.Embed(color=color.pastel)
+			em.set_image(url=url)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			await ctx.send(embed=em)
+		except aiohttp.ClientConnectorError:
+			await ctx.send('Error connecting to this nsfw API. There is no ETA until it will be fixed so please use the others available APIs for nsfw hentai.')
 
 
 	@nsfw.command(name='hentai')
@@ -202,17 +209,20 @@ class NSFW(commands.Cog):
 			else:
 				return await ctx.reply("Not in the existing real nsfw categories.")
 		
-		async with self.bot.session.get(nsfw_url + categ) as resp:
-			if resp.status != 200:
-				kraots = self.bot.get_user(self.bot.owner_id)
-				await kraots.send(f"`{ctx.command} {categ}` returned\n**{resp.status}**")
-				return await ctx.send("There has been an error from the **API**, please try again later.")
-			content = await resp.json()
-			url = content['message']
-		em = discord.Embed(color=color.pastel)
-		em.set_image(url=url)
-		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
-		await ctx.send(embed=em)
+		try:
+			async with self.bot.session.get(nsfw_url + categ) as resp:
+				if resp.status != 200:
+					kraots = self.bot.get_user(self.bot.owner_id)
+					await kraots.send(f"`{ctx.command} {categ}` returned\n**{resp.status}**")
+					return await ctx.send("There has been an error from the **API**, please try again later.")
+				content = await resp.json()
+				url = content['message']
+			em = discord.Embed(color=color.pastel)
+			em.set_image(url=url)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			await ctx.send(embed=em)
+		except aiohttp.ClientConnectorError:
+			await ctx.send('Error connecting to this nsfw API. There is no ETA until it will be fixed so please use the nsfw hentai APIs or try again later.')
 
 
 	@nsfw.command()
