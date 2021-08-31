@@ -35,6 +35,9 @@ class InviteFilter(commands.Cog):
 					embed.set_footer(text="Click the `invite link` to go to the channel and see where the user got warned. No, it's not an actual invite.", icon_url='https://cdn.discordapp.com/avatars/751724369683677275/0ad4d3b39956b6431c7167ef82c30d30.webp?size=1024')
 					await Logchannel.send(embed=embed)
 					await message.author.add_roles(muted)
+					curr_snipes = self.bot.snipes[message.channel.id]
+					curr_snipes.pop(-1)
+					self.bot.snipes[message.channel.id] = curr_snipes
 					await asyncio.sleep(30)
 					await message.author.remove_roles(muted)
 
