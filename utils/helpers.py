@@ -8,7 +8,8 @@ import os, datetime
 from discord.ext.buttons import Paginator
 from discord.ext import commands
 from traceback import format_exception
-
+import re
+import string
 
 import typing
 import pkg_resources
@@ -176,22 +177,22 @@ def package_version(package_name: str) -> typing.Optional[str]:
 		return None
 
 def format_balance(balance):
-    cBalance = "{:,}".format(balance)
-    sBalance = cBalance.split(",")
-    if len(sBalance) == 1:
-        return str(balance)
-    elif len(sBalance) == 2:
-        sign = "K"
-    elif len(sBalance) == 3:
-        sign = "M"
-    elif len(sBalance) == 4:
-        sign = "B"
-    elif len(sBalance) == 5:
-        sign = "T"
-    elif len(sBalance) >= 6:
-        sign = "Q"
-    fBalance = sBalance[0] + "." + sBalance[1][0:2] + sign
-    return fBalance
+	cBalance = "{:,}".format(balance)
+	sBalance = cBalance.split(",")
+	if len(sBalance) == 1:
+		return str(balance)
+	elif len(sBalance) == 2:
+		sign = "K"
+	elif len(sBalance) == 3:
+		sign = "M"
+	elif len(sBalance) == 4:
+		sign = "B"
+	elif len(sBalance) == 5:
+		sign = "T"
+	elif len(sBalance) >= 6:
+		sign = "Q"
+	fBalance = sBalance[0] + "." + sBalance[1][0:2] + sign
+	return fBalance
 
 async def reraise(ctx, error):
 	if isinstance(error, commands.NotOwner):
@@ -231,3 +232,59 @@ async def reraise(ctx, error):
 			await ctx.send(embed=em)
 		else:
 			await ctx.send(embed=em)
+
+def replace_many(
+	sentence: str, replacements: dict, *, ignore_case: bool = False, match_case: bool = False
+) -> str:
+	"""
+	Replaces multiple substrings in a string given a mapping of strings.
+	By default replaces long strings before short strings, and lowercase before uppercase.
+	Example:
+		var = replace_many("This is a sentence", {"is": "was", "This": "That"})
+		assert var == "That was a sentence"
+	If `ignore_case` is given, does a case insensitive match.
+	Example:
+		var = replace_many("THIS is a sentence", {"IS": "was", "tHiS": "That"}, ignore_case=True)
+		assert var == "That was a sentence"
+	If `match_case` is given, matches the case of the replacement with the replaced word.
+	Example:
+		var = replace_many(
+			"This IS a sentence", {"is": "was", "this": "that"}, ignore_case=True, match_case=True
+		)
+		assert var == "That WAS a sentence"
+	"""
+	if ignore_case:
+		replacements = dict(
+			(word.lower(), replacement) for word, replacement in replacements.items()
+		)
+
+	words_to_replace = sorted(replacements, key=lambda s: (-len(s), s))
+
+	# Join and compile words to replace into a regex
+	pattern = "|".join(re.escape(word) for word in words_to_replace)
+	regex = re.compile(pattern, re.I if ignore_case else 0)
+
+	def _repl(match: re.Match) -> str:
+		"""Returns replacement depending on `ignore_case` and `match_case`."""
+		word = match.group(0)
+		replacement = replacements[word.lower() if ignore_case else word]
+
+		if not match_case:
+			return replacement
+
+		# Clean punctuation from word so string methods work
+		cleaned_word = word.translate(str.maketrans("", "", string.punctuation))
+		if cleaned_word.isupper():
+			return replacement.upper()
+		elif cleaned_word[0].isupper():
+			return replacement.capitalize()
+		else:
+			return replacement.lower()
+
+	return regex.sub(_repl, sentence)
+
+def suppress_links(message: str) -> str:
+    """Accepts a message that may contain links, suppresses them, and returns them."""
+    for link in set(re.findall(r"https?://[^\s]+", message, re.IGNORECASE)):
+        message = message.replace(link, f"<{link}>")
+    return message

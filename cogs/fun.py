@@ -7,6 +7,21 @@ import asyncio
 import games
 import aiohttp
 import utils.colors as color
+import functools
+from utils.helpers import replace_many, suppress_links
+
+UWU_WORDS = {
+    "fi": "fwi",
+    "l": "w",
+    "r": "w",
+    "some": "sum",
+    "th": "d",
+    "thing": "fing",
+    "tho": "fo",
+    "you're": "yuw'we",
+    "your": "yur",
+    "you": "yuw",
+}
 
 class Fun(commands.Cog):
 
@@ -628,6 +643,21 @@ class Fun(commands.Cog):
 			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
 				await ctx.reply(f"**{member.mention}** does not want to play tic-tac-toe with you.")
 				await msg.delete()
+
+	@commands.command()
+	async def reverse(self, ctx, *, text: str):
+		"""Reverses the text."""
+
+		await ctx.send(f'> {text[::-1]}')
+
+	@commands.command()
+	async def uwu(self, ctx, *, text: commands.clean_content(fix_channel_mentions=True)):
+		"""Converts the text to its uwu equivalent."""
+
+		conversion_func = functools.partial(replace_many, replacements=UWU_WORDS, ignore_case=True, match_case=True)
+		converted_text = conversion_func(text)
+		converted_text = suppress_links(converted_text)
+		await ctx.send(f'> {converted_text}')
 
 	@_tictactoe.error
 	async def ttt_error(self, ctx, error):
