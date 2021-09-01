@@ -9,6 +9,7 @@ import aiohttp
 import utils.colors as color
 import functools
 from utils.helpers import replace_many, suppress_links
+from utils.pillow import invert_pfp
 
 UWU_WORDS = {
     "fi": "fwi",
@@ -658,6 +659,17 @@ class Fun(commands.Cog):
 		converted_text = conversion_func(text)
 		converted_text = suppress_links(converted_text)
 		await ctx.send(f'> {converted_text}')
+
+	@commands.command()
+	async def invert(self, ctx, member: discord.Member = None):
+		"""Inverts the colors of the member's pfp."""
+
+		member = member or ctx.author
+		pfp = await invert_pfp(member)
+		em = discord.Embed(color=color.lightpink, title='Here\'s your inverted avatar image:')
+		em.set_image(url=f'attachment://{member.display_name}_inverted_avatar.png')
+		em.set_footer(text=f"Requested by: {ctx.author}", icon_url = ctx.author.avatar_url)
+		await ctx.send(embed=em, file=pfp)
 
 	@_tictactoe.error
 	async def ttt_error(self, ctx, error):
