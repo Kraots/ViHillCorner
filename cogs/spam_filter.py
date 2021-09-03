@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import json
 import utils.colors as color
 import datetime
@@ -39,7 +39,7 @@ class RepeatedTextFilter(commands.Cog):
 		self.db = bot.db1['Filter Mutes']
 
 	@commands.Cog.listener()
-	async def on_message(self, message : discord.Message):
+	async def on_message(self, message : disnake.Message):
 		if message.author.id in no_mute_these:
 			return
 		elif message.author.bot:
@@ -112,12 +112,12 @@ class RepeatedTextFilter(commands.Cog):
 						new_roles = [role for role in message.author.roles] + [muted]
 					await message.author.edit(roles=new_roles, reason='Filter Mute (Repeated Text)')
 					msg1 = "You have been muted in `ViHill Corner`."
-					em = discord.Embed(description=f"**Reason:** [Repeated Text]({message.jump_url})\n**Time:** `{time_convert[mute_time]}`")
+					em = disnake.Embed(description=f"**Reason:** [Repeated Text]({message.jump_url})\n**Time:** `{time_convert[mute_time]}`")
 					await user.send(msg1, embed=em)
 					msg2 = f"**{user}** has been muted."
 					ju = await message.channel.send(msg2, embed=em)
 					staff_channel = guild.get_channel(752164200222163016)
-					log = discord.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{message.author}`\nReason: [`Repeated Text`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`", timestamp=datetime.datetime.utcnow())
+					log = disnake.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{message.author}`\nReason: [`Repeated Text`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`", timestamp=datetime.datetime.utcnow())
 					em.set_footer(text=f"User ID: {message.author.id}")
 					await staff_channel.send(embed=log)
 				else:
@@ -131,7 +131,7 @@ class SpamFilter(commands.Cog):
 		self.db = bot.db1['Filter Mutes']
 
 	@commands.Cog.listener()
-	async def on_message(self, message: discord.Message):
+	async def on_message(self, message: disnake.Message):
 		if message.author.id in no_mute_these:
 			return
 		if message.author.bot:
@@ -195,12 +195,12 @@ class SpamFilter(commands.Cog):
 							new_roles = [role for role in message.author.roles] + [muted]
 						await message.author.edit(roles=new_roles, reason='Filter Mute (Spam)')
 						msg1 = "You have been muted in `ViHill Corner`."
-						em = discord.Embed(description=f"**Reason:** [Spam]({message.jump_url})\n**Time:** `{time_convert[mute_time]}`")
+						em = disnake.Embed(description=f"**Reason:** [Spam]({message.jump_url})\n**Time:** `{time_convert[mute_time]}`")
 						await user.send(msg1, embed=em)
 						msg2 = f"**{user}** has been muted."
 						ju = await message.channel.send(msg2, embed=em)
 						staff_channel = guild.get_channel(752164200222163016)
-						log = discord.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{message.author}`\nReason: [`Spam`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`", timestamp=datetime.datetime.utcnow())
+						log = disnake.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{message.author}`\nReason: [`Spam`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`", timestamp=datetime.datetime.utcnow())
 						em.set_footer(text=f"User ID: {message.author.id}")
 						await staff_channel.send(embed=log)
 					else:

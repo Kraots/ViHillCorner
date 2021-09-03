@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import random
 from random import randint
 from utils.helpers import time_phaser
@@ -34,13 +34,13 @@ class Fun(commands.Cog):
 		return ctx.prefix == self.prefix
 
 	@commands.command()
-	async def ppsize(self, ctx, member: discord.Member = None):
+	async def ppsize(self, ctx, member: disnake.Member = None):
 		"""How big is your pp 😳"""
 
 		if member is None:
 			member = ctx.author
 		
-		em = discord.Embed(color = member.color, title="peepee size machine")
+		em = disnake.Embed(color = member.color, title="peepee size machine")
 		if member.id == 374622847672254466:
 			em.description = "`Kraots`'s penis\n8=============================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================D"
 		else:
@@ -49,12 +49,12 @@ class Fun(commands.Cog):
 				pre_size.append("=")
 			size = "".join(pre_size)
 			em.description = f"`{member.name}`'s penis\n8{size}D"
-		em.set_footer(text=f"Requested by: {ctx.author}", icon_url = ctx.author.avatar_url)
+		em.set_footer(text=f"Requested by: {ctx.author}", icon_url = ctx.author.avatar.url)
 
 		await ctx.send(embed=em)
 
 	@commands.command()
-	async def gayrate(self, ctx, member : discord.Member=None):
+	async def gayrate(self, ctx, member : disnake.Member=None):
 		"""Are you gay 🤔"""
 		
 		gayrate = randint(1, 100)
@@ -62,32 +62,32 @@ class Fun(commands.Cog):
 
 		if member is None:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Gay rating machine', description='You are 0% gay :gay_pride_flag:', color=randomcolour)
+				embed1 = disnake.Embed(title='Gay rating machine', description='You are 0% gay :gay_pride_flag:', color=randomcolour)
 
 			else:
-				embed1 = discord.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
+				embed1 = disnake.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Gay rating machine', description='You are 0% gay :gay_pride_flag:', color=randomcolour)
+				embed1 = disnake.Embed(title='Gay rating machine', description='You are 0% gay :gay_pride_flag:', color=randomcolour)
 
 			else:
-				embed1 = discord.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
+				embed1 = disnake.Embed(title='Gay rating machine', description=f'You are {gayrate}% gay :gay_pride_flag:', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		else:
 			if member.id == 374622847672254466:
-				embed2 = discord.Embed(title='Gay rating machine', description=f'{member.name} is 0% gay :gay_pride_flag:', color=randomcolour)
+				embed2 = disnake.Embed(title='Gay rating machine', description=f'{member.name} is 0% gay :gay_pride_flag:', color=randomcolour)
 			
 			else:
-				embed2 = discord.Embed(title='Gay rating machine', description=f'{member.name} is {gayrate}% gay :gay_pride_flag:', color=randomcolour)
+				embed2 = disnake.Embed(title='Gay rating machine', description=f'{member.name} is {gayrate}% gay :gay_pride_flag:', color=randomcolour)
 			await ctx.send(embed=embed2)
 
 	@commands.command()
-	async def susrate(self, ctx, member : discord.Member=None):
+	async def susrate(self, ctx, member : disnake.Member=None):
 		"""Are you sus 🤔"""
 		
 		susrate = randint(1, 100)
@@ -95,32 +95,32 @@ class Fun(commands.Cog):
 
 		if member is None:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Sus rating machine', description='You are 0% sus <:pepe_sus:750751092459044926>', color=randomcolour)
+				embed1 = disnake.Embed(title='Sus rating machine', description='You are 0% sus <:pepe_sus:750751092459044926>', color=randomcolour)
 
 			else:
-				embed1 = discord.Embed(title='Sus rating machine', description=f'You are {susrate}% sus <:pepe_sus:750751092459044926>', color=randomcolour)
+				embed1 = disnake.Embed(title='Sus rating machine', description=f'You are {susrate}% sus <:pepe_sus:750751092459044926>', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Sus rating machine', description='You are 0% sus <:pepe_sus:750751092459044926>', color=randomcolour)
+				embed1 = disnake.Embed(title='Sus rating machine', description='You are 0% sus <:pepe_sus:750751092459044926>', color=randomcolour)
 
 			else:
-				embed1 = discord.Embed(title='Sus rating machine', description=f'You are {susrate}% sus <:pepe_sus:750751092459044926>', color=randomcolour)
+				embed1 = disnake.Embed(title='Sus rating machine', description=f'You are {susrate}% sus <:pepe_sus:750751092459044926>', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		else:
 			if member.id == 374622847672254466:
-				embed2 = discord.Embed(title='Sus rating machine', description=f'{member.name} is 0% sus <:pepe_sus:750751092459044926>', color=randomcolour)
+				embed2 = disnake.Embed(title='Sus rating machine', description=f'{member.name} is 0% sus <:pepe_sus:750751092459044926>', color=randomcolour)
 			
 			else:
-				embed2 = discord.Embed(title='Sus rating machine', description=f'{member.name} is {susrate}% sus <:pepe_sus:750751092459044926>', color=randomcolour)
+				embed2 = disnake.Embed(title='Sus rating machine', description=f'{member.name} is {susrate}% sus <:pepe_sus:750751092459044926>', color=randomcolour)
 			await ctx.send(embed=embed2)
 
 	@commands.command()
-	async def simprate(self, ctx, member : discord.Member=None):
+	async def simprate(self, ctx, member : disnake.Member=None):
 		"""Are you a simp 🤔"""
 
 		simprate = randint(1, 100)
@@ -128,29 +128,29 @@ class Fun(commands.Cog):
 
 		if member is None:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Simp rating machine', description='You are 0% simp ', color=randomcolour)
+				embed1 = disnake.Embed(title='Simp rating machine', description='You are 0% simp ', color=randomcolour)
 			else:
-				embed1 = discord.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
+				embed1 = disnake.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Simp rating machine', description='You are 0% simp ', color=randomcolour)
+				embed1 = disnake.Embed(title='Simp rating machine', description='You are 0% simp ', color=randomcolour)
 			else:
-				embed1 = discord.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
+				embed1 = disnake.Embed(title='Simp rating machine', description=f'You are {simprate}% simp ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		else:
 			if member.id == 374622847672254466:
-				embed2 = discord.Embed(title='Simp rating machine', description=f'{member.name} is 0% simp ', color=randomcolour)
+				embed2 = disnake.Embed(title='Simp rating machine', description=f'{member.name} is 0% simp ', color=randomcolour)
 			else:
-				embed2 = discord.Embed(title='Simp rating machine', description=f'{member.name} is {simprate}% simp ', color=randomcolour)
+				embed2 = disnake.Embed(title='Simp rating machine', description=f'{member.name} is {simprate}% simp ', color=randomcolour)
 			await ctx.send(embed=embed2)
 
 	@commands.command()
-	async def straightrate(self, ctx, member : discord.Member=None):
+	async def straightrate(self, ctx, member : disnake.Member=None):
 		"""Are you straight 🤔"""
 
 		simprate = randint(1, 100)
@@ -158,30 +158,30 @@ class Fun(commands.Cog):
 
 		if member is None:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Straight rating machine', description='You are 100% straight ', color=randomcolour)
+				embed1 = disnake.Embed(title='Straight rating machine', description='You are 100% straight ', color=randomcolour)
 			else:
-				embed1 = discord.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
+				embed1 = disnake.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Straight rating machine', description='You are 100% straight ', color=randomcolour)
+				embed1 = disnake.Embed(title='Straight rating machine', description='You are 100% straight ', color=randomcolour)
 			else:
-				embed1 = discord.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
+				embed1 = disnake.Embed(title='Straight rating machine', description=f'You are {simprate}% straight ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		else:
 			if member.id == 374622847672254466:
-				embed2 = discord.Embed(title='Straight rating machine', description=f'{member.name} is 100% straight ', color=randomcolour)
+				embed2 = disnake.Embed(title='Straight rating machine', description=f'{member.name} is 100% straight ', color=randomcolour)
 			else:
-				embed2 = discord.Embed(title='Straight rating machine', description=f'{member.name} is {simprate}% straight ', color=randomcolour)
+				embed2 = disnake.Embed(title='Straight rating machine', description=f'{member.name} is {simprate}% straight ', color=randomcolour)
 			
 			await ctx.send(embed=embed2)
 
 	@commands.command()
-	async def hornyrate(self, ctx, member : discord.Member=None):
+	async def hornyrate(self, ctx, member : disnake.Member=None):
 		"""How horny are you 😳 😏"""
 
 		simprate = randint(1, 100)
@@ -189,31 +189,31 @@ class Fun(commands.Cog):
 
 		if member is None:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Horny rating machine', description='You are 100% horny ', color=randomcolour)
+				embed1 = disnake.Embed(title='Horny rating machine', description='You are 100% horny ', color=randomcolour)
 			else:
-				embed1 = discord.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
+				embed1 = disnake.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Horny rating machine', description='You are 100% horny ', color=randomcolour)
+				embed1 = disnake.Embed(title='Horny rating machine', description='You are 100% horny ', color=randomcolour)
 
 			else:
-				embed1 = discord.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
+				embed1 = disnake.Embed(title='Horny rating machine', description=f'You are {simprate}% horny ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		else:
 			if member.id == 374622847672254466:
-				embed2 = discord.Embed(title='Horny rating machine', description=f'{member.name} is 100% horny ', color=randomcolour)
+				embed2 = disnake.Embed(title='Horny rating machine', description=f'{member.name} is 100% horny ', color=randomcolour)
 			
 			else:
-				embed2 = discord.Embed(title='Horny rating machine', description=f'{member.name} is {simprate}% horny ', color=randomcolour)
+				embed2 = disnake.Embed(title='Horny rating machine', description=f'{member.name} is {simprate}% horny ', color=randomcolour)
 			await ctx.send(embed=embed2)
 
 	@commands.command()
-	async def boomerrate(self, ctx, member : discord.Member=None):
+	async def boomerrate(self, ctx, member : disnake.Member=None):
 		"""Are you a boomer 🤔"""
 
 		simprate = randint(1, 100)
@@ -221,28 +221,28 @@ class Fun(commands.Cog):
 
 		if member is None:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Boomer rating machine', description='You are 0% boomer ', color=randomcolour)
+				embed1 = disnake.Embed(title='Boomer rating machine', description='You are 0% boomer ', color=randomcolour)
 
 			else:
-				embed1 = discord.Embed(title='Boomer rating machine', description=f'You are {simprate}% boomer ', color=randomcolour)
+				embed1 = disnake.Embed(title='Boomer rating machine', description=f'You are {simprate}% boomer ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		elif member is ctx.author:
 			if ctx.author.id == 374622847672254466:
-				embed1 = discord.Embed(title='Boomer rating machine', description='You are 0% boomer ', color=randomcolour)
+				embed1 = disnake.Embed(title='Boomer rating machine', description='You are 0% boomer ', color=randomcolour)
 
 			else:
-				embed1 = discord.Embed(title='Boomer rating machine', description=f'You are {simprate}% boomer ', color=randomcolour)
+				embed1 = disnake.Embed(title='Boomer rating machine', description=f'You are {simprate}% boomer ', color=randomcolour)
 			
 			await ctx.send(embed=embed1)
 
 		else:
 			if member.id == 374622847672254466:
-				embed2 = discord.Embed(title='Boomer rating machine', description=f'{member.name} is 0% boomer ', color=randomcolour)
+				embed2 = disnake.Embed(title='Boomer rating machine', description=f'{member.name} is 0% boomer ', color=randomcolour)
 
 			else:	
-				embed2 = discord.Embed(title='Boomer rating machine', description=f'{member.name} is {simprate}% boomer ', color=randomcolour)
+				embed2 = disnake.Embed(title='Boomer rating machine', description=f'{member.name} is {simprate}% boomer ', color=randomcolour)
 			await ctx.send(embed=embed2)
 
 	@commands.command(name='8ball')
@@ -491,7 +491,7 @@ class Fun(commands.Cog):
 
 
 	@commands.command()
-	async def fight(self, ctx, p2: discord.Member):
+	async def fight(self, ctx, p2: disnake.Member):
 		"""Have an interactive fight with someone."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
@@ -551,9 +551,9 @@ class Fun(commands.Cog):
 
 			imgUrl = data['file']
 
-			embed = discord.Embed(title="Cat", url=imgUrl, color=color.orange, timestamp=ctx.message.created_at)
+			embed = disnake.Embed(title="Cat", url=imgUrl, color=color.orange, timestamp=ctx.message.created_at.replace(tzinfo=None))
 			embed.set_image(url=imgUrl)
-			embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 			msg = await ctx.send(embed=embed)
 			await msg.add_reaction("❤️")
 			await msg.add_reaction("😸")
@@ -566,9 +566,9 @@ class Fun(commands.Cog):
 			async with cs.get("http://random.dog/woof.json") as r:
 				data = await r.json()
 
-			embed = discord.Embed(title="Dog", url=data['url'], color=color.orange, timestamp=ctx.message.created_at)
+			embed = disnake.Embed(title="Dog", url=data['url'], color=color.orange, timestamp=ctx.message.created_at.replace(tzinfo=None))
 			embed.set_image(url=data['url'])
-			embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 			msg = await ctx.send(embed=embed)
 			await msg.add_reaction("❤️")
 			await msg.add_reaction("🐶")
@@ -584,14 +584,14 @@ class Fun(commands.Cog):
 				linkUrl = imgUrl['url']
 				titleUrl = imgUrl['title']
 				
-				embed = discord.Embed(color=color.orange, title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at)
+				embed = disnake.Embed(color=color.orange, title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at.replace(tzinfo=None))
 				embed.set_image(url=linkUrl)
-				embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+				embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 
 				await ctx.send(embed=embed)
 
 	@commands.command(name='tic-tac-toe', aliases=['ttt'])
-	async def _tictactoe(self, ctx, member: discord.Member = None):
+	async def _tictactoe(self, ctx, member: disnake.Member = None):
 		"""Play a game of tictactoe against someone."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
@@ -661,14 +661,14 @@ class Fun(commands.Cog):
 		await ctx.send(f'> {converted_text}')
 
 	@commands.command()
-	async def invert(self, ctx, member: discord.Member = None):
+	async def invert(self, ctx, member: disnake.Member = None):
 		"""Inverts the colors of the member's pfp."""
 
 		member = member or ctx.author
 		pfp = await invert_pfp(member)
-		em = discord.Embed(color=color.lightpink, title='Here\'s your inverted avatar image:')
+		em = disnake.Embed(color=color.lightpink, title='Here\'s your inverted avatar image:')
 		em.set_image(url=f'attachment://{member.display_name}_inverted_avatar.png')
-		em.set_footer(text=f"Requested by: {ctx.author}", icon_url = ctx.author.avatar_url)
+		em.set_footer(text=f"Requested by: {ctx.author}", icon_url = ctx.author.avatar.url)
 		await ctx.send(embed=em, file=pfp)
 
 	@_tictactoe.error

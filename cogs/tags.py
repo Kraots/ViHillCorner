@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import asyncio
 import datetime
 import utils.colors as color
@@ -66,7 +66,7 @@ class Tags(commands.Cog):
 	
 
 	@tag.command(name='list')
-	async def tag_list(self, ctx, member: discord.Member = None):
+	async def tag_list(self, ctx, member: disnake.Member = None):
 		"""See the list of all the tags that the member owns."""
 
 		if member is None:
@@ -94,7 +94,7 @@ class Tags(commands.Cog):
 
 		results = await self.db.find().sort([("uses_count", -1)]).to_list(10)
 		index = 0
-		em = discord.Embed(color=discord.Color.blurple())
+		em = disnake.Embed(color=disnake.Color.blurple())
 		for result in results:
 			tag_name = result['the_tag_name']
 			uses = result['uses_count']
@@ -138,8 +138,8 @@ class Tags(commands.Cog):
 
 		tag_owner = self.bot.get_user(tag_owner_id)
 
-		em = discord.Embed(color=color.blue, title=tag_name)
-		em.set_author(name=tag_owner, url=tag_owner.avatar_url, icon_url=tag_owner.avatar_url)
+		em = disnake.Embed(color=color.blue, title=tag_name)
+		em.set_author(name=tag_owner, url=tag_owner.avatar.url, icon_url=tag_owner.avatar.url)
 		em.add_field(name="Owner", value=tag_owner.mention)
 		em.add_field(name="Uses", value=tag_uses)
 		em.add_field(name="Rank", value=f"`#{rank}`")
@@ -173,7 +173,7 @@ class Tags(commands.Cog):
 				return await ctx.send(f"This tag has no aliases. {ctx.author.mention}")
 			
 			tag_name = data['the_tag_name']
-			em = discord.Embed(color=discord.Color.blurple(), title="Here are all the aliases for the tag `%s`" % (tag_name))
+			em = disnake.Embed(color=disnake.Color.blurple(), title="Here are all the aliases for the tag `%s`" % (tag_name))
 			aliases = "\n• ".join(_list)
 			if len(_list) == 1:
 				em.description = f"• {aliases}"
@@ -199,7 +199,7 @@ class Tags(commands.Cog):
 			if len(_list) <= 0:
 				return await ctx.send(f"This tag has no aliases. {ctx.author.mention}")
 
-			em = discord.Embed(color=discord.Color.blurple(), title="Here are all the aliases for the tag `%s`" % (tag))
+			em = disnake.Embed(color=disnake.Color.blurple(), title="Here are all the aliases for the tag `%s`" % (tag))
 			aliases = "\n• ".join(_list)
 			if len(_list) == 1:
 				em.description = f"• {aliases}"
@@ -511,7 +511,7 @@ class Tags(commands.Cog):
 
 		await self.db.delete_one({"_id": data['_id']})
 
-		em = discord.Embed(title="Tag Removed", color=color.red)
+		em = disnake.Embed(title="Tag Removed", color=color.red)
 		em.add_field(name = "Name", value = the_tag_name)
 		em.add_field(name = "Owner", value = tag_owner)
 		em.add_field(name="Uses", value=f"`{uses}`", inline = False)

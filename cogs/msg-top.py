@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands, tasks
+import disnake
+from disnake.ext import commands, tasks
 import utils.colors as color
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -60,7 +60,7 @@ class WeeklyTop(commands.Cog):
 
 		data = await self.db.find_one({"_id": 374622847672254466})
 
-		em = discord.Embed(color=color.lightpink)
+		em = disnake.Embed(color=color.lightpink)
 		
 		index = 0
 		guild = self.bot.get_guild(750160850077089853)
@@ -75,13 +75,13 @@ class WeeklyTop(commands.Cog):
 				else:
 					em.add_field(name="`#%s`\u2800%s" % (index, mem.name), value="`%s` messages" % (result['messages_count']), inline=False)
 		em.title = "Top `%s` most active members this week" % (index)
-		em.set_footer(text="Resets in %s" % (format_time(data['weekly_reset'])), icon_url=ctx.author.avatar_url)
+		em.set_footer(text="Resets in %s" % (format_time(data['weekly_reset'])), icon_url=ctx.author.avatar.url)
 
 		await ctx.send(embed = em)
 	
 	@msg_top.command(name='reset')
 	@commands.is_owner()
-	async def msg_top_reset(self, ctx, member: discord.Member):
+	async def msg_top_reset(self, ctx, member: disnake.Member):
 		"""Reset the amount of messages from the top for the member."""
 
 		def check(reaction, user):
@@ -113,11 +113,11 @@ class WeeklyTop(commands.Cog):
 	async def rewards(self, ctx):
 		"""See what rewards you can get from the weekly messages top."""
 
-		em = discord.Embed(color=color.lightpink, title="Here are the rewards for the weekly top:")
+		em = disnake.Embed(color=color.lightpink, title="Here are the rewards for the weekly top:")
 		em.add_field(name="`1st Place`", value="**50k XP**", inline=False)
 		em.add_field(name="`2nd Place`", value="**30k XP**", inline=False)
 		em.add_field(name="`3rd Place`", value="**20k XP**", inline=False)
-		em.set_footer(text="Requested by: %s" % (ctx.author), icon_url=ctx.author.avatar_url)
+		em.set_footer(text="Requested by: %s" % (ctx.author), icon_url=ctx.author.avatar.url)
 		await ctx.send(embed=em)
 
 def setup(bot):

@@ -1,6 +1,6 @@
-from discord.ext import commands
-import discord
-from discord.ext import menus
+from disnake.ext import commands
+import disnake
+from . import menus
 import asyncio
 from utils.paginator import RoboPages
 import utils.colors as color
@@ -57,7 +57,7 @@ class BotHelpPageSource(menus.ListPageSource):
 		description = f'Use `{prefix}help command` for more info on a command.\n' \
 					f'Use `{prefix}help category` for more info on a category.\n'
 
-		embed = discord.Embed(title='Categories', description=description, colour=color.lightpink)
+		embed = disnake.Embed(title='Categories', description=description, colour=color.lightpink)
 
 		for cog in cogs:
 			commands = self.commands.get(cog)
@@ -67,7 +67,7 @@ class BotHelpPageSource(menus.ListPageSource):
 
 		maximum = self.get_max_pages()
 		embed.set_footer(text=f'Page {menu.current_page + 1}/{maximum}')
-		embed.set_thumbnail(url=menu.ctx.bot.user.avatar_url)
+		embed.set_thumbnail(url=menu.ctx.bot.user.avatar.url)
 		return embed
 
 class GroupHelpPageSource(menus.ListPageSource):
@@ -79,7 +79,7 @@ class GroupHelpPageSource(menus.ListPageSource):
 		self.description = self.group.description
 
 	async def format_page(self, menu, commands):
-		embed = discord.Embed(title=self.title, description=self.description, colour=color.lightpink)
+		embed = disnake.Embed(title=self.title, description=self.description, colour=color.lightpink)
 
 		for command in commands:
 			signature = f'{command.qualified_name} {command.signature}'
@@ -100,7 +100,7 @@ class HelpMenu(RoboPages):
 	async def show_bot_help(self, payload):
 		"""shows how to use the bot"""
 
-		embed = discord.Embed(title='Using the bot', colour=color.lightpink)
+		embed = disnake.Embed(title='Using the bot', colour=color.lightpink)
 		embed.title = 'Using the bot'
 		embed.description = 'Hello! Welcome to the help page.'
 
@@ -130,7 +130,7 @@ class HelpMenu(RoboPages):
 class PaginatedHelpCommand(commands.HelpCommand):
 	def __init__(self):
 		super().__init__(command_attrs={
-			'cooldown': commands.Cooldown(1, 3.0, commands.BucketType.member),
+			'cooldown': commands.CooldownMapping(commands.Cooldown(1, 3.0), commands.BucketType.member),
 			'help': 'Shows help about the bot, a command, or a category'
 		})
 
@@ -181,7 +181,7 @@ class PaginatedHelpCommand(commands.HelpCommand):
 
 	async def send_command_help(self, command):
 		# No pagination necessary for a single command.
-		embed = discord.Embed(colour=color.lightpink)
+		embed = disnake.Embed(colour=color.lightpink)
 		self.common_command_formatting(embed, command)
 		await self.context.send(embed=embed)
 

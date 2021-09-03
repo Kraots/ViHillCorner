@@ -1,9 +1,9 @@
-import discord
-from discord.ext import commands, tasks
+import disnake
+from disnake.ext import commands, tasks
 import asyncio
 import utils.colors as color
-from discord.ext.commands import Greedy
-from discord import Member
+from disnake.ext.commands import Greedy
+from disnake import Member
 import os
 import sys
 import random
@@ -37,9 +37,9 @@ class Developer(commands.Cog):
 
 			status = random.choice(status_list)
 
-			activity = discord.Activity(type=discord.ActivityType.watching, name=status)
+			activity = disnake.Activity(type=disnake.ActivityType.watching, name=status)
 
-			await self.bot.change_presence(status=discord.Status.dnd, activity=activity)
+			await self.bot.change_presence(status=disnake.Status.dnd, activity=activity)
 
 			await asyncio.sleep(60)
 
@@ -55,7 +55,7 @@ class Developer(commands.Cog):
 		code = clean_code(content)
 
 		local_variables = {
-			"discord": discord,
+			"disnake": disnake,
 			"commands": commands,
 			"_bot": self.bot,
 			"_ctx": ctx,
@@ -100,8 +100,8 @@ class Developer(commands.Cog):
 	async def rules(self, ctx):
 		"""This sends an embed of the rules, the exact ones like in <#750160850303582236>."""
 
-		em = discord.Embed(color=color.lightpink, title="ViHill Corner Rerver Rules", description="We have a small but strict set of rules on our server. Please read over them and take them on board. If you don't understand anything or need some clarification, feel free to ask any staff member!")
-		em.add_field(name="Rule 1", value="Follow the [Discord Community Guidelines](https://discord.com/guidelines) and [Terms Of Service](https://discord.com/terms).", inline=False)
+		em = disnake.Embed(color=color.lightpink, title="ViHill Corner Rerver Rules", description="We have a small but strict set of rules on our server. Please read over them and take them on board. If you don't understand anything or need some clarification, feel free to ask any staff member!")
+		em.add_field(name="Rule 1", value="Follow the [disnake Community Guidelines](https://disnake.com/guidelines) and [Terms Of Service](https://disnake.com/terms).", inline=False)
 		em.add_field(name="Rule 2", value="Follow the [ViHill Corner Code Of Conduct](https://medium.com/vihill-corner/vihill-corner-code-of-conduct-7f187ab0c56).", inline=False)
 		em.add_field(name="Rule 3", value="Listen to and respect staff members and their instructions.", inline=False)
 		em.add_field(name="Rule 4", value="This is an English-speaking server, so please speak English to the best of your ability", inline=False)
@@ -140,7 +140,7 @@ class Developer(commands.Cog):
 			new_roles = [role for role in member.roles] + [staff, mod]
 			await member.edit(roles=new_roles, reason='Master gave them staff/mod.')
 		
-			makemod = discord.Embed(color=color.red, description=f'{member.mention} is now a mod!')
+			makemod = disnake.Embed(color=color.red, description=f'{member.mention} is now a mod!')
 			await ctx.send(embed=makemod)
 
 	@commands.command()
@@ -152,7 +152,7 @@ class Developer(commands.Cog):
 			new_roles = [role for role in member.roles if not role.id in [754676705741766757, 750162714407600228]]
 			await member.edit(roles=new_roles, reason='Master removed their staff/mod.')
 		
-			removemod = discord.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')
+			removemod = disnake.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')
 			await ctx.send(embed=removemod)
 
 	@commands.command()
@@ -179,7 +179,7 @@ class Developer(commands.Cog):
 	async def status(self, ctx):
 		"""Change the bot's presence status."""
 
-		statuses = discord.Embed(title="Statuses:", color=color.lightpink)
+		statuses = disnake.Embed(title="Statuses:", color=color.lightpink)
 		statuses.add_field(name="Looping:", value="!status start\n!status stop", inline=False)
 		statuses.add_field(name="Online:", value="!status online\n!status online playing [custom status]\n  !status online listening [custom status]\n!status online watching [custom status]", inline=False)
 		statuses.add_field(name="Idle:", value="!status idle\n!status idle playing [custom status]\n  !status idle listening [custom status]\n!status idle watching [custom status]", inline=False)
@@ -219,7 +219,7 @@ class Developer(commands.Cog):
 		"""
 
 		await ctx.message.delete()
-		await self.bot.change_presence(status=discord.Status.online)
+		await self.bot.change_presence(status=disnake.Status.online)
 		await ctx.send("**[ONLINE]** Status succesfully changed.", delete_after=5)
 
 
@@ -238,8 +238,8 @@ class Developer(commands.Cog):
 		
 		else:
 
-			listening= discord.Activity(type=discord.ActivityType.playing, name=f"{args}")
-			await self.bot.change_presence(status=discord.Status.online, activity=listening)
+			listening= disnake.Activity(type=disnake.ActivityType.playing, name=f"{args}")
+			await self.bot.change_presence(status=disnake.Status.online, activity=listening)
 			await ctx.send("**[ONLINE] [PLAYING]** Status succesfully changed.", delete_after=5)
 
 	@online.command(name='listening')
@@ -257,8 +257,8 @@ class Developer(commands.Cog):
 		
 		else:
 
-			listening= discord.Activity(type=discord.ActivityType.listening, name=f"{args}")
-			await self.bot.change_presence(status=discord.Status.online, activity=listening)
+			listening= disnake.Activity(type=disnake.ActivityType.listening, name=f"{args}")
+			await self.bot.change_presence(status=disnake.Status.online, activity=listening)
 			await ctx.send("**[ONLINE] [LISTENING]** Status succesfully changed.", delete_after=5)
 
 	@online.command(name='watching')
@@ -276,8 +276,8 @@ class Developer(commands.Cog):
 		
 		else:
 
-			listening= discord.Activity(type=discord.ActivityType.watching, name=f"{args}")
-			await self.bot.change_presence(status=discord.Status.online, activity=listening)
+			listening= disnake.Activity(type=disnake.ActivityType.watching, name=f"{args}")
+			await self.bot.change_presence(status=disnake.Status.online, activity=listening)
 			await ctx.send("**[ONLINE] [WATCHING]** Status succesfully changed.", delete_after=5)
 
 
@@ -290,7 +290,7 @@ class Developer(commands.Cog):
 		"""
 
 		await ctx.message.delete()
-		await self.bot.change_presence(status=discord.Status.idle)
+		await self.bot.change_presence(status=disnake.Status.idle)
 		await ctx.send("**[IDLE]** Status succesfully changed.", delete_after=5)
 
 	@idle.command(name='playing')
@@ -308,8 +308,8 @@ class Developer(commands.Cog):
 		
 		else:
 
-			listening= discord.Activity(type=discord.ActivityType.playing, name=f"{args}")
-			await self.bot.change_presence(status=discord.Status.idle, activity=listening)
+			listening= disnake.Activity(type=disnake.ActivityType.playing, name=f"{args}")
+			await self.bot.change_presence(status=disnake.Status.idle, activity=listening)
 			await ctx.send("**[IDLE] [PLAYING]** Status succesfully changed.", delete_after=5)
 
 	@idle.command(name='listening')
@@ -327,8 +327,8 @@ class Developer(commands.Cog):
 
 		else:
 
-			listening= discord.Activity(type=discord.ActivityType.listening, name=f"{args}")
-			await self.bot.change_presence(status=discord.Status.idle, activity=listening)
+			listening= disnake.Activity(type=disnake.ActivityType.listening, name=f"{args}")
+			await self.bot.change_presence(status=disnake.Status.idle, activity=listening)
 			await ctx.send("**[IDLE] [LISTENING]** Status succesfully changed.", delete_after=5)
 
 	@idle.command(name='watching')
@@ -346,8 +346,8 @@ class Developer(commands.Cog):
 		
 		else:
 
-			listening= discord.Activity(type=discord.ActivityType.watching, name=f"{args}")
-			await self.bot.change_presence(status=discord.Status.idle, activity=listening)
+			listening= disnake.Activity(type=disnake.ActivityType.watching, name=f"{args}")
+			await self.bot.change_presence(status=disnake.Status.idle, activity=listening)
 			await ctx.send("**[IDLE] [WATCHING]** Status succesfully changed.", delete_after=5)
 
 
@@ -360,7 +360,7 @@ class Developer(commands.Cog):
 		"""
 
 		await ctx.message.delete()
-		await self.bot.change_presence(status=discord.Status.do_not_disturb)
+		await self.bot.change_presence(status=disnake.Status.do_not_disturb)
 		await ctx.send("**[DND]** Status succesfully changed.", delete_after=5)
 
 	@dnd.command(name='playing')
@@ -378,8 +378,8 @@ class Developer(commands.Cog):
 		
 		else:
 
-			listening= discord.Activity(type=discord.ActivityType.playing, name=f"{args}")
-			await self.bot.change_presence(status=discord.Status.do_not_disturb, activity=listening)
+			listening= disnake.Activity(type=disnake.ActivityType.playing, name=f"{args}")
+			await self.bot.change_presence(status=disnake.Status.do_not_disturb, activity=listening)
 			await ctx.send("**[DND] [PLAYING]** Status succesfully changed.", delete_after=5)
 
 	@dnd.command(name='listening')
@@ -397,8 +397,8 @@ class Developer(commands.Cog):
 		
 		else:
 
-			listening= discord.Activity(type=discord.ActivityType.listening, name=f"{args}")
-			await self.bot.change_presence(status=discord.Status.do_not_disturb, activity=listening)
+			listening= disnake.Activity(type=disnake.ActivityType.listening, name=f"{args}")
+			await self.bot.change_presence(status=disnake.Status.do_not_disturb, activity=listening)
 			await ctx.send("**[DND] [LISTENING]** Status succesfully changed.", delete_after=5)
 
 	@dnd.command(name='watching')
@@ -416,8 +416,8 @@ class Developer(commands.Cog):
 		
 		else:
 
-			listening= discord.Activity(type=discord.ActivityType.watching, name=f"{args}")
-			await self.bot.change_presence(status=discord.Status.do_not_disturb, activity=listening)
+			listening= disnake.Activity(type=disnake.ActivityType.watching, name=f"{args}")
+			await self.bot.change_presence(status=disnake.Status.do_not_disturb, activity=listening)
 			await ctx.send("**[DND] [WATCHING]** Status succesfully changed.", delete_after=5)
 
 
@@ -430,7 +430,7 @@ class Developer(commands.Cog):
 		"""
 
 		await ctx.message.delete()
-		await self.bot.change_presence(status=discord.Status.offline)
+		await self.bot.change_presence(status=disnake.Status.offline)
 		await ctx.send("**[OFFLINE]** Status succesfully changed.", delete_after=5)
 
 def setup(bot):

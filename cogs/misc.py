@@ -1,5 +1,5 @@
-from discord.ext import commands
-import discord
+from disnake.ext import commands
+import disnake
 import sys
 import async_tio
 import async_cse as cse
@@ -16,10 +16,10 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from utils.paginator import SimplePages, RoboPages, CustomMenu
 import pymongo
-from discord.ext.commands import Greedy
-from discord import Member
+from disnake.ext.commands import Greedy
+from disnake import Member
 import asyncio
-from discord.ext import menus
+from utils import menus
 
 class UrbanDictionaryPageSource(menus.ListPageSource):
 	BRACKETED = re.compile(r'(\[(.+?)\])')
@@ -39,7 +39,7 @@ class UrbanDictionaryPageSource(menus.ListPageSource):
 	async def format_page(self, menu, entry):
 		maximum = self.get_max_pages()
 		title = f'{entry["word"]}: {menu.current_page + 1} out of {maximum}' if maximum else entry['word']
-		embed = discord.Embed(title=title, colour=color.lightpink, url=entry['permalink'])
+		embed = disnake.Embed(title=title, colour=color.lightpink, url=entry['permalink'])
 		embed.set_footer(text=f'by {entry["author"]}')
 		embed.description = self.cleanup_definition(entry['definition'])
 
@@ -51,7 +51,7 @@ class UrbanDictionaryPageSource(menus.ListPageSource):
 			embed.add_field(name='Votes', value=f'\N{THUMBS UP SIGN} {up} \N{THUMBS DOWN SIGN} {down}', inline=False)
 
 		try:
-			date = discord.utils.parse_time(entry['written_on'][0:-1])
+			date = disnake.utils.parse_time(entry['written_on'][0:-1])
 		except (ValueError, KeyError):
 			pass
 		else:
@@ -206,7 +206,7 @@ class Misc(commands.Cog):
 
 		if key.startswith('latest'):
 			q = obj.lower()
-			for name in dir(discord.abc.Messageable):
+			for name in dir(disnake.abc.Messageable):
 				if name[0] == '_':
 					continue
 				if q == name:
@@ -219,7 +219,7 @@ class Misc(commands.Cog):
 
 		matches = fuzzy.finder(obj, cache, key=lambda t: t[0], lazy=False)[:8]
 
-		e = discord.Embed(colour=discord.Colour.blurple())
+		e = disnake.Embed(colour=disnake.Colour.blurple())
 		if len(matches) == 0:
 			return await ctx.send('Could not find anything. Sorry.')
 
@@ -240,19 +240,19 @@ class Misc(commands.Cog):
 		micro = sys.version_info.micro
 		py_version = "{}.{}.{}".format(major, minor, micro)
 		kraots = self.bot.get_user(374622847672254466)
-		botinfo = discord.Embed(title="", color=color.lightpink, timestamp=ctx.message.created_at)
-		botinfo.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+		botinfo = disnake.Embed(title="", color=color.lightpink, timestamp=ctx.message.created_at.replace(tzinfo=None))
+		botinfo.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 		botinfo.add_field(name="Name | ID :", value=f"{self.bot.user} | {self.bot.user.id}", inline=False)
 		botinfo.add_field(name="Bot Owner:", value=f"{kraots}", inline=False)
 		botinfo.add_field(name="Created at:", value="05/09/2020", inline=False)
 		botinfo.add_field(name="Python Versions:", value=f"`{py_version}`", inline=False)
-		botinfo.add_field(name="Wrapper Version:", value=f"`discord.py {package_version('discord.py')}`", inline=False)
+		botinfo.add_field(name="Wrapper Version:", value=f"`disnake {package_version('disnake')}`", inline=False)
 		botinfo.add_field(name="Commands loaded:", value=f"{len([x.name for x in self.bot.commands])}", inline=False)
 		botinfo.add_field(name="About:", value="*This bot is a private bot made only for ViHill Corner, so do not ask to host it or to add it to your server!*", inline=True)
 		botinfo.add_field(name="Last Update:", value=updatedMsg, inline=False)
 		botinfo.add_field(name="Bot's Source of Code:", value="[Click Here](https://github.com/Kraots/ViHillCorner)")
 		botinfo.add_field(name="Vote For Server:", value="\n[Click Here](https://top.gg/servers/750160850077089853/vote)", inline=False)
-		botinfo.set_thumbnail(url=self.bot.user.avatar_url)
+		botinfo.set_thumbnail(url=self.bot.user.avatar.url)
 		await ctx.send(embed=botinfo)
 
 	@commands.command(aliases=['calculator', 'calculate'])
@@ -271,15 +271,15 @@ class Misc(commands.Cog):
 			return await ctx.reply("Are you sure you're using this command for a valid operation?")
 
 		try:
-			em = discord.Embed()
-			em.set_author(name=f"Here's your result `{ctx.author.display_name}`:", icon_url=ctx.author.avatar_url)
+			em = disnake.Embed()
+			em.set_author(name=f"Here's your result `{ctx.author.display_name}`:", icon_url=ctx.author.avatar.url)
 			em.add_field(name="Operation:", value=f"`{args}`", inline=False)
 			em.add_field(name="Result:", value=f"`{result.stdout}`")
 			em.color = color.lightpink
 			await ctx.send(embed=em, reference=ctx.replied_reference)
-		except discord.HTTPException:
-			em = discord.Embed()
-			em.set_author(name=f"Here's your result `{ctx.author.display_name}`:", icon_url=ctx.author.avatar_url)
+		except disnake.HTTPException:
+			em = disnake.Embed()
+			em.set_author(name=f"Here's your result `{ctx.author.display_name}`:", icon_url=ctx.author.avatar.url)
 			em.add_field(name="Operation:", value="`Operation too long`", inline=False)
 			em.add_field(name="Result:", value=f"`{result.stdout}`")
 			em.color = color.lightpink
@@ -293,7 +293,7 @@ class Misc(commands.Cog):
 		query = str(query)
 		results = await GoogleClient.search(query, safesearch=False)
 		result = results[0]
-		em = discord.Embed(title=result.title, url=result.url, description=result.description)
+		em = disnake.Embed(title=result.title, url=result.url, description=result.description)
 		if str(result.image_url) != "https://image.flaticon.com/teams/slug/google.jpg":
 			em.set_image(url=result.image_url)
 		await ctx.send(embed=em)
@@ -334,7 +334,7 @@ class Misc(commands.Cog):
 			all_users.append('{0.name}#{0.discriminator}'.format(user))
 		all_users.sort()
 
-		channel_count = len([x for x in guild.channels if type(x) == discord.channel.TextChannel])
+		channel_count = len([x for x in guild.channels if type(x) == disnake.channel.TextChannel])
 
 		role_count = len(guild.roles)
 		emoji_count = len(guild.emojis)
@@ -344,7 +344,7 @@ class Misc(commands.Cog):
 				return 'N/A'
 			return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-		em = discord.Embed(color=color.lightpink)
+		em = disnake.Embed(color=color.lightpink)
 		em.add_field(name='Name | ID', value=f"{guild.name}  |  {guild.id}")
 		em.add_field(name='Owner', value=guild.owner, inline=False)
 		em.add_field(name='Users', value=f"{len([m for m in guild.members if not m.bot])} members | {len([m for m in guild.members if m.bot])} bots")
@@ -355,10 +355,10 @@ class Misc(commands.Cog):
 		em.add_field(name='Highest role', value="Staff")
 		em.add_field(name='Number of roles', value=str(role_count))
 		em.add_field(name='Number of emotes', value=str(emoji_count))
-		em.add_field(name='Created At', value=format_date(guild.created_at))
+		em.add_field(name='Created At', value=format_date(guild.created_at.replace(tzinfo=None)))
 		em.set_thumbnail(url=guild.icon_url)
 		em.set_author(name='Server Info')
-		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 		
 		await ctx.send(embed=em, reference=ctx.replied_reference)
 
@@ -367,14 +367,14 @@ class Misc(commands.Cog):
 		"""Get a random waifu image."""
 
 		chosen_image = random.choice(embedlinks.waifuLinks)
-		embed = discord.Embed(color=color.lightpink)
+		embed = disnake.Embed(color=color.lightpink)
 		embed.set_image(url=chosen_image)
-		embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+		embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url)
 
 		await ctx.send(embed=embed)
 
 	@commands.command(aliases=['user'])
-	async def profile(self, ctx, member: discord.Member = None):
+	async def profile(self, ctx, member: disnake.Member = None):
 		"""Get info about the member."""
 
 		if member is None:
@@ -393,7 +393,7 @@ class Misc(commands.Cog):
 		await ctx.send(topics)
 
 	@commands.command()
-	async def spotify(self, ctx, member: discord.Member=None):
+	async def spotify(self, ctx, member: disnake.Member=None):
 		"""See info about the member's spotify activity."""
 			
 		if member is None:
@@ -404,9 +404,9 @@ class Misc(commands.Cog):
 			await ctx.send("Cannot check for spotify activity for bots! Use on members only!", delete_after=10)
 			return
 
-		if isinstance(member.activities[0],discord.activity.Spotify):
-			diff = relativedelta(datetime.datetime.utcnow(), member.activities[0].created_at)
-			m =discord.Embed(title=f"{member.name} activity:")
+		if isinstance(member.activities[0],disnake.activity.Spotify):
+			diff = relativedelta(datetime.datetime.utcnow(), member.activities[0].created_at.replace(tzinfo=None))
+			m =disnake.Embed(title=f"{member.name} activity:")
 			m.add_field(name="Listening to :",value=member.activities[0].title, inline=False)
 			m.add_field(name="By:",value=member.activities[0].artist, inline=False)
 			m.add_field(name="On:",value =member.activities[0].album, inline=False)
@@ -417,13 +417,13 @@ class Misc(commands.Cog):
 			m.add_field(name="Total Duration:",value =song_length, inline=False)
 			m.add_field(name='Link to song:', value=f"[Click Here](https://open.spotify.com/track/{member.activities[0].track_id}?si=xrjyVAxhS1y5rNHLM_WRww)", inline=False)
 			m.set_thumbnail(url=member.activities[0].album_cover_url)
-			m.color = discord.Color.green()
+			m.color = disnake.Color.green()
 			await ctx.send(embed=m)
 		
-		elif isinstance(member.activities[1], discord.activity.Spotify):
-			diff = relativedelta(datetime.datetime.utcnow(), member.activities[1].created_at)
+		elif isinstance(member.activities[1], disnake.activity.Spotify):
+			diff = relativedelta(datetime.datetime.utcnow(), member.activities[1].created_at.replace(tzinfo=None))
 			
-			m =discord.Embed(title=f"{member.name} activity:")
+			m =disnake.Embed(title=f"{member.name} activity:")
 			m.add_field(name="Listening to :",value=member.activities[1].title, inline=False)
 			m.add_field(name="By:",value=member.activities[1].artist, inline=False)
 			m.add_field(name="On:",value =member.activities[1].album, inline=False)
@@ -434,7 +434,7 @@ class Misc(commands.Cog):
 			m.add_field(name="Total Duration:",value =song_length, inline=False)
 			m.add_field(name='Link to song:', value=f"[Click Here](https://open.spotify.com/track/{member.activities[1].track_id}?si=xrjyVAxhS1y5rNHLM_WRww)", inline=False)
 			m.set_thumbnail(url=member.activities[1].album_cover_url)
-			m.color = discord.Color.green() 
+			m.color = disnake.Color.green() 
 			await ctx.send(embed=m)
 			return
 
@@ -442,7 +442,7 @@ class Misc(commands.Cog):
 			await ctx.send("No spotify activity detected!")
 
 	@commands.Cog.listener()
-	async def on_message_delete(self, message: discord.Message):
+	async def on_message_delete(self, message: disnake.Message):
 		if message.author.id == 374622847672254466:
 			return
 		if message.author.bot:
@@ -459,7 +459,7 @@ class Misc(commands.Cog):
 				self.bot.snipes[message.channel.id] = curr_snipes
 	
 	@commands.group(invoke_without_command=True, case_insensitive=True)
-	async def snipe(self, ctx, *, channel: discord.TextChannel = None):
+	async def snipe(self, ctx, *, channel: disnake.TextChannel = None):
 		"""Get the last deleted message from the channel, if any."""
 		
 		channel = channel or ctx.channel
@@ -468,15 +468,15 @@ class Misc(commands.Cog):
 		except KeyError:
 			return await ctx.send('Nothing to snipe!')
 
-		embed = discord.Embed(description= msg.content, color=msg.author.color, timestamp=msg.created_at)
-		embed.set_author(name=msg.author, icon_url=msg.author.avatar_url)
+		embed = disnake.Embed(description= msg.content, color=msg.author.color, timestamp=msg.created_at.replace(tzinfo=None))
+		embed.set_author(name=msg.author, icon_url=msg.author.avatar.url)
 		embed.set_footer(text="Deleted in `{}`".format(msg.channel))
 		if msg.attachments:
 			embed.set_image(url=msg.attachments[0].proxy_url)
 		await ctx.send(embed=embed)
 
 	@snipe.command(name='list')
-	async def snipe_list(self, ctx, *, channel: discord.TextChannel = None):
+	async def snipe_list(self, ctx, *, channel: disnake.TextChannel = None):
 		"""See a list of all available snipes indexed with a brief view of their content."""
 
 		channel = channel or ctx.channel
@@ -511,8 +511,8 @@ class Misc(commands.Cog):
 		except IndexError:
 			return await ctx.send('There is no index with that number. For a list of all available indexes please use `!snipe list`')
 
-		embed = discord.Embed(description= msg.content, color=msg.author.color, timestamp=msg.created_at)
-		embed.set_author(name=msg.author, icon_url=msg.author.avatar_url)
+		embed = disnake.Embed(description= msg.content, color=msg.author.color, timestamp=msg.created_at.replace(tzinfo=None))
+		embed.set_author(name=msg.author, icon_url=msg.author.avatar.url)
 		embed.set_footer(text="Deleted in `{}`".format(msg.channel))
 		if msg.attachments:
 			embed.set_image(url=msg.attachments[0].proxy_url)
@@ -547,8 +547,8 @@ class Misc(commands.Cog):
 		update = await self.db.find_one({'_id': 374622847672254466})
 		updatedMsg = update['update']
 		updatedDate = time.human_timedelta(dt=update['date'], accuracy=3, brief=False, suffix=True)
-		em = discord.Embed(title="Here's what's new to the bot:", description=f"{updatedMsg}\n\n*{updatedDate}*", color=color.red)
-		em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
+		em = disnake.Embed(title="Here's what's new to the bot:", description=f"{updatedMsg}\n\n*{updatedDate}*", color=color.red)
+		em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar.url)
 		await ctx.send(embed=em, reference=ctx.replied_reference)
 	
 	@update.command(name='set')
@@ -576,8 +576,8 @@ class Misc(commands.Cog):
 			return
 
 		await ctx.message.delete()
-		em1 = discord.Embed(color=color.lightpink, title="Are you ready to post your suggestion?", description="**`%s`**" %(args))
-		em1.set_author(name=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)
+		em1 = disnake.Embed(color=color.lightpink, title="Are you ready to post your suggestion?", description="**`%s`**" %(args))
+		em1.set_author(name=f'{ctx.author.name}', icon_url=ctx.author.avatar.url)
 		msg1 = await ctx.send(embed=em1)
 		await msg1.add_reaction('<:agree:797537027469082627>')
 		await msg1.add_reaction('<:disagree:797537030980239411>')
@@ -596,13 +596,13 @@ class Misc(commands.Cog):
 		
 		else:
 			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				suggest = discord.Embed(color=color.inviscolor, title="", description=f"{args}", timestamp=ctx.message.created_at)
-				suggest.set_author(name=f'{ctx.author.name} suggested:', icon_url=ctx.author.avatar_url)
+				suggest = disnake.Embed(color=color.inviscolor, title="", description=f"{args}", timestamp=ctx.message.created_at.replace(tzinfo=None))
+				suggest.set_author(name=f'{ctx.author.name} suggested:', icon_url=ctx.author.avatar.url)
 				suggestions = self.bot.get_channel(750160850593251454)
 				msg = await suggestions.send(embed=suggest)
 				await msg.add_reaction('<:agree:797537027469082627>')
 				await msg.add_reaction('<:disagree:797537030980239411>')
-				em = discord.Embed(color=color.inviscolor, title="Suggestion successfully added!", url=msg.jump_url)
+				em = disnake.Embed(color=color.inviscolor, title="Suggestion successfully added!", url=msg.jump_url)
 				await msg1.edit(embed=em)
 				await msg1.clear_reactions()
 				return
@@ -672,7 +672,7 @@ class Misc(commands.Cog):
 		async with ctx.session.get(url, params={'term': word}) as resp:
 			if resp.status != 200:
 				kraots = self.bot.get_user(self.bot.owner_id)
-				await kraots.send(embed=discord.Embed(description=f"[`{ctx.command}`]({ctx.message.jump_url}) gave an error:\n\nWord: **{word}**\nStatus: **{resp.status}**\nReason: **{resp.reason}**"))
+				await kraots.send(embed=disnake.Embed(description=f"[`{ctx.command}`]({ctx.message.jump_url}) gave an error:\n\nWord: **{word}**\nStatus: **{resp.status}**\nReason: **{resp.reason}**"))
 				return await ctx.send(f'An error occurred. Please try again later.')
 
 			js = await resp.json()

@@ -1,9 +1,9 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import utils.colors as color
 from utils.pillow import rank_card
 
-bot_channel = [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]
+bot_channel = [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787357561116426258]
 no_talk_channels = [750160852006469807, 780374324598145055]
 botsChannels = [750160851822182486, 750160851822182487]
 
@@ -20,7 +20,7 @@ class Levels(commands.Cog):
 	
 
 	@commands.Cog.listener()
-	async def on_message(self, message: discord.Message):
+	async def on_message(self, message: disnake.Message):
 		if message.guild:
 			ch_id = message.channel.id
 			if not ch_id in no_talk_channels:
@@ -102,15 +102,14 @@ class Levels(commands.Cog):
 
 
 	@commands.group(invoke_without_command = True, case_insensitive = True, aliases=['lvl', 'level'])
-	async def rank(self, ctx, member: discord.Member = None):
+	async def rank(self, ctx, member: disnake.Member = None):
 		"""
 		Check the member's level.
 		This will send you a image with their data.
 		"""
-
 		if member is None:
 			member = ctx.author
-		
+
 		if ctx.channel.id in bot_channel:
 			stats = await self.db.find_one({"_id": member.id})
 			if stats is None:
@@ -162,7 +161,7 @@ class Levels(commands.Cog):
 
 	@rank.command(name='set')
 	@commands.is_owner()
-	async def rank_set(self, ctx, lvl: int,  member: discord.Member = None):
+	async def rank_set(self, ctx, lvl: int,  member: disnake.Member = None):
 		"""Set the rank for the member."""
 
 		if member is None:
@@ -181,7 +180,7 @@ class Levels(commands.Cog):
 		if ctx.channel.id in bot_channel:
 			results = await self.db.find().sort([('xp', -1)]).to_list(10)
 			index = 0
-			em = discord.Embed(color=color.lightpink, title="Top 10 highest level people")
+			em = disnake.Embed(color=color.lightpink, title="Top 10 highest level people")
 			for result in results:
 				xp = result['xp']
 				user = result['_id']
@@ -226,12 +225,12 @@ class Levels(commands.Cog):
 		modMultiplier = float(kraotsDocument['mod xp multiplier'])
 		kraotsMultiplier = float(kraotsDocument['kraots xp multiplier'])
 
-		em = discord.Embed(color=color.lightpink, title="**Current Multipliers:**")
+		em = disnake.Embed(color=color.lightpink, title="**Current Multipliers:**")
 		em.add_field(name="Mod/Staff", value="%sx (%s XP per message)" % (modMultiplier, 20 * modMultiplier), inline=False)
 		em.add_field(name="Server Boosters", value="%sx (%s XP per message)" % (boostersMultiplier, 15 * boostersMultiplier), inline=False)
 		em.add_field(name="Members", value="%sx (%s XP per message)" % (membersMultiplier, 5 * membersMultiplier), inline=False)
 		em.add_field(name="Kraots", value="%sx (%s XP per message)" % (kraotsMultiplier, 30 * kraotsMultiplier), inline=False)
-		em.set_footer(text="Requested By: %s" % (ctx.author), icon_url=ctx.author.avatar_url)
+		em.set_footer(text="Requested By: %s" % (ctx.author), icon_url=ctx.author.avatar.url)
 
 		await ctx.send(embed=em)
 

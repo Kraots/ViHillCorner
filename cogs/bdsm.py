@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import asyncio
 import datetime
 
@@ -63,7 +63,7 @@ class Bdsm(commands.Cog):
 			return
 	
 	@bdsm.command(name='results', aliases=['result'])
-	async def bdsm_results(self, ctx, member: discord.Member = None):
+	async def bdsm_results(self, ctx, member: disnake.Member = None):
 		"""See the member's bdsm results"""
 
 		if member is None:
@@ -72,11 +72,11 @@ class Bdsm(commands.Cog):
 		BDSMresult = await self.db1.find_one({'_id': member.id})
 		
 		if BDSMresult != None:
-			em = discord.Embed(color=member.color, title="Here's `%s` bdsm results:" % (member.display_name))
+			em = disnake.Embed(color=member.color, title="Here's `%s` bdsm results:" % (member.display_name))
 			em.set_image(url=BDSMresult['BDSMresult'])
 			BDSMtimestamp = BDSMresult['timestamp']
 			BDSMtimestamp = BDSMtimestamp.strftime("%Y-%m-%d %H:%M:%S")
-			em.set_footer(text=f"Result set on: {BDSMtimestamp} (UTC timezone)", icon_url=member.avatar_url)
+			em.set_footer(text=f"Result set on: {BDSMtimestamp} (UTC timezone)", icon_url=member.avatar.url)
 			await ctx.send(embed=em)
 		
 		else:

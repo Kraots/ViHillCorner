@@ -1,6 +1,6 @@
 from PIL import Image, ImageFont, ImageDraw
 import numpy as np
-import discord
+import disnake
 
 GRAY = (48, 48, 48)
 ORANGE = (255, 128, 0)
@@ -44,7 +44,7 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
 	
 	img = Image.new("RGBA", (1000, 350), GRAY)
 	
-	await user.avatar_url_as(format='jpg').save(fp='avatar.png')
+	await user.avatar.with_static_format('jpg').save(fp='avatar.png')
 	av = Image.open('avatar.png')
 	av = av.resize((250, 250))
 	h, w = av.size
@@ -118,6 +118,6 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
 	img.paste(im=_level, mask=_level, box=(600, 125))
 	img.save('rank_card.png')
 	
-	f = discord.File(fp='rank_card.png', filename='rank_card.png')
+	f = disnake.File(fp='rank_card.png', filename='rank_card.png')
 	
 	return f

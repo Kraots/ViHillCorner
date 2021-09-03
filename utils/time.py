@@ -2,7 +2,7 @@ import datetime
 import parsedatetime as pdt
 from dateutil.relativedelta import relativedelta
 from .formats import plural, human_join
-from discord.ext import commands
+from disnake.ext import commands
 import re
 
 # Monkey patch mins and secs into the units
@@ -31,7 +31,7 @@ class ShortTime:
 
     @classmethod
     async def convert(cls, ctx, argument):
-        return cls(argument, now=ctx.message.created_at)
+        return cls(argument, now=ctx.message.created_at.replace(tzinfo=None))
 
 class HumanTime:
     calendar = pdt.Calendar(version=pdt.VERSION_CONTEXT_STYLE)
@@ -51,7 +51,7 @@ class HumanTime:
 
     @classmethod
     async def convert(cls, ctx, argument):
-        return cls(argument, now=ctx.message.created_at)
+        return cls(argument, now=ctx.message.created_at.replace(tzinfo=None))
 
 class Time(HumanTime):
     def __init__(self, argument, *, now=None):
@@ -109,7 +109,7 @@ class UserFriendlyTime(commands.Converter):
         try:
             calendar = HumanTime.calendar
             regex = ShortTime.compiled
-            now = ctx.message.created_at
+            now = ctx.message.created_at.replace(tzinfo=None)
 
             match = regex.match(argument)
             if match is not None and match.group(0):

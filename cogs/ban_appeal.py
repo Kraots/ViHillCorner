@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 
 import asyncio
 
@@ -28,11 +28,11 @@ class OnBanAppealJoin(commands.Cog):
 			
 			g = self.bot.get_guild(788384492175884299)
 			overwrites = {
-					g.default_role: discord.PermissionOverwrite(read_messages = False)
+					g.default_role: disnake.PermissionOverwrite(read_messages = False)
 						}
 			channel = await g.create_text_channel(f"{member.name}-ban-appeal", overwrites=overwrites)
 			await channel.edit(topic=member.id)
-			em = discord.Embed(title="Ban Reason", description=ban_reason)
+			em = disnake.Embed(title="Ban Reason", description=ban_reason)
 			m = await channel.send(f"Hello {member.name}! You have been banned by moderator: `{moderator}`\nSend your unban appeal here. {member.mention}", embed=em)
 			await m.pin()
 			await channel.purge(limit=1)
@@ -52,7 +52,7 @@ class OnBanAppealJoin(commands.Cog):
 
 
 	@commands.Cog.listener('on_message')
-	async def on_message(self, message: discord.Message):
+	async def on_message(self, message: disnake.Message):
 		if message.guild:
 			if message.guild.id == 788384492175884299:
 				if message.content.lower() == 'bye':

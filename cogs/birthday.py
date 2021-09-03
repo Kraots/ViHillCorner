@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands, tasks
+import disnake
+from disnake.ext import commands, tasks
 from utils import time
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -33,7 +33,7 @@ class Birthdays(commands.Cog):
 				bday_channel = guild.get_channel(797867811967467560)
 				user = guild.get_member(user)
 
-				em = discord.Embed(color=user.color, title=f"Happy birthday {user.name}!!! :tada: :tada:")
+				em = disnake.Embed(color=user.color, title=f"Happy birthday {user.name}!!! :tada: :tada:")
 
 				msg = await bday_channel.send(user.mention, embed=em)
 				await msg.add_reaction("🍰")
@@ -46,7 +46,7 @@ class Birthdays(commands.Cog):
 			
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bday', 'b-day'])
-	async def birthday(self, ctx, member: discord.Member = None):
+	async def birthday(self, ctx, member: disnake.Member = None):
 		"""See when the member's birthday is, if any"""
 
 		if member is None:
@@ -80,7 +80,7 @@ class Birthdays(commands.Cog):
 		def format_date(dt1, dt2):
 			return f"Birthday in  `{time.human_timedelta(dt1, accuracy = 3)}` ( **{dt2:%Y/%m/%d}** ) "
 
-		em = discord.Embed(color=discord.Color.blurple(), title="***Top `5` upcoming birthdays***\n _ _ ") 
+		em = disnake.Embed(color=disnake.Color.blurple(), title="***Top `5` upcoming birthdays***\n _ _ ") 
 
 		results = await self.db.find().sort([("birthdaydate", 1)]).to_list(5)
 		for result in results:

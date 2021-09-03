@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import time
 import utils.colors as color
 from utils import time as t
@@ -14,11 +14,11 @@ class Ping(commands.Cog):
 	@commands.command()
 	async def ping(self, ctx):
 		"""See the bot's ping data."""
-		ping = discord.Embed(title="Pong!", description="_Pinging..._", color=color.lightpink)
+		ping = disnake.Embed(title="Pong!", description="_Pinging..._", color=color.lightpink)
 		start = time.time() * 1000
 		msg = await ctx.send(embed=ping)
 		end = time.time() * 1000
-		ping = discord.Embed(title="Pong!", description=f"Websocket Latency: `{(round(self.bot.latency * 1000, 2))}ms`\nBot Latency: `{int(round(end-start, 0))}ms`\nResponse Time: `{(msg.created_at - ctx.message.created_at).total_seconds()/1000}` ms", color=color.lightpink)
+		ping = disnake.Embed(title="Pong!", description=f"Websocket Latency: `{(round(self.bot.latency * 1000, 2))}ms`\nBot Latency: `{int(round(end-start, 0))}ms`\nResponse Time: `{(msg.created_at.replace(tzinfo=None) - ctx.message.created_at.replace(tzinfo=None)).total_seconds()/1000}` ms", color=color.lightpink)
 		ping.set_footer(text=f"Online for {t.human_timedelta(dt=self.bot.uptime, suffix=False)}")
 		await msg.edit(embed=ping)
 
@@ -27,8 +27,8 @@ class Ping(commands.Cog):
 		"""See how long the bot has been online for."""
 		
 		kraots = self.bot.get_user(self.bot.owner_id)
-		uptime = discord.Embed(description=f"Bot has been online for: `{t.human_timedelta(dt=self.bot.uptime, suffix=False)}`", color=color.lightpink)
-		uptime.set_footer(text=f'Bot made by: {kraots}', icon_url=self.bot.user.avatar_url)
+		uptime = disnake.Embed(description=f"Bot has been online for: `{t.human_timedelta(dt=self.bot.uptime, suffix=False)}`", color=color.lightpink)
+		uptime.set_footer(text=f'Bot made by: {kraots}', icon_url=self.bot.user.avatar.url)
 		await ctx.send(embed=uptime)
 
 

@@ -1,5 +1,5 @@
 import asyncio
-from discord.ext import commands
+from disnake.ext import commands
 import utils.colors as color
 from utils.paginator import ToDoMenu
 
@@ -73,7 +73,7 @@ class ToDo(commands.Cog):
 			index += 1
 			entries[i]['data'] = f"**[{index}.]({entries[i]['url']})** {entries[i]['data']}"
 
-		m = ToDoPages(entries=entries, per_page=10, title="Here's your todo list:", author_name=ctx.author, author_icon_url=ctx.author.avatar_url)
+		m = ToDoPages(entries=entries, per_page=10, title="Here's your todo list:", author_name=ctx.author, author_icon_url=ctx.author.avatar.url)
 		await m.start(ctx)
 
 	@todo.command(name='delete', aliases=['remove'])

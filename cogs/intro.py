@@ -1,5 +1,5 @@
-import discord 
-from discord.ext import commands
+import disnake 
+from disnake.ext import commands
 import asyncio
 from utils.helpers import time_phaser
 
@@ -172,9 +172,9 @@ class Intros(commands.Cog):
 											return
 
 										else:
-											em = discord.Embed(color=ctx.author.color)
-											em.set_author(name=ctx.author, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
-											em.set_thumbnail(url=ctx.author.avatar_url)
+											em = disnake.Embed(color=ctx.author.color)
+											em.set_author(name=ctx.author, url=ctx.author.avatar.url, icon_url=ctx.author.avatar.url)
+											em.set_thumbnail(url=ctx.author.avatar.url)
 											em.add_field(name="Name", value=name.content, inline=True)
 											em.add_field(name="Location", value=location.content, inline=True)
 											em.add_field(name="Age", value=agenumber, inline=True)
@@ -302,10 +302,10 @@ class Intros(commands.Cog):
 									return
 
 								else:
-									em = discord.Embed(color=ctx.author.color)
-									em = discord.Embed(color=ctx.author.color)
-									em.set_author(name=ctx.author, url=ctx.author.avatar_url, icon_url=ctx.author.avatar_url)
-									em.set_thumbnail(url=ctx.author.avatar_url)
+									em = disnake.Embed(color=ctx.author.color)
+									em = disnake.Embed(color=ctx.author.color)
+									em.set_author(name=ctx.author, url=ctx.author.avatar.url, icon_url=ctx.author.avatar.url)
+									em.set_thumbnail(url=ctx.author.avatar.url)
 									em.add_field(name="Name", value=name.content, inline=True)
 									em.add_field(name="Location", value=location.content, inline=True)
 									em.add_field(name="Age", value=agenumber, inline=True)
@@ -384,7 +384,7 @@ class Intros(commands.Cog):
 
 	@commands.command(aliases=['wi'])
 	@commands.cooldown(1, 20, commands.BucketType.user)
-	async def whois(self, ctx, member: discord.Member= None):
+	async def whois(self, ctx, member: disnake.Member= None):
 		"""Check the member's intro if they have one."""
 	
 		if member is None:
@@ -403,9 +403,9 @@ class Intros(commands.Cog):
 			introinterests = results['interests']
 
 			await ctx.message.delete()
-			em = discord.Embed(color=member.color)
-			em.set_author(name=member, url=member.avatar_url, icon_url=member.avatar_url)
-			em.set_thumbnail(url=member.avatar_url)
+			em = disnake.Embed(color=member.color)
+			em.set_author(name=member, url=member.avatar.url, icon_url=member.avatar.url)
+			em.set_thumbnail(url=member.avatar.url)
 			em.add_field(name="Name", value=introname, inline=True)
 			em.add_field(name="Location", value=introlocation, inline=True)
 			em.add_field(name="Age", value=introage, inline=True)

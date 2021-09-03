@@ -1,6 +1,6 @@
 import asyncio
 import random
-import discord
+import disnake
 
 class TicTacToe:
 	def __init__(self, pl1, pl2, ctx):
@@ -50,7 +50,7 @@ class TicTacToe:
 			Player = self.player2
 			Opponent = self.player1
 		self.turns += 1
-		em = discord.Embed(description=f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}")
+		em = disnake.Embed(description=f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}")
 		await self.ctx.send(f'{pl.mention} make your move, {sign}\n', embed=em)
 		def check(m):
 			return m.channel == self.ctx.channel and m.author == pl
@@ -90,7 +90,7 @@ class TicTacToe:
 		
 		while True:
 			await self.get_move(player)
-			em = discord.Embed(description=f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}")
+			em = disnake.Embed(description=f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}")
 			if self.check_win() == True:
 				await self.db.update_one({'_id': player.id}, {'$inc':{'wallet': 10000}})
 				await self.db.update_one({'_id': opponent.id}, {'$inc':{'wallet': -10000}})
@@ -101,7 +101,7 @@ class TicTacToe:
 				return
 			
 			await self.get_move(opponent)
-			em = discord.Embed(description=f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}")
+			em = disnake.Embed(description=f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}")
 			if self.check_win() == True:
 				await self.db.update_one({'_id': opponent.id}, {'$inc':{'wallet': 10000}})
 				await self.db.update_one({'_id': player.id}, {'$inc':{'wallet': -10000}})

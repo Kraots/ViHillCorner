@@ -1,7 +1,7 @@
 from trivia import trivia
 import asyncio
 import utils.colors as color
-import discord
+import disnake
 import random
 
 class Trivia:
@@ -112,7 +112,7 @@ class Trivia:
 		
 		return wager_amount
 
-	async def get_opponent(self, wager_amount) -> discord.Member:
+	async def get_opponent(self, wager_amount) -> disnake.Member:
 		def check(m):
 			return m.channel.id == self.ctx.channel.id and m.author.id == self.player.id
 		await self.ctx.send(f"Choose your opponent by pinging them. {self.player.mention}")
@@ -173,7 +173,7 @@ class Trivia:
 
 	async def send_question(self, user, question_index, question_nr, question_type, question, rand):
 		if question_type == 'boolean':							
-			em = discord.Embed(color=color.lightpink, title=f"[TRUE/FALSE]\nHere is your `{question_nr}` question {user.display_name}", description=f"*{question[question_index]['question']}*")
+			em = disnake.Embed(color=color.lightpink, title=f"[TRUE/FALSE]\nHere is your `{question_nr}` question {user.display_name}", description=f"*{question[question_index]['question']}*")
 		
 		elif question[question_index]['type'] == 'multiple':
 			if rand == 1:
@@ -188,7 +188,7 @@ class Trivia:
 			elif rand == 4:
 				correct_choice = "`D.`"
 				desc = f"*{question[question_index]['question']}*\n\u2800`A.` **{question[question_index]['incorrect_answers'][0]}**\n\u2800`B.` **{question[question_index]['incorrect_answers'][1]}**\n\u2800`C.` **{question[question_index]['incorrect_answers'][2]}**\n\u2800`D.` **{question[question_index]['correct_answer']}**"
-			em = discord.Embed(color=color.lightpink, title=f"[CHOOSE THE CORRECT ANSWER]\nHere is your `{question_nr}` question {user.display_name}", description=desc)
+			em = disnake.Embed(color=color.lightpink, title=f"[CHOOSE THE CORRECT ANSWER]\nHere is your `{question_nr}` question {user.display_name}", description=desc)
 		
 		question_msg = await self.ctx.send(embed=em)
 		try:
@@ -228,7 +228,7 @@ class Trivia:
 							answer = "."
 					break
 				else:
-					em = discord.Embed(title="That is not a valid form of reply. To get to your question please click me (the blue text).", url=JumpUrl)
+					em = disnake.Embed(title="That is not a valid form of reply. To get to your question please click me (the blue text).", url=JumpUrl)
 					await _answer.reply(embed=em)
 		
 		except asyncio.TimeoutError:
@@ -294,7 +294,7 @@ class Trivia:
 				else:
 					self.points2 += -15
 
-	async def solo(self) -> discord.Embed:
+	async def solo(self) -> disnake.Embed:
 		difficulty = await self.get_difficulty()
 		rounds = await self.get_questions_amount()
 		for i in range(rounds):
@@ -312,10 +312,10 @@ class Trivia:
 			final_color = color.red
 		elif self.points == 0:
 			final_result = "You didn't get any points but you didn't lose any either."
-			final_color = discord.Color.light_grey()
+			final_color = disnake.Color.light_grey()
 		elif self.points >= 5:
 			final_result = f"You got **{self.points}** points. Congratulations"
-			final_color = discord.Color.green()
+			final_color = disnake.Color.green()
 
 		user = await self.db.find_one({'_id': self.player.id})
 		if user is None:
@@ -331,13 +331,13 @@ class Trivia:
 			after_points = before_points + self.points
 			await self.update_db(self.player, self.points)
 		
-		em = discord.Embed(color=final_color, title="Trivia has ended.", description=final_result)
+		em = disnake.Embed(color=final_color, title="Trivia has ended.", description=final_result)
 		em.add_field(name='Your total points before:', value="**%s**" % (before_points), inline=False)
 		em.add_field(name='Your total points now:', value="**%s**" % (after_points), inline=False)
 
 		return em
 	
-	async def competitive(self) -> discord.Embed:
+	async def competitive(self) -> disnake.Embed:
 		difficulty = await self.get_difficulty()
 		rounds = await self.get_questions_amount()
 		wager_amount = await self.get_wager_amount()
@@ -411,7 +411,7 @@ class Trivia:
 			final_result = "***Draw. No one lost and no one won anything.***"
 			draw = True
 
-		em = discord.Embed(color=color.blue, title="Trivia has ended.", description=final_result)
+		em = disnake.Embed(color=color.blue, title="Trivia has ended.", description=final_result)
 		if draw == False:
 			em.add_field(name=f"**-->** `{self.player.display_name}'s` total points before:", value=f"**{before_points_user}**", inline=True)
 			em.add_field(name=f"`{self.player.display_name}'s` total points after:", value=f"**{after_points_user}**" , inline=False)

@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import psutil
 import os
 import utils.colors as color
@@ -44,7 +44,7 @@ addd = """
 ﹕・Not that active unless there's someone to start the convo, then there's a 80% chance it'll be active
 ╰・Horny Peeps (mostly 1 but ok)
 
-♥︎ server link: https://discord.gg/Uf2kA8q ♥︎
+♥︎ server link: https://disnake.gg/Uf2kA8q ♥︎
 ° . · . ✧ °  .  ₊˚ˑ˚₊ . ° ✧ . · .°
 """
 
@@ -69,17 +69,17 @@ class General(commands.Cog):
 		
 		else:
 			await self.bot.loop.run_in_executor(None, take_ss, url)
-			f = discord.File(fp='ss.png', filename='ss.png')
-			em = discord.Embed(color=color.lightpink, title="Here's your screen shot of `{}`".format(url))
+			f = disnake.File(fp='ss.png', filename='ss.png')
+			em = disnake.Embed(color=color.lightpink, title="Here's your screen shot of `{}`".format(url))
 			em.set_image(url='attachment://ss.png')
-			em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.avatar_url)
+			em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.avatar.url)
 			await ctx.send(embed=em, file=f)
 
 	@commands.command()
 	async def vote(self, ctx):
 		"""Get the link to vote for the server."""
 
-		em = discord.Embed(title="Click Here", url="https://top.gg/servers/750160850077089853/vote", color=color.lightpink)
+		em = disnake.Embed(title="Click Here", url="https://top.gg/servers/750160850077089853/vote", color=color.lightpink)
 		
 		await ctx.send(embed=em)
 
@@ -87,7 +87,7 @@ class General(commands.Cog):
 	async def perm_calc(self, ctx):
 		"""Sends the link for the permission calculator for bots."""
 
-		em = discord.Embed(color=color.lightpink, title= " Here's the link to the permission calculator for bots. ", description = "https://discordapi.com/permissions.html#2147483647")
+		em = disnake.Embed(color=color.lightpink, title= " Here's the link to the permission calculator for bots. ", description = "https://disnakeapi.com/permissions.html#2147483647")
 		await ctx.send(embed=em)
 
 
@@ -95,11 +95,11 @@ class General(commands.Cog):
 	async def dev_portal(self, ctx):
 		"""Sends a link for the developer portal."""
 
-		em = discord.Embed(color=color.lightpink, title = " Here's the link to dev portal. ", description="https://discord.com/developers/applications")
+		em = disnake.Embed(color=color.lightpink, title = " Here's the link to dev portal. ", description="https://disnake.com/developers/applications")
 		await ctx.send(embed=em)
 
 	@commands.command()
-	async def joined(self, ctx, member: discord.Member=None):
+	async def joined(self, ctx, member: disnake.Member=None):
 		"""See when the member has joined the server."""
 
 		if member is None:
@@ -113,24 +113,24 @@ class General(commands.Cog):
 		if member.id == 374622847672254466:
 			x = "2020-09-01 01:11"
 			kraots_joined = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
-			embed = discord.Embed(color=color.lightpink)
+			embed = disnake.Embed(color=color.lightpink)
 			embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(kraots_joined)}")
 			await ctx.send(embed=embed)
 		
 		elif member.id == 747329236695777340:
 			x = "2020-09-30 12:12"
 			twil_joined = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
-			embed = discord.Embed(color=color.lightpink)
+			embed = disnake.Embed(color=color.lightpink)
 			embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(twil_joined)}")
 			await ctx.send(embed=embed)
 
 		else:
-			embed = discord.Embed(color=color.lightpink)
-			embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(getattr(member, 'joined_at', None))}")
+			embed = disnake.Embed(color=color.lightpink)
+			embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(member.joined_at.replace(tzinfo=None))}")
 			await ctx.send(embed=embed)
 
 	@commands.command()
-	async def created(self, ctx, user: discord.User=None):
+	async def created(self, ctx, user: disnake.User=None):
 		"""See when a user created their account."""
 
 		if user is None:
@@ -141,16 +141,16 @@ class General(commands.Cog):
 				return 'N/A'
 			return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 		
-		embed = discord.Embed(color=color.lightpink)
-		embed.add_field(name='Create Date:', value=f"{user} **--->** {format_date(user.created_at)}")
+		embed = disnake.Embed(color=color.lightpink)
+		embed.add_field(name='Create Date:', value=f"{user} **--->** {format_date(user.created_at.replace(tzinfo=None).replace(tzinfo=None))}")
 		await ctx.send(embed=embed)
 
 	@commands.command(aliases=["inv"])
 	async def invite(self, ctx):
 		"""Get the invite for the server."""
 
-		inv = discord.Embed(title="https://discord.gg/Uf2kA8q", color=color.lightpink)
-		inv.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
+		inv = disnake.Embed(title="https://disnake.gg/Uf2kA8q", color=color.lightpink)
+		inv.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar.url)
 
 		await ctx.send(embed=inv)
 
@@ -167,27 +167,27 @@ class General(commands.Cog):
 		await ctx.send(member_count, reference=ctx.replied_reference) 
 
 	@commands.command(name='av', aliases=["avatar"])
-	async def _av(self, ctx, member: discord.Member = None):
+	async def _av(self, ctx, member: disnake.Member = None):
 		"""Get an embedded image of the member's avatar."""
 
 		if member is None:
 			member = ctx.author
 			
-		avatar = discord.Embed(title=f"Here's {member.display_name}'s avatar", url=member.avatar_url, color=color.blue)
-		avatar.set_image(url=member.avatar_url)
-		avatar.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+		avatar = disnake.Embed(title=f"Here's {member.display_name}'s avatar", url=member.avatar.url, color=color.blue)
+		avatar.set_image(url=member.avatar.url)
+		avatar.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 
 		await ctx.send(embed=avatar, reference=ctx.replied_reference)
 
 	@commands.command()
-	async def ee(self, ctx, emoji: discord.PartialEmoji):
+	async def ee(self, ctx, emoji: disnake.PartialEmoji):
 		"""Get an embedded image of the emoji."""
 
 		await ctx.message.delete()
 
-		embed = discord.Embed(color=color.lightpink)
+		embed = disnake.Embed(color=color.lightpink)
 		embed.set_image(url=emoji.url)
-		embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
+		embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar.url)
 
 		await ctx.send(embed=embed)
 
@@ -196,8 +196,8 @@ class General(commands.Cog):
 		"""See the server's ad."""
 
 		await ctx.message.delete()
-		ad = discord.Embed(color=color.lightpink, title="Here's the ad to the server:", description=addd)
-		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+		ad = disnake.Embed(color=color.lightpink, title="Here's the ad to the server:", description=addd)
+		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 
 		await ctx.send(embed=ad)
 
@@ -206,18 +206,18 @@ class General(commands.Cog):
 		"""See the server's ad but in raw format."""
 
 		await ctx.message.delete()
-		ad = discord.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```%s```" % (addd))
-		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+		ad = disnake.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```%s```" % (addd))
+		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 
 		await ctx.send(embed=ad)
 
 	@commands.command(aliases=["untill-partner"])
 	async def up(self, ctx):
-		"""See how many members there are left until the server can apply for the discord partnership program."""
+		"""See how many members there are left until the server can apply for the disnake partnership program."""
 
 		guild = self.bot.get_guild(750160850077089853)
 		member_count = len([m for m in guild.members if not m.bot])
-		await ctx.send(f'Members left untill the server can apply for the *discord partnership program:* \n\n`{500 - member_count}`')
+		await ctx.send(f'Members left untill the server can apply for the *disnake partnership program:* \n\n`{500 - member_count}`')
 
 	@commands.command(name='randomnumber', aliases=['rn'])
 	async def random_number(self, ctx, num1: int = None, num2: int = None, num3: int = None):
