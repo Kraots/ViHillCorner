@@ -555,7 +555,7 @@ class Misc(commands.Cog):
 		await ctx.reply('Operation successful.')
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
-	@commands.CooldownMapping(commands.cooldown(1, 60), commands.BucketType.user)
+	@commands.cooldown(1, 60, commands.BucketType.user)
 	async def suggest(self, ctx, *, args):
 		"""Make a suggestion in <#750160850593251454>."""
 

@@ -93,7 +93,7 @@ class Birthdays(commands.Cog):
 
 
 	@birthday.command(name='set', aliases=['add'])
-	@commands.CooldownMapping(commands.cooldown(1, 10), commands.BucketType.user)
+	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def bday_set(self, ctx, *, bday = None):
 		"""Set your birthday"""
 

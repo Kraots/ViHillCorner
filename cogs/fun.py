@@ -524,7 +524,7 @@ class Fun(commands.Cog):
 				await msg.edit(content=f"**{p2.display_name}** does not want to fight with you **{p1.display_name}**")
 
 	@commands.command()
-	@commands.CooldownMapping(commands.cooldown(1, 60), commands.BucketType.user)
+	@commands.cooldown(1, 60, commands.BucketType.user)
 	async def vampify(self, ctx, *args):
 		"""Adds a <:vampy:773535195210973237> between each word of your text."""
 
@@ -533,7 +533,7 @@ class Fun(commands.Cog):
 		await ctx.message.delete()
 
 	@commands.command()
-	@commands.CooldownMapping(commands.cooldown(1, 60), commands.BucketType.user)
+	@commands.cooldown(1, 60, commands.BucketType.user)
 	async def clapify(self, ctx, *args):
 		"""Adds a 👏 between each word of your text."""
 

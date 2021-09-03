@@ -538,7 +538,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command(aliases=["steal"])
-	@commands.CooldownMapping(commands.cooldown(1, 20), commands.BucketType.user)
+	@commands.cooldown(1, 20, commands.BucketType.user)
 	async def rob(self, ctx, member : disnake.Member = None):
 		"""Rob someone of their <:carrots:822122757654577183> from their wallet."""
 
@@ -620,7 +620,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command()
-	@commands.CooldownMapping(commands.cooldown(1, 7), commands.BucketType.user)
+	@commands.cooldown(1, 7, commands.BucketType.user)
 	async def slots(self, ctx, amount = None):
 		"""Gamble your <:carrots:822122757654577183>."""
 
@@ -743,7 +743,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command()
-	@commands.CooldownMapping(commands.cooldown(1, 5), commands.BucketType.user)
+	@commands.cooldown(1, 5, commands.BucketType.user)
 	async def beg(self, ctx):
 		"""Beg for some <:carrots:822122757654577183>."""
 
@@ -765,7 +765,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command()
-	@commands.CooldownMapping(commands.cooldown(1, 3600), commands.BucketType.user)
+	@commands.cooldown(1, 3600, commands.BucketType.user)
 	async def work(self, ctx):
 		"""Work and get <:carrots:822122757654577183>."""
 
@@ -786,7 +786,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command()
-	@commands.CooldownMapping(commands.cooldown(1, 15), commands.BucketType.user)
+	@commands.cooldown(1, 15, commands.BucketType.user)
 	async def crime(self, ctx):
 		"""Commit crimes that range between `small-medium-big`, and depending on which one you get, the more <:carrots:822122757654577183> you get, but be careful! You can lose the carrots as well."""
 
@@ -836,7 +836,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command(name='guess-the-number', aliases=['guess'])
-	@commands.CooldownMapping(commands.cooldown(1, 3), commands.BucketType.user)
+	@commands.cooldown(1, 3, commands.BucketType.user)
 	async def eco_gtn(self, ctx):
 		"""Play a guess the number game and earn <:carrots:822122757654577183>."""
 
@@ -895,7 +895,7 @@ class Economy(commands.Cog):
 			return
 	
 	@commands.command()
-	@commands.CooldownMapping(commands.cooldown(1, 10), commands.BucketType.user)
+	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def ppsuck(self, ctx):
 		"""Suck some pp 😳 for some quick <:carrots:822122757654577183>."""
 
@@ -962,7 +962,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command()
-	@commands.CooldownMapping(commands.cooldown(1, 10), commands.BucketType.user)
+	@commands.cooldown(1, 10, commands.BucketType.user)
 	async def race(self, ctx):
 		"""Participate in a race and earn <:carrots:822122757654577183>."""
 
@@ -1019,7 +1019,7 @@ class Economy(commands.Cog):
 
 
 	@commands.command(name='rock-paper-scissors', aliases=['rps', 'rockpaperscissors'])
-	@commands.CooldownMapping(commands.cooldown(1, 15), commands.BucketType.user)
+	@commands.cooldown(1, 15, commands.BucketType.user)
 	async def eco_rps(self, ctx):
 		"""Play a game of rock-paper-scissors with the bot and earn <:carrots:822122757654577183> if you win or lose some if you lose the game."""
 
