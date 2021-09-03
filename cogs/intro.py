@@ -13,7 +13,7 @@ class Intros(commands.Cog):
 		return ctx.prefix == self.prefix
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
-	@commands.cooldown(1, 360, commands.BucketType.user)
+	@commands.CooldownMapping(commands.cooldown(1, 360), commands.BucketType.user)
 	async def intro(self, ctx):
 		"""Create a new intro if you don't have one or edit an existing one."""
 
@@ -383,7 +383,7 @@ class Intros(commands.Cog):
 
 
 	@commands.command(aliases=['wi'])
-	@commands.cooldown(1, 20, commands.BucketType.user)
+	@commands.CooldownMapping(commands.cooldown(1, 20), commands.BucketType.user)
 	async def whois(self, ctx, member: disnake.Member= None):
 		"""Check the member's intro if they have one."""
 	

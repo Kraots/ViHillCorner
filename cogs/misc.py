@@ -189,9 +189,8 @@ class Misc(commands.Cog):
 
 	async def do_rtfm(self, ctx, key, obj):
 		page_types = {
-			'latest': 'https://discordpy.readthedocs.io/en/latest',
+			'latest': 'https://discordpy.readthedocs.io/en/master',
 			'python': 'https://docs.python.org/3',
-			'master': 'https://discordpy.readthedocs.io/en/master',
 		}
 
 		if obj is None:
@@ -312,12 +311,6 @@ class Misc(commands.Cog):
 
 		key = self.transform_rtfm_language_key(ctx, 'python')
 		await self.do_rtfm(ctx, key, obj)
-
-	@rtfm.command(name='master', aliases=['2.0'])
-	async def rtfm_master(self, ctx, *, obj: str = None):
-		"""Gives you a documentation link for a discord.py master entity."""
-
-		await self.do_rtfm(ctx, 'master', obj)
 
 	@commands.command(aliases=['server', 'sinfo', 'si'])
 	async def serverinfo(self, ctx):
@@ -562,7 +555,7 @@ class Misc(commands.Cog):
 		await ctx.reply('Operation successful.')
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
-	@commands.cooldown(1, 60, commands.BucketType.user)
+	@commands.CooldownMapping(commands.cooldown(1, 60), commands.BucketType.user)
 	async def suggest(self, ctx, *, args):
 		"""Make a suggestion in <#750160850593251454>."""
 
