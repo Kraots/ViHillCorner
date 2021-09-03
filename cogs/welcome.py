@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import utils.colors as color
 import asyncio
 from random import randint
@@ -41,9 +41,9 @@ class on_join(commands.Cog):
 				if dt is None:
 					return 'N/A'
 				return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
-			welcome = discord.Embed(description="\n\n***Go get a color from*** <#779388444304211991>\n***Go read the rules at*** <#750160850303582236>\n***Go vote the server by clicking the link:*** **[Click Here](https://top.gg/servers/750160850077089853/vote)**\n\nEnjoy your stay\n\n", color=color.pastel)
-			welcome.set_thumbnail(url=member.avatar_url)
-			welcome.set_footer(text=f"Created: {format_date(member.created_at)}", icon_url=member.avatar_url)
+			welcome = disnake.Embed(description="\n\n***Go get a color from*** <#779388444304211991>\n***Go read the rules at*** <#750160850303582236>\n***Go vote the server by clicking the link:*** **[Click Here](https://top.gg/servers/750160850077089853/vote)**\n\nEnjoy your stay\n\n", color=color.pastel)
+			welcome.set_thumbnail(url=member.avatar.url)
+			welcome.set_footer(text=f"Created: {format_date(member.created_at.replace(tzinfo=None))}", icon_url=member.avatar.url)
 			msg = f'Hey {member.mention}, welcome to **ViHill Corner!** \nYou are our **{member_count}** member.\n\n\n‎'
 			await welcomechannel.send(msg, embed=welcome)
 
@@ -304,9 +304,9 @@ class on_join(commands.Cog):
 											return
 
 										else:
-											em = discord.Embed(color=member.color)
-											em.set_author(name=member, url=member.avatar_url, icon_url=member.avatar_url)
-											em.set_thumbnail(url=member.avatar_url)
+											em = disnake.Embed(color=member.color)
+											em.set_author(name=member, url=member.avatar.url, icon_url=member.avatar.url)
+											em.set_thumbnail(url=member.avatar.url)
 											em.add_field(name="Name", value=name.content, inline=True)
 											em.add_field(name="Location", value=location.content, inline=True)
 											em.add_field(name="Age", value=agenumber, inline=True)

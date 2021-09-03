@@ -1,15 +1,15 @@
-import discord
+import disnake
 import asyncio
 import random
 import utils.colors as color
 from typing import Union
 from utils import time, formats
 import os, datetime
-from discord.ext.buttons import Paginator
-from discord.ext import commands
+from disnake.ext import commands
 from traceback import format_exception
 import re
 import string
+from .pag import Paginator
 
 import typing
 import pkg_resources
@@ -17,8 +17,8 @@ import pkg_resources
 class Pag(Paginator):
 	def __init__(self, *, title: str = '', length: int = 10, entries: list = None,
 				extra_pages: list = None, prefix: str = '', suffix: str = '', format: str = '',
-				colour: Union[int, discord.Colour] = discord.Embed.Empty,
-				color: Union[int, discord.Colour] = discord.Embed.Empty, use_defaults: bool = True, embed: bool = True,
+				colour: Union[int, disnake.Colour] = disnake.Embed.Empty,
+				color: Union[int, disnake.Colour] = disnake.Embed.Empty, use_defaults: bool = True, embed: bool = True,
 				joiner: str = '\n', timeout: int = 180, thumbnail: str = None, ctx, footer: str = ''):
 		super().__init__(title=title, length=length, entries=entries, extra_pages=extra_pages, prefix=prefix, suffix=suffix, format=format, colour=colour, color=color, use_defaults=use_defaults, embed=embed, joiner=joiner, timeout=timeout, thumbnail=thumbnail)
 		self.ctx = ctx
@@ -35,7 +35,7 @@ class Pag(Paginator):
 		try:
 			await self.page.delete()
 			await self.ctx.message.delete()
-		except discord.HTTPException:
+		except disnake.HTTPException:
 			pass
 		
 		self._session_task.cancel()
@@ -59,7 +59,7 @@ class Pag(Paginator):
 		if self._index == previous:
 			return
 
-		if isinstance(self._pages[self._index], discord.Embed):
+		if isinstance(self._pages[self._index], disnake.Embed):
 			await self.page.edit(embed=self._pages[self._index])
 		else:
 			await self.page.edit(content=self._pages[self._index])
@@ -78,7 +78,7 @@ class Pag(Paginator):
 			if not self.use_embed:
 				self._pages.append(self.joiner.join(chunk))
 			else:
-				embed = discord.Embed(title=self.title, description=self.joiner.join(chunk), colour=self.colour)
+				embed = disnake.Embed(title=self.title, description=self.joiner.join(chunk), colour=self.colour)
 
 				if self.thumbnail:
 					embed.set_thumbnail(url=self.thumbnail)
@@ -89,27 +89,27 @@ class Pag(Paginator):
 
 		self._pages = self._pages + self.extra_pages
 
-		if isinstance(self._pages[0], discord.Embed):
+		if isinstance(self._pages[0], disnake.Embed):
 			self.page = await ctx.send(embed=self._pages[0])
 		else:
 			self.page = await ctx.send(self._pages[0])
 
 		self._session_task = ctx.bot.loop.create_task(self._session(ctx))
 
-def get_user_image(user: discord.User):
-	if str(user.avatar_url_as(static_format='png'))[54:].startswith('a_'):
-		image = str(user.avatar_url).rsplit("?", 1)[0]
+def get_user_image(user: disnake.User):
+	if str(user.avatar.url_as(static_format='png'))[54:].startswith('a_'):
+		image = str(user.avatar.url).rsplit("?", 1)[0]
 	else:
-		image = user.avatar_url_as(static_format='png')
+		image = user.avatar.url_as(static_format='png')
 	return image
 
-def get_member_role(member: discord.Member):
+def get_member_role(member: disnake.Member):
 	role = member.top_role.name
 	if role == "@everyone":
 		role = "N/A"
 	return role
 
-def get_member_voice(member: discord.Member):
+def get_member_voice(member: disnake.Member):
 	return "Not in VC" if not member.voice else member.voice.channel
 
 def profile(ctx, user):
@@ -119,9 +119,9 @@ def profile(ctx, user):
 			return 'N/A'
 		return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-	em = discord.Embed(timestamp=ctx.message.created_at, colour=color.lightpink)
+	em = disnake.Embed(timestamp=ctx.message.created_at.replace(tzinfo=None), colour=color.lightpink)
 	em.add_field(name='User ID', value=user.id, inline=False)
-	if isinstance(user, discord.Member):
+	if isinstance(user, disnake.Member):
 		em.add_field(name='Nick', value=user.nick, inline=False)
 		em.add_field(name='Status', value=user.status, inline=False)
 		voice = getattr(user, 'voice', None)
@@ -132,12 +132,12 @@ def profile(ctx, user):
 			em.add_field(name='In Voice', value=voice, inline=False)
 		em.add_field(name='Game', value=user.activity, inline=False)
 		em.add_field(name='Highest Role', value=get_member_role(user), inline=False)
-		em.add_field(name='Join Date', value=format_date(getattr(user, 'joined_at', None)), inline=False)
+		em.add_field(name='Join Date', value=format_date(user.joined_at.replace(tzinfo=None)), inline=False)
 		em.add_field(name="Avatar", value=f'[Click Here]({get_user_image(user)})', inline=False)
-	em.add_field(name='Account Created', value=format_date(user.created_at), inline=False)
+	em.add_field(name='Account Created', value=format_date(user.created_at.replace(tzinfo=None)), inline=False)
 	em.set_thumbnail(url=get_user_image(user))
-	em.set_author(name=user, icon_url=user.avatar_url)
-	em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url) 
+	em.set_author(name=user, icon_url=user.avatar.url)
+	em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url) 
 	return em
 
 def time_phaser(seconds):
@@ -196,7 +196,7 @@ def format_balance(balance):
 
 async def reraise(ctx, error):
 	if isinstance(error, commands.NotOwner):
-		error = discord.Embed(title="ERROR", description="Command Error: You do not own this bot!")
+		error = disnake.Embed(title="ERROR", description="Command Error: You do not own this bot!")
 		
 		await ctx.send(embed=error, delete_after=8)
 		await asyncio.sleep(7.5)
@@ -225,10 +225,10 @@ async def reraise(ctx, error):
 	else:
 		kraots = ctx.bot.get_user(ctx.bot.owner_id)
 		get_error = "".join(format_exception(error, error, error.__traceback__))
-		em = discord.Embed(description=f'```py\n{get_error}\n```')
+		em = disnake.Embed(description=f'```py\n{get_error}\n```')
 		if ctx.guild.id == 750160850077089853:
 			await kraots.send(content=f"**An error occured with the command `{ctx.command}`, here is the error:**", embed=em)
-			em = discord.Embed(title='Oops... An error has occured.', description='An error has occured while invoking this command and has been sent to my master to fix it.', color=color.red)
+			em = disnake.Embed(title='Oops... An error has occured.', description='An error has occured while invoking this command and has been sent to my master to fix it.', color=color.red)
 			await ctx.send(embed=em)
 		else:
 			await ctx.send(embed=em)

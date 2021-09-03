@@ -1,7 +1,7 @@
 import asyncio
-import discord
-from discord.ext.commands import Paginator as CommandPaginator
-from discord.ext import menus
+import disnake
+from disnake.ext.commands import Paginator as CommandPaginator
+from . import menus
 
 class RoboPages(menus.MenuPages):
 	def __init__(self, source):
@@ -13,13 +13,13 @@ class RoboPages(menus.MenuPages):
 				await self.message.clear_reactions()
 			else:
 				await self.message.delete()
-		except discord.HTTPException:
+		except disnake.HTTPException:
 			pass
 
 	@menus.button('\N{INFORMATION SOURCE}\ufe0f', position=menus.Last(3))
 	async def show_help(self, payload):
 		"""shows this message"""
-		embed = discord.Embed(title='Paginator help', description='Hello! Welcome to the help page.')
+		embed = disnake.Embed(title='Paginator help', description='Hello! Welcome to the help page.')
 		messages = []
 		for (emoji, button) in self.buttons.items():
 			messages.append(f'{emoji}: {button.action.__doc__}')
@@ -66,11 +66,11 @@ class FieldPageSource(menus.ListPageSource):
 	"""A page source that requires (field_name, field_value) tuple items."""
 	def __init__(self, entries, *, per_page=12):
 		super().__init__(entries, per_page=per_page)
-		self.embed = discord.Embed(colour=discord.Colour.blurple())
+		self.embed = disnake.Embed(colour=disnake.Colour.blurple())
 
 	async def format_page(self, menu, entries):
 		self.embed.clear_fields()
-		self.embed.description = discord.Embed.Empty
+		self.embed.description = disnake.Embed.Empty
 
 		for key, value in entries:
 			self.embed.add_field(name=key, value=value, inline=False)
@@ -128,8 +128,8 @@ class SimplePages(RoboPages):
 	def __init__(self, entries, *, per_page=12, color=None):
 		super().__init__(SimplePageSource(entries, per_page=per_page))
 		if color == None:
-			color = discord.Color.blurple()
-		self.embed = discord.Embed(colour=color)
+			color = disnake.Color.blurple()
+		self.embed = disnake.Embed(colour=color)
 
 
 
@@ -144,7 +144,7 @@ class CustomRobo(menus.MenuPages):
 				await self.message.clear_reactions()
 			else:
 				await self.message.delete()
-		except discord.HTTPException:
+		except disnake.HTTPException:
 			pass
 
 class NewHelpMenus(menus.ListPageSource):
@@ -185,21 +185,21 @@ class HelpmMenu(CustomRobo):
 	def __init__(self, entries, *, per_page=12, title="", color=None):
 		super().__init__(NewHelpMenus(entries, per_page=per_page))
 		if color == None:
-			color = discord.Color.blurple()
-		self.embed = discord.Embed(colour=color, title=title)
+			color = disnake.Color.blurple()
+		self.embed = disnake.Embed(colour=color, title=title)
 
 class CustomMenu(CustomRobo):
 	def __init__(self, entries, *, per_page=12, title="", color=None):
 		super().__init__(NewCustomMenus(entries, per_page=per_page))
 		if color == None:
-			color = discord.Color.blurple()
-		self.embed = discord.Embed(colour=color, title=title)
+			color = disnake.Color.blurple()
+		self.embed = disnake.Embed(colour=color, title=title)
 
 class ToDoMenu(CustomRobo):
 	def __init__(self, entries, *, per_page=12, title="", color=None, author_name=None, author_icon_url=None):
 		super().__init__(NewHelpMenus(entries, per_page=per_page))
 		if color == None:
-			color = discord.Color.blurple()
-		self.embed = discord.Embed(colour=color, title=title)
+			color = disnake.Color.blurple()
+		self.embed = disnake.Embed(colour=color, title=title)
 		if author_name != None:
 			self.embed.set_author(name=author_name, url=author_icon_url, icon_url=author_icon_url)

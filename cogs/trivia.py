@@ -1,7 +1,7 @@
 import asyncio
 import utils.colors as color
-from discord.ext import commands
-import discord
+from disnake.ext import commands
+import disnake
 import games
 
 class TriviaCommands(commands.Cog):
@@ -25,7 +25,7 @@ class TriviaCommands(commands.Cog):
 		await trivia.start()
 
 	@trivia.group(name='points', invoke_without_command=True, case_insensitive=True)
-	async def trivia_points(self, ctx, member: discord.Member = None):
+	async def trivia_points(self, ctx, member: disnake.Member = None):
 		"""See how many points the member has."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
@@ -54,8 +54,8 @@ class TriviaCommands(commands.Cog):
 		else:
 			title = "Here are %s's points:" % (member.display_name)
 
-		em = discord.Embed(color=color.lightpink, title=title)
-		em.set_thumbnail(url=member.avatar_url)
+		em = disnake.Embed(color=color.lightpink, title=title)
+		em.set_thumbnail(url=member.avatar.url)
 		em.add_field(name="Points:", value="**%s**" % (user['points']), inline=False)
 		em.add_field(name="Rank:", value="`#%s`" % (rank), inline=False)
 		await ctx.send(embed=em)
@@ -68,7 +68,7 @@ class TriviaCommands(commands.Cog):
 			return
 
 		rank = 0
-		em = discord.Embed(color=color.lightpink, title="Here's top `5` trivia users with most points:")
+		em = disnake.Embed(color=color.lightpink, title="Here's top `5` trivia users with most points:")
 		
 		rankings = await self.db.find().sort('points', -1).to_list(5)
 		for data in rankings:
@@ -80,7 +80,7 @@ class TriviaCommands(commands.Cog):
 	
 	@trivia_points.command(name='set')
 	@commands.is_owner()
-	async def tiriva_points_set(self, ctx, amount: int, member: discord.Member = None):
+	async def tiriva_points_set(self, ctx, amount: int, member: disnake.Member = None):
 		"""Set the trivia points for the member."""
 
 		if member is None: 
@@ -96,7 +96,7 @@ class TriviaCommands(commands.Cog):
 
 	@trivia_points.command(name='add')
 	@commands.is_owner()
-	async def trivia_points_add(self, ctx, amount: int, member: discord.Member = None):
+	async def trivia_points_add(self, ctx, amount: int, member: disnake.Member = None):
 		"""Add trivia points to the member."""
 
 		if member is None: 
@@ -112,7 +112,7 @@ class TriviaCommands(commands.Cog):
 
 	@trivia_points.command(name='reset')
 	@commands.is_owner()
-	async def trivia_points_reset(self, ctx, member: discord.Member = None):
+	async def trivia_points_reset(self, ctx, member: disnake.Member = None):
 		"""Reset the points for the member."""
 
 		if member is None: 
@@ -127,7 +127,7 @@ class TriviaCommands(commands.Cog):
 		await ctx.send("Succesfully reset points for user `%s`." % (member.display_name))
 	
 	@trivia_points.command(name='gift', aliases=['give'])
-	async def trivia_points_gift(self, ctx, amount: str, member: discord.Member = None):
+	async def trivia_points_gift(self, ctx, amount: str, member: disnake.Member = None):
 		"""Gift some of your points to the other member."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:

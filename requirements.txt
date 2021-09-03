@@ -4,16 +4,12 @@ async-cse
 async-tio
 attrs
 braceexpand
-buttons
 chardet
-git+https://github.com/Rapptz/discord-ext-menus
-discord.py
-discord
+disnake
 dnspython
 python-dateutil
 hmtai
 humanize
-jishaku
 numpy
 parsedatetime
 Pillow

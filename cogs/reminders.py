@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands, tasks
+import disnake
+from disnake.ext import commands, tasks
 from utils import time
 import utils.colors as color
 import textwrap
@@ -49,7 +49,7 @@ class RemindersClass(commands.Cog):
 		"""See your list of reminders, if you have any."""
 
 		results = await self.db.find({"userID": ctx.author.id}).sort([("remindWhen", 1)]).to_list(10)
-		em = discord.Embed(color=color.lightpink, title="Reminders")
+		em = disnake.Embed(color=color.lightpink, title="Reminders")
 		index = 0
 		total_reminders = 0
 		z = await self.db.find({"userID": ctx.author.id}).sort([("remindWhen", 1)]).to_list(100000)

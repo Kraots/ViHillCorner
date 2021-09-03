@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 from utils.paginator import CustomMenu
 import utils.colors as color
 import asyncio
@@ -27,7 +27,7 @@ class Reclist(commands.Cog):
 		return ctx.prefix == self.prefix
 
 	@commands.group(invoke_without_command=True, case_insensitive=True)
-	async def reclist(self, ctx, member: discord.Member = None):
+	async def reclist(self, ctx, member: disnake.Member = None):
 		"""See the member's anime recommendations list."""
 
 		if member is None:
@@ -159,7 +159,7 @@ class Reclist(commands.Cog):
 
 	@reclist.command(name='remove')
 	@commands.is_owner()
-	async def reclist_remove(self, ctx, member: discord.Member):
+	async def reclist_remove(self, ctx, member: disnake.Member):
 		"""Remove the member from the database."""
 
 		results = await self.db.find_one({"_id": member.id})

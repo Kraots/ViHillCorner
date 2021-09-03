@@ -1,5 +1,5 @@
-from discord.ext import commands
-import discord
+from disnake.ext import commands
+import disnake
 
 class Context(commands.Context):
 	def __init__(self, **kwargs):
@@ -9,9 +9,9 @@ class Context(commands.Context):
 	def session(self):
 		return self.bot.session
 
-	@discord.utils.cached_property
+	@disnake.utils.cached_property
 	def replied_reference(self):
 		ref = self.message.reference
-		if ref and isinstance(ref.resolved, discord.Message):
+		if ref and isinstance(ref.resolved, disnake.Message):
 			return ref.resolved.to_reference()
 		return None

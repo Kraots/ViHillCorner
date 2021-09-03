@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import os
 import utils.colors as color
 
@@ -35,7 +35,7 @@ class Cogs(commands.Cog):
 	@commands.is_owner()
 	async def reload_all(self, ctx):
 		cogs_list = []
-		em = discord.Embed(color=color.inviscolor, title="Reloaded the next cogs:")
+		em = disnake.Embed(color=color.inviscolor, title="Reloaded the next cogs:")
 
 		for filename in os.listdir('./cogs'):
 			if filename.endswith('.py'):
@@ -61,7 +61,7 @@ class Cogs(commands.Cog):
 	@commands.is_owner()
 	async def load_all(self, ctx):
 		cogs_list = []
-		em = discord.Embed(color=color.inviscolor, title="Loaded the next cogs:")
+		em = disnake.Embed(color=color.inviscolor, title="Loaded the next cogs:")
 
 		for filename in os.listdir('./cogs'):
 			if filename.endswith('.py'):
@@ -85,7 +85,7 @@ class Cogs(commands.Cog):
 	@commands.is_owner()
 	async def unload_all(self, ctx):
 		cogs_list = []
-		em = discord.Embed(color=color.inviscolor, title="Unloaded the next cogs:")
+		em = disnake.Embed(color=color.inviscolor, title="Unloaded the next cogs:")
 
 		for filename in os.listdir('./cogs'):
 			if filename.endswith('.py'):

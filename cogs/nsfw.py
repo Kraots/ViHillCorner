@@ -1,9 +1,9 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import utils.colors as color
 from utils.helpers import NSFW
-from discord.ext.commands import Greedy
-from discord import Member 
+from disnake.ext.commands import Greedy
+from disnake import Member 
 from utils.paginator import SimplePages
 import pymongo
 import hmtai
@@ -48,7 +48,7 @@ class NSFW(commands.Cog):
 
 		if category is None:
 			categs = "ass **•** bdsm **•** cum **•** manga/doujin **•** femdom **•** hentai **•** masturbation **•** ero **•** orgy **•** yuri **•** pantsu/panties **•** glasses **•** cuckold **•** blowjob/bj **•** foot **•** thighs **•** vagina **•** ahegao **•** uniform **•** tentacles"
-			em = discord.Embed(title="Here are all the categories for hentai 0", description=categs, color=color.blue)
+			em = disnake.Embed(title="Here are all the categories for hentai 0", description=categs, color=color.blue)
 			return await ctx.send(embed=em)
 
 		nsfwType = category.lower()
@@ -71,9 +71,9 @@ class NSFW(commands.Cog):
 		try:
 			result = hmtai.useHM(version='v2', category=nsfwType)
 		
-			em = discord.Embed(color=color.pastel)
+			em = disnake.Embed(color=color.pastel)
 			em.set_image(url=result)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 			await ctx.send(embed=em)
 		except:
 			return await ctx.send('Category does not exist.')
@@ -83,8 +83,8 @@ class NSFW(commands.Cog):
 		
 		if category is None:
 			categs = "hentai **•** paizuri **•** yuri **•** thighs **•** neko **•** anal **•** hmidriff **•** kitsune **•** tentacle"
-			em = discord.Embed(color=color.blue, title="Here are all the categories for hentai 1:", description=categs)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			em = disnake.Embed(color=color.blue, title="Here are all the categories for hentai 1:", description=categs)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 			return await ctx.send(embed=em)
 
 		categ = category.lower()
@@ -115,9 +115,9 @@ class NSFW(commands.Cog):
 					return await ctx.send("There has been an error from the **API**, please try again later.")
 				content = await resp.json()
 				url = content['message']
-			em = discord.Embed(color=color.pastel)
+			em = disnake.Embed(color=color.pastel)
 			em.set_image(url=url)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 			await ctx.send(embed=em)
 		except aiohttp.ClientConnectorError:
 			await ctx.send('Error connecting to this nsfw API. There is no ETA until it will be fixed so please use the others available APIs for nsfw hentai.')
@@ -128,8 +128,8 @@ class NSFW(commands.Cog):
 
 		if category is None:
 			categs = "ass **•** ecchi **•** ero **•** hentai **•** maid **•** milf **•** oppai **•** oral **•** paizuri **•** selfies **•** uniform"
-			em = discord.Embed(color=color.blue, title="Here are all the categories for hentai 2:", description=categs)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			em = disnake.Embed(color=color.blue, title="Here are all the categories for hentai 2:", description=categs)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 			return await ctx.send(embed=em)
 
 		categ = category.lower()
@@ -147,9 +147,9 @@ class NSFW(commands.Cog):
 					return await ctx.send("There has been an error from the **API**, please try again later.")
 				content = await resp.json()
 				url= content['url']
-			em = discord.Embed(color=color.pastel)
+			em = disnake.Embed(color=color.pastel)
 			em.set_image(url=url)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 			await ctx.send(embed=em)
 		except aiohttp.ClientConnectorError:
 			await ctx.send('Error connecting to this nsfw API. There is no ETA until it will be fixed so please use the others available APIs for nsfw hentai.')
@@ -190,8 +190,8 @@ class NSFW(commands.Cog):
 		
 		if category is None:
 			categs = "ass **•** thigh **•** gif **•** boobs **•** pussy **•** anal **•** feet **•** wild **•** 4k **•** bj/blowjob"
-			em = discord.Embed(color=color.blue, title="Here are all the categories for real porn:", description=categs)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			em = disnake.Embed(color=color.blue, title="Here are all the categories for real porn:", description=categs)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 			return await ctx.send(embed=em)
 
 		categ = category.lower()
@@ -217,9 +217,9 @@ class NSFW(commands.Cog):
 					return await ctx.send("There has been an error from the **API**, please try again later.")
 				content = await resp.json()
 				url = content['message']
-			em = discord.Embed(color=color.pastel)
+			em = disnake.Embed(color=color.pastel)
 			em.set_image(url=url)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar_url)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 			await ctx.send(embed=em)
 		except aiohttp.ClientConnectorError:
 			await ctx.send('Error connecting to this nsfw API. There is no ETA until it will be fixed so please use the nsfw hentai APIs or try again later.')

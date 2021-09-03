@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import asyncio
 import datetime
 import utils.colors as color
@@ -15,7 +15,7 @@ class Marriage(commands.Cog):
 		return ctx.prefix == self.prefix
 
 	@commands.command()
-	async def marry(self, ctx, member : discord.Member = None):
+	async def marry(self, ctx, member : disnake.Member = None):
 		"""Marry the member."""
 
 		if member == None:
@@ -136,7 +136,7 @@ class Marriage(commands.Cog):
 					await msg.clear_reactions()
 
 	@commands.command()
-	async def marriedwho(self, ctx, member : discord.Member = None):
+	async def marriedwho(self, ctx, member : disnake.Member = None):
 		"""See with who are you married, if married with someone."""
 
 		if member == None:
@@ -173,9 +173,9 @@ class Marriage(commands.Cog):
 						return 'N/A'
 					return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-				em = discord.Embed(color=color.lightpink, title="You are married to `{}` :tada: :tada:".format(the_married_to_user.display_name))
+				em = disnake.Embed(color=color.lightpink, title="You are married to `{}` :tada: :tada:".format(the_married_to_user.display_name))
 				em.add_field(name="_ _ \nMarried since:", value="`{}`".format(format_date(user_married_to_since)), inline=False)
-				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
+				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar.url)
 				await ctx.send(embed=em)
 			else:
 				def format_date(dt):
@@ -183,9 +183,9 @@ class Marriage(commands.Cog):
 						return 'N/A'
 					return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-				em = discord.Embed(color=color.lightpink, title="`{}` is married to `{}` :tada: :tada:".format(user.display_name, the_married_to_user.display_name))
+				em = disnake.Embed(color=color.lightpink, title="`{}` is married to `{}` :tada: :tada:".format(user.display_name, the_married_to_user.display_name))
 				em.add_field(name=" _ _ \nMarried since:", value="`{}`".format(format_date(user_married_to_since)), inline=False)
-				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
+				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar.url)
 				await ctx.send(embed=em)
 
 

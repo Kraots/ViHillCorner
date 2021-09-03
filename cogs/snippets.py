@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import asyncio
 from utils.paginator import SimplePages
 import datetime
@@ -63,7 +63,7 @@ class Snippets(commands.Cog):
 
 		results = await self.db.find().sort([("uses_count", -1)]).to_list(10)
 		index = 0
-		em = discord.Embed(color=color.reds)
+		em = disnake.Embed(color=color.reds)
 		for result in results:
 			snippet_name = result['_id']
 			uses = result['uses_count']
@@ -75,7 +75,7 @@ class Snippets(commands.Cog):
 		await ctx.send(embed=em)
 
 	@snippet.command(name='list')
-	async def snippet_list(self, ctx, member: discord.Member = None):
+	async def snippet_list(self, ctx, member: disnake.Member = None):
 		"""Get a list with all the snippets that the member has."""
 
 		if member is None:
@@ -113,8 +113,8 @@ class Snippets(commands.Cog):
 
 		snippet_owner = self.bot.get_user(snippet_owner_id)
 
-		em = discord.Embed(color=color.reds, title=snippet_name)
-		em.set_author(name=snippet_owner, url=snippet_owner.avatar_url, icon_url=snippet_owner.avatar_url)
+		em = disnake.Embed(color=color.reds, title=snippet_name)
+		em.set_author(name=snippet_owner, url=snippet_owner.avatar.url, icon_url=snippet_owner.avatar.url)
 		em.add_field(name="Owner", value=snippet_owner.mention)
 		em.add_field(name="Uses", value=snippet_uses)
 		em.add_field(name="Rank", value="`#{}`".format(rank))
@@ -258,7 +258,7 @@ class Snippets(commands.Cog):
 
 			await self.db.delete_one({"_id": data['_id']})
 
-			em = discord.Embed(title="Snippet Removed", color=color.red)
+			em = disnake.Embed(title="Snippet Removed", color=color.red)
 			em.add_field(name = "Name", value = the_snippet_name)
 			em.add_field(name = "Owner", value = snippet_owner)
 			em.add_field(name="Uses", value=f"`{uses}`", inline = False)
@@ -268,7 +268,7 @@ class Snippets(commands.Cog):
 
 
 	@commands.Cog.listener()
-	async def on_message(self, message : discord.Message):
+	async def on_message(self, message : disnake.Message):
 
 		if message.author.bot:
 			return
@@ -282,11 +282,11 @@ class Snippets(commands.Cog):
 		snippet = data['snippet_content']
 		get_credits_info = data['snippet_credits']
 		credits_user = self.bot.get_user(get_credits_info)
-		credits_avatar = credits_user.avatar_url
+		credits_avatar = credits_user.avatar.url
 		await self.db.update_one({"_id": data['_id']}, {"$inc":{"uses_count": 1}})
 
 		if message.content.lower().startswith(f";{snippet_name}"):
-			em = discord.Embed(color=discord.Color.red())
+			em = disnake.Embed(color=disnake.Color.red())
 			em.set_image(url=snippet)
 			em.set_footer(text=f"Credits: {credits_user}", icon_url=credits_avatar)
 			await message.channel.send(embed=em)

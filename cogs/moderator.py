@@ -1,10 +1,10 @@
-import discord
+import disnake
 import asyncio
 import utils.colors as color
 import re
 from utils.helpers import time_phaser
 import datetime
-from discord.ext import commands, tasks
+from disnake.ext import commands, tasks
 from dateutil.relativedelta import relativedelta
 from utils import time
 from utils.paginator import CustomMenu
@@ -120,7 +120,7 @@ class Moderator(commands.Cog):
 			await ctx.channel.edit(slowmode_delay=how_much)
 			await ctx.author.send(f'Set slowmode for <#{ctx.channel.id}> to {time_phaser(how_much)} !')
 			
-			em = discord.Embed(color=color.reds, title="___SLOWMODE___", timestamp = ctx.message.created_at)
+			em = disnake.Embed(color=color.reds, title="___SLOWMODE___", timestamp = ctx.message.created_at.replace(tzinfo=None))
 			em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
 			em.add_field(name="Action", value=f"`Set slowmode to {time_phaser(how_much)}`", inline=False)
 			em.add_field(name="Channel", value=f"<#{ctx.channel.id}>",inline=False)
@@ -132,7 +132,7 @@ class Moderator(commands.Cog):
 			await ctx.channel.edit(slowmode_delay=0)
 			await ctx.author.send(f'Disabled slowmode for <#{ctx.channel.id}> !')
 
-			em = discord.Embed(color=color.reds, title="___SLOWMODE___", timestamp = ctx.message.created_at)
+			em = disnake.Embed(color=color.reds, title="___SLOWMODE___", timestamp = ctx.message.created_at.replace(tzinfo=None))
 			em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
 			em.add_field(name="Action", value="`Disabled slowmode`", inline=False)
 			em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
@@ -141,7 +141,7 @@ class Moderator(commands.Cog):
 
 	@commands.command()
 	@commands.has_role(754676705741766757)
-	async def kick(self, ctx, member: discord.Member, *, reason: str = None):
+	async def kick(self, ctx, member: disnake.Member, *, reason: str = None):
 		"""Kicks the member with the specified reason, if any."""
 
 		if reason is None:
@@ -156,16 +156,16 @@ class Moderator(commands.Cog):
 
 		try:
 			await member.send("You have been kicked from `ViHill Corner!`")
-		except discord.HTTPException:
+		except disnake.HTTPException:
 			pass
 		
 		await guild.kick(member, reason=f'{ctx.author}: "{reason}"')
 
-		ban = discord.Embed(description=f"{member} was successfully kicked" , color=discord.Color.red())
+		ban = disnake.Embed(description=f"{member} was successfully kicked" , color=disnake.Color.red())
 
 		await ctx.send(embed=ban)
 
-		em = discord.Embed(color=color.reds, title="___KICK___", timestamp = ctx.message.created_at)	
+		em = disnake.Embed(color=color.reds, title="___KICK___", timestamp = ctx.message.created_at.replace(tzinfo=None))	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
 		em.add_field(name="Action", value="`Used the kick command.`", inline=False)	
 		em.add_field(name="Member", value=f"`{member}`", inline=False)
@@ -176,7 +176,7 @@ class Moderator(commands.Cog):
 
 	@commands.command()
 	@commands.has_role(754676705741766757)
-	async def ban(self, ctx, user: discord.User, *, reason: str = None):
+	async def ban(self, ctx, user: disnake.User, *, reason: str = None):
 		"""Bans the user with the specified reason, if any."""
 
 		if reason is None:
@@ -192,22 +192,22 @@ class Moderator(commands.Cog):
 		except:
 			pass
 
-		_reason = discord.Embed(description="**Unban appeal server** \n https://discord.gg/5SratjPmGc")
+		_reason = disnake.Embed(description="**Unban appeal server** \n https://disnake.gg/5SratjPmGc")
 		_reason.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
 		msg="You have been banned from `ViHill Corner`. If you think that this has been applied in error please submit a detailed appeal at the following link."
 		
 		try:
 			await user.send(msg, embed=_reason)
-		except discord.HTTPException:
+		except disnake.HTTPException:
 			pass
 		await guild.ban(user, reason=f'{ctx.author}: "{reason}"', delete_message_days=0)
 
 
-		ban = discord.Embed(description=f"`{user}` has been banned.\n**Reason:** **[{reason}]({ctx.message.jump_url})**.", color=discord.Color.red())
+		ban = disnake.Embed(description=f"`{user}` has been banned.\n**Reason:** **[{reason}]({ctx.message.jump_url})**.", color=disnake.Color.red())
 
 		await ctx.send(embed=ban)
 
-		em = discord.Embed(color=color.reds, title="___BAN___", timestamp = ctx.message.created_at)	
+		em = disnake.Embed(color=color.reds, title="___BAN___", timestamp = ctx.message.created_at.replace(tzinfo=None))	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
 		em.add_field(name="Action", value="`Used the ban command.`", inline=False)	
 		em.add_field(name="Member", value=f"`{user}`", inline=False)
@@ -218,7 +218,7 @@ class Moderator(commands.Cog):
 
 	@commands.command()
 	@commands.has_role(754676705741766757)
-	async def unban(self, ctx, member: discord.User):
+	async def unban(self, ctx, member: disnake.User):
 		"""Unban's the user."""
 
 		guild = self.bot.get_guild(750160850077089853)
@@ -227,17 +227,17 @@ class Moderator(commands.Cog):
 			return await ctx.reply("This command cannot be performed in the staff chat. Please go in the chat where the member you wish to unban exists.")
 		try:
 			await guild.fetch_ban(member)
-			await guild.unban(discord.Object(id=member.id))
+			await guild.unban(disnake.Object(id=member.id))
 		except:
 			return await ctx.send("Failed. Did you input the correct member that is in the same guild?")
 			
-		unban = discord.Embed(description= f"`{member}` has been unbanned from the server" , color=discord.Color.red())
+		unban = disnake.Embed(description= f"`{member}` has been unbanned from the server" , color=disnake.Color.red())
 
 		await ctx.send(embed=unban)
 
 		log_channel = guild.get_channel(788377362739494943)
 
-		em = discord.Embed(color=color.reds, title="___UNBAN___", timestamp = ctx.message.created_at)
+		em = disnake.Embed(color=color.reds, title="___UNBAN___", timestamp = ctx.message.created_at.replace(tzinfo=None))
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
 		em.add_field(name="Action", value="`Used the unban command`", inline=False)
 		em.add_field(name="Member", value=f"`{member}`", inline=False)
@@ -246,7 +246,7 @@ class Moderator(commands.Cog):
 		await log_channel.send(embed=em)
 
 		try:
-			msg="Congrats! You have been unbanned from `ViHill Corner`. Come back: https://discord.gg/mFm5GrQ"
+			msg="Congrats! You have been unbanned from `ViHill Corner`. Come back: https://disnake.gg/mFm5GrQ"
 			await member.send(msg)
 		except:
 			pass
@@ -257,7 +257,7 @@ class Moderator(commands.Cog):
 
 	@commands.command()
 	@commands.has_role(754676705741766757)
-	async def mute(self, ctx, member : discord.Member, *, muted_time : TimeConverter = None):
+	async def mute(self, ctx, member : disnake.Member, *, muted_time : TimeConverter = None):
 		"""
 		Mute the member.
 		If the time is specified (1s|1m|1h|1d), the member will be unmuted after that amount of time expires.
@@ -318,16 +318,16 @@ class Moderator(commands.Cog):
 				new_roles = [role for role in member.roles] + [muted]
 			await member.edit(roles=new_roles, reason=f'{ctx.author}: "{reason_content}"')
 			msg = "You have been muted in `ViHill Corner`"
-			em = discord.Embed(description=f"Time: `{muted_for}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=color.inviscolor)
+			em = disnake.Embed(description=f"Time: `{muted_for}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=color.inviscolor)
 			try:
 				await member.send(msg, embed=em)
-			except discord.HTTPException:
+			except disnake.HTTPException:
 				pass
 
-			_mute = discord.Embed(description= f'{member.mention} has been muted. \n\nTime: `{muted_for}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**' , color=color.red)
+			_mute = disnake.Embed(description= f'{member.mention} has been muted. \n\nTime: `{muted_for}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**' , color=color.red)
 			await ctx.send(embed=_mute)
 
-			log = discord.Embed(color=color.reds, title="___Mute___", timestamp = ctx.message.created_at)
+			log = disnake.Embed(color=color.reds, title="___Mute___", timestamp = ctx.message.created_at.replace(tzinfo=None))
 			log.add_field(name="Member", value=f"`{member}`", inline=False)
 			log.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
 			log.add_field(name="Time", value=f"`{muted_for}`", inline=False)
@@ -335,7 +335,7 @@ class Moderator(commands.Cog):
 			await log_channel.send(embed=log)
 
 	@commands.command(name='checkmute', aliases=['checkmutes', 'mutecheck', 'mutescheck'])
-	async def check_mutes(self, ctx, member: discord.Member = None):
+	async def check_mutes(self, ctx, member: disnake.Member = None):
 		"""Check to see if the member is muted if specified any, or in case no member is specified then see all the members that are muted if any."""
 
 		if member is None:
@@ -370,16 +370,16 @@ class Moderator(commands.Cog):
 			else:
 				_time = "Eternity"
 			
-			em = discord.Embed(color=color.red)
-			em.set_author(name=member, url=member.avatar_url, icon_url=member.avatar_url)
+			em = disnake.Embed(color=color.red)
+			em.set_author(name=member, url=member.avatar.url, icon_url=member.avatar.url)
 			em.description = f"Time Left: `{_time}`"
-			em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar_url)
+			em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar.url)
 
 			await ctx.send(embed=em)			
 
 	@commands.command()
 	@commands.has_role(754676705741766757)
-	async def unmute(self, ctx, member: discord.Member):
+	async def unmute(self, ctx, member: disnake.Member):
 		"""Unmute the member."""
 
 		result = await self.db1.find_one({'_id': member.id})
@@ -411,12 +411,12 @@ class Moderator(commands.Cog):
 		msg="You were unmuted in `ViHill Corner`."
 		try:
 			await member.send(msg)
-		except discord.HTTPException:
+		except disnake.HTTPException:
 			pass
 		await member.edit(roles=new_roles, reason='{}: "Unmute"'.format(ctx.author))
-		await ctx.send(embed=discord.Embed(color=color.red, description=f"`{member}` has been unmuted."))
+		await ctx.send(embed=disnake.Embed(color=color.red, description=f"`{member}` has been unmuted."))
 
-		em = discord.Embed(color=color.reds, title="___UNMUTE___", timestamp = ctx.message.created_at)	
+		em = disnake.Embed(color=color.reds, title="___UNMUTE___", timestamp = ctx.message.created_at.replace(tzinfo=None))	
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)	
 		em.add_field(name="Action", value="`Used the unmute command.`", inline=False)	
 		em.add_field(name="Member", value=f"`{member}`", inline=False)		
@@ -435,7 +435,7 @@ class Moderator(commands.Cog):
 		guild = self.bot.get_guild(750160850077089853)
 		log_channel = guild.get_channel(788377362739494943)
 
-		em = discord.Embed(color=color.reds, title="___PURGE / CLEAR___", timestamp = ctx.message.created_at)
+		em = disnake.Embed(color=color.reds, title="___PURGE / CLEAR___", timestamp = ctx.message.created_at.replace(tzinfo=None))
 		em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
 		em.add_field(name="Action", value="`Used the clear / purge command`", inline=False)
 		em.add_field(name="Amount", value=f"`{amount}` messages", inline=False)
@@ -445,7 +445,7 @@ class Moderator(commands.Cog):
 
 	@commands.group(name='lock', invoke_without_command=True, case_insensitive=True)
 	@commands.has_role(754676705741766757)
-	async def lock_channel(self, ctx, channel: discord.TextChannel = None):
+	async def lock_channel(self, ctx, channel: disnake.TextChannel = None):
 		"""
 		Locks the channel.
 		No one will be able to talk in that channel except the mods, but everyone will still see the channel.
@@ -480,7 +480,7 @@ class Moderator(commands.Cog):
 
 	@commands.group(name='unlock', invoke_without_command=True, case_insensitive=True)
 	@commands.has_role(754676705741766757)
-	async def unlock_channel(self, ctx, channel: discord.TextChannel = None):
+	async def unlock_channel(self, ctx, channel: disnake.TextChannel = None):
 		"""
 		Unlocks the channel.
 		"""

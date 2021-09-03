@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import asyncio
 import datetime
 from utils import time
@@ -81,7 +81,7 @@ class CustomRoles(commands.Cog):
 							crcolor = crcolor.replace("#", "")
 							crcolor = f"0x{crcolor}"
 							try:
-								e = discord.Color(int(crcolor, 16))
+								e = disnake.Color(int(crcolor, 16))
 								break
 							except:
 								await ctx.send("Invalid hex colour.")
@@ -100,7 +100,7 @@ class CustomRoles(commands.Cog):
 							await ctx.send("A role with that name already exists!")
 							return
 					
-					newcr = await guild.create_role(name=crname.content, color=discord.Color(int(crcolor, 16)))
+					newcr = await guild.create_role(name=crname.content, color=disnake.Color(int(crcolor, 16)))
 
 					await ctx.author.add_roles(newcr)
 
@@ -141,8 +141,8 @@ class CustomRoles(commands.Cog):
 
 		get_role = results['CustomRoleName']
 	
-		crname = discord.utils.get(guild.roles, name=get_role)
-		em = discord.Embed(title="Custom Role Edited")
+		crname = disnake.utils.get(guild.roles, name=get_role)
+		em = disnake.Embed(title="Custom Role Edited")
 
 		if new_color == None:
 			await ctx.send("You must provide the new color!")
@@ -157,7 +157,7 @@ class CustomRoles(commands.Cog):
 				return
 			
 			try:
-				await crname.edit(color=discord.Color(int(new_color, 16)))
+				await crname.edit(color=disnake.Color(int(new_color, 16)))
 				em.add_field(name="New Color", value=f"`#{new_color[2:]}`")
 				em.color = crname.color
 				await ctx.send(embed=em)
@@ -180,8 +180,8 @@ class CustomRoles(commands.Cog):
 
 		get_role = results['CustomRoleName']
 
-		crname = discord.utils.get(guild.roles, name=get_role)
-		em = discord.Embed(title="Custom Role Edited")
+		crname = disnake.utils.get(guild.roles, name=get_role)
+		em = disnake.Embed(title="Custom Role Edited")
 		
 		if new_name == None:
 			await ctx.send("You must provide the new name!")
@@ -200,7 +200,7 @@ class CustomRoles(commands.Cog):
 
 	@cr.command()
 	@commands.has_any_role('Mod', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+", "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+", "lvl 160+", "lvl 165+", "lvl 170+", "lvl 175+", "lvl 180+", "lvl 185+", "lvl 190+", "lvl 195+", "lvl 200+", "lvl 205+", "lvl 210+", "lvl 215+", "lvl 220+", "lvl 230+", "lvl 240+", "lvl 250+", "lvl 255+", "lvl 260+", "lvl 265+", "lvl 270+", "lvl 275+", "lvl 275+", "lvl 280+", "lvl 285+", "lvl 290+", "lvl 300+", "lvl 305+", "lvl 310+", "lvl 315+", "lvl 320+", "lvl 330+", "lvl 340+", "lvl 350+", "lvl 355+", "lvl 360+", "lvl 365+", "lvl 370+", "lvl 375+", "lvl 380+", "lvl 385+", "lvl 390+", "lvl 395+", "lvl 400+", "lvl 405+", "lvl 410+", "lvl 415+", "lvl 420+", "lvl 430+", "lvl 440+", "lvl 450+", "lvl 455+", "lvl 460+", "lvl 465+", "lvl 470+", "lvl 475+", "lvl 480+", "lvl 485+", "lvl 490+", "lvl 495+", "lvl 500+")
-	async def share(self, ctx, member: discord.Member = None):
+	async def share(self, ctx, member: disnake.Member = None):
 		"""Share your custom role with a member."""
 
 		if member is None:
@@ -217,7 +217,7 @@ class CustomRoles(commands.Cog):
 
 		get_role = results['CustomRoleName']
 		
-		crname = discord.utils.get(guild.roles, name=get_role)
+		crname = disnake.utils.get(guild.roles, name=get_role)
 		if crname in member.roles:
 			await ctx.send("You already shared your custom role with that user!")
 			return
@@ -240,7 +240,7 @@ class CustomRoles(commands.Cog):
 			if str(reaction.emoji) == '<:agree:797537027469082627>':
 				await self.db.update_one({'roleID': crname.id}, {'$inc':{'shares': 1}})
 				await member.add_roles(crname)
-				em = discord.Embed(color=user.color, title=f"{member} has accepted your role")
+				em = disnake.Embed(color=user.color, title=f"{member} has accepted your role")
 				em.set_image(url="https://blog.hubspot.com/hubfs/giphy_1-1.gif")
 				await ctx.send(ctx.author.mention, embed=em)
 				return
@@ -279,7 +279,7 @@ class CustomRoles(commands.Cog):
 					return 'N/A'
 				return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-		em = discord.Embed(color=guildRole.color, title="Role Info About `%s`" % (roleName))
+		em = disnake.Embed(color=guildRole.color, title="Role Info About `%s`" % (roleName))
 		em.add_field(name="Custom Role Owner", value=roleOwner, inline=False)
 		em.add_field(name="Hex Code", value=guildRole.color, inline=False)
 		em.add_field(name="People That Have The Role", value=index, inline=False)
@@ -368,7 +368,7 @@ class CustomRoles(commands.Cog):
 		def check(reaction, user):
 				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
 
-		crname = discord.utils.get(guild.roles, name=get_role)
+		crname = disnake.utils.get(guild.roles, name=get_role)
 		msg = await ctx.send("Are you sure you want to delete your custom role (<@&{}>)?".format(crname.id))
 		await msg.add_reaction('<:agree:797537027469082627>')
 		await msg.add_reaction('<:disagree:797537030980239411>')
@@ -405,7 +405,7 @@ class CustomRoles(commands.Cog):
 			await ctx.send("You must give the role name that you want the ID for!")
 			return
 		guild = self.bot.get_guild(750160850077089853)
-		role = discord.utils.get(guild.roles, name=role_name)
+		role = disnake.utils.get(guild.roles, name=role_name)
 		
 		try:
 			await ctx.send(f"**{role.name}**'s role ID **-->** `{role.id}`")
@@ -448,7 +448,7 @@ class CustomRoles(commands.Cog):
 		results = await self.db.find_one({"_id": member.id})
 		if results != None:
 			get_role = results['CustomRoleName']
-			crname = discord.utils.get(guild.roles, name=get_role)
+			crname = disnake.utils.get(guild.roles, name=get_role)
 			await crname.delete()
 			await self.db.delete_one({"_id": member.id})
 		

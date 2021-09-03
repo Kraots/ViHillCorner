@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import re
 import asyncio
 import utils.colors as color
@@ -14,7 +14,7 @@ class InviteFilter(commands.Cog):
 
 	@commands.Cog.listener()
 	@commands.guild_only()
-	async def on_message(self, message: discord.Message):
+	async def on_message(self, message: disnake.Message):
 		if message.author.id in no_mute_these:
 			return
 		guild = self.bot.get_guild(750160850077089853)
@@ -31,8 +31,8 @@ class InviteFilter(commands.Cog):
 
 					await message.delete()
 					msg = await message.channel.send('Invites not allowed!')
-					embed = discord.Embed(color=color.inviscolor, title="***___INVITE WARNING___***", description=f'User `{message.author}` sent an [invite link]({msg.jump_url})!!', timestamp=msg.created_at)
-					embed.set_footer(text="Click the `invite link` to go to the channel and see where the user got warned. No, it's not an actual invite.", icon_url='https://cdn.discordapp.com/avatars/751724369683677275/0ad4d3b39956b6431c7167ef82c30d30.webp?size=1024')
+					embed = disnake.Embed(color=color.inviscolor, title="***___INVITE WARNING___***", description=f'User `{message.author}` sent an [invite link]({msg.jump_url})!!', timestamp=msg.created_at.replace(tzinfo=None))
+					embed.set_footer(text="Click the `invite link` to go to the channel and see where the user got warned. No, it's not an actual invite.", icon_url='https://cdn.disnakeapp.com/avatars/751724369683677275/0ad4d3b39956b6431c7167ef82c30d30.webp?size=1024')
 					await Logchannel.send(embed=embed)
 					await message.author.add_roles(muted)
 					curr_snipes = self.bot.snipes[message.channel.id]

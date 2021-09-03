@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 from random import randint
 import random
 import utils.colors as color
@@ -63,7 +63,7 @@ class Economy(commands.Cog):
 
 	@daily.group(name='reset', invoke_without_command = True, case_insensitive = True)
 	@commands.is_owner()
-	async def daily_reset(self, ctx, member: discord.Member = None):
+	async def daily_reset(self, ctx, member: disnake.Member = None):
 		"""Reset the daily for a user. This means that the amount of time that they have to wait until they can get their daily will be reset."""
 
 		if member is None:
@@ -122,7 +122,7 @@ class Economy(commands.Cog):
 		await ctx.send("Succesfully unregistered! %s" % (ctx.author.mention))
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bal'])
-	async def balance(self, ctx, member: discord.Member = None):
+	async def balance(self, ctx, member: disnake.Member = None):
 		"""Check your or another member's balance."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
@@ -173,12 +173,12 @@ class Economy(commands.Cog):
 				index2 += 1	
 
 
-		em = discord.Embed(title=f"{member.name}'s balance", color=color.lightpink)
+		em = disnake.Embed(title=f"{member.name}'s balance", color=color.lightpink)
 		em.add_field(name="Wallet Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(wallet_amt)), inline=False)
 		em.add_field(name="Bank Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(bank_amt)), inline=False)
 		em.add_field(name="Total Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(total_amt)))
 		em.add_field(name="Rank", value="`#{}`".format(index))
-		em.set_thumbnail(url=user.avatar_url)
+		em.set_thumbnail(url=user.avatar.url)
 
 		await ctx.send(embed=em)
 
@@ -201,7 +201,7 @@ class Economy(commands.Cog):
 		
 		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True)  
 		
-		em = discord.Embed(title=f'Top 10 richest people', color=color.lightpink) 
+		em = disnake.Embed(title=f'Top 10 richest people', color=color.lightpink) 
 		
 		for index, (mem, amt) in enumerate(leader_board[:10], start=1): 
 			
@@ -232,7 +232,7 @@ class Economy(commands.Cog):
 
 	@balance.command(name='add-bank')
 	@commands.is_owner()
-	async def add_bank(self, ctx, amount = None, member: discord.Member = None):
+	async def add_bank(self, ctx, amount = None, member: disnake.Member = None):
 		"""Add <:carrots:822122757654577183> in the member's bank."""
 
 		if member is None:
@@ -260,7 +260,7 @@ class Economy(commands.Cog):
 
 	@balance.command(name='add-wallet')
 	@commands.is_owner()
-	async def add_wallet(self, ctx, amount = None, member: discord.Member = None):
+	async def add_wallet(self, ctx, amount = None, member: disnake.Member = None):
 		"""Add <:carrots:822122757654577183> in the member's wallet."""
 
 		if member is None:
@@ -288,7 +288,7 @@ class Economy(commands.Cog):
 
 	@balance.command(name='set-bank')
 	@commands.is_owner()
-	async def set_bank(self, ctx, amount = None, member: discord.Member = None):
+	async def set_bank(self, ctx, amount = None, member: disnake.Member = None):
 		"""Set the amount of <:carrots:822122757654577183> in the member's bank."""
 
 		if member is None:
@@ -314,7 +314,7 @@ class Economy(commands.Cog):
 
 	@balance.command(name='reset')
 	@commands.is_owner()
-	async def eco_bal_reset(self, ctx, member: discord.Member = None):
+	async def eco_bal_reset(self, ctx, member: disnake.Member = None):
 		"""Reset the member's <:carrots:822122757654577183>."""
 
 		if member is None:
@@ -335,7 +335,7 @@ class Economy(commands.Cog):
 
 	@balance.command(name='set-wallet')
 	@commands.is_owner()
-	async def set_wallet(self, ctx, amount = None, member: discord.Member = None):
+	async def set_wallet(self, ctx, amount = None, member: disnake.Member = None):
 		"""Set the amount of <:carrots:822122757654577183> in the member's wallet."""
 
 		if member is None:
@@ -461,7 +461,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command(name='gift', aliases=['give'])
-	async def bal_eco_give(self, ctx, member : discord.Member, amount = None):
+	async def bal_eco_give(self, ctx, member : disnake.Member, amount = None):
 		"""Be a kind person and give some of your <:carrots:822122757654577183> from your **bank** to someone else's."""
 		
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
@@ -538,8 +538,8 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command(aliases=["steal"])
-	@commands.cooldown(1, 20, commands.BucketType.user)
-	async def rob(self, ctx, member : discord.Member = None):
+	@commands.CooldownMapping(commands.cooldown(1, 20), commands.BucketType.user)
+	async def rob(self, ctx, member : disnake.Member = None):
 		"""Rob someone of their <:carrots:822122757654577183> from their wallet."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
@@ -620,7 +620,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command()
-	@commands.cooldown(1, 7, commands.BucketType.user)
+	@commands.CooldownMapping(commands.cooldown(1, 7), commands.BucketType.user)
 	async def slots(self, ctx, amount = None):
 		"""Gamble your <:carrots:822122757654577183>."""
 
@@ -667,7 +667,7 @@ class Economy(commands.Cog):
 
 				final = "\u2800┃\u2800".join(prefinal)
 
-			embed = discord.Embed(color=color.lightpink, title="Slots!", description="<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+			embed = disnake.Embed(color=color.lightpink, title="Slots!", description="<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
 			msg = await ctx.send(embed=embed)
 
 			line1 = prefinal[0]
@@ -683,16 +683,16 @@ class Economy(commands.Cog):
 
 				wallet_amt = bal + earned
 
-				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+				em = disnake.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
-				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
+				em = disnake.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 				
 				print("Reached final edit")
-				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of **{:,}** <:carrots:822122757654577183>  and won **{:,}** <:carrots:822122757654577183>. \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(line1, line2, line3, amount, earned, wallet_amt))
+				winembed = disnake.Embed(color=disnake.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of **{:,}** <:carrots:822122757654577183>  and won **{:,}** <:carrots:822122757654577183>. \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(line1, line2, line3, amount, earned, wallet_amt))
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=winembed)
 
@@ -705,15 +705,15 @@ class Economy(commands.Cog):
 
 				wallet_amt = bal + earned
 
-				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+				em = disnake.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
-				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
+				em = disnake.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
-				winembed = discord.Embed(color=discord.Color.green(), title="WIN!", description="{}\n\nYou won **{:,}** <:carrots:822122757654577183>. \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(final, amount, wallet_amt))
+				winembed = disnake.Embed(color=disnake.Color.green(), title="WIN!", description="{}\n\nYou won **{:,}** <:carrots:822122757654577183>. \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(final, amount, wallet_amt))
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=winembed)
 
@@ -725,15 +725,15 @@ class Economy(commands.Cog):
 				
 				wallet_amt = bal - amount
 			
-				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+				em = disnake.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
-				em = discord.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
+				em = disnake.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=em)
 
-				lostembed = discord.Embed(color=color.red, title="LOST!", description="{}\n\nYou bet a total amount of **{:,}** <:carrots:822122757654577183>  but you lost them! :c\nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(final, amount, wallet_amt))
+				lostembed = disnake.Embed(color=color.red, title="LOST!", description="{}\n\nYou bet a total amount of **{:,}** <:carrots:822122757654577183>  but you lost them! :c\nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(final, amount, wallet_amt))
 				await asyncio.sleep(0.7)
 				await msg.edit(embed=lostembed)
 
@@ -743,7 +743,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command()
-	@commands.cooldown(1, 5, commands.BucketType.user)
+	@commands.CooldownMapping(commands.cooldown(1, 5), commands.BucketType.user)
 	async def beg(self, ctx):
 		"""Beg for some <:carrots:822122757654577183>."""
 
@@ -765,7 +765,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command()
-	@commands.cooldown(1, 3600, commands.BucketType.user)
+	@commands.CooldownMapping(commands.cooldown(1, 3600), commands.BucketType.user)
 	async def work(self, ctx):
 		"""Work and get <:carrots:822122757654577183>."""
 
@@ -786,7 +786,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command()
-	@commands.cooldown(1, 15, commands.BucketType.user)
+	@commands.CooldownMapping(commands.cooldown(1, 15), commands.BucketType.user)
 	async def crime(self, ctx):
 		"""Commit crimes that range between `small-medium-big`, and depending on which one you get, the more <:carrots:822122757654577183> you get, but be careful! You can lose the carrots as well."""
 
@@ -836,7 +836,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command(name='guess-the-number', aliases=['guess'])
-	@commands.cooldown(1, 3, commands.BucketType.user)
+	@commands.CooldownMapping(commands.cooldown(1, 3), commands.BucketType.user)
 	async def eco_gtn(self, ctx):
 		"""Play a guess the number game and earn <:carrots:822122757654577183>."""
 
@@ -895,7 +895,7 @@ class Economy(commands.Cog):
 			return
 	
 	@commands.command()
-	@commands.cooldown(1, 10, commands.BucketType.user)
+	@commands.CooldownMapping(commands.cooldown(1, 10), commands.BucketType.user)
 	async def ppsuck(self, ctx):
 		"""Suck some pp 😳 for some quick <:carrots:822122757654577183>."""
 
@@ -962,7 +962,7 @@ class Economy(commands.Cog):
 			return
 
 	@commands.command()
-	@commands.cooldown(1, 10, commands.BucketType.user)
+	@commands.CooldownMapping(commands.cooldown(1, 10), commands.BucketType.user)
 	async def race(self, ctx):
 		"""Participate in a race and earn <:carrots:822122757654577183>."""
 
@@ -1019,7 +1019,7 @@ class Economy(commands.Cog):
 
 
 	@commands.command(name='rock-paper-scissors', aliases=['rps', 'rockpaperscissors'])
-	@commands.cooldown(1, 15, commands.BucketType.user)
+	@commands.CooldownMapping(commands.cooldown(1, 15), commands.BucketType.user)
 	async def eco_rps(self, ctx):
 		"""Play a game of rock-paper-scissors with the bot and earn <:carrots:822122757654577183> if you win or lose some if you lose the game."""
 

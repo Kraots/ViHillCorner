@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 import re
 
 def remove_emoji(string):
@@ -21,7 +21,7 @@ class NickFilter(commands.Cog):
 		self.db = bot.db2['InvalidName Filter']
 
 	@commands.Cog.listener()
-	async def on_message(self, message : discord.Message):
+	async def on_message(self, message : disnake.Message):
 		if message.author.bot:
 			return
 		elif message.author.id == 374622847672254466:

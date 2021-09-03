@@ -1,4 +1,4 @@
-from discord.ext import commands, tasks
+from disnake.ext import commands, tasks
 import json
 
 class WarnsRemove(commands.Cog):

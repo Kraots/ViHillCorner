@@ -1,5 +1,7 @@
-import discord
-from discord.ext import commands
+from disnake import webhook
+from utils.pag import Session
+import disnake
+from disnake.ext import commands
 import asyncio
 import utils.colors as color
 import aiohttp
@@ -33,10 +35,9 @@ async def check_invalid_name(db, message, kraots) -> str:
 
 
 # Webhook that sends a message in messages-log channel
-async def MessageLogWebhook(em):
-	async with aiohttp.ClientSession() as session:
-		webhook = discord.Webhook.from_url(MESSAGE_LOG_CHANNEL, adapter=discord.AsyncWebhookAdapter(session))
-		await webhook.send(embed=em)
+async def MessageLogWebhook(em, bot):
+	webhook = await bot.get_channel(750432155179679815).webhooks()
+	await webhook[0].send(embed=em)
 
 class on_message(commands.Cog):
 	def __init__(self, bot):
@@ -56,15 +57,15 @@ class on_message(commands.Cog):
 		else:
 				kraots = self.bot.get_user(374622847672254466)
 
-				em = discord.Embed(color=color.red, description=f'[Message]({message.jump_url}) deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=datetime.datetime.utcnow())
-				em.set_author(name=f'{message.author}', icon_url=f'{message.author.avatar_url}')
+				em = disnake.Embed(color=color.red, description=f'[Message]({message.jump_url}) deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=datetime.datetime.utcnow())
+				em.set_author(name=f'{message.author}', icon_url=f'{message.author.avatar.url}')
 				em.set_footer(text=f'User ID: {message.author.id}')
 				if message.attachments:
 					em.set_image(url=message.attachments[0].proxy_url)
 				
 				await asyncio.sleep(0.5)
 				try:
-					await MessageLogWebhook(em)
+					await MessageLogWebhook(em, self.bot)
 				except Exception as e:
 					await kraots.send(e)
 		
@@ -79,20 +80,20 @@ class on_message(commands.Cog):
 		else:
 				kraots = self.bot.get_user(374622847672254466)
 
-				em = discord.Embed(color=color.yellow, description=f'[Message]({before.jump_url}) edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=datetime.datetime.utcnow())
-				em.set_author(name=f'{before.author}', icon_url=f'{before.author.avatar_url}')
+				em = disnake.Embed(color=color.yellow, description=f'[Message]({before.jump_url}) edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=datetime.datetime.utcnow())
+				em.set_author(name=f'{before.author}', icon_url=f'{before.author.avatar.url}')
 				em.set_footer(text=f'User ID: {before.author.id}')
 
 				await asyncio.sleep(0.5)
 				try:
-					await MessageLogWebhook(em)
+					await MessageLogWebhook(em, self.bot)
 				except Exception as e:
 					await kraots.send(e)
 
 
 
 	@commands.Cog.listener()
-	async def on_message(self, message: discord.Message):
+	async def on_message(self, message: disnake.Message):
 		kraots = self.bot.get_user(374622847672254466)
 
 		if message.channel.id == 750160850593251449:
@@ -104,7 +105,7 @@ class on_message(commands.Cog):
 			return
 
 		if message.guild is None and not message.author.bot:
-			em = discord.Embed(title=f'{message.author}:', description=f'{message.content}', color=color.inviscolor, timestamp=message.created_at)
+			em = disnake.Embed(title=f'{message.author}:', description=f'{message.content}', color=color.inviscolor, timestamp=message.created_at.replace(tzinfo=None))
 			em.set_footer(text=f'User ID: {message.author.id}')
 
 			if message.attachments:

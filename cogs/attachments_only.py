@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 
 class ImagesChannel(commands.Cog):
 
@@ -7,7 +7,7 @@ class ImagesChannel(commands.Cog):
 		self.bot = bot
 
 	@commands.Cog.listener()
-	async def on_message(self, message : discord.Message):
+	async def on_message(self, message : disnake.Message):
 		if message.author.bot:
 			return
 		guild = self.bot.get_guild(750160850077089853)
