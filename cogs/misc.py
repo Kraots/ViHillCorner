@@ -189,13 +189,8 @@ class Misc(commands.Cog):
 
 	async def do_rtfm(self, ctx, key, obj):
 		page_types = {
-<<<<<<< HEAD
 			'master': 'https://discordpy.readthedocs.io/en/master',
 			'python': 'https://docs.python.org/3'
-=======
-			'latest': 'https://discordpy.readthedocs.io/en/master',
-			'python': 'https://docs.python.org/3',
->>>>>>> 5e035e2149c432cf29a27b61f6d23aaaf78e558e
 		}
 
 		if obj is None:
