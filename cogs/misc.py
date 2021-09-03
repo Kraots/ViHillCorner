@@ -189,9 +189,8 @@ class Misc(commands.Cog):
 
 	async def do_rtfm(self, ctx, key, obj):
 		page_types = {
-			'latest': 'https://discordpy.readthedocs.io/en/latest',
-			'python': 'https://docs.python.org/3',
 			'master': 'https://discordpy.readthedocs.io/en/master',
+			'python': 'https://docs.python.org/3'
 		}
 
 		if obj is None:
@@ -303,7 +302,7 @@ class Misc(commands.Cog):
 	async def rtfm(self, ctx, *, obj: str = None):
 		"""Gives you a documentation link for a discord.py entity."""
 
-		key = self.transform_rtfm_language_key(ctx, 'latest')
+		key = self.transform_rtfm_language_key(ctx, 'master')
 		await self.do_rtfm(ctx, key, obj)
 
 	@rtfm.command(name='python', aliases=['py'])
@@ -312,12 +311,6 @@ class Misc(commands.Cog):
 
 		key = self.transform_rtfm_language_key(ctx, 'python')
 		await self.do_rtfm(ctx, key, obj)
-
-	@rtfm.command(name='master', aliases=['2.0'])
-	async def rtfm_master(self, ctx, *, obj: str = None):
-		"""Gives you a documentation link for a discord.py master entity."""
-
-		await self.do_rtfm(ctx, 'master', obj)
 
 	@commands.command(aliases=['server', 'sinfo', 'si'])
 	async def serverinfo(self, ctx):

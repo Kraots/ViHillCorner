@@ -12,7 +12,6 @@ class BotHelpPageSource(menus.ListPageSource):
 		super().__init__(entries=sorted(commands.keys(), key=lambda c: c.qualified_name), per_page=6)
 		self.commands = commands
 		self.help_command = help_command
-		self.prefix = help_command.clean_prefix
 
 	def format_commands(self, cog, commands):
 		# A field can only have 1024 characters so we need to paginate a bit
@@ -144,7 +143,7 @@ class PaginatedHelpCommand(commands.HelpCommand):
 			aliases = '|'.join(command.aliases)
 			fmt = f'[{command.name}|{aliases}]'
 			if parent:
-				fmt = f'{self.clean_prefix}{parent} {fmt}'
+				fmt = f'{self.context.clean_prefix}{parent} {fmt}'
 			alias = fmt
 		else:
 			alias = command.name if not parent else f'{parent} {command.name}'
@@ -169,7 +168,7 @@ class PaginatedHelpCommand(commands.HelpCommand):
 
 	async def send_cog_help(self, cog):
 		entries = await self.filter_commands(cog.get_commands(), sort=True)
-		menu = HelpMenu(GroupHelpPageSource(cog, entries, prefix=self.clean_prefix))
+		menu = HelpMenu(GroupHelpPageSource(cog, entries, prefix=self.context.clean_prefix))
 		await menu.start(self.context)
 
 	def common_command_formatting(self, embed_like, command):
@@ -194,7 +193,7 @@ class PaginatedHelpCommand(commands.HelpCommand):
 		if len(entries) == 0:
 			return await self.send_command_help(group)
 
-		source = GroupHelpPageSource(group, entries, prefix=self.clean_prefix)
+		source = GroupHelpPageSource(group, entries, prefix=self.context.clean_prefix)
 		self.common_command_formatting(source, group)
 		menu = HelpMenu(source)
 		await menu.start(self.context)
