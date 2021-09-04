@@ -21,6 +21,8 @@ from disnake import Member
 import asyncio
 from utils import menus
 
+filter_invite = re.compile("(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
+
 class UrbanDictionaryPageSource(menus.ListPageSource):
 	BRACKETED = re.compile(r'(\[(.+?)\])')
 	def __init__(self, data):
@@ -690,6 +692,7 @@ class Misc(commands.Cog):
 	async def make_embed(self, inter: disnake.ApplicationCommandInteraction, title: str = None, description: str = None, color: str = None, image_url: str = None, footer: str = None, footer_url: str = None):
 		if description is None:
 			return await inter.response.send_message(ephemeral=True, content='`description` is a required argument that is missing.')
+		
 		if color is not None:
 			try:
 				color = await commands.ColourConverter().convert(inter, color)
@@ -697,18 +700,41 @@ class Misc(commands.Cog):
 				color = disnake.Colour.default()
 		else:
 			color = disnake.Colour.default()
+		
+		matches_description = re.findall(filter_invite, description)		
+		for description in matches_description:
+			if inter.author.id != self.bot.owner_id:
+				return await inter.response.send_message("No invites allowed!", ephemeral=True)
 		em = disnake.Embed(color=color, description=description)
+		
 		if title is not None:
+			matches_title = re.findall(filter_invite, title)
+			for title in matches_title:
+				if inter.author.id != self.bot.owner_id:
+					return await inter.response.send_message("No invites allowed!", ephemeral=True)
 			em.title = title
+		
 		if image_url is not None:
+			matches_image_url = re.findall(filter_invite, image_url)
+			for image_url in matches_image_url:
+				if inter.author.id != self.bot.owner_id:
+					return await inter.response.send_message("No invites allowed!", ephemeral=True)
 			em.set_image(url=image_url)
-		em_footer = {}
+		
+		em_footer = {}	
 		if footer is not None:
+			matches = re.findall(filter_invite, footer)
+			for footer in matches:
+				if inter.author.id != self.bot.owner_id:
+					return await inter.response.send_message("No invites allowed!", ephemeral=True)
 			em_footer['text'] = footer
+		
 		if footer_url is not None:
 			em_footer['icon_url'] = footer_url
+		
 		if len(em_footer) > 0:
 			em.set_footer(**em_footer)
+		
 		await inter.response.send_message(embed=em)
 
 	@suggest.error
