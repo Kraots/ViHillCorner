@@ -44,7 +44,7 @@ addd = """
 ﹕・Not that active unless there's someone to start the convo, then there's a 80% chance it'll be active
 ╰・Horny Peeps (mostly 1 but ok)
 
-♥︎ server link: https://disnake.gg/Uf2kA8q ♥︎
+♥︎ server link: https://discord.gg/Uf2kA8q ♥︎
 ° . · . ✧ °  .  ₊˚ˑ˚₊ . ° ✧ . · .°
 """
 
@@ -87,7 +87,7 @@ class General(commands.Cog):
 	async def perm_calc(self, ctx):
 		"""Sends the link for the permission calculator for bots."""
 
-		em = disnake.Embed(color=color.lightpink, title= " Here's the link to the permission calculator for bots. ", description = "https://disnakeapi.com/permissions.html#2147483647")
+		em = disnake.Embed(color=color.lightpink, title= " Here's the link to the permission calculator for bots. ", description = "https://discordapi.com/permissions.html#8589934591")
 		await ctx.send(embed=em)
 
 
@@ -95,7 +95,7 @@ class General(commands.Cog):
 	async def dev_portal(self, ctx):
 		"""Sends a link for the developer portal."""
 
-		em = disnake.Embed(color=color.lightpink, title = " Here's the link to dev portal. ", description="https://disnake.com/developers/applications")
+		em = disnake.Embed(color=color.lightpink, title = " Here's the link to dev portal. ", description="https://discord.com/developers/applications")
 		await ctx.send(embed=em)
 
 	@commands.command()
@@ -149,7 +149,7 @@ class General(commands.Cog):
 	async def invite(self, ctx):
 		"""Get the invite for the server."""
 
-		inv = disnake.Embed(title="https://disnake.gg/Uf2kA8q", color=color.lightpink)
+		inv = disnake.Embed(title="https://discord.gg/Uf2kA8q", color=color.lightpink)
 		inv.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar.url)
 
 		await ctx.send(embed=inv)

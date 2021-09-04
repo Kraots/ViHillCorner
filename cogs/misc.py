@@ -1,4 +1,4 @@
-from disnake.ext import commands
+from disnake.ext import commands, application_commands
 import disnake
 import sys
 import async_tio
@@ -678,6 +678,38 @@ class Misc(commands.Cog):
 			await pages.start(ctx)
 		except Exception as error:
 			await self.bot.reraise(ctx, error)
+
+	@application_commands.slash_command(name='embed', description='Creates an embed', options=[
+																			disnake.Option("title", "Creates the title of the embed", disnake.OptionType.string),
+																			disnake.Option("description", "Creates the description of the embed", disnake.OptionType.string),
+																			disnake.Option("color", "Sets the embed's color", disnake.OptionType.string),
+																			disnake.Option("image_url", "URL of the embed's image", disnake.OptionType.string),
+																			disnake.Option("footer", "Creates the footer of the embed", disnake.OptionType.string),
+																			disnake.Option("footer_url", "Sets the footer url of the embed", disnake.OptionType.string)
+																			])
+	async def make_embed(self, inter: disnake.ApplicationCommandInteraction, title: str = None, description: str = None, color: str = None, image_url: str = None, footer: str = None, footer_url: str = None):
+		if description is None:
+			return await inter.response.send_message(ephemeral=True, content='`description` is a required argument that is missing.')
+		if color is not None:
+			try:
+				color = await commands.ColourConverter().convert(inter, color)
+			except:
+				color = disnake.Colour.default()
+		else:
+			color = disnake.Colour.default()
+		em = disnake.Embed(color=color, description=description)
+		if title is not None:
+			em.title = title
+		if image_url is not None:
+			em.set_image(url=image_url)
+		em_footer = {}
+		if footer is not None:
+			em_footer['text'] = footer
+		if footer_url is not None:
+			em_footer['icon_url'] = footer_url
+		if len(em_footer) > 0:
+			em.set_footer(**em_footer)
+		await inter.response.send_message(embed=em)
 
 	@suggest.error
 	async def suggest_error(self, ctx, error):

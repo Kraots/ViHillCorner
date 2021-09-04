@@ -192,7 +192,7 @@ class Moderator(commands.Cog):
 		except:
 			pass
 
-		_reason = disnake.Embed(description="**Unban appeal server** \n https://disnake.gg/5SratjPmGc")
+		_reason = disnake.Embed(description="**Unban appeal server** \n https://discord.gg/5SratjPmGc")
 		_reason.set_image(url="https://thumbs.gfycat.com/SardonicBareArawana-small.gif")
 		msg="You have been banned from `ViHill Corner`. If you think that this has been applied in error please submit a detailed appeal at the following link."
 		
@@ -246,7 +246,7 @@ class Moderator(commands.Cog):
 		await log_channel.send(embed=em)
 
 		try:
-			msg="Congrats! You have been unbanned from `ViHill Corner`. Come back: https://disnake.gg/mFm5GrQ"
+			msg="Congrats! You have been unbanned from `ViHill Corner`. Come back: https://discord.gg/mFm5GrQ"
 			await member.send(msg)
 		except:
 			pass
