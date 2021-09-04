@@ -29,6 +29,9 @@ class ViHillCorner(commands.Bot):
 		self.reraise = reraise
 		self.snipes = {}
 
+		self.load_extension('jishaku')
+		os.environ['JISHAKU_FORCE_PAGINATOR'] = '1'
+
 		for filename in os.listdir('./cogs'):
 			if filename.endswith('.py'):
 				self.load_extension(f'cogs.{filename[:-3]}')

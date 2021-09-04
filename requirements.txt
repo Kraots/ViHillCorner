@@ -5,6 +5,7 @@ async-tio
 attrs
 braceexpand
 chardet
+git+https://github.com/Kraots/jishaku
 disnake
 dnspython
 python-dateutil
