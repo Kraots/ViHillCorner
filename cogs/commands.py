@@ -260,7 +260,7 @@ class General(commands.Cog):
 				else:
 					pass
 
-	@commands.command()
+	@commands.command(aliases=['src'])
 	async def source(self, ctx, *, command: str = None):
 		"""Sends the source of code for the specified command if any, if not then just the link to the github repository."""
 
@@ -274,7 +274,7 @@ class General(commands.Cog):
 			src = type(self.bot.help_command)
 			filename = inspect.getsourcefile(src)
 		else:
-			obj = self.bot.get_command(command.replace('.', ' '))
+			obj = self.bot.get_command(command.replace('.', ' ')) or self.bot.get_slash_command(command.replace('.', ' '))
 			if obj is None:
 				return await ctx.send('Could not find command.')
 			src = obj.callback.__code__
