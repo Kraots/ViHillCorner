@@ -666,8 +666,7 @@ class Misc(commands.Cog):
 		url = 'http://api.urbandictionary.com/v0/define'
 		async with ctx.session.get(url, params={'term': word}) as resp:
 			if resp.status != 200:
-				kraots = self.bot.get_user(self.bot.owner_id)
-				await kraots.send(embed=disnake.Embed(description=f"[`{ctx.command}`]({ctx.message.jump_url}) gave an error:\n\nWord: **{word}**\nStatus: **{resp.status}**\nReason: **{resp.reason}**"))
+				await self.bot.owner.send(embed=disnake.Embed(description=f"[`{ctx.command}`]({ctx.message.jump_url}) gave an error:\n\nWord: **{word}**\nStatus: **{resp.status}**\nReason: **{resp.reason}**"))
 				return await ctx.send(f'An error occurred. Please try again later.')
 
 			js = await resp.json()

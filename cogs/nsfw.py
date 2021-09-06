@@ -110,8 +110,7 @@ class NSFW(commands.Cog):
 		try:
 			async with self.bot.session.get(nsfw_url + categ) as resp:
 				if resp.status != 200:
-					kraots = self.bot.get_user(self.bot.owner_id)
-					await kraots.send(f"`{ctx.command} {categ}` returned\n**{await resp.json()}**")
+					await self.bot.owner.send(f"`{ctx.command} {categ}` returned\n**{await resp.json()}**")
 					return await ctx.send("There has been an error from the **API**, please try again later.")
 				content = await resp.json()
 				url = content['message']
@@ -142,8 +141,7 @@ class NSFW(commands.Cog):
 					err = await resp.json()
 					if err['error'] == 'Sorry no image were found with the criteria you gave to the API, please retry with a different criteria.':
 						return await ctx.reply('No gif found for this type of category.')
-					kraots = self.bot.get_user(self.bot.owner_id)
-					await kraots.send(f"`{ctx.command} {categ}` returned\n**{err}**")
+					await self.bot.owner.send(f"`{ctx.command} {categ}` returned\n**{err}**")
 					return await ctx.send("There has been an error from the **API**, please try again later.")
 				content = await resp.json()
 				url= content['url']
@@ -212,8 +210,7 @@ class NSFW(commands.Cog):
 		try:
 			async with self.bot.session.get(nsfw_url + categ) as resp:
 				if resp.status != 200:
-					kraots = self.bot.get_user(self.bot.owner_id)
-					await kraots.send(f"`{ctx.command} {categ}` returned\n**{resp.status}**")
+					await self.bot.owner.send(f"`{ctx.command} {categ}` returned\n**{resp.status}**")
 					return await ctx.send("There has been an error from the **API**, please try again later.")
 				content = await resp.json()
 				url = content['message']
