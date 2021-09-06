@@ -177,7 +177,7 @@ class Economy(commands.Cog):
 		em.add_field(name="Wallet Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(wallet_amt)), inline=False)
 		em.add_field(name="Bank Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(bank_amt)), inline=False)
 		em.add_field(name="Total Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(total_amt)))
-		em.set_footer(text="Rank: {}".format(index))
+		em.set_footer(text="Rank: {}".format(index), icon_url=user.avatar.url)
 		em.set_thumbnail(url=user.avatar.url)
 
 		await ctx.send(embed=em)
