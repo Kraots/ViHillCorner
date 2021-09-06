@@ -31,6 +31,8 @@ class ViHillCorner(commands.Bot):
 
 		self.load_extension('jishaku')
 		os.environ['JISHAKU_FORCE_PAGINATOR'] = '1'
+		os.environ['JISHAKU_EMBEDDED_JSK'] = '1'
+		os.environ['JISHAKU_EMBEDDED_JSK_COLOR'] = 'blurple'
 
 		for filename in os.listdir('./cogs'):
 			if filename.endswith('.py'):

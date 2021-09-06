@@ -1,4 +1,4 @@
-from disnake.ext import commands, application_commands
+from disnake.ext import commands
 import disnake
 import sys
 import async_tio
@@ -681,7 +681,7 @@ class Misc(commands.Cog):
 		except Exception as error:
 			await self.bot.reraise(ctx, error)
 
-	@application_commands.slash_command(name='embed', description='Creates an embed', options=[
+	@commands.slash_command(name='embed', description='Creates an embed', options=[
 																			disnake.Option("title", "Creates the title of the embed", disnake.OptionType.string),
 																			disnake.Option("description", "Creates the description of the embed", disnake.OptionType.string),
 																			disnake.Option("color", "Sets the embed's color", disnake.OptionType.string),
