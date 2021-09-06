@@ -177,7 +177,7 @@ class Economy(commands.Cog):
 		em.add_field(name="Wallet Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(wallet_amt)), inline=False)
 		em.add_field(name="Bank Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(bank_amt)), inline=False)
 		em.add_field(name="Total Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(total_amt)))
-		em.add_field(name="Rank", value="`#{}`".format(index))
+		em.set_footer(text="Rank: {}".format(index))
 		em.set_thumbnail(url=user.avatar.url)
 
 		await ctx.send(embed=em)
@@ -213,6 +213,7 @@ class Economy(commands.Cog):
 			
 			else:
 				index += 1
+
 		if ctx.author.id in all_users:
 			for index2, (mem, amt) in enumerate(leader_board, start = 1):
 				try:
@@ -226,7 +227,7 @@ class Economy(commands.Cog):
 					break
 				else:
 					index2 += 1
-			em.add_field(name="_ _ \nYour place:", value=f"`#{index}`")
+			em.set_footer(text=f"Your place: {index}", icon_url=ctx.author.avatar.url)
 			
 		await ctx.send(embed=em)
 
@@ -835,7 +836,7 @@ class Economy(commands.Cog):
 			ctx.command.reset_cooldown(ctx)
 			return
 
-	@commands.command(name='guess-the-number', aliases=['guess'])
+	@commands.command(name='guess-the-number', aliases=['gtn', 'guess'])
 	@commands.cooldown(1, 3, commands.BucketType.user)
 	async def eco_gtn(self, ctx):
 		"""Play a guess the number game and earn <:carrots:822122757654577183>."""
