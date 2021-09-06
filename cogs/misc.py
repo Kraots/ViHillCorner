@@ -169,8 +169,8 @@ class Misc(commands.Cog):
 			key = name if dispname == '-' else dispname
 			prefix = f'{subdirective}:' if domain == 'std' else ''
 
-			if projname == 'discord.py':
-				key = key.replace('discord.ext.commands.', '').replace('discord.', '')
+			if projname == 'disnake':
+				key = key.replace('disnake.ext.commands.', '').replace('disnake.', '')
 
 			result[f'{prefix}{key}'] = os.path.join(url, location)
 
@@ -191,7 +191,7 @@ class Misc(commands.Cog):
 
 	async def do_rtfm(self, ctx, key, obj):
 		page_types = {
-			'master': 'https://discordpy.readthedocs.io/en/master',
+			'master': 'https://disnake.readthedocs.io/en/latest',
 			'python': 'https://docs.python.org/3'
 		}
 
@@ -203,7 +203,7 @@ class Misc(commands.Cog):
 			await ctx.trigger_typing()
 			await self.build_rtfm_lookup_table(page_types)
 
-		obj = re.sub(r'^(?:discord\.(?:ext\.)?)?(?:commands\.)?(.+)', r'\1', obj)
+		obj = re.sub(r'^(?:disnake\.(?:ext\.)?)?(?:commands\.)?(.+)', r'\1', obj)
 
 		if key.startswith('latest'):
 			q = obj.lower()
@@ -302,7 +302,7 @@ class Misc(commands.Cog):
 
 	@commands.group(aliases=['rtfd'], invoke_without_command=True)
 	async def rtfm(self, ctx, *, obj: str = None):
-		"""Gives you a documentation link for a discord.py entity."""
+		"""Gives you a documentation link for a disnake entity."""
 
 		key = self.transform_rtfm_language_key(ctx, 'master')
 		await self.do_rtfm(ctx, key, obj)
