@@ -345,7 +345,7 @@ class Economy(commands.Cog):
 					item_durr = item['uses']
 				except KeyError:
 					item_durr = None
-				to_append = f"— {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} durability left)"
+				to_append = f"— {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
 				user_items.append(to_append)
 		em = disnake.Embed(color=member.color, title=f'{member.display_name}\'s inventory\n', description='\n'.join(user_items))
 		await ctx.send(embed=em)
