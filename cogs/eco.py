@@ -419,7 +419,7 @@ class Economy(commands.Cog):
 						items.append(i)
 					await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
 					await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'bank': -_item['price']}})
-					bought_for = '{:,}'.format(item['price'])
+					bought_for = '{:,}'.format(_item['price'])
 					return await ctx.reply(f"Bought `{_item['item_name']}` for **{bought_for}** <:carrots:822122757654577183>")
 
 				else:
