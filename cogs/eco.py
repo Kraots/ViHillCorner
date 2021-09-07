@@ -411,19 +411,19 @@ class Economy(commands.Cog):
 				elif _item['price'] == 'This item cannot be bought':
 					return await ctx.reply(_item['price'])
 
-				if user_bal['bank'] >= _item['price']:
+				if user_bal['wallet'] >= _item['price']:
 					items = []
 					for i in user_bal['items']:
 						if i['item_name'] == _item['item_name']:
 							i['owned'] += 1
 						items.append(i)
 					await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
-					await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'bank': -_item['price']}})
+					await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'wallet': -_item['price']}})
 					bought_for = '{:,}'.format(_item['price'])
 					return await ctx.reply(f"Bought `{_item['item_name']}` for **{bought_for}** <:carrots:822122757654577183>")
 
 				else:
-					return await ctx.reply('Insufficient bank funds.')
+					return await ctx.reply('Insufficient wallet funds.')
 
 		if item_found == False:
 			return await ctx.reply(f'Item `{item}` does not exist!')
@@ -475,7 +475,7 @@ class Economy(commands.Cog):
 								return await ctx.reply('The amount is not a number.')
 					items.append(i)
 				await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
-				await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'bank': (_item['sells_for'] * amount)}})
+				await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'wallet': (_item['sells_for'] * amount)}})
 				sold_for = '{:,}'.format(_item['sells_for'] * amount)
 				return await ctx.reply(f"Sold *{str(amount) + 'x'}* of `{_item['item_name']}` for **{sold_for}** <:carrots:822122757654577183>")
 
