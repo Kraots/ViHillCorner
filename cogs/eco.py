@@ -134,12 +134,12 @@ class EcoSearchView(disnake.ui.View):
 		if win_lose == 'win':
 			_amt = random.randrange(4600, 25001)
 			amt = '{:,}'.format(_amt)
-			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'bank': _amt}})
+			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'wallet': _amt}})
 			em.description = f'You searched `{button.label}` and got **{amt}** <:carrots:822122757654577183>'
 		else:
 			_amt = random.randrange(1000, 5001)
 			amt = '{:,}'.format(_amt)
-			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'bank': -_amt}})
+			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'wallet': -_amt}})
 			em.description = f'You searched `{button.label}` and lost **{amt}** <:carrots:822122757654577183>'
 		await inter.response.edit_message(content=None, embed=em, view=self)
 		self.stop()
@@ -155,12 +155,12 @@ class EcoSearchView(disnake.ui.View):
 		if win_lose == 'win':
 			_amt = random.randrange(4600, 25001)
 			amt = '{:,}'.format(_amt)
-			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'bank': _amt}})
+			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'wallet': _amt}})
 			em.description = f'You searched `{button.label}` and got **{amt}** <:carrots:822122757654577183>'
 		else:
 			_amt = random.randrange(1000, 5001)
 			amt = '{:,}'.format(_amt)
-			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'bank': -_amt}})
+			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'wallet': -_amt}})
 			em.description = f'You searched `{button.label}` and lost **{amt}** <:carrots:822122757654577183>'
 		await inter.response.edit_message(content=None, embed=em, view=self)
 		self.stop()
@@ -176,12 +176,12 @@ class EcoSearchView(disnake.ui.View):
 		if win_lose == 'win':
 			_amt = random.randrange(4600, 25001)
 			amt = '{:,}'.format(_amt)
-			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'bank': _amt}})
+			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'wallet': _amt}})
 			em.description = f'You searched `{button.label}` and got **{amt}** <:carrots:822122757654577183>'
 		else:
 			_amt = random.randrange(1000, 5001)
 			amt = '{:,}'.format(_amt)
-			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'bank': -_amt}})
+			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'wallet': -_amt}})
 			em.description = f'You searched `{button.label}` and lost **{amt}** <:carrots:822122757654577183>'
 		await inter.response.edit_message(content=None, embed=em, view=self)
 		self.stop()
