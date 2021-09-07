@@ -205,6 +205,9 @@ async def reraise(ctx, error):
 	elif isinstance(error, commands.errors.CommandNotFound):
 		return
 	
+	elif isinstance(error, commands.CommandOnCooldown):
+		return await ctx.send(f'This command is on cooldown!\n**{time_phaser(error.retry_after)}** remaining.')
+
 	elif isinstance(error, commands.errors.MissingRequiredArgument):
 		return await ctx.send(f"You are missing an argument! See `!help {ctx.command}` if you do not know how to use this.")
 
