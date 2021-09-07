@@ -646,7 +646,7 @@ class Economy(commands.Cog):
 		await ctx.send('You didn\'t find any animals.')
 		
 	@commands.command(name='search')
-	@commands.cooldown(1, 25.0, disnake.BucketType.member)
+	@commands.cooldown(1, 25.0, commands.BucketType.member)
 	async def eco_search(self, ctx):
 		"""Search and get or lose money."""
 
