@@ -12,6 +12,13 @@ from utils import time
 
 rps = ['rock', 'paper', 'scissors']
 
+_shop = [
+	{'item_name': 'clock', 'price': 15000, 'sells_for': 1200, 'description': 'Increases luck by 5%'},
+	{'item_name': 'alcohol', 'price': 35000, 'sells_for': 3500, 'description': 'Increases luck by 10%'},
+	{'item_name': 'fishing pole', 'price': 65000, 'sells_for': 5000, 'description': 'Use this to fish'},
+	{'item_name': 'hunting rifle', 'price': 75000, 'sells_for': 6300, 'description': 'Use this to go hunting'}
+		]
+
 class Economy(commands.Cog):
 
 	def __init__(self, bot):
@@ -96,7 +103,11 @@ class Economy(commands.Cog):
 
 		user = ctx.author
 
-		post = {"_id": user.id, "wallet": 0, "bank": 0, "daily": datetime.datetime.utcnow()}
+		shop = []
+		for item in _shop:
+			shop.append({'item_name': item['item_name'], 'owned': 0})
+
+		post = {"_id": user.id, "wallet": 0, "bank": 0, 'items': shop, "daily": datetime.datetime.utcnow()}
 
 		try:
 			await self.db.insert_one(post)
@@ -120,6 +131,114 @@ class Economy(commands.Cog):
 
 		await self.db.delete_one({"_id": user.id})
 		await ctx.send("Succesfully unregistered! %s" % (ctx.author.mention))
+
+	@commands.group(name='shop', invoke_without_command=True, case_insensitive=True)
+	async def eco_shop(self, ctx, *, item: str = None):
+		"""
+		See what items there are in the shop.
+		These items provide different perks such as luck multipliers, tools to get more <:carrots:822122757654577183>, etc...
+		"""
+
+		if item is None:
+			em = disnake.Embed(title='Shop Items', color=color.lightpink, description='Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.')
+			for _item in _shop:
+				em.add_field(name=f"{_item['item_name'].title()} — {_item['price']} <:carrots:822122757654577183>", value=_item['description'], inline=False)
+			em.set_footer(text='!shop <item_name> to see more info about an item')
+			await ctx.send(embed=em)
+
+		else:
+			item_ = item.lower()
+			item_found = False
+			user_db = await self.db.find_one({'_id': ctx.author.id})
+			index = 0
+			for _item in _shop:
+				if _item['item_name'] == item_:
+					if user_db is not None:
+						owned = user_db['items'][index]['owned']
+						item_found = True
+						em = disnake.Embed(title=f"{_item['item_name'].title()} ({owned} owned)", description=f"*{_item['description']}*\n\n**BUY** - {_item['price']} <:carrots:822122757654577183>\n**SELL** - {_item['sells_for']} <:carrots:822122757654577183>")
+						return await ctx.send(embed=em)
+					else:
+						item_found = True
+						em = disnake.Embed(title=f"{_item['item_name'].title()}", description=f"*{_item['description']}*\n\n**BUY** - {_item['price']} <:carrots:822122757654577183>\n**SELL** - {_item['sells_for']} <:carrots:822122757654577183>")
+						return await ctx.send(embed=em)
+				index += 1
+			if item_found == False:
+				return await ctx.reply(f'Item `{item}` does not exist!')
+	
+	@eco_shop.command(name='update')
+	@commands.is_owner()
+	async def eco_shop_update(self, ctx):
+		"""Update everyone's inventory to corespond with the updated shop."""
+
+		for user in await self.db.find().to_list(100000):
+			items = []
+			index = 0
+			names = [i['item_name'] for i in _shop]
+			for i in names:
+				try:
+					if i in user['items'][index]['item_name']:
+						items.append(user['items'][index])
+				except IndexError:
+					items.append({'item_name': names[index], 'owned': 0})
+				index += 1
+			await self.db.update_one({'_id': user['_id']}, {'$set': {'items': items}})
+
+	@eco_shop.command(name='buy')
+	async def eco_shop_buy(self, ctx, *, item):
+		"""Buy an item from the shop."""
+
+		item_ = item.lower()
+		item_found = False
+		for _item in _shop:
+			if _item['item_name'] == item_:
+				item_found = True
+				user_bal = await self.db.find_one({'_id': ctx.author.id})
+				if user_bal is None:
+					return await ctx.send(f'You are not registered! Type: `!register` to register {ctx.author.mention}')
+				
+				if user_bal['bank'] >= _item['price']:
+					items = []
+					for i in user_bal['items']:
+						if i['item_name'] == _item['item_name']:
+							i['owned'] += 1
+						items.append(i)
+					await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
+					await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'bank': -_item['price']}})
+					return await ctx.reply(f"Bought `{_item['item_name']}` for **{_item['price']}** <:carrots:822122757654577183>")
+
+				else:
+					return await ctx.reply('Insufficient bank funds.')
+
+		if item_found == False:
+			return await ctx.reply(f'Item `{item}` does not exist!')
+
+	@eco_shop.command(name='sell')
+	async def eco_shop_sell(self, ctx, *, item):
+		"""Sell an item that you own."""
+
+		item_ = item.lower()
+		item_found = False
+		for _item in _shop:
+			if _item['item_name'] == item_:
+				item_found = True
+				user_db = await self.db.find_one({'_id': ctx.author.id})
+				if user_db is None:
+					return await ctx.send(f'You are not registered! Type: `!register` to register {ctx.author.mention}')
+			
+				items = []
+				for i in user_db['items']:
+					if i['item_name'] == _item['item_name']:
+						if i['owned'] == 0:
+							return await ctx.reply('You do not own that item.')
+						i['owned'] -= 1
+					items.append(i)
+				await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
+				await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'bank': _item['sells_for']}})
+				return await ctx.reply(f"Sold `{_item['item_name']}` for **{_item['sells_for']}** <:carrots:822122757654577183>")
+
+		if item_found == False:
+			return await ctx.reply(f'Item `{item}` does not exist!')
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bal'])
 	async def balance(self, ctx, member: disnake.Member = None):
