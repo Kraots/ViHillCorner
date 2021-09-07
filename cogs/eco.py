@@ -629,6 +629,8 @@ class Economy(commands.Cog):
 		if user_db is not None:
 			view = EcoSearchView(ctx)
 			view.message = await ctx.send('**Where do you want to search?**\n*Pick an option below to start searching that location*', view=view)
+		else:
+			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bal'])
 	async def balance(self, ctx, member: disnake.Member = None):
