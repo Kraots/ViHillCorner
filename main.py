@@ -45,6 +45,7 @@ class ViHillCorner(commands.Bot):
 	async def on_ready(self):
 		if not hasattr(self, 'uptime'):
 			self.uptime = datetime.datetime.utcnow()
+			self._owner = await self.fetch_user(374622847672254466)
 
 	async def process_commands(self, message):
 		ctx = await self.get_context(message, cls=context.Context)
