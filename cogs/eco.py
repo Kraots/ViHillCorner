@@ -417,16 +417,18 @@ class Economy(commands.Cog):
 		for _item in _shop:
 			if _item['item_name'] == item_:
 				item_found = True
-				user_bal = await self.db.find_one({'_id': ctx.author.id})
-				if user_bal is None:
+				user_db = await self.db.find_one({'_id': ctx.author.id})
+				if user_db is None:
 					return await ctx.send(f'You are not registered! Type: `!register` to register {ctx.author.mention}')
 				elif _item['price'] == 'This item cannot be bought':
 					return await ctx.reply(_item['price'])
 
-				if user_bal['wallet'] >= _item['price']:
+				if user_db['wallet'] >= _item['price']:
 					items = []
-					for i in user_bal['items']:
+					for i in user_db['items']:
 						if i['item_name'] == _item['item_name']:
+							if i['owned'] > 0 and i['item_name'] in ['hunting rifle', 'fishing pole']:
+								return await ctx.reply('You can only have one of this item.')
 							i['owned'] += 1
 						items.append(i)
 					await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
