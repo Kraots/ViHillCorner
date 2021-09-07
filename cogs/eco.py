@@ -287,7 +287,10 @@ class Economy(commands.Cog):
 
 		shop = []
 		for item in _shop:
-			shop.append({'item_name': item['item_name'], 'owned': 0, 'uses': item['uses']})
+			try:
+				shop.append({'item_name': item['item_name'], 'owned': 0, 'uses': item['uses']})
+			except KeyError:
+				shop.append({'item_name': item['item_name'], 'owned': 0})
 
 		post = {"_id": user.id, "wallet": 0, "bank": 0, "items": shop, "items_in_use": [], "daily": datetime.datetime.utcnow()}
 
@@ -335,7 +338,16 @@ class Economy(commands.Cog):
 				_count += 1
 		if _count == len(user_db['items']):
 			return await ctx.send('The inventory is empty, nothing to see.')
-		em = disnake.Embed(color=member.color, title=f'{member.display_name}\'s inventory\n', description='\n'.join([f"— {item['item_name'].title()} ({item['owned']} owned)" for item in user_db['items'] if item['owned'] != 0]))
+		user_items = []
+		for item in user_db['items']:
+			if item['owned'] != 0:
+				try:
+					item_durr = item['uses']
+				except KeyError:
+					item_durr = None
+				to_append = f"— {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} durability left)"
+				user_items.append(to_append)
+		em = disnake.Embed(color=member.color, title=f'{member.display_name}\'s inventory\n', description='\n'.join(user_items))
 		await ctx.send(embed=em)
 
 	@commands.group(name='shop', invoke_without_command=True, case_insensitive=True)
