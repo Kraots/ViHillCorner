@@ -588,6 +588,7 @@ class Economy(commands.Cog):
 				uses = item['uses']
 				if uses == 0:
 					item['owned'] -= 1
+					item['uses'] = int(''.join([i['uses'] for i in _shop if i['item_name'] == item['item_name']])) 
 					item_broke = True
 				item['uses'] -= 1
 			items_.append(item)
@@ -644,6 +645,7 @@ class Economy(commands.Cog):
 				uses = item['uses']
 				if uses == 0:
 					item['owned'] -= 1
+					item['uses'] = int(''.join([i['uses'] for i in _shop if i['item_name'] == item['item_name']]))
 					item_broke = True
 				item['uses'] -= 1
 			items_.append(item)
