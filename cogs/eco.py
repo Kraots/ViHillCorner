@@ -55,8 +55,8 @@ rps = ['rock', 'paper', 'scissors']
 _shop = [
 	{'item_name': 'clock', 'price': 15000, 'sells_for': 1200, 'description': 'Increases luck by 5% for 2h', 'expires_in': {'hours': 2}},
 	{'item_name': 'alcohol', 'price': 35000, 'sells_for': 3500, 'description': 'Increases luck by 10% for 1h', 'expires_in': {'hours': 1}},
-	{'item_name': 'fishing pole', 'price': 65000, 'sells_for': 5000, 'description': 'Use this to fish'},
-	{'item_name': 'hunting rifle', 'price': 75000, 'sells_for': 6300, 'description': 'Use this to go hunting'},
+	{'item_name': 'fishing pole', 'price': 65000, 'sells_for': 5000, 'description': 'Use this to fish', 'uses': 25},
+	{'item_name': 'hunting rifle', 'price': 75000, 'sells_for': 6300, 'description': 'Use this to go hunting', 'uses': 35},
 	{'item_name': 'common fish', 'price': 'This item cannot be bought', 'sells_for': 10000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
 	{'item_name': 'uncommon fish', 'price': 'This item cannot be bought', 'sells_for': 25000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
 	{'item_name': 'rare fish', 'price': 'This item cannot be bought', 'sells_for': 50000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
@@ -287,7 +287,7 @@ class Economy(commands.Cog):
 
 		shop = []
 		for item in _shop:
-			shop.append({'item_name': item['item_name'], 'owned': 0})
+			shop.append({'item_name': item['item_name'], 'owned': 0, 'uses': item['uses']})
 
 		post = {"_id": user.id, "wallet": 0, "bank": 0, "items": shop, "items_in_use": [], "daily": datetime.datetime.utcnow()}
 
@@ -561,17 +561,20 @@ class Economy(commands.Cog):
 					ctx.command.reset_cooldown(ctx)
 					return await ctx.reply('You do not own a fishing pole.')
 				break
-
-		breaking_point = (6, 17, 23, 25, 29, 57)
 		rn = random.randrange(-10, 131)
-		rn_ = random.randrange(0, 81)
-		if rn_ in breaking_point:
-			items = []
-			for item in user_db['items']:
-				if item['item_name'] == 'fishing pole':
+		
+		items_ = []
+		item_broke = False
+		for item in user_db['items']:
+			if item['item_name'] == 'fishing pole':
+				uses = item['uses']
+				if uses == 0:
 					item['owned'] -= 1
-				items.append(item)
-			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
+					item_broke = True
+				item['uses'] -= 1
+			items_.append(item)
+		if item_broke is not False:
+			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items_}})
 			return await ctx.send('Your fishing pole broke.')
 
 		for fish in _fishes:
@@ -615,16 +618,19 @@ class Economy(commands.Cog):
 					return await ctx.reply('You do not own a hunting rifle.')
 				break
 
-		breaking_point = (6, 17, 23, 25, 29, 57)
 		rn = random.randrange(-10, 131)
-		rn_ = random.randrange(0, 81)
-		if rn_ in breaking_point:
-			items = []
-			for item in user_db['items']:
-				if item['item_name'] == 'hunting rifle':
+		items_ = []
+		item_broke = False
+		for item in user_db['items']:
+			if item['item_name'] == 'hunting rifle':
+				uses = item['uses']
+				if uses == 0:
 					item['owned'] -= 1
-				items.append(item)
-			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
+					item_broke = True
+				item['uses'] -= 1
+			items_.append(item)
+		if item_broke is not False:
+			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items_}})
 			return await ctx.send('Your hunting rifle broke.')
 
 		for animal in _animals:
