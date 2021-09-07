@@ -591,8 +591,8 @@ class Economy(commands.Cog):
 					item_broke = True
 				item['uses'] -= 1
 			items_.append(item)
+		await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items_}})
 		if item_broke is not False:
-			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items_}})
 			return await ctx.send('Your fishing pole broke.')
 
 		for fish in _fishes:
@@ -647,8 +647,8 @@ class Economy(commands.Cog):
 					item_broke = True
 				item['uses'] -= 1
 			items_.append(item)
+		await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items_}})
 		if item_broke is not False:
-			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items_}})
 			return await ctx.send('Your hunting rifle broke.')
 
 		for animal in _animals:
