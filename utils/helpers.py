@@ -229,7 +229,7 @@ async def reraise(ctx, error):
 		get_error = "".join(format_exception(error, error, error.__traceback__))
 		em = disnake.Embed(description=f'```py\n{get_error}\n```')
 		if ctx.guild.id == 750160850077089853:
-			await ctx.bot.owner.send(content=f"**An error occured with the command `{ctx.command}`, here is the error:**", embed=em)
+			await ctx.bot._owner.send(content=f"**An error occured with the command `{ctx.command}`, here is the error:**", embed=em)
 			em = disnake.Embed(title='Oops... An error has occured.', description='An error has occured while invoking this command and has been sent to my master to fix it.', color=color.red)
 			await ctx.send(embed=em)
 		else:
