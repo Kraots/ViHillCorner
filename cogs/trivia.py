@@ -4,7 +4,7 @@ from disnake.ext import commands
 import disnake
 import games
 
-class TriviaCommands(commands.Cog):
+class Trivia(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
@@ -213,4 +213,4 @@ class TriviaCommands(commands.Cog):
 		await self.db.delete_one({'_id': member.id})
 
 def setup(bot):
-	bot.add_cog(TriviaCommands(bot))
+	bot.add_cog(Trivia(bot))
