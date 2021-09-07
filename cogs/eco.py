@@ -8,16 +8,71 @@ from utils.helpers import time_phaser, format_balance
 import pymongo
 import datetime
 from dateutil.relativedelta import relativedelta
-from utils import time
+from utils import time, menus
+from utils.paginator import CustomRobo
+
+class ShopEcoMenus(menus.ListPageSource):
+	def __init__(self, entries, *, per_page=12):
+		super().__init__(entries, per_page=per_page)
+		
+	async def format_page(self, menu, entries):
+		pages = []
+		for index, entry in enumerate(entries, start=menu.current_page * self.per_page):
+			pages.append(f'{entry}')
+
+		maximum = self.get_max_pages()
+		if maximum > 1:
+			footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} entries)'
+			menu.embed.set_footer(text=footer)
+	
+		menu.embed.description = 'Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.\n\n{}'.format("\n\n".join(pages).replace('This item cannot be bought <:carrots:822122757654577183>', 'This item cannot be bought'))
+		return menu.embed
+
+class ShopEcoMenu(CustomRobo):
+	def __init__(self, entries, *, per_page=12, color=None):
+		super().__init__(ShopEcoMenus(entries, per_page=per_page))
+		if color == None:
+			color = disnake.Color.blurple()
+		self.embed = disnake.Embed(colour=color, title='Shop Items')
+
+class ShopPageEntry:
+	def __init__(self, entry):
+
+		self.name = entry['item_name']
+		self.price = entry['price']
+		self.desc = entry['description']
+
+	def __str__(self):
+		return f'**{self.name.title()} — {self.price} <:carrots:822122757654577183>**\n{self.desc}'
+
+class ShopMenu(ShopEcoMenu):
+	def __init__(self, entries, *, per_page = 5, color = disnake.Color.blurple()):
+		converted = [ShopPageEntry(entry) for entry in entries]
+		super().__init__(converted, per_page=per_page, color=color)
 
 rps = ['rock', 'paper', 'scissors']
 
 _shop = [
-	{'item_name': 'clock', 'price': 15000, 'sells_for': 1200, 'description': 'Increases luck by 5%'},
-	{'item_name': 'alcohol', 'price': 35000, 'sells_for': 3500, 'description': 'Increases luck by 10%'},
+	{'item_name': 'clock', 'price': 15000, 'sells_for': 1200, 'description': 'Increases luck by 5% for 2h'},
+	{'item_name': 'alcohol', 'price': 35000, 'sells_for': 3500, 'description': 'Increases luck by 10% for 1h'},
 	{'item_name': 'fishing pole', 'price': 65000, 'sells_for': 5000, 'description': 'Use this to fish'},
-	{'item_name': 'hunting rifle', 'price': 75000, 'sells_for': 6300, 'description': 'Use this to go hunting'}
+	{'item_name': 'hunting rifle', 'price': 75000, 'sells_for': 6300, 'description': 'Use this to go hunting'},
+	{'item_name': 'common fish', 'price': 'This item cannot be bought', 'sells_for': 10000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_name': 'uncommon fish', 'price': 'This item cannot be bought', 'sells_for': 25000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_name': 'rare fish', 'price': 'This item cannot be bought', 'sells_for': 50000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_name': 'epic fish', 'price': 'This item cannot be bought', 'sells_for': 225000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_name': 'legendary fish', 'price': 'This item cannot be bought', 'sells_for': 500000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_name': 'mythic fish', 'price': 'This item cannot be bought', 'sells_for': 1000000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'}
 		]
+
+_fishes = [
+	{'fish': 'common fish', 'chances': (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44)},
+	{'fish': 'uncommon fish', 'chances': (45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74)},
+	{'fish': 'rare fish', 'chances': (75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89)},
+	{'fish': 'epic fish', 'chances': (90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101)},
+	{'fish': 'legendary fish', 'chances': (102, 103, 104, 105, 106, 107)},
+	{'fish': 'mythic fish', 'chances': (108, 109, 110)}
+			]
 
 class Economy(commands.Cog):
 
@@ -132,6 +187,22 @@ class Economy(commands.Cog):
 		await self.db.delete_one({"_id": user.id})
 		await ctx.send("Succesfully unregistered! %s" % (ctx.author.mention))
 
+	@commands.command(aliases=['bag'])
+	async def inventory(self, ctx, member: disnake.Member = None):
+		"""Check your or someone else's inventory."""
+
+		member = member or ctx.author
+
+		user_db = await self.db.find_one({'_id': member.id})
+		if user_db is None:
+			if member.id == ctx.author.id:
+				return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+			else:
+				return await ctx.send("User is not registered! %s" % (ctx.author.mention))
+
+		em = disnake.Embed(color=member.color, title=f'{member.display_name}\'s inventory\n', description='\n'.join([f"— {item['item_name']} ({item['owned']} owned)" for item in user_db['items'] if item['owned'] != 0]))
+		await ctx.send(embed=em)
+
 	@commands.group(name='shop', invoke_without_command=True, case_insensitive=True)
 	async def eco_shop(self, ctx, *, item: str = None):
 		"""
@@ -140,11 +211,8 @@ class Economy(commands.Cog):
 		"""
 
 		if item is None:
-			em = disnake.Embed(title='Shop Items', color=color.lightpink, description='Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.')
-			for _item in _shop:
-				em.add_field(name=f"{_item['item_name'].title()} — {_item['price']} <:carrots:822122757654577183>", value=_item['description'], inline=False)
-			em.set_footer(text='!shop <item_name> to see more info about an item')
-			await ctx.send(embed=em)
+			p = ShopMenu(entries=_shop)
+			await p.start(ctx)
 
 		else:
 			item_ = item.lower()
@@ -183,6 +251,7 @@ class Economy(commands.Cog):
 					items.append({'item_name': names[index], 'owned': 0})
 				index += 1
 			await self.db.update_one({'_id': user['_id']}, {'$set': {'items': items}})
+		await ctx.reply('Successfully updated everyone\'s shop.')
 
 	@eco_shop.command(name='buy')
 	async def eco_shop_buy(self, ctx, *, item):
@@ -196,7 +265,9 @@ class Economy(commands.Cog):
 				user_bal = await self.db.find_one({'_id': ctx.author.id})
 				if user_bal is None:
 					return await ctx.send(f'You are not registered! Type: `!register` to register {ctx.author.mention}')
-				
+				elif _item['price'] == 'This item cannot be bought':
+					return await ctx.reply(_item['price'])
+
 				if user_bal['bank'] >= _item['price']:
 					items = []
 					for i in user_bal['items']:
@@ -217,6 +288,16 @@ class Economy(commands.Cog):
 	async def eco_shop_sell(self, ctx, *, item):
 		"""Sell an item that you own."""
 
+		def check(m):
+			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+		await ctx.send('What\'s the amount of this item that you wish to sell?')
+		try:
+			amt = await self.bot.wait_for('message', check=check, timeout=7)
+		except asyncio.TimeoutError:
+			amount = None
+		else:
+			amount = amt.content.lower()
+
 		item_ = item.lower()
 		item_found = False
 		for _item in _shop:
@@ -231,14 +312,70 @@ class Economy(commands.Cog):
 					if i['item_name'] == _item['item_name']:
 						if i['owned'] == 0:
 							return await ctx.reply('You do not own that item.')
-						i['owned'] -= 1
+						if amount == 'all':
+							amount = i['owned']
+							i['owned'] -= i['owned']
+						elif amount is None:
+							i['owned'] -= 1
+						else:
+							try:
+								amount = int(amount)
+								if i['owned'] >= amount:
+									i['owned'] -= amount
+								else:
+									return await ctx.reply(f'You do not have `{amount}` **{item}.**')
+							except ValueError:
+								return await ctx.reply('The amount is not a number.')
 					items.append(i)
 				await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
-				await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'bank': _item['sells_for']}})
-				return await ctx.reply(f"Sold `{_item['item_name']}` for **{_item['sells_for']}** <:carrots:822122757654577183>")
+				await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'bank': (_item['sells_for'] * amount)}})
+				return await ctx.reply(f"Sold *{str(amount) + 'x' if isinstance(amount, int) else 'all'}* of `{_item['item_name']}` for **{_item['sells_for'] * amount}** <:carrots:822122757654577183>")
 
 		if item_found == False:
 			return await ctx.reply(f'Item `{item}` does not exist!')
+
+	@commands.command(name='fish')
+	@commands.cooldown(1, 60.0, commands.BucketType.member)
+	async def eco_fish(self, ctx):
+		"""
+		Go fishing and sell the fish that you get, if you get any.
+		***Requires 1x fishing pool.***
+		"""
+		
+		user_db = await self.db.find_one({'_id': ctx.author.id})
+		if user_db == None:
+			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+		
+		for item in user_db['items']:
+			if item['item_name'] == 'fishing pole':
+				if item['owned'] == 0:
+					ctx.command.reset_cooldown(ctx)
+					return await ctx.reply('You do not own a fishing pole.')
+				break
+
+		breaking_point = (6,  17, 23, 25, 29, 57)
+		rn = random.randrange(-10, 131)
+		rn_ = random.randrange(0, 81)
+		if rn_ in breaking_point:
+			items = []
+			for item in user_db['items']:
+				if item['item_name'] == 'fishing pole':
+					item['owned'] -= 1
+				items.append(item)
+			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
+			return await ctx.send('Your fishing pole broke.')
+
+		for fish in _fishes:
+			if rn in fish['chances']:
+				items = []
+				for item in user_db['items']:
+					if item['item_name'] == fish['fish']:
+						item['owned'] += 1
+					items.append(item)
+				await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
+				return await ctx.send(f"You found `{fish['fish']}`")
+		await ctx.send('You didn\'t find any fishes')
+		
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bal'])
 	async def balance(self, ctx, member: disnake.Member = None):
