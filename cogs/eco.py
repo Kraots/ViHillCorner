@@ -400,7 +400,10 @@ class Economy(commands.Cog):
 					if i in user['items'][index]['item_name']:
 						items.append(user['items'][index])
 				except IndexError:
-					items.append({'item_name': names[index], 'owned': 0})
+					try:
+						item.append({'item_name': names[index], 'owned': 0, 'uses': int(''.join([str(i['uses']) for i in _shop if i['item_name'] == names[index]]))})
+					except KeyError:
+						items.append({'item_name': names[index], 'owned': 0})
 				index += 1
 			await self.db.update_one({'_id': user['_id']}, {'$set': {'items': items}})
 		await ctx.reply('Successfully updated everyone\'s shop.')
