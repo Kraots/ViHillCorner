@@ -22,7 +22,7 @@ class ShopEcoMenus(menus.ListPageSource):
 
 		maximum = self.get_max_pages()
 		if maximum > 1:
-			footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} entries)'
+			footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} items)'
 			menu.embed.set_footer(text=footer)
 	
 		menu.embed.description = 'Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.\n\n{}'.format("\n\n".join(pages).replace('This item cannot be bought <:carrots:822122757654577183>', 'This item cannot be bought'))
@@ -31,8 +31,8 @@ class ShopEcoMenus(menus.ListPageSource):
 class ShopEcoMenu(CustomRobo):
 	def __init__(self, entries, *, per_page=12, color=None):
 		super().__init__(ShopEcoMenus(entries, per_page=per_page))
-		if color == None:
-			color = disnake.Color.blurple()
+		if color is None:
+			color = disnake.Embed.Empty
 		self.embed = disnake.Embed(colour=color, title='Shop Items')
 
 class ShopPageEntry:
@@ -46,7 +46,7 @@ class ShopPageEntry:
 		return f'**{self.name.title()} — {self.price} <:carrots:822122757654577183>**\n{self.desc}'
 
 class ShopMenu(ShopEcoMenu):
-	def __init__(self, entries, *, per_page = 5, color = disnake.Color.blurple()):
+	def __init__(self, entries, *, per_page = 5, color=None):
 		converted = [ShopPageEntry(entry) for entry in entries]
 		super().__init__(converted, per_page=per_page, color=color)
 
@@ -62,7 +62,13 @@ _shop = [
 	{'item_name': 'rare fish', 'price': 'This item cannot be bought', 'sells_for': 50000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
 	{'item_name': 'epic fish', 'price': 'This item cannot be bought', 'sells_for': 225000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
 	{'item_name': 'legendary fish', 'price': 'This item cannot be bought', 'sells_for': 500000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_name': 'mythic fish', 'price': 'This item cannot be bought', 'sells_for': 1000000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'}
+	{'item_name': 'mythic fish', 'price': 'This item cannot be bought', 'sells_for': 1000000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_name': 'skunk', 'price': 'This item cannot be bought', 'sells_for': 10000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_name': 'boar', 'price': 'This item cannot be bought', 'sells_for': 30000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_name': 'bear', 'price': 'This item cannot be bought', 'sells_for': 63000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_name': 'crocodile', 'price': 'This item cannot be bought', 'sells_for': 230000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_name': 'lion', 'price': 'This item cannot be bought', 'sells_for': 560000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_name': 'dragon', 'price': 'This item cannot be bought', 'sells_for': 1250000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'}
 		]
 
 _fishes = [
@@ -72,6 +78,15 @@ _fishes = [
 	{'fish': 'epic fish', 'chances': (90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101)},
 	{'fish': 'legendary fish', 'chances': (102, 103, 104, 105, 106, 107)},
 	{'fish': 'mythic fish', 'chances': (108, 109, 110)}
+			]
+
+_animals = [
+	{'animal': 'skunk', 'chances': (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44)},
+	{'animal': 'boar', 'chances': (45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74)},
+	{'animal': 'bear', 'chances': (75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89)},
+	{'animal': 'crocodile', 'chances': (90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101)},
+	{'animal': 'lion', 'chances': (102, 103, 104, 105, 106, 107)},
+	{'animal': 'dragon', 'chances': (108, 109, 110)}
 			]
 
 all_search_choices = ['purse', 'discord', 'pocket', 'street', 'dog', 'uber', 'canals', 'washer', 'sink', 'fridge', 'area51', 'dumpster', 'couch', 'dress', 'tree', 'glovebox']
@@ -338,14 +353,16 @@ class Economy(commands.Cog):
 			index = 0
 			for _item in _shop:
 				if _item['item_name'] == item_:
+					sell_price = '{:,} <:carrots:822122757654577183>'.format(_item['sells_for'])
+					buy_price = '{:,} <:carrots:822122757654577183>'.format(_item['price']) if isinstance(_item['price'], int) else _item['price']
 					if user_db is not None:
 						owned = user_db['items'][index]['owned']
 						item_found = True
-						em = disnake.Embed(title=f"{_item['item_name'].title()} ({owned} owned)", description=f"*{_item['description']}*\n\n**BUY** - {_item['price']} <:carrots:822122757654577183>\n**SELL** - {_item['sells_for']} <:carrots:822122757654577183>")
+						em = disnake.Embed(title=f"{_item['item_name'].title()} ({owned} owned)", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
 						return await ctx.send(embed=em)
 					else:
 						item_found = True
-						em = disnake.Embed(title=f"{_item['item_name'].title()}", description=f"*{_item['description']}*\n\n**BUY** - {_item['price']} <:carrots:822122757654577183>\n**SELL** - {_item['sells_for']} <:carrots:822122757654577183>")
+						em = disnake.Embed(title=f"{_item['item_name'].title()}", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
 						return await ctx.send(embed=em)
 				index += 1
 			if item_found == False:
@@ -446,7 +463,8 @@ class Economy(commands.Cog):
 					items.append(i)
 				await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
 				await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'bank': (_item['sells_for'] * amount)}})
-				return await ctx.reply(f"Sold *{str(amount) + 'x' if isinstance(amount, int) else 'all'}* of `{_item['item_name']}` for **{_item['sells_for'] * amount}** <:carrots:822122757654577183>")
+				sold_for = '{:,}'.format(_item['sells_for'] * amount)
+				return await ctx.reply(f"Sold *{str(amount) + 'x'}* of `{_item['item_name']}` for **{sold_for}** <:carrots:822122757654577183>")
 
 		if item_found == False:
 			return await ctx.reply(f'Item `{item}` does not exist!')
@@ -551,7 +569,57 @@ class Economy(commands.Cog):
 					items.append(item)
 				await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
 				return await ctx.send(f"You found `{fish['fish']}`")
-		await ctx.send('You didn\'t find any fishes')
+		await ctx.send('You didn\'t find any fishes.')
+
+	@commands.command(name='hunt')
+	@commands.cooldown(1, 60.0, commands.BucketType.member)
+	async def eco_hunt(self, ctx):
+		"""
+		Go hunting and sell the animals that you get, if you get any.
+		***Requires 1x hunting rifle.***
+		"""
+		
+		user_db = await self.db.find_one({'_id': ctx.author.id})
+		if user_db == None:
+			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+		
+		for item in user_db['items']:
+			if item['item_name'] == 'hunting rifle':
+				if item['owned'] == 0:
+					ctx.command.reset_cooldown(ctx)
+					return await ctx.reply('You do not own a hunting rifle.')
+				break
+
+		breaking_point = (6, 17, 23, 25, 29, 57)
+		rn = random.randrange(-10, 131)
+		rn_ = random.randrange(0, 81)
+		if rn_ in breaking_point:
+			items = []
+			for item in user_db['items']:
+				if item['item_name'] == 'hunting rifle':
+					item['owned'] -= 1
+				items.append(item)
+			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
+			return await ctx.send('Your hunting rifle broke.')
+
+		for animal in _animals:
+			chances = animal['chances']
+			for i in user_db['items_in_use']:
+				if i['name'] == 'clock':
+					chances = list(chances) + [111, 115, 120, 125]
+					chances = tuple(chances)
+				if i['name'] == 'alcohol':
+					chances = list(chances) + [-1, -5, -9, -7, 111, 115, 120, 125, 130, 117, 118]
+					chances = tuple(chances)
+			if rn in chances:
+				items = []
+				for item in user_db['items']:
+					if item['item_name'] == animal['animal']:
+						item['owned'] += 1
+					items.append(item)
+				await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
+				return await ctx.send(f"You found `{animal['animal']}`")
+		await ctx.send('You didn\'t find any animals.')
 		
 	@commands.command(name='search')
 	async def eco_search(self, ctx):
