@@ -107,7 +107,7 @@ while True:
 		break
 
 class EcoSearchView(disnake.ui.View):
-	def __init__(self, ctx, *, timeout=5.0):
+	def __init__(self, ctx, *, timeout=10.0):
 		super().__init__(timeout=timeout)
 		self.ctx = ctx
 	

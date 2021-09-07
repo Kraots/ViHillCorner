@@ -155,7 +155,7 @@ def time_phaser(seconds):
 	if m > 0:
 		output = output + str(int(round(m, 0))) + " minutes "
 	if s > 0:
-		output = output + str(int(round(s, 0))) + " seconds "
+		output = output + str(int(round(s, 0))) + " seconds"
 	return output
 
 def Developer(ctx):
