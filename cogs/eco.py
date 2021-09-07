@@ -419,7 +419,8 @@ class Economy(commands.Cog):
 						items.append(i)
 					await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
 					await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'bank': -_item['price']}})
-					return await ctx.reply(f"Bought `{_item['item_name']}` for **{_item['price']}** <:carrots:822122757654577183>")
+					bought_for = '{:,}'.format(item['price'])
+					return await ctx.reply(f"Bought `{_item['item_name']}` for **{bought_for}** <:carrots:822122757654577183>")
 
 				else:
 					return await ctx.reply('Insufficient bank funds.')
@@ -540,7 +541,7 @@ class Economy(commands.Cog):
 		await ctx.send(embed=em)
 
 	@commands.command(name='fish')
-	@commands.cooldown(1, 60.0, commands.BucketType.member)
+	@commands.cooldown(1, 35.0, commands.BucketType.member)
 	async def eco_fish(self, ctx):
 		"""
 		Go fishing and sell the fish that you get, if you get any.
@@ -593,7 +594,7 @@ class Economy(commands.Cog):
 		await ctx.send('You didn\'t find any fishes.')
 
 	@commands.command(name='hunt')
-	@commands.cooldown(1, 60.0, commands.BucketType.member)
+	@commands.cooldown(1, 45.0, commands.BucketType.member)
 	async def eco_hunt(self, ctx):
 		"""
 		Go hunting and sell the animals that you get, if you get any.
