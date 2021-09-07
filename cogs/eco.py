@@ -1,5 +1,5 @@
 import disnake
-from disnake.ext import commands
+from disnake.ext import commands, tasks
 from random import randint
 import random
 import utils.colors as color
@@ -53,8 +53,8 @@ class ShopMenu(ShopEcoMenu):
 rps = ['rock', 'paper', 'scissors']
 
 _shop = [
-	{'item_name': 'clock', 'price': 15000, 'sells_for': 1200, 'description': 'Increases luck by 5% for 2h'},
-	{'item_name': 'alcohol', 'price': 35000, 'sells_for': 3500, 'description': 'Increases luck by 10% for 1h'},
+	{'item_name': 'clock', 'price': 15000, 'sells_for': 1200, 'description': 'Increases luck by 5% for 2h', 'expires_in': {'hours': 2}},
+	{'item_name': 'alcohol', 'price': 35000, 'sells_for': 3500, 'description': 'Increases luck by 10% for 1h', 'expires_in': {'hours': 1}},
 	{'item_name': 'fishing pole', 'price': 65000, 'sells_for': 5000, 'description': 'Use this to fish'},
 	{'item_name': 'hunting rifle', 'price': 75000, 'sells_for': 6300, 'description': 'Use this to go hunting'},
 	{'item_name': 'common fish', 'price': 'This item cannot be bought', 'sells_for': 10000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
@@ -74,14 +74,127 @@ _fishes = [
 	{'fish': 'mythic fish', 'chances': (108, 109, 110)}
 			]
 
+all_search_choices = ['purse', 'discord', 'pocket', 'street', 'dog', 'uber', 'canals', 'washer', 'sink', 'fridge', 'area51', 'dumpster', 'couch', 'dress', 'tree', 'glovebox']
+search1 = random.choice(all_search_choices)
+search2 = random.choice(all_search_choices)
+search3 = random.choice(all_search_choices)
+while True:
+	if search2 == search1:
+		search2 = random.choice(all_search_choices)
+	else:
+		break
+while True:
+	if search3 == search1:
+		search3 = random.choice(all_search_choices)
+	elif search3 == search2:
+		search3 = random.choice(all_search_choices)
+	else:
+		break
+
+class EcoSearchView(disnake.ui.View):
+	def __init__(self, ctx, *, timeout=5.0):
+		super().__init__(timeout=timeout)
+		self.ctx = ctx
+	
+	async def interaction_check(self, interaction: disnake.MessageInteraction):
+		return self.ctx.author.id == interaction.author.id
+
+	async def on_error(self, error: Exception, item, interaction):
+		return await self.ctx.bot.reraise(self.ctx, error)
+
+	async def on_timeout(self):
+		for item in self.children:
+			item.disabled = True
+			item.style = disnake.ButtonStyle.grey
+		await self.message.edit('Guess you didn\'t want to search anywhere 🙄', view=self)
+		
+	@disnake.ui.button(label=search1, style=disnake.ButtonStyle.blurple)
+	async def search_1_result(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		for item in self.children:
+			item.disabled = True
+			if not item.label == button.label:
+				item.style = disnake.ButtonStyle.grey
+		em = disnake.Embed(color=color.lightpink, title=f'{inter.author.display_name} searched {button.label}')
+		win_lose = random.choice(['win', 'lose', 'win', 'lose', 'win'])
+		if win_lose == 'win':
+			_amt = random.randrange(4600, 25001)
+			amt = '{:,}'.format(_amt)
+			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'bank': _amt}})
+			em.description = f'You searched `{button.label}` and got **{amt}** <:carrots:822122757654577183>'
+		else:
+			_amt = random.randrange(1000, 5001)
+			amt = '{:,}'.format(_amt)
+			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'bank': -_amt}})
+			em.description = f'You searched `{button.label}` and lost **{amt}** <:carrots:822122757654577183>'
+		await inter.response.edit_message(content=None, embed=em, view=self)
+		self.stop()
+	
+	@disnake.ui.button(label=search2, style=disnake.ButtonStyle.blurple)
+	async def search_2_result(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		for item in self.children:
+			item.disabled = True
+			if not item.label == button.label:
+				item.style = disnake.ButtonStyle.grey
+		em = disnake.Embed(color=color.lightpink, title=f'{inter.author.display_name} searched {button.label}')
+		win_lose = random.choice(['win', 'lose', 'win', 'lose', 'win'])
+		if win_lose == 'win':
+			_amt = random.randrange(4600, 25001)
+			amt = '{:,}'.format(_amt)
+			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'bank': _amt}})
+			em.description = f'You searched `{button.label}` and got **{amt}** <:carrots:822122757654577183>'
+		else:
+			_amt = random.randrange(1000, 5001)
+			amt = '{:,}'.format(_amt)
+			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'bank': -_amt}})
+			em.description = f'You searched `{button.label}` and lost **{amt}** <:carrots:822122757654577183>'
+		await inter.response.edit_message(content=None, embed=em, view=self)
+		self.stop()
+	
+	@disnake.ui.button(label=search3, style=disnake.ButtonStyle.blurple)
+	async def search_3_result(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		for item in self.children:
+			item.disabled = True
+			if not item.label == button.label:
+				item.style = disnake.ButtonStyle.grey
+		em = disnake.Embed(color=color.lightpink, title=f'{inter.author.display_name} searched {button.label}')
+		win_lose = random.choice(['win', 'lose', 'win', 'lose', 'win'])
+		if win_lose == 'win':
+			_amt = random.randrange(4600, 25001)
+			amt = '{:,}'.format(_amt)
+			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'bank': _amt}})
+			em.description = f'You searched `{button.label}` and got **{amt}** <:carrots:822122757654577183>'
+		else:
+			_amt = random.randrange(1000, 5001)
+			amt = '{:,}'.format(_amt)
+			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'bank': -_amt}})
+			em.description = f'You searched `{button.label}` and lost **{amt}** <:carrots:822122757654577183>'
+		await inter.response.edit_message(content=None, embed=em, view=self)
+		self.stop()
+
+
 class Economy(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
 		self.db = bot.db1['Economy']
+		self.check_items_in_use.start()
 		self.prefix = "!"
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
+
+	@tasks.loop(minutes=1.0)
+	async def check_items_in_use(self):
+		now = datetime.datetime.utcnow()
+		users = await self.db.find().to_list(100000)
+		for user in users:
+			new_in_use = []
+			for item_in_use in user['items_in_use']:
+				if item_in_use['expires_in'] is not None:
+					if item_in_use['expires_in'] > now:
+						new_in_use.append(item_in_use)
+				else:
+					new_in_use.append(item_in_use)
+			await self.db.update_one({'_id': user['_id']}, {'$set': {'items_in_use': new_in_use}})
 
 	@commands.group(invoke_without_command = True, case_insensitive = True)
 	async def daily(self, ctx):
@@ -110,7 +223,6 @@ class Economy(commands.Cog):
 
 					await ctx.send("{} You already claimed your daily for today! Please try again in `{}`.".format(ctx.author.mention, format_date(daily)))
 					return
-				
 
 				elif dateNow >= daily:
 					await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
@@ -162,7 +274,7 @@ class Economy(commands.Cog):
 		for item in _shop:
 			shop.append({'item_name': item['item_name'], 'owned': 0})
 
-		post = {"_id": user.id, "wallet": 0, "bank": 0, 'items': shop, "daily": datetime.datetime.utcnow()}
+		post = {"_id": user.id, "wallet": 0, "bank": 0, "items": shop, "items_in_use": [], "daily": datetime.datetime.utcnow()}
 
 		try:
 			await self.db.insert_one(post)
@@ -199,8 +311,13 @@ class Economy(commands.Cog):
 				return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 			else:
 				return await ctx.send("User is not registered! %s" % (ctx.author.mention))
-
-		em = disnake.Embed(color=member.color, title=f'{member.display_name}\'s inventory\n', description='\n'.join([f"— {item['item_name']} ({item['owned']} owned)" for item in user_db['items'] if item['owned'] != 0]))
+		_count = 0
+		for item in user_db['items']:
+			if item['owned'] == 0:
+				_count += 1
+		if _count == len(user_db['items']):
+			return await ctx.send('The inventory is empty, nothing to see.')
+		em = disnake.Embed(color=member.color, title=f'{member.display_name}\'s inventory\n', description='\n'.join([f"— {item['item_name'].title()} ({item['owned']} owned)" for item in user_db['items'] if item['owned'] != 0]))
 		await ctx.send(embed=em)
 
 	@commands.group(name='shop', invoke_without_command=True, case_insensitive=True)
@@ -334,6 +451,58 @@ class Economy(commands.Cog):
 		if item_found == False:
 			return await ctx.reply(f'Item `{item}` does not exist!')
 
+	@eco_shop.command(name='use')
+	async def eco_shop_use(self, ctx, *, item: str):
+		"""Use an item that you have."""
+
+		usable_items = ['alcohol', 'clock']
+		user_db = await self.db.find_one({'_id': ctx.author.id})
+		item = item.lower()
+		if item not in usable_items:
+			return await ctx.reply('That item cannot be used.')
+		if user_db is None:
+			return await ctx.send(f'You are not registered. Type `!register` to register. {ctx.author.mention}')
+		items = []
+		items_in_use = []
+		for i in user_db['items_in_use']:
+			if i['name'] == item:
+				return await ctx.reply('That item is already in use.')
+		index = 0
+		for _item in user_db['items']:
+			if _item['item_name'] == item:
+				if _item['owned'] == 0:
+					return await ctx.reply('You do not have this item.')
+				_item['owned'] -= 1
+				_item_name = _item['item_name']
+				now = datetime.datetime.utcnow()
+				_expires_in = _shop[index]['expires_in']
+				expires_in = now + relativedelta(**_expires_in)
+				items_in_use.append({'name': item, 'expires_in': expires_in})
+			items.append(_item)
+			index += 1
+		await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items_in_use': items_in_use, 'items': items}})
+		await ctx.send(f'Now using the item `{_item_name}`')
+
+	@eco_shop.command(name='using')
+	async def eco_shop_using(self, ctx):
+		"""See what items you have in use."""
+
+		user_db = await self.db.find_one({'_id': ctx.author.id})
+		if user_db == None:
+			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+		if len(user_db['items_in_use']) == 0:
+			return await ctx.reply('You do not have any items in use currently.')
+		
+		in_use = []
+		for item in user_db['items_in_use']:
+			expires_in = time.human_timedelta(item['expires_in'])
+			in_use.append({'name': item['name'], 'expires_in': f'Expires in: `{expires_in}`'})
+		
+		em = disnake.Embed(title='Here are your in-use items:')
+		for i in in_use:
+			em.add_field(name=i['name'].title(), value=i['expires_in'], inline=False)
+		await ctx.send(embed=em)
+
 	@commands.command(name='fish')
 	@commands.cooldown(1, 60.0, commands.BucketType.member)
 	async def eco_fish(self, ctx):
@@ -353,7 +522,7 @@ class Economy(commands.Cog):
 					return await ctx.reply('You do not own a fishing pole.')
 				break
 
-		breaking_point = (6,  17, 23, 25, 29, 57)
+		breaking_point = (6, 17, 23, 25, 29, 57)
 		rn = random.randrange(-10, 131)
 		rn_ = random.randrange(0, 81)
 		if rn_ in breaking_point:
@@ -366,7 +535,15 @@ class Economy(commands.Cog):
 			return await ctx.send('Your fishing pole broke.')
 
 		for fish in _fishes:
-			if rn in fish['chances']:
+			chances = fish['chances']
+			for i in user_db['items_in_use']:
+				if i['name'] == 'clock':
+					chances = list(chances) + [111, 115, 120, 125]
+					chances = tuple(chances)
+				if i['name'] == 'alcohol':
+					chances = list(chances) + [-1, -5, -9, -7, 111, 115, 120, 125, 130, 117, 118]
+					chances = tuple(chances)
+			if rn in chances:
 				items = []
 				for item in user_db['items']:
 					if item['item_name'] == fish['fish']:
@@ -376,6 +553,14 @@ class Economy(commands.Cog):
 				return await ctx.send(f"You found `{fish['fish']}`")
 		await ctx.send('You didn\'t find any fishes')
 		
+	@commands.command(name='search')
+	async def eco_search(self, ctx):
+		"""Search and get or lose money."""
+
+		user_db = await self.db.find_one({'_id': ctx.author.id})
+		if user_db is not None:
+			view = EcoSearchView(ctx)
+			view.message = await ctx.send('**Where do you want to search?**\n*Pick an option below to start searching that location*', view=view)
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bal'])
 	async def balance(self, ctx, member: disnake.Member = None):
