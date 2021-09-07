@@ -6,7 +6,7 @@ import textwrap
 import datetime
 import asyncio
 
-class RemindersClass(commands.Cog):
+class Reminders(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
@@ -180,4 +180,4 @@ class RemindersClass(commands.Cog):
 		 
 
 def setup(bot):
-	bot.add_cog(RemindersClass(bot))
+	bot.add_cog(Reminders(bot))
