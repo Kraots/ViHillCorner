@@ -10,6 +10,7 @@ class on_ready(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('Bot succsesfully went online')
+        print('Owner: ' + str(self.bot.owner))
         print('Servers connected to:')
         for guild in self.bot.guilds:
                 print(f"Name: {guild.name} | ID: {guild.id} | Members: {guild.member_count}")
