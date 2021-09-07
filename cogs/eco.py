@@ -39,7 +39,7 @@ class ShopPageEntry:
 	def __init__(self, entry):
 
 		self.name = entry['item_name']
-		self.price = entry['price']
+		self.price = '{:,}'.format(entry['price']) if isinstance(entry['price'], int) else entry['price']
 		self.desc = entry['description']
 
 	def __str__(self):
