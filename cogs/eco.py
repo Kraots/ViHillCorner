@@ -401,7 +401,7 @@ class Economy(commands.Cog):
 						#items.append(user['items'][index])
 				#except IndexError:
 					try:
-						item.append({'item_name': names[index], 'owned': 0, 'uses': int(''.join([str(i['uses']) for i in _shop if i['item_name'] == names[index]]))})
+						items.append({'item_name': names[index], 'owned': 0, 'uses': int(''.join([str(i['uses']) for i in _shop if i['item_name'] == names[index]]))})
 					except KeyError:
 						items.append({'item_name': names[index], 'owned': 0})
 					index += 1
@@ -480,6 +480,7 @@ class Economy(commands.Cog):
 							amount = i['owned']
 							i['owned'] -= i['owned']
 						elif amount is None:
+							amount = 1
 							i['owned'] -= 1
 						else:
 							try:
