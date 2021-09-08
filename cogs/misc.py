@@ -71,9 +71,9 @@ class SnipesPageEntry:
 		return f'*{self.message}* **-** ___{self.author}___'
 
 class SnipesPages(CustomMenu):
-	def __init__(self, entries, *, per_page=12):
+	def __init__(self, ctx, entries, *, per_page=12):
 		converted = [SnipesPageEntry(entry) for entry in entries]
-		super().__init__(converted, per_page=per_page, color=color.lightpink)
+		super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color.lightpink)
 
 class SuggestPageEntry:
 	def __init__(self, entry):
@@ -84,9 +84,9 @@ class SuggestPageEntry:
 		return f'<@!{self.id}>\u2800•\u2800(`UserID:` {self.id})'
 
 class SuggestionPages(SimplePages):
-	def __init__(self, entries, *, per_page=12):
+	def __init__(self, ctx, entries, *, per_page=12):
 		converted = [SuggestPageEntry(entry) for entry in entries]
-		super().__init__(converted, per_page=per_page)
+		super().__init__(ctx=ctx, entries=converted, per_page=per_page)
 
 GoogleKey1 = os.getenv("GOOGLE_API_KEY_A")
 GoogleKey2 = os.getenv("GOOGLE_API_KEY_B")
@@ -487,8 +487,8 @@ class Misc(commands.Cog):
 
 				snipes.append({'message': content, 'author': snipe.author})
 
-			m = SnipesPages(entries=snipes, per_page=10)
-			await m.start(ctx)
+			m = SnipesPages(ctx=ctx, entries=snipes, per_page=10)
+			await m.start()
 
 	@snipe.command(name='index')
 	async def snipe_index(self, ctx, index: int):
@@ -641,8 +641,8 @@ class Misc(commands.Cog):
 
 		try:
 			entries = await self.db2.find().to_list(100000)
-			p = SuggestionPages(entries = entries, per_page = 7)
-			await p.start(ctx)
+			p = SuggestionPages(ctx=ctx, entries = entries, per_page = 7)
+			await p.start()
 		except:
 			await ctx.send("There are no members whose access has been restricted.")
 
