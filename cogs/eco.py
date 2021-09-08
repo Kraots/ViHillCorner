@@ -54,8 +54,8 @@ class ShopMenu(ShopEcoMenu):
 rps = ['rock', 'paper', 'scissors']
 
 _shop = [
-	{'item_type': 'Usable', 'item_name': 'clock', 'price': 15000, 'sells_for': 1200, 'description': 'Increases luck by 5% for 2h', 'expires_in': {'hours': 2}},
-	{'item_type': 'Usable', 'item_name': 'alcohol', 'price': 35000, 'sells_for': 3500, 'description': 'Increases luck by 10% for 1h', 'expires_in': {'hours': 1}},
+	{'item_type': 'Usable', 'item_name': 'clock', 'price': 250000, 'sells_for': 1200, 'description': 'Increases luck by 5% for 2h', 'expires_in': {'hours': 2}},
+	{'item_type': 'Usable', 'item_name': 'alcohol', 'price': 500000, 'sells_for': 3500, 'description': 'Increases luck by 10% for 1h', 'expires_in': {'hours': 1}},
 	{'item_type': 'Tool', 'item_name': 'fishing pole', 'price': 65000, 'sells_for': 5000, 'description': 'Use this to fish', 'uses': 13},
 	{'item_type': 'Tool', 'item_name': 'hunting rifle', 'price': 75000, 'sells_for': 6300, 'description': 'Use this to go hunting', 'uses': 14},
 	{'item_type': 'Sellable', 'item_name': 'common fish', 'price': 'This item cannot be bought.', 'sells_for': 10000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
