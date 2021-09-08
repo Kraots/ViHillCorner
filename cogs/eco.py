@@ -29,8 +29,8 @@ class ShopEcoMenus(menus.ListPageSource):
 		return menu.embed
 
 class ShopEcoMenu(RoboPages):
-	def __init__(self, entries, *, per_page=12, color=None):
-		super().__init__(ShopEcoMenus(entries, per_page=per_page))
+	def __init__(self, ctx, entries, *, per_page=12, color=None):
+		super().__init__(ShopEcoMenus(entries, per_page=per_page), ctx=ctx)
 		if color is None:
 			color = disnake.Embed.Empty
 		self.embed = disnake.Embed(colour=color, title='Shop Items')
@@ -47,9 +47,9 @@ class ShopPageEntry:
 		return f'**{self.emoji} {self.name.title()} — {self.price}**\n{self.desc}'
 
 class ShopMenu(ShopEcoMenu):
-	def __init__(self, entries, *, per_page = 5, color=None):
+	def __init__(self, ctx, entries, *, per_page = 5, color=None):
 		converted = [ShopPageEntry(entry) for entry in entries]
-		super().__init__(converted, per_page=per_page, color=color)
+		super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color)
 
 rps = ['rock', 'paper', 'scissors']
 
@@ -370,8 +370,8 @@ class Economy(commands.Cog):
 			for item in _shop:
 				if item['item_type'] in ['Tool', 'Usable', 'Collectable']:
 					shop.append(item)
-			p = ShopMenu(entries=shop)
-			await p.start(ctx)
+			p = ShopMenu(ctx=ctx, entries=shop)
+			await p.start()
 
 		else:
 			item_ = item.lower()
