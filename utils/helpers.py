@@ -180,7 +180,7 @@ def format_balance(balance):
 	cBalance = "{:,}".format(balance)
 	sBalance = cBalance.split(",")
 	if len(sBalance) == 1:
-		return str(balance)
+		return str(balance).replace('.0', '')
 	elif len(sBalance) == 2:
 		sign = "K"
 	elif len(sBalance) == 3:
