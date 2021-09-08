@@ -134,7 +134,7 @@ class EcoSearchView(disnake.ui.View):
 		em = disnake.Embed(color=color.lightpink, title=f'{inter.author.display_name} searched {button.label}')
 		win_lose = random.choice(['win', 'lose', 'win', 'lose', 'win'])
 		if win_lose == 'win':
-			_amt = random.randrange(4600, 25001)
+			_amt = random.randrange(4600, 50001)
 			amt = '{:,}'.format(_amt)
 			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'wallet': _amt}})
 			em.description = f'You searched `{button.label}` and got **{amt}** <:carrots:822122757654577183>'
@@ -155,7 +155,7 @@ class EcoSearchView(disnake.ui.View):
 		em = disnake.Embed(color=color.lightpink, title=f'{inter.author.display_name} searched {button.label}')
 		win_lose = random.choice(['win', 'lose', 'win', 'lose', 'win'])
 		if win_lose == 'win':
-			_amt = random.randrange(4600, 25001)
+			_amt = random.randrange(4600, 50001)
 			amt = '{:,}'.format(_amt)
 			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'wallet': _amt}})
 			em.description = f'You searched `{button.label}` and got **{amt}** <:carrots:822122757654577183>'
@@ -176,7 +176,7 @@ class EcoSearchView(disnake.ui.View):
 		em = disnake.Embed(color=color.lightpink, title=f'{inter.author.display_name} searched {button.label}')
 		win_lose = random.choice(['win', 'lose', 'win', 'lose', 'win'])
 		if win_lose == 'win':
-			_amt = random.randrange(4600, 25001)
+			_amt = random.randrange(4600, 50001)
 			amt = '{:,}'.format(_amt)
 			await self.ctx.bot.db1['Economy'].update_one({'_id': inter.author.id}, {'$inc': {'wallet': _amt}})
 			em.description = f'You searched `{button.label}` and got **{amt}** <:carrots:822122757654577183>'
