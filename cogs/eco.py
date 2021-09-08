@@ -41,9 +41,10 @@ class ShopPageEntry:
 		self.name = entry['item_name']
 		self.price = '{:,} <:carrots:822122757654577183>'.format(entry['price']) if isinstance(entry['price'], int) else entry['price']
 		self.desc = entry['description']
+		self.emoji = entry.get('item_emoji', '')
 
 	def __str__(self):
-		return f'**{self.name.title()} — {self.price}**\n{self.desc}'
+		return f'**{self.emoji} {self.name.title()} — {self.price}**\n{self.desc}'
 
 class ShopMenu(ShopEcoMenu):
 	def __init__(self, entries, *, per_page = 5, color=None):
@@ -68,7 +69,8 @@ _shop = [
 	{'item_type': 'Sellable', 'item_name': 'bear', 'price': 'This item cannot be bought.', 'sells_for': 63000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
 	{'item_type': 'Sellable', 'item_name': 'crocodile', 'price': 'This item cannot be bought.', 'sells_for': 230000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
 	{'item_type': 'Sellable', 'item_name': 'lion', 'price': 'This item cannot be bought.', 'sells_for': 560000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_type': 'Sellable', 'item_name': 'dragon', 'price': 'This item cannot be bought.', 'sells_for': 1250000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'}
+	{'item_type': 'Sellable', 'item_name': 'dragon', 'price': 'This item cannot be bought.', 'sells_for': 1250000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_type': 'Collectable', 'item_name': 'golden carrots', 'price': 100000000, 'sells_for': 'This item cannot be sold.', 'description': 'Show off to your friends with this item that costs 100M.', 'item_emoji': '<:goldencarrot:885075068797984808>'}
 		]
 
 _fishes = [
@@ -345,7 +347,10 @@ class Economy(commands.Cog):
 					item_durr = item['uses']
 				except KeyError:
 					item_durr = None
-				to_append = f"— {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
+				try:
+					to_append = f"— {''.join([i['item_emoji'] for i in _shop if i['item_name'] == item['item_name']])} {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
+				except KeyError:
+					to_append = f"— {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
 				user_items.append(to_append)
 		em = disnake.Embed(color=member.color, title=f'{member.display_name}\'s inventory\n', description='\n'.join(user_items))
 		await ctx.send(embed=em)
@@ -363,7 +368,7 @@ class Economy(commands.Cog):
 		if item is None:
 			shop = []
 			for item in _shop:
-				if item['item_type'] in ['Tool', 'Usable']:
+				if item['item_type'] in ['Tool', 'Usable', 'Collectable']:
 					shop.append(item)
 			p = ShopMenu(entries=shop)
 			await p.start(ctx)
@@ -375,17 +380,23 @@ class Economy(commands.Cog):
 			index = 0
 			for _item in _shop:
 				if _item['item_name'] == item_:
-					sell_price = '{:,} <:carrots:822122757654577183>'.format(_item['sells_for'])
+					sell_price = '{:,} <:carrots:822122757654577183>'.format(_item['sells_for']) if isinstance(_item['sells_for'], int) else _item['sells_for']
 					buy_price = '{:,} <:carrots:822122757654577183>'.format(_item['price']) if isinstance(_item['price'], int) else _item['price']
 					if user_db is not None:
 						owned = user_db['items'][index]['owned']
 						item_found = True
-						em = disnake.Embed(title=f"{_item['item_name'].title()} ({owned} owned)", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
+						try:
+							em = disnake.Embed(title=f"{_item['item_emoji']} {_item['item_name'].title()} ({owned} owned)", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
+						except KeyError:
+							em = disnake.Embed(title=f"{_item['item_name'].title()} ({owned} owned)", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
 						em.set_footer(text=f"Item Type: {_item['item_type']}")
 						return await ctx.send(embed=em)
 					else:
 						item_found = True
-						em = disnake.Embed(title=f"{_item['item_name'].title()}", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
+						try:
+							em = disnake.Embed(title=f"{_item['item_emoji']} {_item['item_name'].title()}", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
+						except KeyError:
+							em = disnake.Embed(title=f"{_item['item_name'].title()}", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
 						em.set_footer(text=f"Item Type: {_item['item_type']}")
 						return await ctx.send(embed=em)
 				index += 1
@@ -486,6 +497,8 @@ class Economy(commands.Cog):
 							pass
 						if i['owned'] == 0:
 							return await ctx.reply('You do not own that item.')
+						elif _item['item_type'] == 'Collectable':
+							return await ctx.reply('This item cannot be sold.')
 						if amount == 'all':
 							amount = i['owned']
 							i['owned'] -= i['owned']
