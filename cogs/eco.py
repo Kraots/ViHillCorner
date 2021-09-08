@@ -698,7 +698,7 @@ class Economy(commands.Cog):
 	@commands.command(name='search')
 	@commands.cooldown(1, 25.0, commands.BucketType.member)
 	async def eco_search(self, ctx):
-		"""Search and get or lose money."""
+		"""Search and get or lose carrots."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
 			return
