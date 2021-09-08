@@ -183,38 +183,40 @@ class on_join(commands.Cog):
 				return message.channel.id == channel.id and message.author.id == user.id
 
 			msg1 = await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself to us?")
-			ctx = await self.bot.get_context(msg1)
-			view = ConfirmViewDMS(ctx)
-			await msg1.edit("Welcome to `ViHill Corner`, would you like to introduce yourself to us?", view=view)
-			await view.wait()
-			if view.response is None:
+			await msg1.add_reaction('<:agree:797537027469082627>')
+			await msg1.add_reaction('<:disagree:797537030980239411>')
+			def newmember(reaction, user):
+				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
+
+			try:
+				reaction, user = await self.bot.wait_for('reaction_add', check=newmember, timeout=180)
+
+			except asyncio.TimeoutError:
 				new_msg = "Welcome to `ViHill Corner`, if you wish to do your intro please go in <#750160851822182486> and type `!intro`"
-				return await msg1.edit(content=new_msg, view=None)
+				await msg1.edit(content=new_msg)
+				await msg1.remove_reaction('<:agree:797537027469082627>', self.bot.user)
+				await msg1.remove_reaction('<:disagree:797537030980239411>', self.bot.user)
+				return
 			
-			elif view.response is False:
-				e = "Alrighty, you can do your intro later by typing `!intro` in <#750160851822182486>. Enjoy your stay! :wave:"
-				return await msg1.edit(content=e, view=view)
-
-			elif view.response is True:
-				e = "What's your name?\n\n*To cancel type `!cancel`*"
-				await msg1.edit(content=e, view=view)
-
-				try:
-					name = await self.bot.wait_for('message', timeout= 180, check=check)
-					if name.content.lower() == '!cancel':
-						await channel.send("Canceled.")
-						return
-
-				except asyncio.TimeoutError:
-					await channel.send("Ran out of time.")
+			else:
+				if str(reaction.emoji) == '<:disagree:797537030980239411>':
+					e = "Alrighty, you can do your intro later by typing `!intro` in <#750160851822182486>. Enjoy your stay! :wave:"
+					await msg1.edit(content=e)
+					await msg1.remove_reaction('<:agree:797537027469082627>', self.bot.user)
+					await msg1.remove_reaction('<:disagree:797537030980239411>', self.bot.user)
 					return
 
-				else:
-					await channel.send("Where are you from?")
-					
+				elif str(reaction.emoji) == '<:agree:797537027469082627>':
+
+					await msg1.remove_reaction('<:agree:797537027469082627>', self.bot.user)
+					await msg1.remove_reaction('<:disagree:797537030980239411>', self.bot.user)
+
+					e = "What's your name?\n\n*To cancel type `!cancel`*"
+					await msg1.edit(content=e)
+
 					try:
-						location = await self.bot.wait_for('message', timeout= 180, check=check)
-						if location.content.lower() == '!cancel':
+						name = await self.bot.wait_for('message', timeout= 180, check=check)
+						if name.content.lower() == '!cancel':
 							await channel.send("Canceled.")
 							return
 
@@ -223,98 +225,111 @@ class on_join(commands.Cog):
 						return
 
 					else:
-						await channel.send("How old are you?")
-
+						await channel.send("Where are you from?")
+						
 						try:
-							while True:
-								age = await self.bot.wait_for('message', timeout= 180, check=check)
-								if age.content.lower() == '!cancel':
-									await channel.send("Canceled.")
-									return
-								try:
-									agenumber = int(age.content)
-									if agenumber >= 44 or agenumber <= 11:
-										await channel.send("Please put your real age and not a fake age.")
-									else:
-										break
-								except ValueError:
-									await channel.send("Must be number.")
+							location = await self.bot.wait_for('message', timeout= 180, check=check)
+							if location.content.lower() == '!cancel':
+								await channel.send("Canceled.")
+								return
 
 						except asyncio.TimeoutError:
 							await channel.send("Ran out of time.")
 							return
 
 						else:
-							await channel.send("What's your gender?")
-							
+							await channel.send("How old are you?")
+
 							try:
-								gender = await self.bot.wait_for('message', timeout= 180, check=check)
-								if gender.content.lower() == '!cancel':
-									await channel.send("Canceled.")
-									return 
+								while True:
+									age = await self.bot.wait_for('message', timeout= 180, check=check)
+									if age.content.lower() == '!cancel':
+										await channel.send("Canceled.")
+										return
+									try:
+										agenumber = int(age.content)
+										if agenumber >= 44 or agenumber <= 11:
+											await channel.send("Please put your real age and not a fake age.")
+										else:
+											break
+									except ValueError:
+										await channel.send("Must be number.")
 
 							except asyncio.TimeoutError:
 								await channel.send("Ran out of time.")
 								return
 
 							else:
-								await channel.send("Relationship status? `single` | `taken` | `complicated`")
+								await channel.send("What's your gender?")
 								
 								try:
-									while True:
-										prestatuss = await self.bot.wait_for('message', timeout= 180, check=check)
-										status = prestatuss.content.lower()
-										if status == '!cancel':
-											await channel.send("Canceled.")
-											return
-										if status in ['single', 'taken', 'complicated']:
-											break
-										else:
-											await channel.send("Please only choose from single` | `taken` | `complicated`")
+									gender = await self.bot.wait_for('message', timeout= 180, check=check)
+									if gender.content.lower() == '!cancel':
+										await channel.send("Canceled.")
+										return 
 
 								except asyncio.TimeoutError:
 									await channel.send("Ran out of time.")
 									return
 
 								else:
-									await channel.send("What are u interested to?")
-
+									await channel.send("Relationship status? `single` | `taken` | `complicated`")
+									
 									try:
-										interests = await self.bot.wait_for('message', timeout= 360, check=check)
-										if interests.content.lower() == '!cancel':
-											await channel.send("Canceled.")
-											return
+										while True:
+											prestatuss = await self.bot.wait_for('message', timeout= 180, check=check)
+											status = prestatuss.content.lower()
+											if status == '!cancel':
+												await channel.send("Canceled.")
+												return
+											if status in ['single', 'taken', 'complicated']:
+												break
+											else:
+												await channel.send("Please only choose from single` | `taken` | `complicated`")
 
 									except asyncio.TimeoutError:
 										await channel.send("Ran out of time.")
 										return
 
 									else:
-										em = disnake.Embed(color=member.color)
-										em.set_author(name=member, url=member.avatar.url, icon_url=member.avatar.url)
-										em.set_thumbnail(url=member.avatar.url)
-										em.add_field(name="Name", value=name.content, inline=True)
-										em.add_field(name="Location", value=location.content, inline=True)
-										em.add_field(name="Age", value=agenumber, inline=True)
-										em.add_field(name="Gender", value=gender.content, inline=False)
-										em.add_field(name="Relationship Status", value=status, inline=True)
-										em.add_field(name="Interests", value=interests.content, inline=False)
-										intro_msg = await introchannel.send(embed=em)
-										await member.send("Intro added successfully. You can see it in <#750160850593251449>")
+										await channel.send("What are u interested to?")
 
-										post = {"_id": member.id, 
-											"name": name.content,
-											"location": location.content,
-											"age": agenumber,
-											"gender": gender.content,
-											"status": status,
-											"interests": interests.content,
-											"intro_id": intro_msg.id
-											}
-											
-										await self.db1.insert_one(post)
+										try:
+											interests = await self.bot.wait_for('message', timeout= 360, check=check)
+											if interests.content.lower() == '!cancel':
+												await channel.send("Canceled.")
+												return
 
-										return
+										except asyncio.TimeoutError:
+											await channel.send("Ran out of time.")
+											return
+
+										else:
+											em = disnake.Embed(color=member.color)
+											em.set_author(name=member, url=member.avatar.url, icon_url=member.avatar.url)
+											em.set_thumbnail(url=member.avatar.url)
+											em.add_field(name="Name", value=name.content, inline=True)
+											em.add_field(name="Location", value=location.content, inline=True)
+											em.add_field(name="Age", value=agenumber, inline=True)
+											em.add_field(name="Gender", value=gender.content, inline=False)
+											em.add_field(name="Relationship Status", value=status, inline=True)
+											em.add_field(name="Interests", value=interests.content, inline=False)
+											intro_msg = await introchannel.send(embed=em)
+											await member.send("Intro added successfully. You can see it in <#750160850593251449>")
+
+											post = {"_id": member.id, 
+												"name": name.content,
+												"location": location.content,
+												"age": agenumber,
+												"gender": gender.content,
+												"status": status,
+												"interests": interests.content,
+												"intro_id": intro_msg.id
+												}
+												
+											await self.db1.insert_one(post)
+
+											return
 
 
 		else:
