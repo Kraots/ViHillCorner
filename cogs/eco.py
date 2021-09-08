@@ -794,7 +794,7 @@ class Economy(commands.Cog):
 		index = 1
 		for m in results:
 			user = self.bot.get_user(m['_id'])
-			if not str(m['wallet']).endswith('.0') or len(str(int(m['wallet']))) <= 3:
+			if not len(str(int(m['wallet']))) <= 3 or not str(m['wallet']).endswith('.0'):
 				em.add_field(name=f"`#{index}` {user.name}", value="{} <:carrots:822122757654577183> ".format(format_balance(m['wallet'])), inline=False)
 			if index == 10:
 				break
