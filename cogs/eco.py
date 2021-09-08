@@ -474,6 +474,10 @@ class Economy(commands.Cog):
 				items = []
 				for i in user_db['items']:
 					if i['item_name'] == _item['item_name']:
+						try:
+							i['uses'] = _item['uses']
+						except KeyError:
+							pass
 						if i['owned'] == 0:
 							return await ctx.reply('You do not own that item.')
 						if amount == 'all':
