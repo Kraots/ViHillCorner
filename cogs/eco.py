@@ -714,6 +714,7 @@ class Economy(commands.Cog):
 	async def eco_passive(self, ctx, *, option: str = None):
 		"""
 		Turn passive `on` or `off`.
+		If passive is on, people won't be able to rob you, but you won't be able to rob anyone as well, additionally, you cannot give or receive carrots from other people.
 		*Note: There's a cooldown of 1 day between each change*
 		"""
 
@@ -1142,8 +1143,10 @@ class Economy(commands.Cog):
 			
 			get_user_bal = await self.db.find_one({"_id": user.id})
 			if results['passive'] == True:
+				ctx.command.reset_cooldown(ctx)
 				return await ctx.reply('You cannot rob because you have passive **enabled.**')
 			elif get_user_bal['passive'] == True:
+				ctx.command.reset_cooldown(ctx)
 				return await ctx.reply('You cannot rob that user because they have passive **enabled.**')
 
 			user_bal = get_user_bal["wallet"]
