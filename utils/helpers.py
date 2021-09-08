@@ -346,23 +346,22 @@ class ConfirmViewDMS(disnake.ui.View):
 
 	@disnake.ui.button(label='Yes', style=disnake.ButtonStyle.green)
 	async def yes_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
-		await inter.response.defer()
 		self.response = True
 		for item in self.children:
 			item.disabled = True
 			item.style = disnake.ButtonStyle.grey
 			if item.label == button.label:
 				item.style = disnake.ButtonStyle.blurple
+		await inter.response.defer()
 		self.stop()
 	
 	@disnake.ui.button(label='No', style=disnake.ButtonStyle.red)
 	async def no_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
-		await inter.response.defer()
 		self.response = False
 		for item in self.children:
 			item.disabled = True
 			item.style = disnake.ButtonStyle.grey
 			if item.label == button.label:
 				item.style = disnake.ButtonStyle.blurple
-
+		await inter.response.defer()
 		self.stop()
