@@ -5,66 +5,7 @@ from disnake.ext import commands
 from disnake.ext.commands import Paginator as CommandPaginator
 from . import menus
 
-class RoboPages(menus.MenuPages):
-	def __init__(self, source):
-		super().__init__(source=source, check_embeds=True)
-
-	async def finalize(self, timed_out):
-		try:
-			if timed_out:
-				await self.message.clear_reactions()
-			else:
-				await self.message.delete()
-		except disnake.HTTPException:
-			pass
-
-	@menus.button('\N{INFORMATION SOURCE}\ufe0f', position=menus.Last(3))
-	async def show_help(self, payload):
-		"""shows this message"""
-		embed = disnake.Embed(title='Paginator help', description='Hello! Welcome to the help page.')
-		messages = []
-		for (emoji, button) in self.buttons.items():
-			messages.append(f'{emoji}: {button.action.__doc__}')
-
-		embed.add_field(name='What are these reactions for?', value='\n'.join(messages), inline=False)
-		embed.set_footer(text=f'We were on page {self.current_page + 1} before this message.')
-		await self.message.edit(content=None, embed=embed)
-
-		async def go_back_to_current_page():
-			await asyncio.sleep(30.0)
-			await self.show_page(self.current_page)
-
-		self.bot.loop.create_task(go_back_to_current_page())
-
-	@menus.button('\N{INPUT SYMBOL FOR NUMBERS}', position=menus.Last(1.5))
-	async def numbered_page(self, payload):
-		"""lets you type a page number to go to"""
-		channel = self.message.channel
-		author_id = payload.user_id
-		to_delete = []
-		to_delete.append(await channel.send('What page do you want to go to?'))
-
-		def message_check(m):
-			return m.author.id == author_id and \
-				channel == m.channel and \
-				m.content.isdigit()
-
-		try:
-			msg = await self.bot.wait_for('message', check=message_check, timeout=30.0)
-		except asyncio.TimeoutError:
-			to_delete.append(await channel.send('Took too long.'))
-			await asyncio.sleep(5)
-		else:
-			page = int(msg.content)
-			to_delete.append(msg)
-			await self.show_checked_page(page - 1)
-
-		try:
-			await channel.delete_messages(to_delete)
-		except Exception:
-			pass
-
-class _RoboPages(disnake.ui.View):
+class RoboPages(disnake.ui.View):
 	def __init__(
 		self,
 		source: menus.PageSource,
@@ -310,33 +251,17 @@ class SimplePageSource(menus.ListPageSource):
 		menu.embed.description = '\n'.join(pages)
 		return menu.embed
 
-class SimplePages(_RoboPages):
+class SimplePages(RoboPages):
 	"""A simple pagination session reminiscent of the old Pages interface.
 
 	Basically an embed with some normal formatting.
 	"""
 
-	def __init__(self, entries, *, per_page=12, color=None):
-		super().__init__(SimplePageSource(entries, per_page=per_page))
+	def __init__(self, ctx, entries, *, per_page=12, color=None):
+		super().__init__(SimplePageSource(entries, per_page=per_page), ctx=ctx)
 		if color == None:
 			color = disnake.Color.blurple()
 		self.embed = disnake.Embed(colour=color)
-
-
-
-
-class CustomRobo(menus.MenuPages):
-	def __init__(self, source):
-		super().__init__(source=source, check_embeds=True)
-
-	async def finalize(self, timed_out):
-		try:
-			if timed_out:
-				await self.message.clear_reactions()
-			else:
-				await self.message.delete()
-		except disnake.HTTPException:
-			pass
 
 class NewHelpMenus(menus.ListPageSource):
 	def __init__(self, entries, *, per_page=12):
@@ -372,23 +297,23 @@ class NewCustomMenus(menus.ListPageSource):
 		menu.embed.description = "\n".join(pages)
 		return menu.embed
 
-class HelpmMenu(_RoboPages):
-	def __init__(self, entries, *, per_page=12, title="", color=None):
-		super().__init__(NewHelpMenus(entries, per_page=per_page))
+class HelpmMenu(RoboPages):
+	def __init__(self, ctx, entries, *, per_page=12, title="", color=None):
+		super().__init__(NewHelpMenus(entries, per_page=per_page), ctx=ctx)
 		if color == None:
 			color = disnake.Color.blurple()
 		self.embed = disnake.Embed(colour=color, title=title)
 
-class CustomMenu(_RoboPages):
+class CustomMenu(RoboPages):
 	def __init__(self, ctx, entries, *, per_page=12, title="", color=None):
 		super().__init__(NewCustomMenus(entries, per_page=per_page), ctx=ctx)
 		if color == None:
 			color = disnake.Color.blurple()
 		self.embed = disnake.Embed(colour=color, title=title)
 
-class ToDoMenu(_RoboPages):
-	def __init__(self, entries, *, per_page=12, title="", color=None, author_name=None, author_icon_url=None):
-		super().__init__(NewHelpMenus(entries, per_page=per_page))
+class ToDoMenu(RoboPages):
+	def __init__(self, ctx, entries, *, per_page=12, title="", color=None, author_name=None, author_icon_url=None):
+		super().__init__(NewHelpMenus(entries, per_page=per_page), ctx=ctx)
 		if color == None:
 			color = disnake.Color.blurple()
 		self.embed = disnake.Embed(colour=color, title=title)
