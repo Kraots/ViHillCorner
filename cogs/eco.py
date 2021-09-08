@@ -70,7 +70,7 @@ _shop = [
 	{'item_type': 'Sellable', 'item_name': 'crocodile', 'price': 'This item cannot be bought.', 'sells_for': 230000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
 	{'item_type': 'Sellable', 'item_name': 'lion', 'price': 'This item cannot be bought.', 'sells_for': 560000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
 	{'item_type': 'Sellable', 'item_name': 'dragon', 'price': 'This item cannot be bought.', 'sells_for': 1250000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_type': 'Collectable', 'item_name': 'golden carrots', 'price': 100000000, 'sells_for': 'This item cannot be sold.', 'description': 'Show off to your friends with this item that costs 100M.', 'item_emoji': '<:goldencarrot:885075068797984808>'}
+	{'item_type': 'Collectable', 'item_name': 'golden carrot', 'price': 100000000, 'sells_for': 'This item cannot be sold.', 'description': 'Show off to your friends with this item that costs 100M', 'item_emoji': '<:goldencarrot:885075068797984808>'}
 		]
 
 _fishes = [
