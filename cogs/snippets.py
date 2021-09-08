@@ -17,9 +17,9 @@ class SnippetPageEntry:
 		return f'{self.name}\u2800•\u2800(`Owner:` <@!{self.id}>)'
 
 class SnippetPages(SimplePages):
-	def __init__(self, entries, *, per_page=12, color=color):
+	def __init__(self, ctx, entries, *, per_page=12, color=color):
 		converted = [SnippetPageEntry(entry) for entry in entries]
-		super().__init__(converted, per_page=per_page, color=color)
+		super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color)
 
 class Snippets(commands.Cog):
 
@@ -39,8 +39,8 @@ class Snippets(commands.Cog):
 
 		entries = await self.db.find().to_list(100000)
 		
-		p = SnippetPages(entries = entries, per_page = 7, color=color.reds)
-		await p.start(ctx)
+		p = SnippetPages(ctx=ctx, entries = entries, per_page = 7, color=color.reds)
+		await p.start()
 
 
 	@snippet.command(name='search')
@@ -50,8 +50,8 @@ class Snippets(commands.Cog):
 		query = str(query).lower()
 		entries = await self.db.find({'_id': {'$regex': query, '$options': 'i'}}).to_list(100000)
 		try:
-			p = SnippetPages(entries = entries, per_page = 7, color=color.reds)
-			await p.start(ctx)
+			p = SnippetPages(ctx=ctx, entries = entries, per_page = 7, color=color.reds)
+			await p.start()
 		except:
 			await ctx.send('No snippets found. %s' % (ctx.author.mention))
 
@@ -81,8 +81,8 @@ class Snippets(commands.Cog):
 		member = member or ctx.author
 		entries = await self.db.find({'snippet_credits': member.id}).to_list(100000)
 		try:
-			p = SnippetPages(entries = entries, per_page = 7, color=color.reds)
-			await p.start(ctx)
+			p = SnippetPages(ctx=ctx, entries = entries, per_page = 7, color=color.reds)
+			await p.start()
 		except:
 			await ctx.send('You do not own any snippets. %s' % (ctx.author.mention))
 
