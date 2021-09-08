@@ -18,9 +18,9 @@ class TagPageEntry:
 		return f'{self.name}\u2800•\u2800(`ID:` **{self.id}**)'
 
 class TagPages(SimplePages):
-	def __init__(self, entries, *, per_page=12):
+	def __init__(self, ctx, entries, *, per_page=12):
 		converted = [TagPageEntry(entry) for entry in entries]
-		super().__init__(converted, per_page=per_page)
+		super().__init__(ctx=ctx, entries=converted, per_page=per_page)
 
 
 class Tags(commands.Cog):
@@ -59,8 +59,8 @@ class Tags(commands.Cog):
 		query = str(query).lower()
 		entries = await self.db.find({'the_tag_name': {'$regex': query, '$options': 'i'}}).to_list(100000)
 		try:
-			p = TagPages(entries = entries, per_page = 7)
-			await p.start(ctx)
+			p = TagPages(ctx=ctx, entries = entries, per_page = 7)
+			await p.start()
 		except:
 			await ctx.send('No tags found. %s' % (ctx.author.mention))
 	
@@ -72,8 +72,8 @@ class Tags(commands.Cog):
 		member = member or ctx.author
 		entries = await self.db.find({'tag_owner_id': member.id}).to_list(100000)
 		try:
-			p = TagPages(entries = entries, per_page = 7)
-			await p.start(ctx)
+			p = TagPages(ctx=ctx, entries = entries, per_page = 7)
+			await p.start()
 		except:
 			await ctx.send("`{}` has no tags.".format(member))
 
@@ -83,8 +83,8 @@ class Tags(commands.Cog):
 		"""See a list of all the existing tags."""
 
 		entries = await self.db.find().to_list(100000)
-		p = TagPages(entries = entries, per_page = 7)
-		await p.start(ctx)
+		p = TagPages(ctx=ctx, entries = entries, per_page = 7)
+		await p.start()
 	
 
 	@tag.command(name='leaderboard', aliases=['lb', 'top'])
