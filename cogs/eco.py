@@ -293,7 +293,7 @@ class Economy(commands.Cog):
 			except KeyError:
 				shop.append({'item_name': item['item_name'], 'owned': 0})
 
-		post = {"_id": user.id, "wallet": 0, "bank": 0, "items": shop, "items_in_use": [], "daily": datetime.datetime.utcnow()}
+		post = {"_id": user.id, "wallet": 0, "bank": 0, 'passive': False, 'passive_cooldown': datetime.datetime.utcnow(), "items": shop, "items_in_use": [], "daily": datetime.datetime.utcnow()}
 
 		try:
 			await self.db.insert_one(post)
@@ -709,6 +709,32 @@ class Economy(commands.Cog):
 		else:
 			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 
+	@commands.command(name='passive')
+	async def eco_passive(self, ctx, *, option: str = None):
+		"""
+		Turn passive `on` or `off`.
+		*Note: There's a cooldown of 1 day between each change*
+		"""
+
+		user_db = await self.db.find_one({'_id': ctx.author.id})
+		if user_db == None:
+			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+		elif option is None:
+			return await ctx.send(f"Your current passive is {'**enabled.**' if user_db['passive'] == True else '**disabled.**'}")
+
+		if datetime.datetime.utcnow() >= user_db['passive_cooldown']:
+			option = option.lower()
+			options = {'on': True, 'off': False}
+			if option not in ['on', 'off']:
+				return await ctx.reply('Not a valid option')
+			elif options[option] == user_db['passive']:
+				return await ctx.reply(f"Your passive is already {'**enabled.**' if option == 'on' else '**disabled.**'}")
+			updated_cooldown = user_db['passive_cooldown'] + relativedelta(days=1)
+			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'passive': options[option], 'passive_cooldown': updated_cooldown}})
+			await ctx.reply(f"Passive has been {'**enabled.**' if option == 'on' else '**disabled.**'}")
+		else:
+			await ctx.reply(f"You can set your passive again in **{time.human_timedelta(user_db['passive_cooldown'])}**.")
+
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bal'])
 	async def balance(self, ctx, member: disnake.Member = None):
 		"""Check your or another member's balance."""
@@ -726,7 +752,7 @@ class Economy(commands.Cog):
 				await ctx.send("User is not registered! %s" % (ctx.author.mention))
 			return
 
-		results = await self.db.find().sort(['wallet', -1]).to_list(100000)
+		results = await self.db.find().sort([('wallet', -1)]).to_list(100000)
 		index = 1
 		found = False
 		for i in results:
@@ -751,7 +777,7 @@ class Economy(commands.Cog):
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
 			return
 
-		results = await self.db.find().sort(['wallet', -1]).to_list(100000) 
+		results = await self.db.find().sort([('wallet', -1)]).to_list(100000)
 		em = disnake.Embed(title=f'Top 10 richest people', color=color.lightpink)
 		index = 1
 		for m in results:
@@ -1006,11 +1032,17 @@ class Economy(commands.Cog):
 			return
 
 		results = await self.db.find_one({"_id": ctx.author.id})
+		member_db = await self.db.find_one({'_id': member.id})
 
 		if results != None:
 			user = member
 			author = ctx.author
 			
+			if results['passive'] == True:
+				return await ctx.reply('You cannot gift/give carrots because you have passive **enabled.**')
+			elif member_db['passive'] == True:
+				return await ctx.reply('That user cannot receive carrots because they have passive **enabled.**')
+
 			if amount is None:
 				await ctx.send('Please enter the amount you want to withdraw. %s' % (ctx.author.mention))
 				return
@@ -1090,10 +1122,6 @@ class Economy(commands.Cog):
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
-			if member is None:
-				await ctx.send("You must specify the user you want to mention. %s" % (ctx.author.mention))
-				ctx.command.reset_cooldown(ctx)
-				return
 			if member is ctx.author:
 				await ctx.send("You cannot rob yourself. %s" % (ctx.author.mention))
 				ctx.command.reset_cooldown(ctx)
@@ -1103,6 +1131,10 @@ class Economy(commands.Cog):
 			author = ctx.author
 			
 			get_user_bal = await self.db.find_one({"_id": user.id})
+			if results['passive'] == True:
+				return await ctx.reply('You cannot rob because you have passive **enabled.**')
+			elif get_user_bal['passive'] == True:
+				return await ctx.reply('You cannot rob that user because they have passive **enabled.**')
 
 			user_bal = get_user_bal["wallet"]
 
