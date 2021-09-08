@@ -5,6 +5,7 @@ import asyncio
 from random import randint
 from utils import time
 import re
+from utils.helpers import ConfirmViewDMS
 
 def remove_emoji(string):
 	emoji_pattern = re.compile("["
@@ -183,7 +184,7 @@ class on_join(commands.Cog):
 
 			msg1 = await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself to us?")
 			ctx = await self.bot.get_context(msg1)
-			view = self.bot.confirm_view(ctx)
+			view = ConfirmViewDMS(ctx)
 			await msg1.edit("Welcome to `ViHill Corner`, would you like to introduce yourself to us?", view=view)
 			await view.wait()
 			if view.response is None:

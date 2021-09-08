@@ -327,3 +327,42 @@ class ConfirmView(disnake.ui.View):
 				item.style = disnake.ButtonStyle.blurple
 
 		self.stop()
+
+class ConfirmViewDMS(disnake.ui.View):
+	"""
+	This class is a view with yes and no buttons in dms by defering it, this checks which button the user has pressed and returns True via the self.response if the button they clicked was Yes else  False if the button they clicked is No
+	"""
+
+	def __init__(self, ctx, *, timeout = 180.0):
+		super().__init__(timeout=timeout)
+		self.ctx = ctx
+		self.response = None
+
+	async def interaction_check(self, interaction: disnake.MessageInteraction):
+		return self.ctx.author.id == interaction.author.id
+	
+	async def on_error(self, error: Exception, item, interaction):
+		return await self.ctx.bot.reraise(self.ctx, error)
+
+	@disnake.ui.button(label='Yes', style=disnake.ButtonStyle.green)
+	async def yes_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		await inter.response.defer()
+		self.response = True
+		for item in self.children:
+			item.disabled = True
+			item.style = disnake.ButtonStyle.grey
+			if item.label == button.label:
+				item.style = disnake.ButtonStyle.blurple
+		self.stop()
+	
+	@disnake.ui.button(label='No', style=disnake.ButtonStyle.red)
+	async def no_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		await inter.response.defer()
+		self.response = False
+		for item in self.children:
+			item.disabled = True
+			item.style = disnake.ButtonStyle.grey
+			if item.label == button.label:
+				item.style = disnake.ButtonStyle.blurple
+
+		self.stop()
