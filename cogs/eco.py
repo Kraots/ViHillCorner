@@ -756,9 +756,9 @@ class Economy(commands.Cog):
 
 		member = member or ctx.author
 		
-		user_db = await self.db.find_one({"_id": ctx.author.id})
+		user_db = await self.db.find_one({"_id": member.id})
 		if user_db == None:
-			if member.id == ctx.author.id:
+			if member.id == member.id:
 				await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 			else:
 				await ctx.send("User is not registered! %s" % (ctx.author.mention))
@@ -768,7 +768,7 @@ class Economy(commands.Cog):
 		index = 1
 		found = False
 		for i in results:
-			if i['_id'] == ctx.author.id:
+			if i['_id'] == member.id:
 				found = True
 				break
 			index += 1
@@ -777,8 +777,8 @@ class Economy(commands.Cog):
 		em.add_field(name="Wallet Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(user_db['wallet'])), inline=False)
 		em.add_field(name="Bank Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(user_db['bank'])), inline=False)
 		em.add_field(name="Total Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(user_db['wallet'] + user_db['bank'])))
-		em.set_footer(text="Rank: {}".format(index), icon_url=ctx.author.avatar.url)
-		em.set_thumbnail(url=ctx.author.avatar.url)
+		em.set_footer(text="Rank: {}".format(index), icon_url=member.avatar.url)
+		em.set_thumbnail(url=member.avatar.url)
 
 		await ctx.send(embed=em)
 
