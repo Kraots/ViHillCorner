@@ -585,12 +585,12 @@ class Economy(commands.Cog):
 		item_broke = False
 		for item in user_db['items']:
 			if item['item_name'] == 'fishing pole':
-				uses = item['uses'] - 1
+				item['uses'] -= 1
+				uses = item['uses']
 				if uses == 0:
 					item['owned'] -= 1
 					item['uses'] = int(''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])) 
 					item_broke = True
-				item['uses'] -= 1
 			items_.append(item)
 		await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items_}})
 		if item_broke is not False:
@@ -642,12 +642,12 @@ class Economy(commands.Cog):
 		item_broke = False
 		for item in user_db['items']:
 			if item['item_name'] == 'hunting rifle':
-				uses = item['uses'] - 1
+				item['uses'] -= 1
+				uses = item['uses']
 				if uses == 0:
 					item['owned'] -= 1
 					item['uses'] = int(''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']]))
 					item_broke = True
-				item['uses'] -= 1
 			items_.append(item)
 		await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items_}})
 		if item_broke is not False:
