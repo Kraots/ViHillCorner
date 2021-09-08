@@ -243,11 +243,6 @@ class SimplePageSource(menus.ListPageSource):
 			footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} entries)'
 			menu.embed.set_footer(text=footer)
 
-		if self.initial_page and self.is_paginating():
-			pages.append('')
-			pages.append('Confused? React with \N{INFORMATION SOURCE} for more info.')
-			self.initial_page = False
-
 		menu.embed.description = '\n'.join(pages)
 		return menu.embed
 
@@ -263,7 +258,7 @@ class SimplePages(RoboPages):
 			color = disnake.Color.blurple()
 		self.embed = disnake.Embed(colour=color)
 
-class NewHelpMenus(menus.ListPageSource):
+class NewToDoMenus(menus.ListPageSource):
 	def __init__(self, entries, *, per_page=12):
 		super().__init__(entries, per_page=per_page)
 		
@@ -274,7 +269,7 @@ class NewHelpMenus(menus.ListPageSource):
 		
 		maximum = self.get_max_pages()
 		if maximum > 1:
-			footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} commands)'
+			footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} todos)'
 			menu.embed.set_footer(text=footer)
 	
 		menu.embed.description = "\n".join(pages)
@@ -297,13 +292,6 @@ class NewCustomMenus(menus.ListPageSource):
 		menu.embed.description = "\n".join(pages)
 		return menu.embed
 
-class HelpmMenu(RoboPages):
-	def __init__(self, ctx, entries, *, per_page=12, title="", color=None):
-		super().__init__(NewHelpMenus(entries, per_page=per_page), ctx=ctx)
-		if color == None:
-			color = disnake.Color.blurple()
-		self.embed = disnake.Embed(colour=color, title=title)
-
 class CustomMenu(RoboPages):
 	def __init__(self, ctx, entries, *, per_page=12, title="", color=None):
 		super().__init__(NewCustomMenus(entries, per_page=per_page), ctx=ctx)
@@ -313,7 +301,7 @@ class CustomMenu(RoboPages):
 
 class ToDoMenu(RoboPages):
 	def __init__(self, ctx, entries, *, per_page=12, title="", color=None, author_name=None, author_icon_url=None):
-		super().__init__(NewHelpMenus(entries, per_page=per_page), ctx=ctx)
+		super().__init__(NewToDoMenus(entries, per_page=per_page), ctx=ctx)
 		if color == None:
 			color = disnake.Color.blurple()
 		self.embed = disnake.Embed(colour=color, title=title)
