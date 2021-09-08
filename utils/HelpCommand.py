@@ -2,7 +2,7 @@ from disnake.ext import commands
 import disnake
 from . import menus
 import asyncio
-from utils.paginator import _RoboPages
+from utils.paginator import RoboPages
 import utils.colors as color
 from typing import Any, Dict, List, Optional, Union
 import itertools
@@ -76,7 +76,7 @@ class HelpSelectMenu(disnake.ui.Select['HelpMenu']):
 			source = GroupHelpPageSource(cog, commands, prefix=self.view.ctx.clean_prefix)
 			await self.view.rebind(source, interaction)
 
-class HelpMenu(_RoboPages):
+class HelpMenu(RoboPages):
 	def __init__(self, source: menus.PageSource, ctx: commands.Context):
 		super().__init__(source, ctx=ctx, compact=True)
 
