@@ -25,7 +25,7 @@ class ShopEcoMenus(menus.ListPageSource):
 			footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} items)'
 			menu.embed.set_footer(text=footer)
 	
-		menu.embed.description = 'Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.\n\n{}'.format("\n\n".join(pages).replace('This item cannot be bought <:carrots:822122757654577183>', 'This item cannot be bought'))
+		menu.embed.description = 'Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.\n\n{}'.format("\n\n".join(pages))
 		return menu.embed
 
 class ShopEcoMenu(CustomRobo):
@@ -39,11 +39,11 @@ class ShopPageEntry:
 	def __init__(self, entry):
 
 		self.name = entry['item_name']
-		self.price = '{:,}'.format(entry['price']) if isinstance(entry['price'], int) else entry['price']
+		self.price = '{:,} <:carrots:822122757654577183>'.format(entry['price']) if isinstance(entry['price'], int) else entry['price']
 		self.desc = entry['description']
 
 	def __str__(self):
-		return f'**{self.name.title()} — {self.price} <:carrots:822122757654577183>**\n{self.desc}'
+		return f'**{self.name.title()} — {self.price}**\n{self.desc}'
 
 class ShopMenu(ShopEcoMenu):
 	def __init__(self, entries, *, per_page = 5, color=None):
@@ -53,22 +53,22 @@ class ShopMenu(ShopEcoMenu):
 rps = ['rock', 'paper', 'scissors']
 
 _shop = [
-	{'item_name': 'clock', 'price': 15000, 'sells_for': 1200, 'description': 'Increases luck by 5% for 2h', 'expires_in': {'hours': 2}},
-	{'item_name': 'alcohol', 'price': 35000, 'sells_for': 3500, 'description': 'Increases luck by 10% for 1h', 'expires_in': {'hours': 1}},
-	{'item_name': 'fishing pole', 'price': 65000, 'sells_for': 5000, 'description': 'Use this to fish', 'uses': 13},
-	{'item_name': 'hunting rifle', 'price': 75000, 'sells_for': 6300, 'description': 'Use this to go hunting', 'uses': 14},
-	{'item_name': 'common fish', 'price': 'This item cannot be bought', 'sells_for': 10000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_name': 'uncommon fish', 'price': 'This item cannot be bought', 'sells_for': 25000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_name': 'rare fish', 'price': 'This item cannot be bought', 'sells_for': 50000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_name': 'epic fish', 'price': 'This item cannot be bought', 'sells_for': 225000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_name': 'legendary fish', 'price': 'This item cannot be bought', 'sells_for': 500000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_name': 'mythic fish', 'price': 'This item cannot be bought', 'sells_for': 1000000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_name': 'skunk', 'price': 'This item cannot be bought', 'sells_for': 10000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_name': 'boar', 'price': 'This item cannot be bought', 'sells_for': 30000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_name': 'bear', 'price': 'This item cannot be bought', 'sells_for': 63000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_name': 'crocodile', 'price': 'This item cannot be bought', 'sells_for': 230000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_name': 'lion', 'price': 'This item cannot be bought', 'sells_for': 560000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_name': 'dragon', 'price': 'This item cannot be bought', 'sells_for': 1250000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'}
+	{'item_type': 'Usable', 'item_name': 'clock', 'price': 15000, 'sells_for': 1200, 'description': 'Increases luck by 5% for 2h', 'expires_in': {'hours': 2}},
+	{'item_type': 'Usable', 'item_name': 'alcohol', 'price': 35000, 'sells_for': 3500, 'description': 'Increases luck by 10% for 1h', 'expires_in': {'hours': 1}},
+	{'item_type': 'Tool', 'item_name': 'fishing pole', 'price': 65000, 'sells_for': 5000, 'description': 'Use this to fish', 'uses': 13},
+	{'item_type': 'Tool', 'item_name': 'hunting rifle', 'price': 75000, 'sells_for': 6300, 'description': 'Use this to go hunting', 'uses': 14},
+	{'item_type': 'Sellable', 'item_name': 'common fish', 'price': 'This item cannot be bought.', 'sells_for': 10000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_type': 'Sellable', 'item_name': 'uncommon fish', 'price': 'This item cannot be bought.', 'sells_for': 25000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_type': 'Sellable', 'item_name': 'rare fish', 'price': 'This item cannot be bought.', 'sells_for': 50000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_type': 'Sellable', 'item_name': 'epic fish', 'price': 'This item cannot be bought.', 'sells_for': 225000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_type': 'Sellable', 'item_name': 'legendary fish', 'price': 'This item cannot be bought.', 'sells_for': 500000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_type': 'Sellable', 'item_name': 'mythic fish', 'price': 'This item cannot be bought.', 'sells_for': 1000000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_type': 'Sellable', 'item_name': 'skunk', 'price': 'This item cannot be bought.', 'sells_for': 10000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_type': 'Sellable', 'item_name': 'boar', 'price': 'This item cannot be bought.', 'sells_for': 30000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_type': 'Sellable', 'item_name': 'bear', 'price': 'This item cannot be bought.', 'sells_for': 63000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_type': 'Sellable', 'item_name': 'crocodile', 'price': 'This item cannot be bought.', 'sells_for': 230000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_type': 'Sellable', 'item_name': 'lion', 'price': 'This item cannot be bought.', 'sells_for': 560000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+	{'item_type': 'Sellable', 'item_name': 'dragon', 'price': 'This item cannot be bought.', 'sells_for': 1250000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'}
 		]
 
 _fishes = [
@@ -361,7 +361,11 @@ class Economy(commands.Cog):
 			return
 
 		if item is None:
-			p = ShopMenu(entries=_shop)
+			shop = []
+			for item in _shop:
+				if item['item_type'] in ['Tool', 'Usable']:
+					shop.append(item)
+			p = ShopMenu(entries=shop)
 			await p.start(ctx)
 
 		else:
@@ -377,10 +381,12 @@ class Economy(commands.Cog):
 						owned = user_db['items'][index]['owned']
 						item_found = True
 						em = disnake.Embed(title=f"{_item['item_name'].title()} ({owned} owned)", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
+						em.set_footer(text=f"Item Type: {_item['item_type']}")
 						return await ctx.send(embed=em)
 					else:
 						item_found = True
 						em = disnake.Embed(title=f"{_item['item_name'].title()}", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
+						em.set_footer(text=f"Item Type: {_item['item_type']}")
 						return await ctx.send(embed=em)
 				index += 1
 			if item_found == False:
@@ -423,14 +429,14 @@ class Economy(commands.Cog):
 				user_db = await self.db.find_one({'_id': ctx.author.id})
 				if user_db is None:
 					return await ctx.send(f'You are not registered! Type: `!register` to register {ctx.author.mention}')
-				elif _item['price'] == 'This item cannot be bought':
+				elif _item['item_type'] == 'Sellable':
 					return await ctx.reply(_item['price'])
 
 				if user_db['wallet'] >= _item['price']:
 					items = []
 					for i in user_db['items']:
 						if i['item_name'] == _item['item_name']:
-							if i['owned'] > 0 and i['item_name'] in ['hunting rifle', 'fishing pole']:
+							if i['owned'] > 0 and i['item_type'] == 'Tool':
 								return await ctx.reply('You can only have one of this item.')
 							i['owned'] += 1
 						items.append(i)
@@ -494,7 +500,7 @@ class Economy(commands.Cog):
 								else:
 									return await ctx.reply(f'You do not have `{amount}` **{item}.**')
 							except ValueError:
-								return await ctx.reply('The amount is not a number.')
+								amount = 1
 					items.append(i)
 				await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
 				await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'wallet': (_item['sells_for'] * amount)}})
@@ -511,7 +517,7 @@ class Economy(commands.Cog):
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
 			return
 
-		usable_items = ['alcohol', 'clock']
+		usable_items = [i['item_name'] for i in _shop if i['item_type'] == 'Usable']
 		user_db = await self.db.find_one({'_id': ctx.author.id})
 		item = item.lower()
 		if item not in usable_items:
@@ -563,7 +569,7 @@ class Economy(commands.Cog):
 		await ctx.send(embed=em)
 
 	@commands.command(name='fish')
-	@commands.cooldown(1, 35.0, commands.BucketType.member)
+	@commands.cooldown(1, 30.0, commands.BucketType.member)
 	async def eco_fish(self, ctx):
 		"""
 		Go fishing and sell the fish that you get, if you get any.
@@ -620,7 +626,7 @@ class Economy(commands.Cog):
 		await ctx.send('You didn\'t find any fishes.')
 
 	@commands.command(name='hunt')
-	@commands.cooldown(1, 45.0, commands.BucketType.member)
+	@commands.cooldown(1, 33.0, commands.BucketType.member)
 	async def eco_hunt(self, ctx):
 		"""
 		Go hunting and sell the animals that you get, if you get any.
