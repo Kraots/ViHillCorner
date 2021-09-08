@@ -51,39 +51,32 @@ class Marriage(commands.Cog):
 					
 
 			else:
-				def check(reaction, user):
-					return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
-
-				msg = await ctx.send("{} do you want to marry {}?".format(member.mention, ctx.author.mention))
-				await msg.add_reaction('<:agree:797537027469082627>')
-				await msg.add_reaction('<:disagree:797537030980239411>')
-
-				try:
-					reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-				except asyncio.TimeoutError:
+				view = self.bot.confirm_view(ctx)
+				msg = await ctx.send("{} do you want to marry {}?".format(member.mention, ctx.author.mention), view=view)
+				await view.wait()
+				if view.response is None:
 					new_msg = f"{ctx.author.mention} Did not react in time."
-					await msg.edit(content=new_msg)
-					await msg.clear_reactions()
-					return
+					for item in view.children:
+						item.style = disnake.ButtonStyle.grey
+						item.disabled = True
+					return await msg.edit(content=new_msg, view=view)
 				
-				else:
-					if str(reaction.emoji) == '<:agree:797537027469082627>':
-						
-						married_since_save_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M")
+				elif view.response is True:
+					
+					married_since_save_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M")
 
-						save_auth = {"_id": ctx.author.id, "married_to": member.id, "marry_date": married_since_save_time}
-						save_mem = {"_id": member.id, "married_to": ctx.author.id, "marry_date": married_since_save_time}
-						
-						await self.db.insert_many([save_auth, save_mem])
+					save_auth = {"_id": ctx.author.id, "married_to": member.id, "marry_date": married_since_save_time}
+					save_mem = {"_id": member.id, "married_to": ctx.author.id, "marry_date": married_since_save_time}
+					
+					await self.db.insert_many([save_auth, save_mem])
 
-						await ctx.send("`{}` married `{}`!!! :tada: :tada:".format(ctx.author.display_name, member.display_name))
-						await msg.delete()
+					await ctx.send("`{}` married `{}`!!! :tada: :tada:".format(ctx.author.display_name, member.display_name))
+					await msg.delete()
 
 
-					elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-						await ctx.send("`{}` does not want to marry with you. {} :pensive: :fist:".format(member.display_name, ctx.author.mention))
-						await msg.delete()
+				elif view.response is False:
+					await ctx.send("`{}` does not want to marry with you. {} :pensive: :fist:".format(member.display_name, ctx.author.mention))
+					await msg.delete()
 
 
 
@@ -102,38 +95,29 @@ class Marriage(commands.Cog):
 		else:	
 			the_married_to_user = self.bot.get_user(results['married_to'])	
 
-			def check(reaction, user):
-				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id	
-
-			msg = await ctx.send("Are you sure you want to divorce `{}`?".format(the_married_to_user.display_name))	
-			await msg.add_reaction('<:agree:797537027469082627>')
-			await msg.add_reaction('<:disagree:797537030980239411>')
-
-			try:
-				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-			except asyncio.TimeoutError:
+			view = self.bot.confirm_view(ctx)
+			msg = await ctx.send("Are you sure you want to divorce `{}`?".format(the_married_to_user.display_name), view=view)	
+			await view.wait()
+			if view.response is None:
 				new_msg = f"{ctx.author.mention} Did not react in time."
-				await msg.edit(content=new_msg)
-				await msg.clear_reactions()
-				return
+				for item in view.children:
+					item.style = disnake.ButtonStyle.grey
+					item.disabled = True
+				return await msg.edit(content=new_msg, view=view)
 			
-			else:
-				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					auth = {"_id": ctx.author.id} 	
-					mem = {"_id": the_married_to_user.id}	
-					await self.db.delete_one(auth)	
-					await self.db.delete_one(mem)	
+			elif view.response is True:
+				auth = {"_id": ctx.author.id} 	
+				mem = {"_id": the_married_to_user.id}	
+				await self.db.delete_one(auth)	
+				await self.db.delete_one(mem)	
 
-					e = "You divorced `{}`. :cry:".format(the_married_to_user.display_name)
-					await msg.edit(content=e)
-					await msg.clear_reactions()
+				e = "You divorced `{}`. :cry:".format(the_married_to_user.display_name)
+				return await msg.edit(content=e, view=view)
 
 
-				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-					e = "You did not divorce that person :D %s" % (user.mention)
-					await msg.edit(content=e)
-					await msg.clear_reactions()
+			elif view.response is False:
+				e = "You did not divorce that person :D %s" % (user.mention)
+				return await msg.edit(content=e, view=view)
 
 	@commands.command()
 	async def marriedwho(self, ctx, member : disnake.Member = None):

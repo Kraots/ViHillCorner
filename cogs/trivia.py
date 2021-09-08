@@ -1,4 +1,3 @@
-import asyncio
 import utils.colors as color
 from disnake.ext import commands
 import disnake
@@ -161,33 +160,25 @@ class Trivia(commands.Cog):
 		elif memberDb is None:
 			await ctx.send("That user has never played trivia before. You give points to them. %s" % (ctx.author.mention))
 			return
-		def check(reaction, user):
-			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
-		msg = await ctx.send("%s wants to give you **%s** points. Do you accept? %s" % (ctx.author.mention, amount, member.mention))
-		await msg.add_reaction('<:agree:797537027469082627>')
-		await msg.add_reaction('<:disagree:797537030980239411>')
-
-		try:
-				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-		except asyncio.TimeoutError:
+		view = self.bot.confirm_view(ctx)
+		msg = await ctx.send("%s wants to give you **%s** points. Do you accept? %s" % (ctx.author.mention, amount, member.mention), view=view)
+		await view.wait()
+		if view.response is None:
 			new_msg = f"{ctx.author.mention} Did not react in time."
-			await msg.edit(content=new_msg)
-			await msg.clear_reactions()
-			return
+			for item in view.children:
+				item.style = disnake.ButtonStyle.grey
+				item.disabled = True
+			return await msg.edit(content=new_msg, view=view)
 		
-		else:
-			if str(reaction.emoji) == '<:agree:797537027469082627>':		
-				await self.db.update_one({'_id': ctx.author.id}, {'$inc':{'points': -amount}})
-				await self.db.update_one({'_id': member.id}, {'$inc':{'points': amount}})
-				e = "%s has accepted. Succesfully gifted the points %s" % (member.mention, ctx.author.mention)
-				await msg.clear_reactions()
-				await msg.edit(content=e)
-			
-			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-				e = "%s has rejected your gift. %s" % (member.mention, ctx.author.mention)
-				await msg.edit(content=e)
-				await msg.clear_reactions()
+		elif view.response is True:		
+			await self.db.update_one({'_id': ctx.author.id}, {'$inc':{'points': -amount}})
+			await self.db.update_one({'_id': member.id}, {'$inc':{'points': amount}})
+			e = "%s has accepted. Succesfully gifted the points %s" % (member.mention, ctx.author.mention)
+			return await msg.edit(content=e, view=view)
+		
+		elif view.response is False:
+			e = "%s has rejected your gift. %s" % (member.mention, ctx.author.mention)
+			return await msg.edit(content=e, view=view)
 
 	@trivia.error
 	async def trivia_error(self, ctx, error):

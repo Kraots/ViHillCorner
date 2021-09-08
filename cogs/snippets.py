@@ -196,9 +196,6 @@ class Snippets(commands.Cog):
 		if snippet_name is None:
 			return await ctx.reply("**!snippet delete <snippet_name>**")
 		
-		def check(reaction, user):
-			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
-
 		data = await self.db.find_one({'_id': snippet_name.lower()})
 		if data is None:
 			return await ctx.send("Snippet `%s` does not exist! %s" % (snippet_name, ctx.author.mention))
@@ -208,33 +205,25 @@ class Snippets(commands.Cog):
 					await ctx.send("You do not own this snippet!")
 					return
 		else:
-			msg = await ctx.send("Are you sure you want to delete the snippet `%s`? %s" % (snippet_name, ctx.author.mention))
-			await msg.add_reaction('<:agree:797537027469082627>')
-			await msg.add_reaction('<:disagree:797537030980239411>')
-			
-			try:
-				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-			except asyncio.TimeoutError:
+			view = self.bot.confirm_view(ctx)
+			msg = await ctx.send("Are you sure you want to delete the snippet `%s`? %s" % (snippet_name, ctx.author.mention), view=view)
+			await view.wait()
+			if view.response is None:
 				new_msg = f"{ctx.author.mention} Did not react in time."
-				await msg.edit(content=new_msg)
-				await msg.clear_reactions()
-				return
+				for item in view.children:
+					item.style = disnake.ButtonStyle.grey
+					item.disabled = True
+				return await msg.edit(content=new_msg, view=view)
 			
-			else:
-				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					await self.db.delete_one({"_id": data['_id']})
+			elif view.response is True:
+				await self.db.delete_one({"_id": data['_id']})
 
-					e = f"`{snippet_name}` deleted succesfully! {ctx.author.mention}"
-					await msg.edit(content=e)
-					await msg.clear_reactions()
-					return
-				
-				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-					e = f"Snippet was not deleted. {ctx.author.mention}"
-					await msg.edit(content=e)
-					await msg.clear_reactions()
-					return
+				e = f"`{snippet_name}` deleted succesfully! {ctx.author.mention}"
+				return await msg.edit(content=e, view=view)
+			
+			elif view.response is False:
+				e = f"Snippet was not deleted. {ctx.author.mention}"
+				return await msg.edit(content=e, view=view)
 
 
 	@snippet.command(name='remove')

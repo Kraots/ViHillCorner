@@ -326,35 +326,29 @@ class Tags(commands.Cog):
 					if ctx.author.id != tagOwner:
 						return await ctx.send("You do not own this tag! %s" % (ctx.author.mention))
 				
-				def check(reaction, user):
-					return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
-				msg = await ctx.send(f"{ctx.author.mention} Are you sure you want to remove the alias `{alias}` from the tag **{tagName}**?")
-				await msg.add_reaction('<:agree:797537027469082627>')
-				await msg.add_reaction('<:disagree:797537030980239411>')
-
-				try:
-					reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-				except asyncio.TimeoutError:
+				view = self.bot.confirm_view(ctx)
+				msg = await ctx.send(f"{ctx.author.mention} Are you sure you want to remove the alias `{alias}` from the tag **{tagName}**?", view=view)
+				await view.wait()
+				if view.response is None:
 					new_msg = f"{ctx.author.mention} Did not react in time."
-					await msg.edit(content=new_msg)
-					await msg.clear_reactions()
-					return
-				else:
-					if str(reaction.emoji) == '<:agree:797537027469082627>':
-						new_aliases = []
-						for _alias in aliases:
-							if not _alias == alias.lower():
-								new_aliases.append(_alias)
-						await self.db.update_one({'the_tag_name': tagName}, {'$set':{'aliases': new_aliases}})
-						e = f"{ctx.author.mention} Successfully removed the alias `{alias}` from tag **{tagName}**!"
-						await msg.edit(content=e)
-						await msg.clear_reactions()
-						return
-					elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-						e = "Alias has not been deleted. %s" % (ctx.author.mention)
-						await msg.edit(content=e)
-						await msg.clear_reactions()
-						return
+					for item in view.children:
+						item.style = disnake.ButtonStyle.grey
+						item.disabled = True
+					return await msg.edit(content=new_msg, view=view)
+				
+				elif view.response is True:
+					new_aliases = []
+					for _alias in aliases:
+						if not _alias == alias.lower():
+							new_aliases.append(_alias)
+					await self.db.update_one({'the_tag_name': tagName}, {'$set':{'aliases': new_aliases}})
+					e = f"{ctx.author.mention} Successfully removed the alias `{alias}` from tag **{tagName}**!"
+					return await msg.edit(content=e, view=view)
+				
+				elif view.response is False:
+					e = "Alias has not been deleted. %s" % (ctx.author.mention)
+					return await msg.edit(content=e, view=view)
+
 			except UnboundLocalError:
 				return await ctx.send("No such alias exists. %s" % (ctx.author.mention))
 
@@ -457,33 +451,24 @@ class Tags(commands.Cog):
 			if ctx.author.id != data['tag_owner_id']:
 				return await ctx.send("You do not own the tag **%s**! %s" % (data['the_tag_name'], ctx.author.mention))
 
-		def check(reaction, user):
-			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
-		msg = await ctx.send("Are you sure you wish to delete the tag **%s**? %s" % (data['the_tag_name'], ctx.author.mention))
-		await msg.add_reaction('<:agree:797537027469082627>')
-		await msg.add_reaction('<:disagree:797537030980239411>')
-		try:
-			reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-		except asyncio.TimeoutError:
+		view = self.bot.confirm_view(ctx)
+		msg = await ctx.send("Are you sure you wish to delete the tag **%s**? %s" % (data['the_tag_name'], ctx.author.mention), view=view)
+		await view.wait()
+		if view.response is None:
 			new_msg = f"{ctx.author.mention} Did not react in time."
-			await msg.edit(content=new_msg)
-			await msg.clear_reactions()
-			return
+			for item in view.children:
+				item.style = disnake.ButtonStyle.grey
+				item.disabled = True
+			return await msg.edit(content=new_msg, view=view)
 		
-		else:
-			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				await self.db.delete_one({'_id': data['_id']})
-				e = "Successfully deleted the tag **%s**. %s" % (data['the_tag_name'], ctx.author.mention)
-				await msg.clear_reactions()
-				await msg.edit(content=e)
-				return
-			
-			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-				e = "Operation of deleting the tag  **%s** has been canceled. %s" % (data['the_tag_name'], ctx.author.mention)
-				await msg.clear_reactions()
-				await msg.edit(content=e)
-				return
+		elif view.response is True:
+			await self.db.delete_one({'_id': data['_id']})
+			e = "Successfully deleted the tag **%s**. %s" % (data['the_tag_name'], ctx.author.mention)
+			return await msg.edit(content=e, view=view)
+		
+		elif view.response is False:
+			e = "Operation of deleting the tag  **%s** has been canceled. %s" % (data['the_tag_name'], ctx.author.mention)
+			return await msg.edit(content=e, view=view)
 
 	@tag.command(name='remove')
 	@commands.is_owner()

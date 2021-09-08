@@ -87,37 +87,27 @@ class Bdsm(commands.Cog):
 
 		user = ctx.author
 		
-		def check(reaction, user):
-			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
-		
-		msg = await ctx.send("Are you sure you want to remove your bdsm results? %s" % (user.mention))
-		await msg.add_reaction('<:agree:797537027469082627>')
-		await msg.add_reaction('<:disagree:797537030980239411>')
 		hasBdsm = await self.db1.find_one({'_id': user.id})
 
 		if hasBdsm != None:			
-			try:
-				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-			except asyncio.TimeoutError:
+			view = self.bot.confirm_view(ctx)
+			msg = await ctx.send("Are you sure you want to remove your bdsm results? %s" % (user.mention), view=view)
+			await view.wait()
+			if view.response is None:
 				new_msg = f"{ctx.author.mention} Did not react in time."
-				await msg.edit(content=new_msg)
-				await msg.clear_reactions()
-				return
+				for item in view.children:
+					item.style = disnake.ButtonStyle.grey
+					item.disabled = True
+				return await msg.edit(content=new_msg, view=view)
 			
-			else:
-				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					await self.db1.delete_one({'_id': user.id})
-					e = "Succesfully removed your bdsm results. %s" % (user.mention)
-					await msg.edit(content=e)
-					await msg.clear_reactions()
-					return
-				
-				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-					e = "Okay, your bdsm results have not been removed. %s" % (user.mention)
-					await msg.edit(content=e)
-					await msg.clear_reactions()
-					return
+			elif view.response is True:
+				await self.db1.delete_one({'_id': user.id})
+				e = "Succesfully removed your bdsm results. %s" % (user.mention)
+				return await msg.edit(content=e, view=view)
+
+			elif view.response is False:
+				e = "Okay, your bdsm results have not been removed. %s" % (user.mention)
+				return await msg.edit(content=e, view=view)
 
 		else:
 			await ctx.send("There are no bdsm results to delete, you don't have them set. To set your bdsm results type `!bdsm set`, and then send the screenshot of your results. %s" % (user.mention))

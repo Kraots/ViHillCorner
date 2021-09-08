@@ -236,33 +236,24 @@ class Birthdays(commands.Cog):
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 		if results != None:
-			def check(reaction, user):
-				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
-			msg = await ctx.send("Are you sure you want to remove your birthday? %s" % (ctx.author.mention))
-			await msg.add_reaction('<:agree:797537027469082627>')
-			await msg.add_reaction('<:disagree:797537030980239411>')
-			try:
-				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-			except asyncio.TimeoutError:
+			view = self.bot.confirm_view(ctx)
+			msg = await ctx.send("Are you sure you want to remove your birthday? %s" % (ctx.author.mention), view=view)
+			await view.wait()
+			if view.response is None:
 				new_msg = f"{ctx.author.mention} Did not react in time."
-				await msg.edit(content=new_msg)
-				await msg.clear_reactions()
-				return
+				for item in view.children:
+					item.style = disnake.ButtonStyle.grey
+					item.disabled = True
+				return await msg.edit(content=new_msg, view=view)
 			
-			else:
-				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					await self.db.delete_one({"_id": ctx.author.id})
-					e = "Succesfully removed your birthday from the list! {}".format(ctx.author.mention)
-					await msg.edit(content=e)
-					await msg.clear_reactions()
-					return
-				
-				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-					e = "Birthday has not been removed. %s" % (ctx.author.mention)
-					await msg.edit(content=e)
-					await msg.clear_reactions()
-					return
+			elif view.response is True:
+				await self.db.delete_one({"_id": ctx.author.id})
+				e = "Succesfully removed your birthday from the list! {}".format(ctx.author.mention)
+				return await msg.edit(content=e, view=view)
+			
+			elif view.response is False:
+				e = "Birthday has not been removed. %s" % (ctx.author.mention)
+				return await msg.edit(content=e, view=view)
 
 		else:
 			await ctx.send("You did not set your birthday, therefore you don't have what to delete! Type: `!birthday set <day | month>` to set your birthday.")

@@ -84,29 +84,22 @@ class WeeklyTop(commands.Cog):
 	async def msg_top_reset(self, ctx, member: disnake.Member):
 		"""Reset the amount of messages from the top for the member."""
 
-		def check(reaction, user):
-			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
-		
-		msg = await ctx.send("Are you sure you want to reset the message count for this week for member %s?" % (member.mention))
-		await msg.add_reaction('<:agree:797537027469082627>')
-		await msg.add_reaction('<:disagree:797537030980239411>')
-		try:
-			reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-		except asyncio.TimeoutError:
+		view = self.bot.confirm_view(ctx)
+		msg = await ctx.send("Are you sure you want to reset the message count for this week for member %s?" % (member.mention), view=view)
+		await view.wait()
+		if view.response is None:
 			new_msg = f"{ctx.author.mention} Did not react in time."
-			await msg.edit(content=new_msg)
-			await msg.clear_reactions()
-			return
+			for item in view.children:
+				item.style = disnake.ButtonStyle.grey
+				item.disabled = True
+			return await msg.edit(content=new_msg, view=view)
 			
-		else:
-			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				await self.db.update_one({'_id': member.id}, {'$set':{'messages_count': 0}})
-				await msg.clear_reactions()
-				await msg.edit(content='The message count for this week for member **%s** has been reset successfully.' % (member))
-			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-				await msg.clear_reactions()
-				await msg.edit(content="Command to reset the message count for user `%s` has been canceled." % (member))
+		elif view.response is True:
+			await self.db.update_one({'_id': member.id}, {'$set':{'messages_count': 0}})
+			return await msg.edit(content='The message count for this week for member **%s** has been reset successfully.' % (member), view=view)
+		
+		elif view.response is False:
+			return await msg.edit(content="Command to reset the message count for user `%s` has been canceled." % (member), view=view)
 
 
 	@msg_top.command(aliases=['reward'])

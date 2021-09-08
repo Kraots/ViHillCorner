@@ -497,30 +497,23 @@ class Fun(commands.Cog):
 			return
 
 		p1 = ctx.author
-		msg = await ctx.send(f"**{p1.display_name}** wants to have a fight with you, do you accept? {p2.mention}")
-		def check(reaction, user):
-			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == p2.id
-		await msg.add_reaction('<:agree:797537027469082627>')
-		await msg.add_reaction('<:disagree:797537030980239411>')
-
-		try:
-				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-		except asyncio.TimeoutError:
+		view = self.bot.confirm_view(ctx)
+		msg = await ctx.send(f"**{p1.display_name}** wants to have a fight with you, do you accept? {p2.mention}", view=view)
+		await view.wait()
+		if view.response is None:
 			new_msg = f"{p2.mention} Did not react in time."
-			await msg.edit(content=new_msg)
-			await msg.clear_reactions()
-			return
+			for item in view.children:
+				view.style = disnake.ButtonStyle.grey
+				view.disabled = True
+			return await msg.edit(content=new_msg, view=view)
 		
-		else:
-			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				await msg.delete()
-				f = games.Fight(p1, p2, ctx)
-				await f.start()
+		elif view.response is True:
+			await msg.delete()
+			f = games.Fight(p1, p2, ctx)
+			return await f.start()
 
-			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-				await msg.clear_reactions()
-				await msg.edit(content=f"**{p2.display_name}** does not want to fight with you **{p1.display_name}**")
+		elif view.response is False:
+			return await msg.edit(content=f"**{p2.display_name}** does not want to fight with you **{p1.display_name}**", view=view)
 
 	@commands.command()
 	@commands.cooldown(1, 60, commands.BucketType.user)
@@ -618,31 +611,24 @@ class Fun(commands.Cog):
 			await ctx.send(f"**{member.display_name}** does not have `10,000` <:carrots:822122757654577183> in their wallet. Cannot play. {ctx.author.mention}")
 			return
 
-		def check(reaction, user):
-			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
-		
-		msg = await ctx.send(f"**{ctx.author.mention}** Wants to play tic-tac-toe with you {member.mention}. Do you accept?\nWinner gets **10,000** <:carrots:822122757654577183>\nLoser loses **10,000** <:carrots:822122757654577183>")
-		await msg.add_reaction('<:agree:797537027469082627>')
-		await msg.add_reaction('<:disagree:797537030980239411>')
-
-		try:
-			reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-		except asyncio.TimeoutError:
+		view = self.bot.confirm_view(ctx)
+		msg = await ctx.send(f"**{ctx.author.mention}** Wants to play tic-tac-toe with you {member.mention}. Do you accept?\nWinner gets **10,000** <:carrots:822122757654577183>\nLoser loses **10,000** <:carrots:822122757654577183>", view=view)
+		await view.wait()
+		if view.response is None:
 			new_msg = f"{member.mention} Did not react in time."
-			await msg.edit(content=new_msg)
-			await msg.clear_reactions()
-			return
+			for item in view.children:
+				item.style = disnake.ButtonStyle.grey
+				item.disabled = True
+			return await msg.edit(content=new_msg, view=view)
 		
-		else:
-			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				await msg.delete()
-				t = games.TicTacToe(ctx.author, member, ctx)
-				await t.start()
-				
-			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-				await ctx.reply(f"**{member.mention}** does not want to play tic-tac-toe with you.")
-				await msg.delete()
+		elif view.response is True:
+			await msg.delete()
+			t = games.TicTacToe(ctx.author, member, ctx)
+			return await t.start()
+			
+		elif view.response is False:
+			e = f"**{member.mention}** does not want to play tic-tac-toe with you."
+			return await msg.edit(content=e, view=view)
 
 	@commands.command()
 	async def reverse(self, ctx, *, text: str):

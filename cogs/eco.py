@@ -1087,36 +1087,25 @@ class Economy(commands.Cog):
 				await ctx.send('You cannot give less than `100` <:carrots:822122757654577183> %s.' % (ctx.author.mention))
 				return
 
-			def check(reaction, user):
-				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
-
-			msg = await ctx.send(f"{ctx.author.mention} wants to give you some carrots. Do you accept them {member.mention}?")
-			await msg.add_reaction('<:agree:797537027469082627>')
-			await msg.add_reaction('<:disagree:797537030980239411>')
-
-			try:
-				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-			except asyncio.TimeoutError:
+			view = self.bot.confirm_view(ctx)
+			msg = await ctx.send(f"{ctx.author.mention} wants to give you some carrots. Do you accept them {member.mention}?", view=view)
+			await view.wait()
+			if view.response is None:
 				new_msg = f"{member.mention} Did not react in time."
-				await msg.edit(content=new_msg)
-				await msg.clear_reactions()
-				return
+				for item in view.children:
+					item.style = disnake.ButtonStyle.grey
+					item.disabled = True
+				return await msg.edit(content=new_msg, view=view)
 			
-			else:
-				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					await self.db.update_one({"_id": author.id}, {"$inc":{"wallet": -amount}})
-					await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
-					e = f"{member.mention} accepted and got **{amount:,}** <:carrots:822122757654577183> from {ctx.author.mention}."
-					await msg.edit(content=e)
-					await msg.clear_reactions()
-					return
-				
-				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-					e = f"{member.mention} did not accept your <:carrots:822122757654577183>. {ctx.author.mention}"
-					await msg.edit(content=e)
-					await msg.clear_reactions()
-					return
+			elif view.response is True:
+				await self.db.update_one({"_id": author.id}, {"$inc":{"wallet": -amount}})
+				await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
+				e = f"{member.mention} accepted and got **{amount:,}** <:carrots:822122757654577183> from {ctx.author.mention}."
+				return await msg.edit(content=e, view=view)
+			
+			elif view.response is False:
+				e = f"{member.mention} did not accept your <:carrots:822122757654577183>. {ctx.author.mention}"
+				return  await msg.edit(content=e, view=view)
 
 		else:
 			await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))

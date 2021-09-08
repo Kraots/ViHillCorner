@@ -571,40 +571,29 @@ class Misc(commands.Cog):
 		await ctx.message.delete()
 		em1 = disnake.Embed(color=color.lightpink, title="Are you ready to post your suggestion?", description="**`%s`**" %(args))
 		em1.set_author(name=f'{ctx.author.name}', icon_url=ctx.author.avatar.url)
-		msg1 = await ctx.send(embed=em1)
-		await msg1.add_reaction('<:agree:797537027469082627>')
-		await msg1.add_reaction('<:disagree:797537030980239411>')
-
-		def check(reaction, user):
-			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
-		
-		try:
-			reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-		
-		except asyncio.TimeoutError:
+		view = self.bot.confirm_view(ctx)
+		msg1 = await ctx.send(embed=em1, view=view)
+		await view.wait()
+		if view.response is None:
 			new_msg = f"{ctx.author.mention} Did not react in time."
-			await msg1.edit(content=new_msg, embed=None)
-			await msg1.clear_reactions()
-			return
+			for item in view.children:
+				item.style = disnake.ButtonStyle.grey
+				item.disabled = True
+			return await msg1.edit(content=new_msg, embed=None, view=view)
 		
-		else:
-			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				suggest = disnake.Embed(color=color.inviscolor, title="", description=f"{args}", timestamp=ctx.message.created_at.replace(tzinfo=None))
-				suggest.set_author(name=f'{ctx.author.name} suggested:', icon_url=ctx.author.avatar.url)
-				suggestions = self.bot.get_channel(750160850593251454)
-				msg = await suggestions.send(embed=suggest)
-				await msg.add_reaction('<:agree:797537027469082627>')
-				await msg.add_reaction('<:disagree:797537030980239411>')
-				em = disnake.Embed(color=color.inviscolor, title="Suggestion successfully added!", url=msg.jump_url)
-				await msg1.edit(embed=em)
-				await msg1.clear_reactions()
-				return
+		elif view.response is True:
+			suggest = disnake.Embed(color=color.inviscolor, title="", description=f"{args}", timestamp=ctx.message.created_at.replace(tzinfo=None))
+			suggest.set_author(name=f'{ctx.author.name} suggested:', icon_url=ctx.author.avatar.url)
+			suggestions = self.bot.get_channel(750160850593251454)
+			msg = await suggestions.send(embed=suggest)
+			await msg.add_reaction('<:agree:797537027469082627>')
+			await msg.add_reaction('<:disagree:797537030980239411>')
+			em = disnake.Embed(color=color.inviscolor, title="Suggestion successfully added!", url=msg.jump_url)
+			return await msg1.edit(embed=em, view=view)
 
-			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-				e = "Suggestion aborted. %s" % (ctx.author.mention)
-				await msg1.edit(content=e, embed=None)
-				await msg1.clear_reactions()
-				return
+		elif view.response is False:
+			e = "Suggestion aborted. %s" % (ctx.author.mention)
+			return await msg1.edit(content=e, embed=None, view=view)
 	
 	@suggest.command(name='block')
 	@commands.is_owner()

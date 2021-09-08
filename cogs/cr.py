@@ -221,33 +221,27 @@ class CustomRoles(commands.Cog):
 		if crname in member.roles:
 			await ctx.send("You already shared your custom role with that user!")
 			return
-		msg = await ctx.send(f"{member.mention} Do you accept the role <@&{crname.id}> from {user.mention}?\n\n**Note:** Any changes made to the role by {user.mention} would apply to everyone holding the role.")
-		await msg.add_reaction('<:agree:797537027469082627>')
-		await msg.add_reaction('<:disagree:797537030980239411>')
-		
-		def check(reaction, user):
-			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == member.id
-		
-		try:
-			reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-		
-		except asyncio.TimeoutError:
+		view = self.bot.confirm_view(ctx)
+		msg = await ctx.send(f"{member.mention} Do you accept the role <@&{crname.id}> from {user.mention}?\n\n**Note:** Any changes made to the role by {user.mention} would apply to everyone holding the role.", view=view)
+		await view.wait()
+		if view.response is None:
 			new_msg = f"{member.mention} Did not react in time."
-			await msg.edit(content=new_msg)
-			await msg.clear_reactions()
-			return
-		else:
-			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				await self.db.update_one({'roleID': crname.id}, {'$inc':{'shares': 1}})
-				await member.add_roles(crname)
-				em = disnake.Embed(color=user.color, title=f"{member} has accepted your role")
-				em.set_image(url="https://blog.hubspot.com/hubfs/giphy_1-1.gif")
-				await ctx.send(ctx.author.mention, embed=em)
-				return
+			for item in view.children:
+				item.style = disnake.ButtonStyle.grey
+				item.disabled = True
+			return await msg.edit(content=new_msg, view=view)
+		
+		elif view.response is True:
+			await self.db.update_one({'roleID': crname.id}, {'$inc':{'shares': 1}})
+			await member.add_roles(crname)
+			em = disnake.Embed(color=user.color, title=f"{member} has accepted your role")
+			em.set_image(url="https://blog.hubspot.com/hubfs/giphy_1-1.gif")
+			await msg.edit(view=view)
+			return await ctx.send(ctx.author.mention, embed=em)
 
-			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-				await ctx.send(f"**{member}** has denied your role {ctx.author.mention}")
-				return
+		elif view.response is False:
+			await msg.edit(view=view)
+			return await ctx.send(f"**{member}** has denied your role {ctx.author.mention}")
 
 
 	@cr.command(name='info')
@@ -364,38 +358,26 @@ class CustomRoles(commands.Cog):
 			return
 
 		get_role = results['CustomRoleName']
-
-		def check(reaction, user):
-				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
-
 		crname = disnake.utils.get(guild.roles, name=get_role)
-		msg = await ctx.send("Are you sure you want to delete your custom role (<@&{}>)?".format(crname.id))
-		await msg.add_reaction('<:agree:797537027469082627>')
-		await msg.add_reaction('<:disagree:797537030980239411>')
-		
-		try:
-				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-		except asyncio.TimeoutError:
+		view = self.bot.confirm_view(ctx)
+		msg = await ctx.send("Are you sure you want to delete your custom role (<@&{}>)?".format(crname.id), view=view)
+		await view.wait()
+		if view.response is None:
 			new_msg = f"{ctx.author.mention} Did not react in time."
-			await msg.edit(content=new_msg)
-			await msg.clear_reactions()
-			return
+			for item in view.children:
+				item.style = disnake.ButtonStyle.grey
+				item.disabled = True
+			return await msg.edit(content=new_msg, view=None)
 
-		else:
-			if str(reaction.emoji) == '<:disagree:797537030980239411>':
-				e = "Your custom role has not been deleted. %s" % (ctx.author.mention)
-				await msg.edit(content=e)
-				await msg.clear_reactions()
-				return
+		elif view.response is False:
+			e = "Your custom role has not been deleted. %s" % (ctx.author.mention)
+			return await msg.edit(content=e, view=view)
 
-			elif str(reaction.emoji) == '<:agree:797537027469082627>':
-				await crname.delete()
-				await self.db.delete_one({"_id": ctx.author.id})
-				e = "Succesfully deleted your custom role! {}".format(ctx.author.mention)
-				await msg.edit(content=e)
-				await msg.clear_reactions()
-				return
+		elif view.response is True:
+			await crname.delete()
+			await self.db.delete_one({"_id": ctx.author.id})
+			e = "Succesfully deleted your custom role! {}".format(ctx.author.mention)
+			return await msg.edit(content=e, view=view)
 
 	@commands.command(name='role-id')
 	async def _role_id(self, ctx, *, role_name : str = None):

@@ -34,44 +34,51 @@ class Intros(commands.Cog):
 		def check(message):
 			return message.author.id == usercheck and message.channel.id == channel.id
 
-		def alreadyhas(reaction, user):
-			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
-
 		if results != None:
-			msg = await ctx.send("You already have intro set, would you like to edit your intro? %s" % (ctx.author.mention))
-			await msg.add_reaction('<:agree:797537027469082627>')
-			await msg.add_reaction('<:disagree:797537030980239411>')
-
-			try:
-				reaction, user = await self.bot.wait_for('reaction_add', check=alreadyhas, timeout=180)
-
-			except asyncio.TimeoutError:
+			view = self.bot.confirm_view(ctx)
+			msg = await ctx.send("You already have intro set, would you like to edit your intro? %s" % (ctx.author.mention), view=view)
+			await view.wait()
+			if view.response is None:
 				new_msg = f"{ctx.author.mention} Did not react in time."
-				await msg.edit(content=new_msg)
-				await msg.clear_reactions()
+				for item in view.children:
+					item.style = disnake.ButtonStyle.grey
+					item.disabled = True
+				await msg.edit(content=new_msg, view=view)
 				ctx.command.reset_cooldown(ctx)
 				return
 			
-			else:
-				if str(reaction.emoji) == '<:disagree:797537030980239411>':
-					e = "Canceled. %s" % (ctx.author.mention)
+			elif view.response is False:
+				e = "Canceled. %s" % (ctx.author.mention)
+				ctx.command.reset_cooldown(ctx)
+				return await msg.edit(content=e, view=view)
+
+			elif view.response is True:
+				await msg.delete()
+				try:
+					intro_id = results['intro_id']
+				except:
+					pass
+
+				await channel.send("What's your name? {}\n\n*To cancel type `!cancel`*".format(ctx.author.mention))
+
+				try:
+					name = await self.bot.wait_for('message', timeout= 180, check=check)
+					if name.content.lower() == '!cancel':
+						await channel.send("Canceled. %s" % (ctx.author.mention))
+						ctx.command.reset_cooldown(ctx)
+						return
+
+				except asyncio.TimeoutError:
+					await ctx.send("Ran out of time. %s" % (ctx.author.mention))
 					ctx.command.reset_cooldown(ctx)
-					await msg.edit(content=e)
-					await msg.clear_reactions()
 					return
 
-				elif str(reaction.emoji) == '<:agree:797537027469082627>':
-					await msg.delete()
+				else:
+					await channel.send("Where are you from? {}".format(ctx.author.mention))
+					
 					try:
-						intro_id = results['intro_id']
-					except:
-						pass
-
-					await channel.send("What's your name? {}\n\n*To cancel type `!cancel`*".format(ctx.author.mention))
-
-					try:
-						name = await self.bot.wait_for('message', timeout= 180, check=check)
-						if name.content.lower() == '!cancel':
+						location = await self.bot.wait_for('message', timeout= 180, check=check)
+						if location.content.lower() == '!cancel':
 							await channel.send("Canceled. %s" % (ctx.author.mention))
 							ctx.command.reset_cooldown(ctx)
 							return
@@ -82,14 +89,23 @@ class Intros(commands.Cog):
 						return
 
 					else:
-						await channel.send("Where are you from? {}".format(ctx.author.mention))
-						
+						await channel.send("How old are you? {}".format(ctx.author.mention))
+
 						try:
-							location = await self.bot.wait_for('message', timeout= 180, check=check)
-							if location.content.lower() == '!cancel':
-								await channel.send("Canceled. %s" % (ctx.author.mention))
-								ctx.command.reset_cooldown(ctx)
-								return
+							while True:
+								age = await self.bot.wait_for('message', timeout= 180, check=check)
+								if age.content.lower() == '!cancel':
+									await channel.send("Canceled. %s" % (ctx.author.mention))
+									ctx.command.reset_cooldown(ctx)
+									return
+								try:
+									agenumber = int(age.content)
+									if agenumber >= 44 or agenumber <= 11:
+										await channel.send("Please put your real age and not a fake age.")
+									else:
+										break
+								except ValueError:
+									await channel.send("Must be number.")
 
 						except asyncio.TimeoutError:
 							await ctx.send("Ran out of time. %s" % (ctx.author.mention))
@@ -97,23 +113,14 @@ class Intros(commands.Cog):
 							return
 
 						else:
-							await channel.send("How old are you? {}".format(ctx.author.mention))
-
+							await channel.send("What's your gender? {}".format(ctx.author.mention))
+							
 							try:
-								while True:
-									age = await self.bot.wait_for('message', timeout= 180, check=check)
-									if age.content.lower() == '!cancel':
-										await channel.send("Canceled. %s" % (ctx.author.mention))
-										ctx.command.reset_cooldown(ctx)
-										return
-									try:
-										agenumber = int(age.content)
-										if agenumber >= 44 or agenumber <= 11:
-											await channel.send("Please put your real age and not a fake age.")
-										else:
-											break
-									except ValueError:
-										await channel.send("Must be number.")
+								gender = await self.bot.wait_for('message', timeout= 180, check=check)
+								if gender.content.lower() == '!cancel':
+									await channel.send("Canceled. %s" % (ctx.author.mention))
+									ctx.command.reset_cooldown(ctx)
+									return
 
 							except asyncio.TimeoutError:
 								await ctx.send("Ran out of time. %s" % (ctx.author.mention))
@@ -121,79 +128,64 @@ class Intros(commands.Cog):
 								return
 
 							else:
-								await channel.send("What's your gender? {}".format(ctx.author.mention))
+								await channel.send("Relationship status? `single` | `taken` | `complicated` {}".format(ctx.author.mention))
 								
 								try:
-									gender = await self.bot.wait_for('message', timeout= 180, check=check)
-									if gender.content.lower() == '!cancel':
-										await channel.send("Canceled. %s" % (ctx.author.mention))
-										ctx.command.reset_cooldown(ctx)
-										return
-
+									while True:
+										prestatuss = await self.bot.wait_for('message', timeout= 180, check=check)
+										status = prestatuss.content.lower()
+										if status == '!cancel':
+											await channel.send("Canceled. %s" % (ctx.author.mention))
+											ctx.command.reset_cooldown(ctx)
+											return
+										elif status in ['single', 'taken', 'complicated']:
+											break
+										else:
+											await channel.send("Please only choose from `single` | `taken` | `complicated`")
+									
 								except asyncio.TimeoutError:
 									await ctx.send("Ran out of time. %s" % (ctx.author.mention))
 									ctx.command.reset_cooldown(ctx)
 									return
 
 								else:
-									await channel.send("Relationship status? `single` | `taken` | `complicated` {}".format(ctx.author.mention))
-									
+									await channel.send("What are u interested to? {}".format(ctx.author.mention))
+
 									try:
-										while True:
-											prestatuss = await self.bot.wait_for('message', timeout= 180, check=check)
-											status = prestatuss.content.lower()
-											if status == '!cancel':
-												await channel.send("Canceled. %s" % (ctx.author.mention))
-												ctx.command.reset_cooldown(ctx)
-												return
-											elif status in ['single', 'taken', 'complicated']:
-												break
-											else:
-												await channel.send("Please only choose from `single` | `taken` | `complicated`")
-										
+										interests = await self.bot.wait_for('message', timeout= 360, check=check)
+										if interests.content.lower() == '!cancel':
+											await channel.send("Canceled. %s" % (ctx.author.mention))
+											ctx.command.reset_cooldown(ctx)
+											return
+
 									except asyncio.TimeoutError:
 										await ctx.send("Ran out of time. %s" % (ctx.author.mention))
 										ctx.command.reset_cooldown(ctx)
 										return
 
 									else:
-										await channel.send("What are u interested to? {}".format(ctx.author.mention))
+										em = disnake.Embed(color=ctx.author.color)
+										em.set_author(name=ctx.author, url=ctx.author.avatar.url, icon_url=ctx.author.avatar.url)
+										em.set_thumbnail(url=ctx.author.avatar.url)
+										em.add_field(name="Name", value=name.content, inline=True)
+										em.add_field(name="Location", value=location.content, inline=True)
+										em.add_field(name="Age", value=agenumber, inline=True)
+										em.add_field(name="Gender", value=gender.content, inline=False)
+										em.add_field(name="Relationship Status", value=status, inline=True)
+										em.add_field(name="Interests", value=interests.content, inline=False)
+										intro_message = await introchannel.send(embed=em)
 
+										await self.db.update_one({"_id": ctx.author.id}, {"$set": {"name": name.content, "location": location.content, "age": agenumber, "gender": gender.content, "status": status, "interests": interests.content, "intro_id": intro_message.id}})
+										
 										try:
-											interests = await self.bot.wait_for('message', timeout= 360, check=check)
-											if interests.content.lower() == '!cancel':
-												await channel.send("Canceled. %s" % (ctx.author.mention))
-												ctx.command.reset_cooldown(ctx)
-												return
+											intro_message = await introchannel.fetch_message(intro_id)
+											await intro_message.delete()
+										except:
+											pass
 
-										except asyncio.TimeoutError:
-											await ctx.send("Ran out of time. %s" % (ctx.author.mention))
-											ctx.command.reset_cooldown(ctx)
-											return
+										await ctx.send("Intro edited successfully. You can see in <#750160850593251449> %s" % (ctx.author.mention))
 
-										else:
-											em = disnake.Embed(color=ctx.author.color)
-											em.set_author(name=ctx.author, url=ctx.author.avatar.url, icon_url=ctx.author.avatar.url)
-											em.set_thumbnail(url=ctx.author.avatar.url)
-											em.add_field(name="Name", value=name.content, inline=True)
-											em.add_field(name="Location", value=location.content, inline=True)
-											em.add_field(name="Age", value=agenumber, inline=True)
-											em.add_field(name="Gender", value=gender.content, inline=False)
-											em.add_field(name="Relationship Status", value=status, inline=True)
-											em.add_field(name="Interests", value=interests.content, inline=False)
-											intro_message = await introchannel.send(embed=em)
-
-											await self.db.update_one({"_id": ctx.author.id}, {"$set": {"name": name.content, "location": location.content, "age": agenumber, "gender": gender.content, "status": status, "interests": interests.content, "intro_id": intro_message.id}})
-											
-											try:
-												intro_message = await introchannel.fetch_message(intro_id)
-												await intro_message.delete()
-											except:
-												pass
-
-											await ctx.send("Intro edited successfully. You can see in <#750160850593251449> %s" % (ctx.author.mention))
-
-											return
+										return
 
 		else:
 			
@@ -341,41 +333,33 @@ class Intros(commands.Cog):
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
-			def check(reaction, user):
-				return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == ctx.author.id
-			msg = await ctx.send("Are you sure you want to delete your intro? %s" % (ctx.author.mention))
-			await msg.add_reaction('<:agree:797537027469082627>')
-			await msg.add_reaction('<:disagree:797537030980239411>')
-			try:
-				reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-			except asyncio.TimeoutError:
+			view = self.bot.confirm_view(ctx)
+			msg = await ctx.send("Are you sure you want to delete your intro? %s" % (ctx.author.mention), view=view)
+			await view.wait()
+			if view.response is None:
 				new_msg = f"{ctx.author.mention} Did not react in time."
-				await msg.edit(content=new_msg)
-				await msg.clear_reactions()
+				for item in view.children:
+					item.style = disnake.ButtonStyle.grey
+					item.disabled = True
+				await msg.edit(content=new_msg, view=view)
 				ctx.command.reset_cooldown(ctx)
 				return
 			
-			else:
-				if str(reaction.emoji) == '<:agree:797537027469082627>':
-					await self.db.delete_one({"_id": ctx.author.id})
-					try:
-						intro_id = results['intro_id']
-						channel = ctx.guild.get_channel(750160850593251449)
-						intro_message = await channel.fetch_message(intro_id)
-						await intro_message.delete()
-					except:
-						pass
-					e = "Intro deleted. %s" % (ctx.author.mention)
-					await msg.edit(content=e)
-					await msg.clear_reactions()
-					return
-				
-				elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-					e = "Intro has not been deleted. %s" % (ctx.author.mention)
-					await msg.edit(content=e)
-					await msg.clear_reactions()
-					return
+			elif view.response is True:
+				await self.db.delete_one({"_id": ctx.author.id})
+				try:
+					intro_id = results['intro_id']
+					channel = ctx.guild.get_channel(750160850593251449)
+					intro_message = await channel.fetch_message(intro_id)
+					await intro_message.delete()
+				except:
+					pass
+				e = "Intro deleted. %s" % (ctx.author.mention)
+				return await msg.edit(content=e, view=view)
+			
+			elif view.response is False:
+				e = "Intro has not been deleted. %s" % (ctx.author.mention)
+				return await msg.edit(content=e, view=view)
 
 		else:
 			await ctx.send("You do not have an intro!")

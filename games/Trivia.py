@@ -343,32 +343,23 @@ class Trivia:
 		wager_amount = await self.get_wager_amount()
 		opponent = await self.get_opponent(wager_amount)
 
-		def check(reaction, user):
-			return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == opponent.id
-		msg = await self.ctx.send(f"{opponent.mention} You got challenged by **{self.player}** to a 1v1 trivia. Here are the conditions that your opponent chose:\n\u2800• **Difficulty**: {difficulty}\n\u2800• **Rounds**: {rounds}\n\u2800• **Bet**: `{wager_amount}` points\n\nDo you accept?")
-		await msg.add_reaction('<:agree:797537027469082627>')
-		await msg.add_reaction('<:disagree:797537030980239411>')
-
-		try:
-			reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=180)
-
-		except asyncio.TimeoutError:
+		view = self.bot.confirm_view(self.ctx)
+		msg = await self.ctx.send(f"{opponent.mention} You got challenged by **{self.player}** to a 1v1 trivia. Here are the conditions that your opponent chose:\n\u2800• **Difficulty**: {difficulty}\n\u2800• **Rounds**: {rounds}\n\u2800• **Bet**: `{wager_amount}` points\n\nDo you accept?", view=view)
+		await view.wait()
+		if view.response is None:
 			new_msg = f"{opponent.mention} Did not react in time."
-			await msg.edit(content=new_msg)
-			await msg.clear_reactions()
-			return
+			for item in view.children:
+				item.style = disnake.ButtonStyle.grey
+				item.disabled = True
+			return await msg.edit(content=new_msg, view=view)
 		
-		else:
-			if str(reaction.emoji) == '<:agree:797537027469082627>':
-				e = f"{opponent.mention} Has accepted. Starting Trivia."
-				await msg.clear_reactions()
-				await msg.edit(content=e)
+		elif view.response is True:
+			e = f"{opponent.mention} Has accepted. Starting Trivia."
+			await msg.edit(content=e, view=view)
 
-			elif str(reaction.emoji) == '<:disagree:797537030980239411>':
-				e = f"{opponent.mention} Has not accepted."
-				await msg.clear_reactions()
-				await msg.edit(content=e)
-				return
+		elif view.response is False:
+			e = f"{opponent.mention} Has not accepted."
+			return await msg.edit(content=e, view=view)
 
 		for i in range(rounds):
 			question = await trivia.question(amount=2, difficulty=difficulty)
