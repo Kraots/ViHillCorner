@@ -15,7 +15,7 @@ real_categs = ['ass', 'thigh', 'pgif', 'boobs', 'pussy', 'anal', 'feet', 'gonewi
 hentai_categs_1 = ['hentai', 'hass', 'hboobs', 'paizuri', 'hyuri', 'hthigh', 'lewdneko', 'hmidriff', 'hkitsune', 'tentacle', 'hentai_anal']
 hentai_categs_2 = ['ass', 'ecchi', 'ero', 'hentai', 'maid', 'milf', 'oppai', 'oral', 'paizuri', 'selfies', 'uniform']
 
-class TagPageEntry:
+class NSFWPageEntry:
 	def __init__(self, entry):
 
 		self.id = entry['_id']
@@ -23,10 +23,10 @@ class TagPageEntry:
 	def __str__(self):
 		return f'<@!{self.id}>\u2800•\u2800(`UserID:` {self.id})'
 
-class TagPages(SimplePages):
-	def __init__(self, entries, *, per_page=12):
-		converted = [TagPageEntry(entry) for entry in entries]
-		super().__init__(converted, per_page=per_page)
+class NSFWPages(SimplePages):
+	def __init__(self, ctx, entries, *, per_page=12):
+		converted = [NSFWPageEntry(entry) for entry in entries]
+		super().__init__(ctx=ctx, entries=converted, per_page=per_page)
 
 class NSFW(commands.Cog):
 
@@ -288,8 +288,8 @@ class NSFW(commands.Cog):
 
 		try:
 			entries = await self.db.find().to_list(100000)
-			p = TagPages(entries = entries, per_page = 7)
-			await p.start(ctx)
+			p = TagPages(ctx=ctx, entries = entries, per_page = 7)
+			await p.start()
 		except:
 			await ctx.send("There are no members whose acces has been restricted.")
 
