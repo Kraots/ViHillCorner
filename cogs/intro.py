@@ -348,8 +348,9 @@ class Intros(commands.Cog):
 			elif view.response is True:
 				await self.db.delete_one({"_id": ctx.author.id})
 				try:
+					guild = self.bot.get_guild(750160850077089853)
 					intro_id = results['intro_id']
-					channel = ctx.guild.get_channel(750160850593251449)
+					channel = guild.get_channel(750160850593251449)
 					intro_message = await channel.fetch_message(intro_id)
 					await intro_message.delete()
 				except:
