@@ -38,7 +38,7 @@ class Reclist(commands.Cog):
 		if results != None:
 			entries = results['reclist']
 			p = ReclistPages(ctx=ctx, entries=entries, per_page=10, title=f"Here's `{member.display_name}` reclist:", color=color.reds)
-			await p.start(ctx)
+			await p.start()
 
 		else:
 			if ctx.author.id == user.id:
