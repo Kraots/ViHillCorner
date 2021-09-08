@@ -602,7 +602,7 @@ class Economy(commands.Cog):
 					ctx.command.reset_cooldown(ctx)
 					return await ctx.reply('You do not own a fishing pole.')
 				break
-		rn = random.randrange(-10, 131)
+		rn = random.randrange(-10, 161)
 		
 		items_ = []
 		item_broke = False
@@ -623,10 +623,10 @@ class Economy(commands.Cog):
 			chances = fish['chances']
 			for i in user_db['items_in_use']:
 				if i['name'] == 'clock':
-					chances = list(chances) + [111, 115, 120, 125]
+					chances = list(chances) + [111, 115, 120, 125, 135]
 					chances = tuple(chances)
 				if i['name'] == 'alcohol':
-					chances = list(chances) + [-1, -5, -9, -7, 111, 115, 120, 125, 130, 117, 118]
+					chances = list(chances) + [-1, -5, -9, -7, 111, 115, 120, 125, 130, 117, 118, 130, 140, 150]
 					chances = tuple(chances)
 			if rn in chances:
 				items = []
@@ -660,7 +660,7 @@ class Economy(commands.Cog):
 					return await ctx.reply('You do not own a hunting rifle.')
 				break
 
-		rn = random.randrange(-10, 131)
+		rn = random.randrange(-10, 161)
 		items_ = []
 		item_broke = False
 		for item in user_db['items']:
@@ -680,10 +680,10 @@ class Economy(commands.Cog):
 			chances = animal['chances']
 			for i in user_db['items_in_use']:
 				if i['name'] == 'clock':
-					chances = list(chances) + [111, 115, 120, 125]
+					chances = list(chances) + [111, 115, 120, 125, 135]
 					chances = tuple(chances)
 				if i['name'] == 'alcohol':
-					chances = list(chances) + [-1, -5, -9, -7, 111, 115, 120, 125, 130, 117, 118]
+					chances = list(chances) + [-1, -5, -9, -7, 111, 115, 120, 125, 130, 117, 118, 130, 140, 150]
 					chances = tuple(chances)
 			if rn in chances:
 				items = []
