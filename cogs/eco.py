@@ -715,6 +715,7 @@ class Economy(commands.Cog):
 		"""
 		Turn passive `on` or `off`.
 		If passive is on, people won't be able to rob you, but you won't be able to rob anyone as well, additionally, you cannot give or receive carrots from other people.
+		
 		*Note: There's a cooldown of 1 day between each change*
 		"""
 
