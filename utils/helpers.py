@@ -296,7 +296,7 @@ class ConfirmView(disnake.ui.View):
 	This class is a view with yes and no buttons, this checks which button the user has pressed and returns True via the self.response if the button they clicked was Yes else  False if the button they clicked is No
 	"""
 
-	def __init__(self, ctx, *, timeout = 3.0):
+	def __init__(self, ctx, *, timeout = 180.0):
 		super().__init__(timeout=timeout)
 		self.ctx = ctx
 		self.response = None
