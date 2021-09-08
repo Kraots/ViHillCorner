@@ -184,7 +184,7 @@ class on_join(commands.Cog):
 			msg1 = await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself to us?")
 			ctx = await self.bot.get_context(msg1)
 			view = self.bot.confirm_view(ctx)
-			await msg1.edit("Welcome to `ViHill Corner`, would you like to introduce yourself to us?")
+			await msg1.edit("Welcome to `ViHill Corner`, would you like to introduce yourself to us?", view=view)
 			await view.wait()
 			if view.response is None:
 				new_msg = "Welcome to `ViHill Corner`, if you wish to do your intro please go in <#750160851822182486> and type `!intro`"
