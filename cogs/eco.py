@@ -772,9 +772,9 @@ class Economy(commands.Cog):
 			index += 1
 
 		em = disnake.Embed(title=f"{member.name}'s balance", color=color.lightpink)
-		em.add_field(name="Wallet Balance", value="{:,} <:carrots:822122757654577183> ".format(format_balance(user_db['wallet'])), inline=False)
-		em.add_field(name="Bank Balance", value="{:,} <:carrots:822122757654577183> ".format(format_balance(user_db['bank'])), inline=False)
-		em.add_field(name="Total Balance", value="{:,} <:carrots:822122757654577183> ".format(format_balance(user_db['wallet'] + user_db['bank'])))
+		em.add_field(name="Wallet Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(user_db['wallet'])), inline=False)
+		em.add_field(name="Bank Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(user_db['bank'])), inline=False)
+		em.add_field(name="Total Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(user_db['wallet'] + user_db['bank'])))
 		em.set_footer(text="Rank: {}".format(index), icon_url=ctx.author.avatar.url)
 		em.set_thumbnail(url=ctx.author.avatar.url)
 
