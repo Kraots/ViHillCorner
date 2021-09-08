@@ -585,10 +585,10 @@ class Economy(commands.Cog):
 		item_broke = False
 		for item in user_db['items']:
 			if item['item_name'] == 'fishing pole':
-				uses = item['uses']
+				uses = item['uses'] - 1
 				if uses == 0:
 					item['owned'] -= 1
-					item['uses'] = int(''.join([i['uses'] for i in _shop if i['item_name'] == item['item_name']])) 
+					item['uses'] = int(''.join(str([i['uses']) for i in _shop if i['item_name'] == item['item_name']])) 
 					item_broke = True
 				item['uses'] -= 1
 			items_.append(item)
@@ -642,10 +642,10 @@ class Economy(commands.Cog):
 		item_broke = False
 		for item in user_db['items']:
 			if item['item_name'] == 'hunting rifle':
-				uses = item['uses']
+				uses = item['uses'] - 1
 				if uses == 0:
 					item['owned'] -= 1
-					item['uses'] = int(''.join([i['uses'] for i in _shop if i['item_name'] == item['item_name']]))
+					item['uses'] = int(''.join(str([i['uses']) for i in _shop if i['item_name'] == item['item_name']]))
 					item_broke = True
 				item['uses'] -= 1
 			items_.append(item)
