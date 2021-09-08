@@ -107,8 +107,7 @@ class Levels(commands.Cog):
 		Check the member's level.
 		This will send you a image with their data.
 		"""
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 
 		if ctx.channel.id in bot_channel:
 			stats = await self.db.find_one({"_id": member.id})
@@ -164,8 +163,7 @@ class Levels(commands.Cog):
 	async def rank_set(self, ctx, lvl: int,  member: disnake.Member = None):
 		"""Set the rank for the member."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 
 		xp = ((50*((lvl-1)**2))+(50*(lvl-1)))
 		await self.db.update_one({"_id": member.id}, {"$set":{"xp": xp}})

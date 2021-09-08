@@ -387,8 +387,7 @@ class Intros(commands.Cog):
 	async def whois(self, ctx, member: disnake.Member= None):
 		"""Check the member's intro if they have one."""
 	
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 
 		results = await self.db.find_one({"_id": member.id})
 		

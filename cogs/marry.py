@@ -139,8 +139,7 @@ class Marriage(commands.Cog):
 	async def marriedwho(self, ctx, member : disnake.Member = None):
 		"""See with who are you married, if married with someone."""
 
-		if member == None:
-			member = ctx.author
+		member = member or ctx.author
 
 		results = await self.db.find_one({"_id": member.id})
 	

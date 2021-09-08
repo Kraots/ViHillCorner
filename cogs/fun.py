@@ -37,8 +37,7 @@ class Fun(commands.Cog):
 	async def ppsize(self, ctx, member: disnake.Member = None):
 		"""How big is your pp 😳"""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 		
 		em = disnake.Embed(color = member.color, title="peepee size machine")
 		if member.id == 374622847672254466:

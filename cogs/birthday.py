@@ -49,8 +49,7 @@ class Birthdays(commands.Cog):
 	async def birthday(self, ctx, member: disnake.Member = None):
 		"""See when the member's birthday is, if any"""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 		user = member
 		results = await self.db.find_one({"_id": user.id})
 

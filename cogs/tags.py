@@ -69,8 +69,7 @@ class Tags(commands.Cog):
 	async def tag_list(self, ctx, member: disnake.Member = None):
 		"""See the list of all the tags that the member owns."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 		entries = await self.db.find({'tag_owner_id': member.id}).to_list(100000)
 		try:
 			p = TagPages(entries = entries, per_page = 7)

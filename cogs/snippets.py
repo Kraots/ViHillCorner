@@ -78,8 +78,7 @@ class Snippets(commands.Cog):
 	async def snippet_list(self, ctx, member: disnake.Member = None):
 		"""Get a list with all the snippets that the member has."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 		entries = await self.db.find({'snippet_credits': member.id}).to_list(100000)
 		try:
 			p = SnippetPages(entries = entries, per_page = 7, color=color.reds)

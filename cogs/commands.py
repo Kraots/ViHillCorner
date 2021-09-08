@@ -102,8 +102,7 @@ class General(commands.Cog):
 	async def joined(self, ctx, member: disnake.Member=None):
 		"""See when the member has joined the server."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 
 		def format_date(dt):
 			if dt is None:
@@ -170,8 +169,7 @@ class General(commands.Cog):
 	async def _av(self, ctx, member: disnake.Member = None):
 		"""Get an embedded image of the member's avatar."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 			
 		avatar = disnake.Embed(title=f"Here's {member.display_name}'s avatar", url=member.avatar.url, color=color.blue)
 		avatar.set_image(url=member.avatar.url)

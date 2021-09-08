@@ -30,8 +30,7 @@ class Reclist(commands.Cog):
 	async def reclist(self, ctx, member: disnake.Member = None):
 		"""See the member's anime recommendations list."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 
 		results = await self.db.find_one({"_id": member.id})
 

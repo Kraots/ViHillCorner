@@ -31,8 +31,7 @@ class Trivia(commands.Cog):
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
 			return
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 		
 		user = await self.db.find_one({'_id': member.id})
 		if user is None:
@@ -83,8 +82,7 @@ class Trivia(commands.Cog):
 	async def tiriva_points_set(self, ctx, amount: int, member: disnake.Member = None):
 		"""Set the trivia points for the member."""
 
-		if member is None: 
-			member = ctx.author
+		member = member or ctx.author
 		
 		userDb = await self.db.find_one({'_id': member.id})
 		if userDb is None:
@@ -99,8 +97,7 @@ class Trivia(commands.Cog):
 	async def trivia_points_add(self, ctx, amount: int, member: disnake.Member = None):
 		"""Add trivia points to the member."""
 
-		if member is None: 
-			member = ctx.author
+		member = member or ctx.author
 		
 		userDb = await self.db.find_one({'_id': member.id})
 		if userDb is None:
@@ -115,8 +112,7 @@ class Trivia(commands.Cog):
 	async def trivia_points_reset(self, ctx, member: disnake.Member = None):
 		"""Reset the points for the member."""
 
-		if member is None: 
-			member = ctx.author
+		member = member or ctx.author
 		
 		userDb = await self.db.find_one({'_id': member.id})
 		if userDb is None:

@@ -372,8 +372,7 @@ class Misc(commands.Cog):
 	async def profile(self, ctx, member: disnake.Member = None):
 		"""Get info about the member."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 		
 		em = profile(ctx, member)
 		await ctx.send(embed=em)
@@ -391,8 +390,7 @@ class Misc(commands.Cog):
 	async def spotify(self, ctx, member: disnake.Member=None):
 		"""See info about the member's spotify activity."""
 			
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 
 		if member.bot:
 			await ctx.message.delete()

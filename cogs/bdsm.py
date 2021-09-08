@@ -66,8 +66,7 @@ class Bdsm(commands.Cog):
 	async def bdsm_results(self, ctx, member: disnake.Member = None):
 		"""See the member's bdsm results"""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 
 		BDSMresult = await self.db1.find_one({'_id': member.id})
 		
