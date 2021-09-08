@@ -726,7 +726,7 @@ class Economy(commands.Cog):
 				await ctx.send("User is not registered! %s" % (ctx.author.mention))
 			return
 
-		results = await self.db.find().sorted(['wallet', -1]).to_list(100000)
+		results = await self.db.find().sort(['wallet', -1]).to_list(100000)
 		index = 1
 		found = False
 		for i in results:
@@ -751,7 +751,7 @@ class Economy(commands.Cog):
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
 			return
 
-		results = await self.db.find().sorted(['wallet', -1]).to_list(100000) 
+		results = await self.db.find().sort(['wallet', -1]).to_list(100000) 
 		em = disnake.Embed(title=f'Top 10 richest people', color=color.lightpink)
 		index = 1
 		for m in results:
