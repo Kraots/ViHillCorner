@@ -700,21 +700,21 @@ class Misc(commands.Cog):
 		
 		matches_description = re.findall(filter_invite, description)		
 		for description in matches_description:
-			if inter.author.id != self.bot.owner_id:
+			if inter.author.id != 374622847672254466:
 				return await inter.response.send_message("No invites allowed!", ephemeral=True)
 		em = disnake.Embed(color=color, description=description)
 		
 		if title is not None:
 			matches_title = re.findall(filter_invite, title)
 			for title in matches_title:
-				if inter.author.id != self.bot.owner_id:
+				if inter.author.id != 374622847672254466:
 					return await inter.response.send_message("No invites allowed!", ephemeral=True)
 			em.title = title
 		
 		if image_url is not None:
 			matches_image_url = re.findall(filter_invite, image_url)
 			for image_url in matches_image_url:
-				if inter.author.id != self.bot.owner_id:
+				if inter.author.id != 374622847672254466:
 					return await inter.response.send_message("No invites allowed!", ephemeral=True)
 			em.set_image(url=image_url)
 		
@@ -722,7 +722,7 @@ class Misc(commands.Cog):
 		if footer is not None:
 			matches = re.findall(filter_invite, footer)
 			for footer in matches:
-				if inter.author.id != self.bot.owner_id:
+				if inter.author.id != 374622847672254466:
 					return await inter.response.send_message("No invites allowed!", ephemeral=True)
 			em_footer['text'] = footer
 		

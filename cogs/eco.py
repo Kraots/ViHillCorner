@@ -233,17 +233,18 @@ class Economy(commands.Cog):
 			try:
 				daily = results['daily']
 				
-				if dateNow < daily:
-					
-					def format_date(dt):
-						return f"{time.human_timedelta(dt, accuracy=3)}"
+				if ctx.author.id != 374622847672254466:
+					if dateNow < daily:
+						def format_date(dt):
+							return f"{time.human_timedelta(dt, accuracy=3)}"
+						return await ctx.send("{} You already claimed your daily for today! Please try again in `{}`.".format(ctx.author.mention, format_date(daily)))
 
-					await ctx.send("{} You already claimed your daily for today! Please try again in `{}`.".format(ctx.author.mention, format_date(daily)))
-					return
-
-				elif dateNow >= daily:
+					elif dateNow >= daily:
+						await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
+						await self.db.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})	
+				else:
 					await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
-					await self.db.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})	
+					await self.db.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})
 
 			except KeyError:
 				await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
@@ -721,10 +722,21 @@ class Economy(commands.Cog):
 			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 		elif option is None:
 			return await ctx.send(f"Your current passive is {'**enabled.**' if user_db['passive'] == True else '**disabled.**'}")
+		option = option.lower()
+		options = {'on': True, 'off': False}
 
-		if datetime.datetime.utcnow() >= user_db['passive_cooldown']:
-			option = option.lower()
-			options = {'on': True, 'off': False}
+		if ctx.author.id != 374622847672254466:
+			if datetime.datetime.utcnow() >= user_db['passive_cooldown']:
+				if option not in ['on', 'off']:
+					return await ctx.reply('Not a valid option')
+				elif options[option] == user_db['passive']:
+					return await ctx.reply(f"Your passive is already {'**enabled.**' if option == 'on' else '**disabled.**'}")
+				updated_cooldown = user_db['passive_cooldown'] + relativedelta(days=1)
+				await self.db.update_one({'_id': ctx.author.id}, {'$set': {'passive': options[option], 'passive_cooldown': updated_cooldown}})
+				await ctx.reply(f"Passive has been {'**enabled.**' if option == 'on' else '**disabled.**'}")
+			else:
+				await ctx.reply(f"You can set your passive again in **{time.human_timedelta(user_db['passive_cooldown'])}**.")
+		else:
 			if option not in ['on', 'off']:
 				return await ctx.reply('Not a valid option')
 			elif options[option] == user_db['passive']:
@@ -732,8 +744,6 @@ class Economy(commands.Cog):
 			updated_cooldown = user_db['passive_cooldown'] + relativedelta(days=1)
 			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'passive': options[option], 'passive_cooldown': updated_cooldown}})
 			await ctx.reply(f"Passive has been {'**enabled.**' if option == 'on' else '**disabled.**'}")
-		else:
-			await ctx.reply(f"You can set your passive again in **{time.human_timedelta(user_db['passive_cooldown'])}**.")
 
 	@commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bal'])
 	async def balance(self, ctx, member: disnake.Member = None):

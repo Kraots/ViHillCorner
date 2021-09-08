@@ -265,7 +265,7 @@ class Moderator(commands.Cog):
 
 		isStaff = False
 		if 754676705741766757 in [role.id for role in member.roles]:
-			if ctx.author.id != self.bot.owner_id:
+			if ctx.author.id != 374622847672254466:
 				return await ctx.send("You can't mute mods or take any moderator action against them.")
 			isStaff = True
 			
