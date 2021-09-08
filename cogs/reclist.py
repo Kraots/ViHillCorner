@@ -13,9 +13,9 @@ class ReclistPageEntry:
 		return f'\u2800{self.name}'
 
 class ReclistPages(CustomMenu):
-	def __init__(self, entries, *, per_page=12, title="", color=None):
+	def __init__(self, ctx, entries, *, per_page=12, title="", color=None):
 		converted = [ReclistPageEntry(entry) for entry in entries]
-		super().__init__(converted, per_page=per_page, color=color, title=title)
+		super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color, title=title)
 
 class Reclist(commands.Cog):
 
@@ -37,7 +37,7 @@ class Reclist(commands.Cog):
 		user = member
 		if results != None:
 			entries = results['reclist']
-			p = ReclistPages(entries=entries, per_page=10, title=f"Here's `{member.display_name}` reclist:", color=color.reds)
+			p = ReclistPages(ctx=ctx, entries=entries, per_page=10, title=f"Here's `{member.display_name}` reclist:", color=color.reds)
 			await p.start(ctx)
 
 		else:
