@@ -5,7 +5,6 @@ import asyncio
 from random import randint
 from utils import time
 import re
-from utils.helpers import ConfirmViewDMS
 
 def remove_emoji(string):
 	emoji_pattern = re.compile("["
