@@ -257,8 +257,7 @@ class Economy(commands.Cog):
 	async def daily_reset(self, ctx, member: disnake.Member = None):
 		"""Reset the daily for a user. This means that the amount of time that they have to wait until they can get their daily will be reset."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 		
 		results = await self.db.find_one({"_id": member.id})
 		if results == None:
@@ -717,57 +716,31 @@ class Economy(commands.Cog):
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
 			return
 
-		if member is None:
-			member = ctx.author
-
-		user = member
+		member = member or ctx.author
 		
-		results = await self.db.find_one({"_id": user.id})
-		if results == None:
+		user_db = await self.db.find_one({"_id": ctx.author.id})
+		if user_db == None:
 			if member.id == ctx.author.id:
 				await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 			else:
 				await ctx.send("User is not registered! %s" % (ctx.author.mention))
 			return
 
-		all_accounts = await self.db.find().to_list(100000)
-
-		leader_board = {}
-
-		for all_results in all_accounts:
-			userr = self.bot.get_user(all_results["_id"])
-			all_wallet_amt = all_results["wallet"]
-			all_bank_amt = all_results["bank"]
-			leader_board[userr] = all_wallet_amt + all_bank_amt
-
-		wallet_amt = results["wallet"]
-		bank_amt = results["bank"]
-
-		total_amt = wallet_amt + bank_amt
-
-		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True)
-
-		for index2, (mem, amt) in enumerate(leader_board, start = 1):
-			try:
-				list_id = mem.id
-			except:
-				pass
-			
-			string1 = f"{index2} {list_id}"
-			string2 = f"{index2} {user.id}"
-			if string1 == string2:
-				index=index2
+		results = await self.db.find().sorted(['wallet', -1]).to_list(100000)
+		index = 1
+		found = False
+		for i in results:
+			if i['_id'] == ctx.author.id:
+				found = True
 				break
-			else:
-				index2 += 1	
-
+			index += 1
 
 		em = disnake.Embed(title=f"{member.name}'s balance", color=color.lightpink)
-		em.add_field(name="Wallet Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(wallet_amt)), inline=False)
-		em.add_field(name="Bank Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(bank_amt)), inline=False)
-		em.add_field(name="Total Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(total_amt)))
-		em.set_footer(text="Rank: {}".format(index), icon_url=user.avatar.url)
-		em.set_thumbnail(url=user.avatar.url)
+		em.add_field(name="Wallet Balance", value="{:,} <:carrots:822122757654577183> ".format(format_balance(user_db['wallet'])), inline=False)
+		em.add_field(name="Bank Balance", value="{:,} <:carrots:822122757654577183> ".format(format_balance(user_db['bank'])), inline=False)
+		em.add_field(name="Total Balance", value="{:,} <:carrots:822122757654577183> ".format(format_balance(user_db['wallet'] + user_db['bank'])))
+		em.set_footer(text="Rank: {}".format(index), icon_url=ctx.author.avatar.url)
+		em.set_thumbnail(url=ctx.author.avatar.url)
 
 		await ctx.send(embed=em)
 
@@ -778,44 +751,24 @@ class Economy(commands.Cog):
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
 			return
 
-		results = await self.db.find().to_list(100000)
-		leader_board = {}
-
-		all_users = []
-
-		for result in results:
-			user = self.bot.get_user(result["_id"])  
-			leader_board[user] = result["wallet"] + result["bank"]  
-			all_users.append(result['_id'])
-		
-		leader_board = sorted(leader_board.items(), key=lambda item: item[1], reverse=True)  
-		
-		em = disnake.Embed(title=f'Top 10 richest people', color=color.lightpink) 
-		
-		for index, (mem, amt) in enumerate(leader_board[:10], start=1): 
-			
-			name = mem.name
-
-			em.add_field(name=f"`#{index}` {name}", value="{} <:carrots:822122757654577183> ".format(format_balance(amt)), inline=False)
+		results = await self.db.find().sorted(['wallet', -1]).to_list(100000) 
+		em = disnake.Embed(title=f'Top 10 richest people', color=color.lightpink)
+		index = 1
+		for m in results:
+			user = self.bot.get_user(m['_id']) 
+			em.add_field(name=f"`#{index}` {user.name}", value="{} <:carrots:822122757654577183> ".format(format_balance(m['wallet'])), inline=False)
 			if index == 10:
 				break
-			
-			else:
-				index += 1
+			index += 1
 
-		if ctx.author.id in all_users:
-			for index2, (mem, amt) in enumerate(leader_board, start = 1):
-				try:
-					id = mem.id
-				except:
-					pass
-				string1 = f"{index2} {id} {amt}"
-				string2 = f"{index2} {ctx.author.id} {amt}"
-				if string1 == string2:
-					index=index2
-					break
-				else:
-					index2 += 1
+		index = 1
+		found = False
+		for i in results:
+			if i['_id'] == ctx.author.id:
+				found = True
+				break
+			index += 1
+		if found != False:
 			em.set_footer(text=f"Your place: {index}", icon_url=ctx.author.avatar.url)
 			
 		await ctx.send(embed=em)
@@ -825,8 +778,7 @@ class Economy(commands.Cog):
 	async def add_bank(self, ctx, amount = None, member: disnake.Member = None):
 		"""Add <:carrots:822122757654577183> in the member's bank."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 
 		results = await self.db.find_one({"_id": member.id})
 		if results == None:
@@ -853,8 +805,7 @@ class Economy(commands.Cog):
 	async def add_wallet(self, ctx, amount = None, member: disnake.Member = None):
 		"""Add <:carrots:822122757654577183> in the member's wallet."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 
 		results = await self.db.find_one({"_id": member.id})
 		if results == None:
@@ -881,8 +832,7 @@ class Economy(commands.Cog):
 	async def set_bank(self, ctx, amount = None, member: disnake.Member = None):
 		"""Set the amount of <:carrots:822122757654577183> in the member's bank."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 
 		results = await self.db.find_one({"_id": member.id})
 		if results == None:
@@ -907,8 +857,7 @@ class Economy(commands.Cog):
 	async def eco_bal_reset(self, ctx, member: disnake.Member = None):
 		"""Reset the member's <:carrots:822122757654577183>."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 
 		results = await self.db.find_one({"_id": member.id})
 		if results == None:
@@ -928,8 +877,7 @@ class Economy(commands.Cog):
 	async def set_wallet(self, ctx, amount = None, member: disnake.Member = None):
 		"""Set the amount of <:carrots:822122757654577183> in the member's wallet."""
 
-		if member is None:
-			member = ctx.author
+		member = member or ctx.author
 
 		results = await self.db.find_one({"_id": member.id})
 		if results == None:
