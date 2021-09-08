@@ -19,9 +19,9 @@ class MutePageEntry:
 		return f'**{self.name}** (`{self.time_left}`)'
 
 class MutePages(CustomMenu):
-	def __init__(self, entries, *, per_page=12, title="", color=None):
+	def __init__(self, ctx, entries, *, per_page=12, title="", color=None):
 		converted = [MutePageEntry(entry) for entry in entries]
-		super().__init__(converted, per_page=per_page, color=color, title=title)
+		super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color, title=title)
 
 time_regex = re.compile("(?:(\d{1,5})(h|s|m|d))+?")
 time_dict = {"h":3600, "s":1, "m":60, "d":86400}
@@ -354,8 +354,8 @@ class Moderator(commands.Cog):
 				username = self.bot.get_user(result['_id'])
 				_dict = {'username': username, 'time_left': _time}
 				entries.append(_dict)
-			m = MutePages(entries, per_page=5, title="Here's all the current muted members:", color=color.red)
-			await m.start(ctx)
+			m = MutePages(ctx=ctx, entries=entries, per_page=5, title="Here's all the current muted members:", color=color.red)
+			await m.start()
 		
 		else:
 			result = await self.db1.find_one({'_id': member.id})
