@@ -793,8 +793,9 @@ class Economy(commands.Cog):
 		em = disnake.Embed(title=f'Top 10 richest people', color=color.lightpink)
 		index = 1
 		for m in results:
-			user = self.bot.get_user(m['_id']) 
-			em.add_field(name=f"`#{index}` {user.name}", value="{} <:carrots:822122757654577183> ".format(format_balance(m['wallet'])), inline=False)
+			user = self.bot.get_user(m['_id'])
+			if not str(m['wallet']).endswith('.0') or len(m['wallet']) <= 3:
+				em.add_field(name=f"`#{index}` {user.name}", value="{} <:carrots:822122757654577183> ".format(format_balance(m['wallet'])), inline=False)
 			if index == 10:
 				break
 			index += 1
