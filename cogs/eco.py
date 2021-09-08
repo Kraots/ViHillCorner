@@ -9,7 +9,7 @@ import pymongo
 import datetime
 from dateutil.relativedelta import relativedelta
 from utils import time, menus
-from utils.paginator import CustomRobo
+from utils.paginator import RoboPages
 
 class ShopEcoMenus(menus.ListPageSource):
 	def __init__(self, entries, *, per_page=12):
@@ -28,7 +28,7 @@ class ShopEcoMenus(menus.ListPageSource):
 		menu.embed.description = 'Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.\n\n{}'.format("\n\n".join(pages))
 		return menu.embed
 
-class ShopEcoMenu(CustomRobo):
+class ShopEcoMenu(RoboPages):
 	def __init__(self, entries, *, per_page=12, color=None):
 		super().__init__(ShopEcoMenus(entries, per_page=per_page))
 		if color is None:
