@@ -201,7 +201,10 @@ async def reraise(ctx, error):
 		await ctx.send(embed=error, delete_after=8)
 		await asyncio.sleep(7.5)
 		await ctx.message.delete()
-		
+	
+	elif isinstance(error, commands.TooManyArguments):
+		return
+
 	elif isinstance(error, commands.errors.CommandNotFound):
 		return
 	
