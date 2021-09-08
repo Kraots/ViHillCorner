@@ -380,8 +380,8 @@ class HelpmMenu(_RoboPages):
 		self.embed = disnake.Embed(colour=color, title=title)
 
 class CustomMenu(_RoboPages):
-	def __init__(self, entries, *, per_page=12, title="", color=None):
-		super().__init__(NewCustomMenus(entries, per_page=per_page))
+	def __init__(self, ctx, entries, *, per_page=12, title="", color=None):
+		super().__init__(NewCustomMenus(entries, per_page=per_page), ctx=ctx)
 		if color == None:
 			color = disnake.Color.blurple()
 		self.embed = disnake.Embed(colour=color, title=title)
