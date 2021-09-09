@@ -475,7 +475,8 @@ class Economy(commands.Cog):
 				items.append(_item)
 			if sellables == 0:
 				return await ctx.reply('You do not have any sellables in your inventory.')
-			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'wallet': total_sold_for, 'items': items}})
+			await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'wallet': total_sold_for}})
+			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
 			return await ctx.reply(f'Successfully sold all your sellables for `{total_sold_for:,}` <:carrots:822122757654577183>')
 					
 		def check(m):
