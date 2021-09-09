@@ -458,7 +458,26 @@ class Economy(commands.Cog):
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
 			return
-
+		user_db = await self.db.find_one({'_id': ctx.author.id})
+		if user_db is None:
+			return await ctx.send(f'You are not registered! Type: `!register` to register {ctx.author.mention}')
+		item_ = item.lower()
+		if item_ == 'all':
+			total_sold_for = 0
+			items = []
+			sellables = 0
+			for _item in user_db['items']:
+				if _item['owned'] != 0 and _item['item_name'] in [i['item_name'] for i in _shop if i['item_type'] == 'Sellable']:
+					sold_for = _item['owned'] * int(''.join([str(i_['sells_for']) for i_ in _shop if i_['item_name'] == _item['item_name']]))
+					total_sold_for += sold_for
+					sellables += 1
+					_item['owned'] = 0
+				items.append(_item)
+			if sellables == 0:
+				return await ctx.reply('You do not have any sellables in your inventory.')
+			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'wallet': total_sold_for, 'items': items}})
+			return await ctx.reply(f'Successfully sold all your sellables for `{total_sold_for:,}` <:carrots:822122757654577183>')
+					
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 		await ctx.send('What\'s the amount of this item that you wish to sell?')
@@ -469,15 +488,10 @@ class Economy(commands.Cog):
 		else:
 			amount = amt.content.lower()
 
-		item_ = item.lower()
 		item_found = False
 		for _item in _shop:
 			if _item['item_name'] == item_:
 				item_found = True
-				user_db = await self.db.find_one({'_id': ctx.author.id})
-				if user_db is None:
-					return await ctx.send(f'You are not registered! Type: `!register` to register {ctx.author.mention}')
-			
 				items = []
 				for i in user_db['items']:
 					if i['item_name'] == _item['item_name']:
