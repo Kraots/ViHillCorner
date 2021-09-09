@@ -24,6 +24,9 @@ class TicTacToe(disnake.ui.View):
 	
 	async def interaction_check(self, interaction: disnake.MessageInteraction):
 		if interaction.author.id != self.turn.id:
+			if interaction.author.id not in [self.p1.id, self.p2.id]:
+				await interaction.response.send_message('You are not playing in this game! To start a game with someone you must have 10k carrots, if you do then type `!ttt <user>` to play.', ephemeral=True)
+				return False
 			await interaction.response.send_message(f'Not your turn, it\'s {self.turn.display_name}\'s turn', ephemeral=True)
 			return False
 		return True
