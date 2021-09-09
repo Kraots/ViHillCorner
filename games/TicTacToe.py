@@ -1,112 +1,196 @@
-import asyncio
-import random
 import disnake
 
-class TicTacToe:
-	def __init__(self, pl1, pl2, ctx):
-		self.db = ctx.bot.db1['Economy']
-		self.player1 = pl1
-		self.player2 = pl2
+class TicTacToe(disnake.ui.View):
+	def __init__(self, p1: disnake.Member, p2: disnake.Member, ctx, *, timeout= 60.0):
+		super().__init__(timeout=timeout)
+		self.p1 = p1
+		self.p2 = p2
 		self.ctx = ctx
 		self.bot = ctx.bot
-		self.turns = 0
-		self.board = [':one:', ':two:', ':three:', ':four:', ':five:', ':six:', ':seven:', ':eight:', ':nine:']
+		self.db = ctx.bot.db1['Economy']
+		self.turn = p1
+		self.new_label = {self.p1: 'X', self.p2: 'O'}
+		self.new_style = {self.p1: disnake.ButtonStyle.red, self.p2: disnake.ButtonStyle.green}
+		self.board = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+		self.ended = False
+
+	async def on_error(self, error, item, interaction):
+		return await self.bot.reraise(self.ctx, error)
+
+	async def on_timeout(self):
+		for item in self.children:
+			item.disabled = True
+		return await self.message.edit(content=f'The game has ended, **{self.turn.display_name}** took too much to react.', view=self)
 	
-	def choose_starter(self):
-		choosePlayer = random.choice([1, 2])
-		if choosePlayer == 1:
-			self.starter = self.player1
-		elif choosePlayer == 2:
-			self.starter = self.player2
-		return self.starter
-	
-	def check_win(self):
-		if self.board[0] == self.board[1] == self.board[2]: # Check 1-3
-			return True
-		elif self.board[3] == self.board[4] == self.board[5]: # Check 4-6
-			return True
-		elif self.board[6] == self.board[7] == self.board[8]: # Check 7-9
-			return True
-		elif self.board[0] == self.board[3] == self.board[6]: # Check 1-7
-			return True
-		elif self.board[1] == self.board[4] == self.board[7]: # Check 2-8
-			return True
-		elif self.board[2] == self.board[5] == self.board[8]: # Check 3-9
-			return True
-		elif self.board[0] == self.board[4] == self.board[8]: # Check 1-9
-			return True
-		elif self.board[2] == self.board[4] == self.board[6]: # Check 3-7
-			return True
-		else:
+	async def interaction_check(self, interaction: disnake.MessageInteraction):
+		if interaction.author.id != self.turn.id:
+			await interaction.response.send_message(f'Not your turn, it\'s {self.turn.display_name}\'s turn', ephemeral=True)
 			return False
+		return True
 	
-	async def get_move(self, pl):
-		if pl == self.player1:
-			sign = ':x:'
-			Player = self.player1
-			Opponent = self.player2
-		elif pl == self.player2:
-			sign = ':o:'
-			Player = self.player2
-			Opponent = self.player1
-		self.turns += 1
-		em = disnake.Embed(description=f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}")
-		await self.ctx.send(f'{pl.mention} make your move, {sign}\n', embed=em)
-		def check(m):
-			return m.channel == self.ctx.channel and m.author == pl
-		try:
-			while True:
-				answer = await self.bot.wait_for('message', check=check, timeout=180)
-				try:
-					self.answer = int(answer.content)
-				except:
-					if str(answer.content).lower() in ['forfeit', 'cancel']:
-						await self.db.update_one({'_id': Opponent.id}, {'$inc':{'wallet': 10000}})
-						await self.db.update_one({'_id': Player.id}, {'$inc':{'wallet': -10000}})
-						raise Exception(f"**{Player.display_name}** Has forfeit.\n\n{Opponent.mention} Won **10,000** <:carrots:822122757654577183>!\n{Player.mention} Lost **10,000** <:carrots:822122757654577183>!")
-					await answer.reply(content='Must be a number between **1-9**')
-				else:
-					if 0 >= self.answer or self.answer >= 10:
-						await answer.reply(content='Must be a number between **1-9**')
-					else:
-						if self.board[self.answer - 1] not in [':o:', ':x:']:
-							self.board[self.answer -1] = sign
-							break
-						else:
-							await self.ctx.send("That place is already taken.")
-
-		except asyncio.TimeoutError:
-			raise Exception(f"The game has been canceled since {Player.mention} took too much to give an answer. {Opponent.mention}")
-
-	async def start(self):
-		self.choose_starter()
+	async def check_board_winner(self):
+		won = False
+		if self.board[0] == self.board[1] == self.board[2]: # Check 1-3
+			won = True
+		elif self.board[3] == self.board[4] == self.board[5]: # Check 4-6
+			won = True
+		elif self.board[6] == self.board[7] == self.board[8]: # Check 7-9
+			won = True
+		elif self.board[0] == self.board[3] == self.board[6]: # Check 1-7
+			won = True
+		elif self.board[1] == self.board[4] == self.board[7]: # Check 2-8
+			won = True
+		elif self.board[2] == self.board[5] == self.board[8]: # Check 3-9
+			won = True
+		elif self.board[0] == self.board[4] == self.board[8]: # Check 1-9
+			won = True
+		elif self.board[2] == self.board[4] == self.board[6]: # Check 3-7
+			won = True
 		
-		if self.starter == self.player1:
-			player = self.player1
-			opponent = self.player2
-		elif self.starter == self.player2:
-			player = self.player2
-			opponent = self.player1
+		if won == True:
+			self.ended = True
+			if self.turn == self.p1:
+				loser = self.p2
+			else:
+				loser = self.p1
+			for item in self.children:
+				item.disabled = True
+			await self.db.update_one({'_id': self.turn.id}, {'$inc':{'wallet': 10000}})
+			await self.db.update_one({'_id': loser.id}, {'$inc':{'wallet': -10000}})
+			await self.message.edit(content=f'{self.turn.mention} won **10,000** <:carrots:822122757654577183>\n {loser.mention} lost **10,000** <:carrots:822122757654577183>', view=self)
+			self.stop()
+	
+	@disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=0)
+	async def top_1(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		button.disabled = True
+		button.label = self.new_label[self.turn]
+		button.style = self.new_style[self.turn]
+		self.board[0] = self.new_label[self.turn]
+		await self.check_board_winner()
 		
-		while True:
-			await self.get_move(player)
-			em = disnake.Embed(description=f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}")
-			if self.check_win() == True:
-				await self.db.update_one({'_id': player.id}, {'$inc':{'wallet': 10000}})
-				await self.db.update_one({'_id': opponent.id}, {'$inc':{'wallet': -10000}})
-				await self.ctx.send(f"{player.mention} Won **10,000** <:carrots:822122757654577183>!\n{opponent.mention} Lost **10,000** <:carrots:822122757654577183>!\n\n", embed=em)
-				return
-			elif self.turns == 9:
-				await self.ctx.send(f"It's a draw. {player.mention} {opponent.mention}\n", embed=em)
-				return
-			
-			await self.get_move(opponent)
-			em = disnake.Embed(description=f"{self.board[0]} {self.board[1]} {self.board[2]}\n{self.board[3]} {self.board[4]} {self.board[5]}\n{self.board[6]} {self.board[7]} {self.board[8]}")
-			if self.check_win() == True:
-				await self.db.update_one({'_id': opponent.id}, {'$inc':{'wallet': 10000}})
-				await self.db.update_one({'_id': player.id}, {'$inc':{'wallet': -10000}})
-				await self.ctx.send(f"{opponent.mention} Won **10,000** <:carrots:822122757654577183>!\n{player.mention} Lost **10,000** <:carrots:822122757654577183>!\n\n", embed=em)
-				return
-			elif self.turns == 9:
-				await self.ctx.send(f"It's a draw. {player.mention} {opponent.mention}\n", embed=em)
-				return
+		if self.ended == False:
+			if self.turn == self.p1:
+				self.turn = self.p2
+			else:
+				self.turn = self.p1
+			await self.message.edit(content=f'Your turn now: {self.turn.mention}', view=self)
+	
+	@disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=0)
+	async def top_2(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		button.disabled = True
+		button.label = self.new_label[self.turn]
+		button.style = self.new_style[self.turn]
+		self.board[1] = self.new_label[self.turn]
+		await self.check_board_winner()
+		
+		if self.ended == False:
+			if self.turn == self.p1:
+				self.turn = self.p2
+			else:
+				self.turn = self.p1
+			await self.message.edit(content=f'Your turn now: {self.turn.mention}', view=self)
+	
+	@disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=0)
+	async def top_3(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		button.disabled = True
+		button.label = self.new_label[self.turn]
+		button.style = self.new_style[self.turn]
+		self.board[2] = self.new_label[self.turn]
+		await self.check_board_winner()
+		
+		if self.ended == False:
+			if self.turn == self.p1:
+				self.turn = self.p2
+			else:
+				self.turn = self.p1
+			await self.message.edit(content=f'Your turn now: {self.turn.mention}', view=self)
+
+	@disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=1)
+	async def mid_1(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		button.disabled = True
+		button.label = self.new_label[self.turn]
+		button.style = self.new_style[self.turn]
+		self.board[3] = self.new_label[self.turn]
+		await self.check_board_winner()
+		
+		if self.ended == False:
+			if self.turn == self.p1:
+				self.turn = self.p2
+			else:
+				self.turn = self.p1
+			await self.message.edit(content=f'Your turn now: {self.turn.mention}', view=self)
+	
+	@disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=1)
+	async def mid_2(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		button.disabled = True
+		button.label = self.new_label[self.turn]
+		button.style = self.new_style[self.turn]
+		self.board[4] = self.new_label[self.turn]
+		await self.check_board_winner()	
+		
+		if self.ended == False:
+			if self.turn == self.p1:
+				self.turn = self.p2
+			else:
+				self.turn = self.p1
+			await self.message.edit(content=f'Your turn now: {self.turn.mention}', view=self)
+	
+	@disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=1)
+	async def mid_3(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		button.disabled = True
+		button.label = self.new_label[self.turn]
+		button.style = self.new_style[self.turn]
+		self.board[5] = self.new_label[self.turn]
+		await self.check_board_winner()	
+		
+		if self.ended == False:
+			if self.turn == self.p1:
+				self.turn = self.p2
+			else:
+				self.turn = self.p1
+			await self.message.edit(content=f'Your turn now: {self.turn.mention}', view=self)
+
+	@disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=2)
+	async def bottom_1(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		button.disabled = True
+		button.label = self.new_label[self.turn]
+		button.style = self.new_style[self.turn]
+		self.board[6] = self.new_label[self.turn]
+		await self.check_board_winner()	
+		
+		if self.ended == False:
+			if self.turn == self.p1:
+				self.turn = self.p2
+			else:
+				self.turn = self.p1
+			await self.message.edit(content=f'Your turn now: {self.turn.mention}', view=self)
+
+	@disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=2)
+	async def bottom_2(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		button.disabled = True
+		button.label = self.new_label[self.turn]
+		button.style = self.new_style[self.turn]
+		self.board[7] = self.new_label[self.turn]
+		await self.check_board_winner()	
+		
+		if self.ended == False:
+			if self.turn == self.p1:
+				self.turn = self.p2
+			else:
+				self.turn = self.p1
+			await self.message.edit(content=f'Your turn now: {self.turn.mention}', view=self)
+
+	@disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=2)
+	async def bottom_3(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		button.disabled = True
+		button.label = self.new_label[self.turn]
+		button.style = self.new_style[self.turn]
+		self.board[8] = self.new_label[self.turn]
+		await self.check_board_winner()	
+		
+		if self.ended == False:
+			if self.turn == self.p1:
+				self.turn = self.p2
+			else:
+				self.turn = self.p1
+			await self.message.edit(content=f'Your turn now: {self.turn.mention}', view=self)

@@ -609,8 +609,9 @@ class Fun(commands.Cog):
 		await view.wait()
 		if view.response is True:
 			await msg.delete()
-			t = games.TicTacToe(ctx.author, member, ctx)
-			return await t.start()
+			ttt_view = games.TicTacToe(member, ctx.author, ctx)
+			ttt_view.message = await ctx.send(f'You start: {member.mention}', view=ttt_view)
+			return
 			
 		elif view.response is False:
 			e = f"**{member.mention}** does not want to play tic-tac-toe with you."
@@ -641,13 +642,6 @@ class Fun(commands.Cog):
 		em.set_image(url=f'attachment://{member.display_name}_inverted_avatar.png')
 		em.set_footer(text=f"Requested by: {ctx.author}", icon_url = ctx.author.avatar.url)
 		await ctx.send(embed=em, file=pfp)
-
-	@_tictactoe.error
-	async def ttt_error(self, ctx, error):
-		if isinstance(error, commands.errors.CommandInvokeError):
-			await ctx.send(error.original)
-		else:
-			await self.bot.reraise(ctx, error)
 
 	@vampify.error
 	async def vampify_error(self, ctx, error):
