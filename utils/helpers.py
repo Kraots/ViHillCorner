@@ -228,6 +228,9 @@ async def reraise(ctx, error):
 		ctx.command.reset_cooldown(ctx)
 		return
 
+	elif isinstance(error, commands.BadArgument):
+		return
+
 	else:
 		get_error = "".join(format_exception(error, error, error.__traceback__))
 		em = disnake.Embed(description=f'```py\n{get_error}\n```')
