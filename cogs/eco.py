@@ -342,7 +342,7 @@ class Economy(commands.Cog):
 				user_items.append(to_append)
 		em = disnake.Embed(color=member.color, title=f'{member.display_name}\'s inventory\n', description='\n'.join(user_items))
 		if inv_worth != 0:
-			em.set_footer(text=f'Inventory Worth: {inv_worth} carrots')
+			em.set_footer(text=f'Inventory Worth: {inv_worth:,} carrots')
 		await ctx.send(embed=em)
 
 	@commands.group(name='shop', invoke_without_command=True, case_insensitive=True)
