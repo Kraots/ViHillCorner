@@ -51,7 +51,7 @@ class Marriage(commands.Cog):
 					
 
 			else:
-				view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+				view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.", member)
 				view.message = msg = await ctx.send("{} do you want to marry {}?".format(member.mention, ctx.author.mention), view=view)
 				await view.wait()
 				if view.response is True:

@@ -1108,7 +1108,7 @@ class Economy(commands.Cog):
 				await ctx.send('You cannot give less than `100` <:carrots:822122757654577183> %s.' % (ctx.author.mention))
 				return
 
-			view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+			view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.", member)
 			view.message = msg = await ctx.send(f"{ctx.author.mention} wants to give you some carrots. Do you accept them {member.mention}?", view=view)
 			await view.wait()
 			if view.response is True:

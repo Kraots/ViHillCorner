@@ -302,14 +302,16 @@ class ConfirmView(disnake.ui.View):
 	This class is a view with yes and no buttons, this checks which button the user has pressed and returns True via the self.response if the button they clicked was Yes else  False if the button they clicked is No
 	"""
 
-	def __init__(self, ctx, new_message: str = 'Time Expired.', *, timeout = 180.0):
+	def __init__(self, ctx, new_message: str = 'Time Expired.', react_user: disnake.Member = None, *, timeout = 180.0):
 		super().__init__(timeout=timeout)
 		self.ctx = ctx
 		self.new_message = new_message
+		self.member = react_user
 		self.response = None
 
 	async def interaction_check(self, interaction: disnake.MessageInteraction):
-		if self.ctx.author.id == interaction.author.id:
+		check_for = self.ctx.author.id if self.member is None else self.member.id
+		if interaction.author.id == check_for:
 			return True
 		await interaction.response.send_message('This pagination menu cannot be controlled by you, sorry!', ephemeral=True)
 		return False

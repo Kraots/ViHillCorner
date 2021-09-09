@@ -221,7 +221,7 @@ class CustomRoles(commands.Cog):
 		if crname in member.roles:
 			await ctx.send("You already shared your custom role with that user!")
 			return
-		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.", member)
 		view.message = msg = await ctx.send(f"{member.mention} Do you accept the role <@&{crname.id}> from {user.mention}?\n\n**Note:** Any changes made to the role by {user.mention} would apply to everyone holding the role.", view=view)
 		await view.wait()
 		if view.response is True:

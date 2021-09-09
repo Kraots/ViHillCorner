@@ -160,7 +160,7 @@ class Trivia(commands.Cog):
 		elif memberDb is None:
 			await ctx.send("That user has never played trivia before. You give points to them. %s" % (ctx.author.mention))
 			return
-		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.", member)
 		view.message = msg = await ctx.send("%s wants to give you **%s** points. Do you accept? %s" % (ctx.author.mention, amount, member.mention), view=view)
 		await view.wait()
 		if view.response is True:		
