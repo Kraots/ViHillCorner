@@ -12,7 +12,7 @@ class ToDoPageEntry:
 		return f'{self.data}'
 
 class ToDoPages(ToDoMenu):
-	def __init__(self, ctx, entries, *, per_page=12, title="", color=color.red, author_name=None, author_icon_url=None):
+	def __init__(self, ctx, entries, *, per_page=5, title="", color=color.red, author_name=None, author_icon_url=None):
 		converted = [ToDoPageEntry(entry) for entry in entries]
 		super().__init__(ctx=ctx, entries=converted, per_page=per_page, title=title, color=color, author_name=author_name, author_icon_url=author_icon_url)
 
@@ -73,7 +73,7 @@ class ToDo(commands.Cog):
 			index += 1
 			entries[i]['data'] = f"**[{index}.]({entries[i]['url']})** {entries[i]['data']}"
 
-		m = ToDoPages(ctx=ctx, entries=entries, per_page=10, title="Here's your todo list:", author_name=ctx.author, author_icon_url=ctx.author.avatar.url)
+		m = ToDoPages(ctx=ctx, entries=entries, title="Here's your todo list:", author_name=ctx.author, author_icon_url=ctx.author.avatar.url)
 		await m.start()
 
 	@todo.command(name='delete', aliases=['remove'])
