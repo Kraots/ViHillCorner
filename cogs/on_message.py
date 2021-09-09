@@ -55,8 +55,6 @@ class on_message(commands.Cog):
 				return
 
 		else:
-				kraots = self.bot.get_user(374622847672254466)
-
 				em = disnake.Embed(color=color.red, description=f'[Message]({message.jump_url}) deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=datetime.datetime.utcnow())
 				em.set_author(name=f'{message.author}', icon_url=f'{message.author.avatar.url}')
 				em.set_footer(text=f'User ID: {message.author.id}')
@@ -67,7 +65,7 @@ class on_message(commands.Cog):
 				try:
 					await MessageLogWebhook(em, self.bot)
 				except Exception as e:
-					await kraots.send(e)
+					await self.bot._owner.send(e)
 		
 
 	@commands.Cog.listener('on_message_edit')
@@ -78,8 +76,6 @@ class on_message(commands.Cog):
 		if before.author.id == 374622847672254466:
 				return
 		else:
-				kraots = self.bot.get_user(374622847672254466)
-
 				em = disnake.Embed(color=color.yellow, description=f'[Message]({before.jump_url}) edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=datetime.datetime.utcnow())
 				em.set_author(name=f'{before.author}', icon_url=f'{before.author.avatar.url}')
 				em.set_footer(text=f'User ID: {before.author.id}')
@@ -88,14 +84,12 @@ class on_message(commands.Cog):
 				try:
 					await MessageLogWebhook(em, self.bot)
 				except Exception as e:
-					await kraots.send(e)
+					await self.bot._owner.send(e)
 
 
 
 	@commands.Cog.listener()
 	async def on_message(self, message: disnake.Message):
-		kraots = self.bot.get_user(374622847672254466)
-
 		if message.channel.id == 750160850593251449:
 			await message.add_reaction("<:hug:750751796317913218>")
 			await message.add_reaction("<:bloblove:758378159015723049>")
@@ -111,15 +105,15 @@ class on_message(commands.Cog):
 			if message.attachments:
 				em.set_image(url=message.attachments[0].proxy_url)
 
-			if message.author is kraots:
+			if message.author is self.bot._owner:
 				return
 
 			else:                        
-				await kraots.send(embed=em)
+				await self.bot._owner.send(embed=em)
 
 		if message.guild:
 
-			if message.author.id == kraots.id:
+			if message.author.id == self.bot._owner.id:
 				return
 
 			else:
@@ -127,7 +121,7 @@ class on_message(commands.Cog):
 				user_nickname = message.author.nick
 				
 				if any(x == str(user_nickname)[:1] for x in invalid_names_list):
-					new_nick = await check_invalid_name(self.db, message, kraots)
+					new_nick = await check_invalid_name(self.db, message, self.bot._owner)
 					await message.author.edit(nick=new_nick)
 					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 
@@ -137,19 +131,19 @@ class on_message(commands.Cog):
 						return
 					
 					else:
-						new_nick = await check_invalid_name(self.db, message, kraots)
+						new_nick = await check_invalid_name(self.db, message, self.bot._owner)
 						await message.author.edit(nick=new_nick)
 						await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 				
 				elif str(user_nickname).lower() in nono_names:
-					new_nick = await check_invalid_name(self.db, message, kraots)
+					new_nick = await check_invalid_name(self.db, message, self.bot._owner)
 					await message.author.edit(nick=new_nick)
 					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 					return
 				
 				if not user_nickname:
 					if str(user_name).lower() in nono_names:
-						new_nick = await check_invalid_name(self.db, message, kraots)
+						new_nick = await check_invalid_name(self.db, message, self.bot._owner)
 						await message.author.edit(nick=new_nick)
 						await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 						return

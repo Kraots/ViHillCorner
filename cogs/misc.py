@@ -240,11 +240,10 @@ class Misc(commands.Cog):
 		minor = sys.version_info.minor
 		micro = sys.version_info.micro
 		py_version = "{}.{}.{}".format(major, minor, micro)
-		kraots = self.bot.get_user(374622847672254466)
 		botinfo = disnake.Embed(title="", color=color.lightpink, timestamp=ctx.message.created_at.replace(tzinfo=None))
 		botinfo.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 		botinfo.add_field(name="Name | ID :", value=f"{self.bot.user} | {self.bot.user.id}", inline=False)
-		botinfo.add_field(name="Bot Owner:", value=f"{kraots}", inline=False)
+		botinfo.add_field(name="Bot Owner:", value=f"{self.bot._owner}", inline=False)
 		botinfo.add_field(name="Created at:", value="05/09/2020", inline=False)
 		botinfo.add_field(name="Python Versions:", value=f"`{py_version}`", inline=False)
 		botinfo.add_field(name="Wrapper Version:", value=f"`disnake {package_version('disnake')}`", inline=False)

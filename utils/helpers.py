@@ -158,9 +158,6 @@ def time_phaser(seconds):
 		output = output + str(int(round(s, 0))) + " seconds"
 	return output
 
-def Developer(ctx):
-	return ctx.author.id == 374622847672254466
-
 def NSFW(ctx):
 	return ctx.channel.id == 780374324598145055
 
