@@ -326,6 +326,7 @@ class Economy(commands.Cog):
 		if _count == len(user_db['items']):
 			return await ctx.send('The inventory is empty, nothing to see.')
 		user_items = []
+		inv_worth = 0
 		for item in user_db['items']:
 			if item['owned'] != 0:
 				try:
@@ -336,8 +337,12 @@ class Economy(commands.Cog):
 					to_append = f"— {''.join([i['item_emoji'] for i in _shop if i['item_name'] == item['item_name']])} {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
 				except KeyError:
 					to_append = f"— {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
+				item_worth = item['owned'] * int(''.join([i['sells_for'] for i in _shop if isinstance(i['sells_for'], int)]))
+				inv_worth += item_worth
 				user_items.append(to_append)
 		em = disnake.Embed(color=member.color, title=f'{member.display_name}\'s inventory\n', description='\n'.join(user_items))
+		if inv_worth != 0:
+			em.set_footer(text=f'Inventory Worth: {inv_worth} <:carrots:822122757654577183>')
 		await ctx.send(embed=em)
 
 	@commands.group(name='shop', invoke_without_command=True, case_insensitive=True)
