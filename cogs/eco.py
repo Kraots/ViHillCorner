@@ -337,7 +337,7 @@ class Economy(commands.Cog):
 					to_append = f"— {''.join([i['item_emoji'] for i in _shop if i['item_name'] == item['item_name']])} {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
 				except KeyError:
 					to_append = f"— {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
-				item_worth = item['owned'] * int(''.join([i['sells_for'] for i in _shop if isinstance(i['sells_for'], int)]))
+				item_worth = item['owned'] * int(''.join([str(i['sells_for']) for i in _shop if isinstance(i['sells_for'], int)]))
 				inv_worth += item_worth
 				user_items.append(to_append)
 		em = disnake.Embed(color=member.color, title=f'{member.display_name}\'s inventory\n', description='\n'.join(user_items))
