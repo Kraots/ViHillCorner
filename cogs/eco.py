@@ -92,27 +92,12 @@ _animals = [
 			]
 
 all_search_choices = ['purse', 'discord', 'pocket', 'street', 'dog', 'uber', 'canals', 'washer', 'sink', 'fridge', 'area51', 'dumpster', 'couch', 'dress', 'tree', 'glovebox']
-search1 = random.choice(all_search_choices)
-search2 = random.choice(all_search_choices)
-search3 = random.choice(all_search_choices)
-while True:
-	if search2 == search1:
-		search2 = random.choice(all_search_choices)
-	else:
-		break
-while True:
-	if search3 == search1:
-		search3 = random.choice(all_search_choices)
-	elif search3 == search2:
-		search3 = random.choice(all_search_choices)
-	else:
-		break
 
 class EcoSearchView(disnake.ui.View):
 	def __init__(self, ctx, *, timeout=10.0):
 		super().__init__(timeout=timeout)
 		self.ctx = ctx
-	
+
 	async def interaction_check(self, interaction: disnake.MessageInteraction):
 		return self.ctx.author.id == interaction.author.id
 
@@ -125,7 +110,7 @@ class EcoSearchView(disnake.ui.View):
 			item.style = disnake.ButtonStyle.grey
 		await self.message.edit('Guess you didn\'t want to search anywhere 🙄', view=self)
 		
-	@disnake.ui.button(label=search1, style=disnake.ButtonStyle.blurple)
+	@disnake.ui.button(label='1', style=disnake.ButtonStyle.blurple)
 	async def search_1_result(self, button: disnake.ui.Button, inter: disnake.Interaction):
 		for item in self.children:
 			item.disabled = True
@@ -146,7 +131,7 @@ class EcoSearchView(disnake.ui.View):
 		await inter.response.edit_message(content=None, embed=em, view=self)
 		self.stop()
 	
-	@disnake.ui.button(label=search2, style=disnake.ButtonStyle.blurple)
+	@disnake.ui.button(label='2', style=disnake.ButtonStyle.blurple)
 	async def search_2_result(self, button: disnake.ui.Button, inter: disnake.Interaction):
 		for item in self.children:
 			item.disabled = True
@@ -167,7 +152,7 @@ class EcoSearchView(disnake.ui.View):
 		await inter.response.edit_message(content=None, embed=em, view=self)
 		self.stop()
 	
-	@disnake.ui.button(label=search3, style=disnake.ButtonStyle.blurple)
+	@disnake.ui.button(label='3', style=disnake.ButtonStyle.blurple)
 	async def search_3_result(self, button: disnake.ui.Button, inter: disnake.Interaction):
 		for item in self.children:
 			item.disabled = True
@@ -708,6 +693,22 @@ class Economy(commands.Cog):
 		user_db = await self.db.find_one({'_id': ctx.author.id})
 		if user_db is not None:
 			view = EcoSearchView(ctx)
+			search1 = random.choice(all_search_choices)
+			while True:
+				search2 = random.choice(all_search_choices)
+				if search2 != search1:
+					break
+			while True:
+				search3 = random.choice(all_search_choices)
+				if search3 not in (search1, search2):
+					break
+			for item in view.children:
+				if item.label == '1':
+					item.label = search1
+				elif item.label == '2':
+					item.label = search2
+				elif item.label == '3':
+					item.label = search3
 			view.message = await ctx.send('**Where do you want to search?**\n*Pick an option below to start searching that location*', view=view)
 		else:
 			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
