@@ -1,7 +1,7 @@
 import disnake
 
 class TicTacToe(disnake.ui.View):
-	def __init__(self, p1: disnake.Member, p2: disnake.Member, ctx, *, timeout= 60.0):
+	def __init__(self, p2: disnake.Member, p1: disnake.Member, ctx, *, timeout= 60.0):
 		super().__init__(timeout=timeout)
 		self.p1 = p1
 		self.p2 = p2
@@ -60,7 +60,7 @@ class TicTacToe(disnake.ui.View):
 				item.disabled = True
 			await self.db.update_one({'_id': self.turn.id}, {'$inc':{'wallet': 10000}})
 			await self.db.update_one({'_id': loser.id}, {'$inc':{'wallet': -10000}})
-			await self.message.edit(content=f'{self.turn.mention} won **10,000** <:carrots:822122757654577183>\n {loser.mention} lost **10,000** <:carrots:822122757654577183>', view=self)
+			await self.message.edit(content=f'{self.turn.mention} won **10,000** <:carrots:822122757654577183>\n{loser.mention} lost **10,000** <:carrots:822122757654577183>', view=self)
 			self.stop()
 	
 	@disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=0)
