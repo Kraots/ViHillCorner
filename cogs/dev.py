@@ -22,27 +22,9 @@ class Developer(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
-		self.ch_pr.start()
 		self.prefix = '!'
 	async def cog_check(self, ctx):
 		return ctx.prefix == self.prefix
-
-	@tasks.loop(seconds = 125)
-	async def ch_pr(self):
-		await self.bot.wait_until_ready()
-
-		status_list = ["carrots", "ur mom", "you", "anime", "over the members"]
-
-		while not self.bot.is_closed():
-
-			status = random.choice(status_list)
-
-			activity = disnake.Activity(type=disnake.ActivityType.watching, name=status)
-
-			await self.bot.change_presence(status=disnake.Status.dnd, activity=activity)
-
-			await asyncio.sleep(60)
-
 
 	@commands.command(name='eval', aliases=['e'])
 	@commands.is_owner()
@@ -180,7 +162,6 @@ class Developer(commands.Cog):
 		"""Change the bot's presence status."""
 
 		statuses = disnake.Embed(title="Statuses:", color=color.lightpink)
-		statuses.add_field(name="Looping:", value="!status start\n!status stop", inline=False)
 		statuses.add_field(name="Online:", value="!status online\n!status online playing [custom status]\n  !status online listening [custom status]\n!status online watching [custom status]", inline=False)
 		statuses.add_field(name="Idle:", value="!status idle\n!status idle playing [custom status]\n  !status idle listening [custom status]\n!status idle watching [custom status]", inline=False)
 		statuses.add_field(name="Dnd:", value="!status dnd\n!status dnd playing [custom status]\n!status dnd listening [custom status]\n!status dnd watching [custom status]", inline=False)
@@ -188,27 +169,6 @@ class Developer(commands.Cog):
 		await ctx.send(embed=statuses, delete_after=5)
 		await asyncio.sleep(4)
 		await ctx.message.delete()
-
-	@status.command(name='start')
-	@commands.is_owner()
-	async def status_start(self, ctx):
-		"""Start the loop for the presence status."""
-
-		self.ch_pr.start()
-		await ctx.send("Started!", delete_after=7)
-		await asyncio.sleep(7.5)
-		await ctx.message.delete()
-
-	@status.command(name='stop', aliases=['cancel'])
-	@commands.is_owner()
-	async def status_stop(self, ctx):
-		"""Stop the loop for the presence status."""
-
-		self.ch_pr.cancel()
-		await ctx.send("Stopped!", delete_after=7)
-		await asyncio.sleep(7.5)
-		await ctx.message.delete()
-
 
 	@status.group(invoke_without_command=True, case_insensitive=True)
 	@commands.is_owner()

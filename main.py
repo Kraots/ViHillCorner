@@ -48,6 +48,10 @@ class ViHillCorner(commands.Bot):
 			self.uptime = datetime.datetime.utcnow()
 		if not hasattr(self, '_owner'):
 			self._owner = await self.fetch_user(374622847672254466)
+		if not hasattr(self, '_presence_changed'):
+			activity = disnake.Activity(type=disnake.ActivityType.watching, name='you | !help')
+			await self.change_presence(status=disnake.Status.dnd, activity=activity)
+			self._presence_changed = True
 
 	async def process_commands(self, message):
 		ctx = await self.get_context(message, cls=context.Context)
