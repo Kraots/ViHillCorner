@@ -343,17 +343,10 @@ class Trivia:
 		wager_amount = await self.get_wager_amount()
 		opponent = await self.get_opponent(wager_amount)
 
-		view = self.bot.confirm_view(self.ctx)
-		msg = await self.ctx.send(f"{opponent.mention} You got challenged by **{self.player}** to a 1v1 trivia. Here are the conditions that your opponent chose:\n\u2800• **Difficulty**: {difficulty}\n\u2800• **Rounds**: {rounds}\n\u2800• **Bet**: `{wager_amount}` points\n\nDo you accept?", view=view)
+		view = self.bot.confirm_view(self.ctx, f"{opponent.mention} Did not react in time.")
+		view.message = msg = await self.ctx.send(f"{opponent.mention} You got challenged by **{self.player}** to a 1v1 trivia. Here are the conditions that your opponent chose:\n\u2800• **Difficulty**: {difficulty}\n\u2800• **Rounds**: {rounds}\n\u2800• **Bet**: `{wager_amount}` points\n\nDo you accept?", view=view)
 		await view.wait()
-		if view.response is None:
-			new_msg = f"{opponent.mention} Did not react in time."
-			for item in view.children:
-				item.style = disnake.ButtonStyle.grey
-				item.disabled = True
-			return await msg.edit(content=new_msg, view=view)
-		
-		elif view.response is True:
+		if view.response is True:
 			e = f"{opponent.mention} Has accepted. Starting Trivia."
 			await msg.edit(content=e, view=view)
 

@@ -571,16 +571,11 @@ class Misc(commands.Cog):
 		await ctx.message.delete()
 		em1 = disnake.Embed(color=color.lightpink, title="Are you ready to post your suggestion?", description="**`%s`**" %(args))
 		em1.set_author(name=f'{ctx.author.name}', icon_url=ctx.author.avatar.url)
-		view = self.bot.confirm_view(ctx)
-		msg1 = await ctx.send(embed=em1, view=view)
+		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+		view.message = msg1 = await ctx.send(embed=em1, view=view)
 		await view.wait()
 		if view.response is None:
-			new_msg = f"{ctx.author.mention} Did not react in time."
-			for item in view.children:
-				item.style = disnake.ButtonStyle.grey
-				item.disabled = True
-			return await msg1.edit(content=new_msg, embed=None, view=view)
-		
+			return ctx.command.reset_cooldown(ctx)
 		elif view.response is True:
 			suggest = disnake.Embed(color=color.inviscolor, title="", description=f"{args}", timestamp=ctx.message.created_at.replace(tzinfo=None))
 			suggest.set_author(name=f'{ctx.author.name} suggested:', icon_url=ctx.author.avatar.url)

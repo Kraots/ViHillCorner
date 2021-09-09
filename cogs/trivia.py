@@ -160,17 +160,10 @@ class Trivia(commands.Cog):
 		elif memberDb is None:
 			await ctx.send("That user has never played trivia before. You give points to them. %s" % (ctx.author.mention))
 			return
-		view = self.bot.confirm_view(ctx)
-		msg = await ctx.send("%s wants to give you **%s** points. Do you accept? %s" % (ctx.author.mention, amount, member.mention), view=view)
+		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+		view.message = msg = await ctx.send("%s wants to give you **%s** points. Do you accept? %s" % (ctx.author.mention, amount, member.mention), view=view)
 		await view.wait()
-		if view.response is None:
-			new_msg = f"{ctx.author.mention} Did not react in time."
-			for item in view.children:
-				item.style = disnake.ButtonStyle.grey
-				item.disabled = True
-			return await msg.edit(content=new_msg, view=view)
-		
-		elif view.response is True:		
+		if view.response is True:		
 			await self.db.update_one({'_id': ctx.author.id}, {'$inc':{'points': -amount}})
 			await self.db.update_one({'_id': member.id}, {'$inc':{'points': amount}})
 			e = "%s has accepted. Succesfully gifted the points %s" % (member.mention, ctx.author.mention)

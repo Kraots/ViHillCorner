@@ -1108,17 +1108,10 @@ class Economy(commands.Cog):
 				await ctx.send('You cannot give less than `100` <:carrots:822122757654577183> %s.' % (ctx.author.mention))
 				return
 
-			view = self.bot.confirm_view(ctx)
-			msg = await ctx.send(f"{ctx.author.mention} wants to give you some carrots. Do you accept them {member.mention}?", view=view)
+			view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+			view.message = msg = await ctx.send(f"{ctx.author.mention} wants to give you some carrots. Do you accept them {member.mention}?", view=view)
 			await view.wait()
-			if view.response is None:
-				new_msg = f"{member.mention} Did not react in time."
-				for item in view.children:
-					item.style = disnake.ButtonStyle.grey
-					item.disabled = True
-				return await msg.edit(content=new_msg, view=view)
-			
-			elif view.response is True:
+			if view.response is True:
 				await self.db.update_one({"_id": author.id}, {"$inc":{"wallet": -amount}})
 				await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
 				e = f"{member.mention} accepted and got **{amount:,}** <:carrots:822122757654577183> from {ctx.author.mention}."

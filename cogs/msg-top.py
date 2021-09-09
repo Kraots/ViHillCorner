@@ -84,17 +84,10 @@ class WeeklyTop(commands.Cog):
 	async def msg_top_reset(self, ctx, member: disnake.Member):
 		"""Reset the amount of messages from the top for the member."""
 
-		view = self.bot.confirm_view(ctx)
-		msg = await ctx.send("Are you sure you want to reset the message count for this week for member %s?" % (member.mention), view=view)
+		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+		view.message = msg = await ctx.send("Are you sure you want to reset the message count for this week for member %s?" % (member.mention), view=view)
 		await view.wait()
-		if view.response is None:
-			new_msg = f"{ctx.author.mention} Did not react in time."
-			for item in view.children:
-				item.style = disnake.ButtonStyle.grey
-				item.disabled = True
-			return await msg.edit(content=new_msg, view=view)
-			
-		elif view.response is True:
+		if view.response is True:
 			await self.db.update_one({'_id': member.id}, {'$set':{'messages_count': 0}})
 			return await msg.edit(content='The message count for this week for member **%s** has been reset successfully.' % (member), view=view)
 		

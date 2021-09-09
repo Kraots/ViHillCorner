@@ -299,9 +299,10 @@ class ConfirmView(disnake.ui.View):
 	This class is a view with yes and no buttons, this checks which button the user has pressed and returns True via the self.response if the button they clicked was Yes else  False if the button they clicked is No
 	"""
 
-	def __init__(self, ctx, *, timeout = 180.0):
+	def __init__(self, ctx, new_message: str = 'Time Expired.', *, timeout = 180.0):
 		super().__init__(timeout=timeout)
 		self.ctx = ctx
+		self.new_message = new_message
 		self.response = None
 
 	async def interaction_check(self, interaction: disnake.MessageInteraction):
@@ -312,6 +313,12 @@ class ConfirmView(disnake.ui.View):
 	
 	async def on_error(self, error: Exception, item, interaction):
 		return await self.ctx.bot.reraise(self.ctx, error)
+	
+	async def on_timeout(self):
+		for item in self.children:
+			item.disabled = True
+			item.style = disnake.ButtonStyle.grey
+		await self.message.edit(content=self.new_message, embed=None, view=self)
 
 	@disnake.ui.button(label='Yes', style=disnake.ButtonStyle.green)
 	async def yes_button(self, button: disnake.ui.Button, inter: disnake.Interaction):

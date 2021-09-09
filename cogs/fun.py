@@ -497,17 +497,10 @@ class Fun(commands.Cog):
 			return
 
 		p1 = ctx.author
-		view = self.bot.confirm_view(ctx)
-		msg = await ctx.send(f"**{p1.display_name}** wants to have a fight with you, do you accept? {p2.mention}", view=view)
+		view = self.bot.confirm_view(ctx, f"{p2.mention} Did not react in time.")
+		view.message = msg = await ctx.send(f"**{p1.display_name}** wants to have a fight with you, do you accept? {p2.mention}", view=view)
 		await view.wait()
-		if view.response is None:
-			new_msg = f"{p2.mention} Did not react in time."
-			for item in view.children:
-				view.style = disnake.ButtonStyle.grey
-				view.disabled = True
-			return await msg.edit(content=new_msg, view=view)
-		
-		elif view.response is True:
+		if view.response is True:
 			await msg.delete()
 			f = games.Fight(p1, p2, ctx)
 			return await f.start()
@@ -611,17 +604,10 @@ class Fun(commands.Cog):
 			await ctx.send(f"**{member.display_name}** does not have `10,000` <:carrots:822122757654577183> in their wallet. Cannot play. {ctx.author.mention}")
 			return
 
-		view = self.bot.confirm_view(ctx)
-		msg = await ctx.send(f"**{ctx.author.mention}** Wants to play tic-tac-toe with you {member.mention}. Do you accept?\nWinner gets **10,000** <:carrots:822122757654577183>\nLoser loses **10,000** <:carrots:822122757654577183>", view=view)
+		view = self.bot.confirm_view(ctx, f"{member.mention} Did not react in time.")
+		view.message = msg = await ctx.send(f"**{ctx.author.mention}** Wants to play tic-tac-toe with you {member.mention}. Do you accept?\nWinner gets **10,000** <:carrots:822122757654577183>\nLoser loses **10,000** <:carrots:822122757654577183>", view=view)
 		await view.wait()
-		if view.response is None:
-			new_msg = f"{member.mention} Did not react in time."
-			for item in view.children:
-				item.style = disnake.ButtonStyle.grey
-				item.disabled = True
-			return await msg.edit(content=new_msg, view=view)
-		
-		elif view.response is True:
+		if view.response is True:
 			await msg.delete()
 			t = games.TicTacToe(ctx.author, member, ctx)
 			return await t.start()

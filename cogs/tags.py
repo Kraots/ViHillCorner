@@ -326,17 +326,10 @@ class Tags(commands.Cog):
 					if ctx.author.id != tagOwner:
 						return await ctx.send("You do not own this tag! %s" % (ctx.author.mention))
 				
-				view = self.bot.confirm_view(ctx)
-				msg = await ctx.send(f"{ctx.author.mention} Are you sure you want to remove the alias `{alias}` from the tag **{tagName}**?", view=view)
+				view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+				view.message = msg = await ctx.send(f"{ctx.author.mention} Are you sure you want to remove the alias `{alias}` from the tag **{tagName}**?", view=view)
 				await view.wait()
-				if view.response is None:
-					new_msg = f"{ctx.author.mention} Did not react in time."
-					for item in view.children:
-						item.style = disnake.ButtonStyle.grey
-						item.disabled = True
-					return await msg.edit(content=new_msg, view=view)
-				
-				elif view.response is True:
+				if view.response is True:
 					new_aliases = []
 					for _alias in aliases:
 						if not _alias == alias.lower():
@@ -451,17 +444,10 @@ class Tags(commands.Cog):
 			if ctx.author.id != data['tag_owner_id']:
 				return await ctx.send("You do not own the tag **%s**! %s" % (data['the_tag_name'], ctx.author.mention))
 
-		view = self.bot.confirm_view(ctx)
-		msg = await ctx.send("Are you sure you wish to delete the tag **%s**? %s" % (data['the_tag_name'], ctx.author.mention), view=view)
+		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+		view.message = msg = await ctx.send("Are you sure you wish to delete the tag **%s**? %s" % (data['the_tag_name'], ctx.author.mention), view=view)
 		await view.wait()
-		if view.response is None:
-			new_msg = f"{ctx.author.mention} Did not react in time."
-			for item in view.children:
-				item.style = disnake.ButtonStyle.grey
-				item.disabled = True
-			return await msg.edit(content=new_msg, view=view)
-		
-		elif view.response is True:
+		if view.response is True:
 			await self.db.delete_one({'_id': data['_id']})
 			e = "Successfully deleted the tag **%s**. %s" % (data['the_tag_name'], ctx.author.mention)
 			return await msg.edit(content=e, view=view)

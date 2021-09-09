@@ -18,7 +18,7 @@ class Intros(commands.Cog):
 		"""Create a new intro if you don't have one or edit an existing one."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return
+			return ctx.command.reset_cooldown(ctx)
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 		
@@ -35,17 +35,11 @@ class Intros(commands.Cog):
 			return message.author.id == usercheck and message.channel.id == channel.id
 
 		if results != None:
-			view = self.bot.confirm_view(ctx)
-			msg = await ctx.send("You already have intro set, would you like to edit your intro? %s" % (ctx.author.mention), view=view)
+			view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+			view.message = msg = await ctx.send("You already have intro set, would you like to edit your intro? %s" % (ctx.author.mention), view=view)
 			await view.wait()
 			if view.response is None:
-				new_msg = f"{ctx.author.mention} Did not react in time."
-				for item in view.children:
-					item.style = disnake.ButtonStyle.grey
-					item.disabled = True
-				await msg.edit(content=new_msg, view=view)
-				ctx.command.reset_cooldown(ctx)
-				return
+				return ctx.command.reset_cooldown(ctx)
 			
 			elif view.response is False:
 				e = "Canceled. %s" % (ctx.author.mention)
@@ -333,17 +327,11 @@ class Intros(commands.Cog):
 		results = await self.db.find_one({"_id": ctx.author.id})
 
 		if results != None:
-			view = self.bot.confirm_view(ctx)
-			msg = await ctx.send("Are you sure you want to delete your intro? %s" % (ctx.author.mention), view=view)
+			view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+			view.message = msg = await ctx.send("Are you sure you want to delete your intro? %s" % (ctx.author.mention), view=view)
 			await view.wait()
 			if view.response is None:
-				new_msg = f"{ctx.author.mention} Did not react in time."
-				for item in view.children:
-					item.style = disnake.ButtonStyle.grey
-					item.disabled = True
-				await msg.edit(content=new_msg, view=view)
-				ctx.command.reset_cooldown(ctx)
-				return
+				return ctx.command.reset_cooldown(ctx)
 			
 			elif view.response is True:
 				await self.db.delete_one({"_id": ctx.author.id})

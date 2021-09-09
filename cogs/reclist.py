@@ -120,17 +120,10 @@ class Reclist(commands.Cog):
 		results = await self.db.find_one({"_id": ctx.author.id})
 		
 		if results != None:
-			view = self.bot.confirm_view(ctx)
-			msg = await ctx.send("Are you sure you want to delete your reclist? %s" % (ctx.author.mention), view=view)
+			view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+			view.message = msg = await ctx.send("Are you sure you want to delete your reclist? %s" % (ctx.author.mention), view=view)
 			await view.wait()
-			if view.response is None:
-				new_msg = f"{ctx.author.mention} Did not react in time."
-				for item in view.children:
-					item.style = disnake.ButtonStyle.grey
-					item.disabled = True
-				return await msg.edit(content=new_msg, view=view)
-			
-			elif view.response is True:
+			if view.response is True:
 				await self.db.delete_one({"_id": ctx.author.id})
 				e = "Succesfully deleted your reclist! %s" % (ctx.author.mention)
 				return await msg.edit(content=e, view=view)

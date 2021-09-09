@@ -51,17 +51,10 @@ class Marriage(commands.Cog):
 					
 
 			else:
-				view = self.bot.confirm_view(ctx)
-				msg = await ctx.send("{} do you want to marry {}?".format(member.mention, ctx.author.mention), view=view)
+				view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+				view.message = msg = await ctx.send("{} do you want to marry {}?".format(member.mention, ctx.author.mention), view=view)
 				await view.wait()
-				if view.response is None:
-					new_msg = f"{ctx.author.mention} Did not react in time."
-					for item in view.children:
-						item.style = disnake.ButtonStyle.grey
-						item.disabled = True
-					return await msg.edit(content=new_msg, view=view)
-				
-				elif view.response is True:
+				if view.response is True:
 					
 					married_since_save_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M")
 
@@ -72,7 +65,6 @@ class Marriage(commands.Cog):
 
 					await ctx.send("`{}` married `{}`!!! :tada: :tada:".format(ctx.author.display_name, member.display_name))
 					await msg.delete()
-
 
 				elif view.response is False:
 					await ctx.send("`{}` does not want to marry with you. {} :pensive: :fist:".format(member.display_name, ctx.author.mention))
@@ -95,17 +87,10 @@ class Marriage(commands.Cog):
 		else:	
 			the_married_to_user = self.bot.get_user(results['married_to'])	
 
-			view = self.bot.confirm_view(ctx)
-			msg = await ctx.send("Are you sure you want to divorce `{}`?".format(the_married_to_user.display_name), view=view)	
+			view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+			view.message = msg = await ctx.send("Are you sure you want to divorce `{}`?".format(the_married_to_user.display_name), view=view)	
 			await view.wait()
-			if view.response is None:
-				new_msg = f"{ctx.author.mention} Did not react in time."
-				for item in view.children:
-					item.style = disnake.ButtonStyle.grey
-					item.disabled = True
-				return await msg.edit(content=new_msg, view=view)
-			
-			elif view.response is True:
+			if view.response is True:
 				auth = {"_id": ctx.author.id} 	
 				mem = {"_id": the_married_to_user.id}	
 				await self.db.delete_one(auth)	
