@@ -33,7 +33,7 @@ class Metrics(commands.Cog):
 		metrics.add_field(name="Guilds:", value=guilds, inline=False)
 		metrics.add_field(name="Commands loaded:", value=f"{len([x.name for x in self.bot.commands])}", inline=False)
 		metrics.add_field(name="Uptime:", value=t.human_timedelta(dt=self.bot.uptime, accuracy=3, brief=False, suffix=False))
-		metrics.set_footer(text=f"Bot made by: {self.bot._owner}", icon_url=self.bot.user.avatar.url)
+		metrics.set_footer(text=f"Bot made by: {self.bot.owner}", icon_url=self.bot.user.avatar.url)
 		await msg.edit(embed=metrics)
 
 def setup(bot):

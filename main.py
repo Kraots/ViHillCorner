@@ -42,18 +42,10 @@ class ViHillCorner(commands.Bot):
 		for filename in os.listdir('./reload_cogs'):
 			if filename.endswith('.py'):
 				self.load_extension(f'reload_cogs.{filename[:-3]}')
-		
-	@property
-	def _owner(self):
-		return self.get_user(self._owner_id)
 
 	async def on_ready(self):
 		if not hasattr(self, 'uptime'):
 			self.uptime = datetime.datetime.utcnow()
-		
-		if not hasattr(self, '_owner_id'):
-			app = await self.application_info()
-			self._owner_id = app.owner.id
 		
 		if not hasattr(self, '_presence_changed'):
 			activity = disnake.Activity(type=disnake.ActivityType.watching, name='you | !help')
