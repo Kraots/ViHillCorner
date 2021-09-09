@@ -121,7 +121,6 @@ class FrontPageSource(menus.PageSource):
 		"""
 		)
 
-		created_at = disnake.utils.format_dt(menu.ctx.bot.user.created_at, 'F')
 		if self.index == 1:
 			entries = (
 				('<argument>', 'This means the argument is __**required**__.'),
