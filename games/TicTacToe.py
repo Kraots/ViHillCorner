@@ -1,14 +1,14 @@
 import disnake
 
 class TicTacToe(disnake.ui.View):
-	def __init__(self, p2: disnake.Member, p1: disnake.Member, ctx, *, timeout= 60.0):
+	def __init__(self, p1: disnake.Member, p2: disnake.Member, ctx, *, timeout= 60.0):
 		super().__init__(timeout=timeout)
 		self.p1 = p1
 		self.p2 = p2
 		self.ctx = ctx
 		self.bot = ctx.bot
 		self.db = ctx.bot.db1['Economy']
-		self.turn = p2
+		self.turn = p1
 		self.new_label = {self.p1: 'X', self.p2: 'O'}
 		self.new_style = {self.p1: disnake.ButtonStyle.red, self.p2: disnake.ButtonStyle.green}
 		self.board = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -20,7 +20,13 @@ class TicTacToe(disnake.ui.View):
 	async def on_timeout(self):
 		for item in self.children:
 			item.disabled = True
-		return await self.message.edit(content=f'The game has ended, **{self.turn.display_name}** took too much to react.', view=self)
+		if self.turn == self.p1:
+			winner = self.p2
+		else:
+			winner = self.p1
+		await self.db.update_one({'_id': self.turn.id}, {'$inc':{'wallet': -10000}})
+		await self.db.update_one({'_id': winner.id}, {'$inc':{'wallet': 10000}})
+		return await self.message.edit(content=f'The game has ended, **{self.turn.display_name}** took too much to react and lost **10,000** <:carrots:822122757654577183>.\n{winner.mention} won **10,000** <:carrots:822122757654577183>', view=self)
 	
 	async def interaction_check(self, interaction: disnake.MessageInteraction):
 		if interaction.author.id != self.turn.id:
@@ -197,3 +203,16 @@ class TicTacToe(disnake.ui.View):
 			else:
 				self.turn = self.p1
 			await self.message.edit(content=f'Your turn now: {self.turn.mention}', view=self)
+
+	@disnake.ui.button(label='Forfeit', style=disnake.ButtonStyle.blurple, row=3)
+	async def forfeit_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		if self.turn == self.p1:
+			winner = self.p2
+		else:
+			winner = self.p1
+		for item in self.children:
+			item.disabled = True
+		await self.db.update_one({'_id': self.turn.id}, {'$inc':{'wallet': -10000}})
+		await self.db.update_one({'_id': winner.id}, {'$inc':{'wallet': 10000}})
+		await self.message.edit(content=f'___FORFEIT___\n{self.turn.mention} forfeited lost **10,000** <:carrots:822122757654577183>\n{winner.mention} won **10,000** <:carrots:822122757654577183>', view=self)
+		self.stop()

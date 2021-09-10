@@ -308,10 +308,10 @@ class ConfirmView(disnake.ui.View):
 
 	async def interaction_check(self, interaction: disnake.MessageInteraction):
 		check_for = self.ctx.author.id if self.member is None else self.member.id
-		if interaction.author.id == check_for:
-			return True
-		await interaction.response.send_message('This pagination menu cannot be controlled by you, sorry!', ephemeral=True)
-		return False
+		if interaction.author.id != check_for:
+			await interaction.response.send_message(f'Only {self.ctx.author.display_name if self.member is None else self.member.display_name} can use the buttons on this message!', ephemeral=True)
+			return False
+		return True
 	
 	async def on_error(self, error: Exception, item, interaction):
 		return await self.ctx.bot.reraise(self.ctx, error)
