@@ -105,7 +105,7 @@ class on_message(commands.Cog):
 			if message.attachments:
 				em.set_image(url=message.attachments[0].proxy_url)
 
-			if message.author is self.bot.owner:
+			if message.author.id == self.bot.owner.id:
 				return
 
 			else:                        
