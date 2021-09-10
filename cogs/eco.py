@@ -484,7 +484,7 @@ class Economy(commands.Cog):
 					return await ctx.reply('You do not have any sellables in your inventory.')
 				await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'wallet': total_sold_for}})
 				await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
-				return await ctx.reply(f'Successfully sold all your sellables for `{total_sold_for:,}` <:carrots:822122757654577183>')
+				return await msg.edit(f'Successfully sold all your sellables for `{total_sold_for:,}` <:carrots:822122757654577183>', view=view)
 			elif view.response is False:
 				return await msg.edit('Your items have not been sold.', view=view)
 					
