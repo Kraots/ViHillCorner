@@ -41,7 +41,7 @@ class NSFW(commands.Cog):
 	async def nsfw(self, ctx):
 		"""See the types of nsfw 😏"""
 
-		return await ctx.send("There are only 2 types: `real`, `hentai`\nType `!nsfw <type>` to see all the categories of a type.\n***Keep in mind that these only work in the nsfw channel.***")
+		await ctx.send("There are only 2 types: `real`, `hentai`\nType `!nsfw <type>` to see all the categories of a type.\n***Keep in mind that these only work in the nsfw channel.***")
 
 	async def nsfw_hentai_0(self, ctx, category):
 		"""The old nsfw."""
