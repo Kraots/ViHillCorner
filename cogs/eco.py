@@ -466,21 +466,27 @@ class Economy(commands.Cog):
 			return await ctx.send(f'You are not registered! Type: `!register` to register {ctx.author.mention}')
 		item_ = item.lower()
 		if item_ == 'all':
-			total_sold_for = 0
-			items = []
-			sellables = 0
-			for _item in user_db['items']:
-				if _item['owned'] != 0 and _item['item_name'] in [i['item_name'] for i in _shop if i['item_type'] == 'Sellable']:
-					sold_for = _item['owned'] * int(''.join([str(i_['sells_for']) for i_ in _shop if i_['item_name'] == _item['item_name']]))
-					total_sold_for += sold_for
-					sellables += 1
-					_item['owned'] = 0
-				items.append(_item)
-			if sellables == 0:
-				return await ctx.reply('You do not have any sellables in your inventory.')
-			await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'wallet': total_sold_for}})
-			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
-			return await ctx.reply(f'Successfully sold all your sellables for `{total_sold_for:,}` <:carrots:822122757654577183>')
+			view = self.bot.confirm_view(ctx)
+			view.message = msg = await ctx.send('Are you sure you want to sell all of you sellables?', view=view)
+			await view.wait()
+			if view.response is True:
+				total_sold_for = 0
+				items = []
+				sellables = 0
+				for _item in user_db['items']:
+					if _item['owned'] != 0 and _item['item_name'] in [i['item_name'] for i in _shop if i['item_type'] == 'Sellable']:
+						sold_for = _item['owned'] * int(''.join([str(i_['sells_for']) for i_ in _shop if i_['item_name'] == _item['item_name']]))
+						total_sold_for += sold_for
+						sellables += 1
+						_item['owned'] = 0
+					items.append(_item)
+				if sellables == 0:
+					return await ctx.reply('You do not have any sellables in your inventory.')
+				await self.db.update_one({'_id': ctx.author.id}, {'$inc': {'wallet': total_sold_for}})
+				await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
+				return await ctx.reply(f'Successfully sold all your sellables for `{total_sold_for:,}` <:carrots:822122757654577183>')
+			elif view.response is False:
+				return await msg.edit('Your items have not been sold.', view=view)
 					
 		def check(m):
 			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
