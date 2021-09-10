@@ -440,7 +440,7 @@ class Economy(commands.Cog):
 					items = []
 					for i in user_db['items']:
 						if i['item_name'] == _item['item_name']:
-							if i['owned'] > 0 and i['item_type'] == 'Tool':
+							if i['owned'] > 0 and _item['item_type'] == 'Tool':
 								return await ctx.reply('You can only have one of this item.')
 							i['owned'] += 1
 						items.append(i)
