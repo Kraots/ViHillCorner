@@ -655,20 +655,17 @@ class Misc(commands.Cog):
 			if not data:
 				return await ctx.send('No results found.')
 
-		pages = RoboPages(UrbanDictionaryPageSource(data))
-		try:
-			await pages.start(ctx)
-		except Exception as error:
-			await self.bot.reraise(ctx, error)
+		pages = RoboPages(source=UrbanDictionaryPageSource(data), ctx=ctx)
+		await pages.start()
 
 	@commands.slash_command(name='embed', description='Creates an embed', options=[
-																			disnake.Option("title", "Creates the title of the embed", disnake.OptionType.string),
-																			disnake.Option("description", "Creates the description of the embed", disnake.OptionType.string),
-																			disnake.Option("color", "Sets the embed's color", disnake.OptionType.string),
-																			disnake.Option("image_url", "URL of the embed's image", disnake.OptionType.string),
-																			disnake.Option("footer", "Creates the footer of the embed", disnake.OptionType.string),
-																			disnake.Option("footer_url", "Sets the footer url of the embed", disnake.OptionType.string)
-																			])
+			disnake.Option("title", "Creates the title of the embed", disnake.OptionType.string),
+			disnake.Option("description", "Creates the description of the embed", disnake.OptionType.string),
+			disnake.Option("color", "Sets the embed's color", disnake.OptionType.string),
+			disnake.Option("image_url", "URL of the embed's image", disnake.OptionType.string),
+			disnake.Option("footer", "Creates the footer of the embed", disnake.OptionType.string),
+			disnake.Option("footer_url", "Sets the footer url of the embed", disnake.OptionType.string)
+			])
 	async def make_embed(self, inter: disnake.ApplicationCommandInteraction, title: str = None, description: str = None, color: str = None, image_url: str = None, footer: str = None, footer_url: str = None):
 		if description is None:
 			return await inter.response.send_message(ephemeral=True, content='`description` is a required argument that is missing.')
