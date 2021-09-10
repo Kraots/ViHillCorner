@@ -8,7 +8,7 @@ class TicTacToe(disnake.ui.View):
 		self.ctx = ctx
 		self.bot = ctx.bot
 		self.db = ctx.bot.db1['Economy']
-		self.turn = p1
+		self.turn = p2
 		self.new_label = {self.p1: 'X', self.p2: 'O'}
 		self.new_style = {self.p1: disnake.ButtonStyle.red, self.p2: disnake.ButtonStyle.green}
 		self.board = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
