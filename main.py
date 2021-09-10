@@ -58,8 +58,10 @@ class ViHillCorner(commands.Bot):
 		await self.invoke(ctx)
 
 	async def check_dms(self, ctx):
+		if ctx.author.id == self.owner_id:
+			return True
 		if isinstance(ctx.channel, disnake.DMChannel):
-			await ctx.send('Commands do not work in dm channels. Please use commands in <#855126816271106061>')
+			await ctx.send('Commands do not work in dm channels. Please use commands in <#750160851822182486>')
 			return False
 		return True
 
