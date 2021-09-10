@@ -315,22 +315,25 @@ class NSFW(commands.Cog):
 	@nsfw.error
 	async def nsfw_error(self, ctx, error):
 		if isinstance(error, commands.CheckFailure):
-			if 754676705741766757 in [role.id for role in ctx.message.author.roles]:
-				await ctx.send('Invalid format!\nUse: `!nsfw block <users>` or `!nsfw unblock <users>`!')
+			if not isinstance(ctx.channel, disnake.DMChannel):
+				if 754676705741766757 in [role.id for role in ctx.message.author.roles]:
+					await ctx.send('Invalid format!\nUse: `!nsfw block <users>` or `!nsfw unblock <users>`!')
 		else:
 			await self.bot.reraise(ctx, error)
 
 	@nsfw_real.error
 	async def nsfw_real_error(self, ctx, error):
 		if isinstance(error, commands.errors.CheckFailure):
-			await ctx.reply('This command is only usable in a nsfw marked channel.')
+			if not isinstance(ctx.channel, disnake.DMChannel):
+				await ctx.reply('This command is only usable in a nsfw marked channel.')
 		else:
 			await self.bot.reraise(ctx, error)
 
 	@nsfw_hentai.error
 	async def nsfw_hentai_error(self, ctx, error):
 		if isinstance(error, commands.errors.CheckFailure):
-			await ctx.reply('This command is only usable in a nsfw marked channel.')
+			if not isinstance(ctx.channel, disnake.DMChannel):
+				await ctx.reply('This command is only usable in a nsfw marked channel.')
 		else:
 			await self.bot.reraise(ctx, error)
 			

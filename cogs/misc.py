@@ -717,10 +717,11 @@ class Misc(commands.Cog):
 	@suggest.error
 	async def suggest_error(self, ctx, error):
 		if isinstance(error, commands.CheckFailure):
-			await ctx.message.delete()
-			msg = f"To use this command go to <#750160851822182486> or <#750160851822182487>.\n{ctx.author.mention}"
-			ctx.command.reset_cooldown(ctx)
-			await ctx.send(msg, delete_after=6)
+			if not isinstance(ctx.channel, disnake.DMChannel):
+				await ctx.message.delete()
+				msg = f"To use this command go to <#750160851822182486> or <#750160851822182487>.\n{ctx.author.mention}"
+				ctx.command.reset_cooldown(ctx)
+				await ctx.send(msg, delete_after=6)
 
 		elif isinstance(error, commands.CommandOnCooldown):
 				await ctx.message.delete()
