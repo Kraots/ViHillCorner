@@ -288,7 +288,7 @@ class NSFW(commands.Cog):
 
 		try:
 			entries = await self.db.find().to_list(100000)
-			p = TagPages(ctx=ctx, entries = entries, per_page = 7)
+			p = NSFWPages(ctx=ctx, entries = entries, per_page = 7)
 			await p.start()
 		except:
 			await ctx.send("There are no members whose acces has been restricted.")
