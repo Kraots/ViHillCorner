@@ -10,7 +10,7 @@ class ReclistPageEntry:
 		self.name = entry
 
 	def __str__(self):
-		return f'\u2800{self.name}'
+		return f'\u2800{self.name.title()}'
 
 class ReclistPages(CustomMenu):
 	def __init__(self, ctx, entries, *, per_page=12, title="", color=None):
