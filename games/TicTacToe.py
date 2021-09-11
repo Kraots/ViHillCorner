@@ -69,6 +69,17 @@ class TicTacToe(disnake.ui.View):
 			await self.message.edit(content=f'{self.turn.mention} won **10,000** <:carrots:822122757654577183>\n{loser.mention} lost **10,000** <:carrots:822122757654577183>', view=self)
 			self.stop()
 	
+		else:
+			total = 0
+			for i in range(9):
+				if self.board[i] == str(i + 1):
+					total += 1
+			if total == 0:
+				for item in self.children:
+					item.disabled = True
+				await self.message.edit(content='___DRAW___', view=self)
+				self.stop()
+
 	@disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=0)
 	async def top_1(self, button: disnake.ui.Button, inter: disnake.Interaction):
 		button.disabled = True
