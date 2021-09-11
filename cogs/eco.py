@@ -348,7 +348,7 @@ class Economy(commands.Cog):
 		em = disnake.Embed(color=member.color, title=f'{member.display_name}\'s inventory\n', description='\n'.join(user_items))
 		_text = f'{total_items:,} total items'
 		if inv_worth != 0:
-			_text = f'Worth: {inv_worth:,} carrots • {total_items:,} total items'
+			_text = f'Worth: {inv_worth:,} carrots | {total_items:,} total items'
 		em.set_footer(text=_text)
 		await ctx.send(embed=em)
 
