@@ -345,10 +345,12 @@ class Economy(commands.Cog):
 				inv_worth += item_worth
 				total_items += item['owned']
 				user_items.append(to_append)
-		em = disnake.Embed(color=member.color, title=f'{member.display_name}\'s inventory\n', description='\n'.join(user_items))
+		em = disnake.Embed(color=member.color, description='\n'.join(user_items))
+		em.set_author(name=f'{member.display_name}\'s inventory', url=member.avatar.url, icon_url=member.avatar.url)
+		em.set_thumbnail(url=member.avatar.url)
 		_text = f'{total_items:,} total items'
 		if inv_worth != 0:
-			_text = f'Worth: {inv_worth:,} carrots | {total_items:,} total items'
+			_text = f'Worth: {inv_worth:,} carrots • {total_items:,} total items'
 		em.set_footer(text=_text)
 		await ctx.send(embed=em)
 
