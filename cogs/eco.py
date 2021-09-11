@@ -206,7 +206,7 @@ class Economy(commands.Cog):
 		"""Get your daily 75.00K <:carrots:822122757654577183>."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return
+			return ctx.command.reset_cooldown(ctx)
 
 		user = ctx.author
 		results = await self.db.find_one({"_id": user.id})
@@ -467,6 +467,7 @@ class Economy(commands.Cog):
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
 			return
+
 		user_db = await self.db.find_one({'_id': ctx.author.id})
 		if user_db is None:
 			return await ctx.send(f'You are not registered! Type: `!register` to register {ctx.author.mention}')
@@ -610,10 +611,11 @@ class Economy(commands.Cog):
 		"""
 		
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return
+			return ctx.command.reset_cooldown(ctx)
 
 		user_db = await self.db.find_one({'_id': ctx.author.id})
 		if user_db == None:
+			ctx.command.reset_cooldown(ctx)
 			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 		
 		for item in user_db['items']:
@@ -668,10 +670,12 @@ class Economy(commands.Cog):
 		"""
 		
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			ctx.command.reset_cooldown(ctx)
 			return
 
 		user_db = await self.db.find_one({'_id': ctx.author.id})
 		if user_db == None:
+			ctx.command.reset_cooldown(ctx)
 			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 		
 		for item in user_db['items']:
@@ -1146,7 +1150,7 @@ class Economy(commands.Cog):
 		"""Rob someone of their <:carrots:822122757654577183> from their wallet."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return
+			return ctx.command.reset_cooldown(ctx)
 
 		if member is None:
 			await ctx.send("You must specify the person you want to rob/steal from. %s" % (ctx.author.mention))
@@ -1230,7 +1234,7 @@ class Economy(commands.Cog):
 		"""Gamble your <:carrots:822122757654577183>."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return
+			return ctx.command.reset_cooldown(ctx)
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -1353,7 +1357,7 @@ class Economy(commands.Cog):
 		"""Beg for some <:carrots:822122757654577183>."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return
+			return ctx.command.reset_cooldown(ctx)
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -1375,7 +1379,7 @@ class Economy(commands.Cog):
 		"""Work and get <:carrots:822122757654577183>."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return
+			return ctx.command.reset_cooldown(ctx)
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -1396,7 +1400,7 @@ class Economy(commands.Cog):
 		"""Commit crimes that range between `small-medium-big`, and depending on which one you get, the more <:carrots:822122757654577183> you get, but be careful! You can lose the carrots as well."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return
+			return ctx.command.reset_cooldown(ctx)
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -1446,7 +1450,7 @@ class Economy(commands.Cog):
 		"""Play a guess the number game and earn <:carrots:822122757654577183>."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return
+			return ctx.command.reset_cooldown(ctx)
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -1505,7 +1509,7 @@ class Economy(commands.Cog):
 		"""Suck some pp 😳 for some quick <:carrots:822122757654577183>."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return
+			return ctx.command.reset_cooldown(ctx)
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -1572,7 +1576,7 @@ class Economy(commands.Cog):
 		"""Participate in a race and earn <:carrots:822122757654577183>."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return
+			return ctx.command.reset_cooldown(ctx)
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 
@@ -1629,7 +1633,7 @@ class Economy(commands.Cog):
 		"""Play a game of rock-paper-scissors with the bot and earn <:carrots:822122757654577183> if you win or lose some if you lose the game."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return
+			return ctx.command.reset_cooldown(ctx)
 
 		user = ctx.author
 		results = await self.db.find_one({"_id": user.id})
@@ -1697,92 +1701,20 @@ class Economy(commands.Cog):
 					ctx.command.reset_cooldown(ctx)
 					return
 
-	@eco_rps.error
-	async def rps_error(self, ctx, error):
-		if isinstance(error, commands.CommandOnCooldown):
-			msg = f"Please wait: **{time_phaser(error.retry_after)}** before playing rps again. {ctx.author.mention}"
-			await ctx.send(msg)
-		else:
-			await self.bot.reraise(ctx, error)
-		 
-	@race.error
-	async def race_error(self, ctx, error):
-		if isinstance(error, commands.CommandOnCooldown):
-			msg = f"{ctx.author.mention} You cannot race that fast! Please wait: **{time_phaser(error.retry_after)}**."
-			await ctx.send(msg)
-		else:
-			await self.bot.reraise(ctx, error)
-		
-	@ppsuck.error
-	async def ppsuck_error(self, ctx, error):
-		if isinstance(error, commands.CommandOnCooldown):
-			msg = f"{ctx.author.mention} OK OK CHILLE, IK U WANT TO SUCK ON SOMETHING BUT PLEASE WAIT **{time_phaser(error.retry_after)}**."
-			await ctx.send(msg)
-		else:
-			await self.bot.reraise(ctx, error)
-
-	@eco_gtn.error
-	async def gtn_error(self, ctx, error):
-		if isinstance(error, commands.CommandOnCooldown):
-			msg = f"{ctx.author.mention} You've already played the game, come back in **{time_phaser(error.retry_after)}**."
-			await ctx.send(msg)
-		else:
-			await self.bot.reraise(ctx, error)
-
-	@crime.error
-	async def crime_error(self, ctx, error):
-		if isinstance(error, commands.CommandOnCooldown):
-			msg = f'{ctx.author.mention} You can commit crimes again in **{time_phaser(error.retry_after)}**.'
-			await ctx.send(msg)
-		else:
-			await self.bot.reraise(ctx, error)
-
-	@work.error
-	async def work_error(self, ctx, error):
-		if isinstance(error, commands.CommandOnCooldown):
-			msg = f'{ctx.author.mention} You can work again in **{time_phaser(error.retry_after)}**.'
-			await ctx.send(msg)
-		else:
-			await self.bot.reraise(ctx, error)
-
-	@beg.error
-	async def beg_error(self, ctx, error):
-		if isinstance(error, commands.CommandOnCooldown):
-			msg = f'{ctx.author.mention} You can have more <:carrots:822122757654577183>  in **{time_phaser(error.retry_after)}**.'
-			await ctx.send(msg)
-		else:
-			await self.bot.reraise(ctx, error)
-
-	@rob.error
-	async def steal_error(self, ctx, error):
-		if isinstance(error, commands.CommandOnCooldown):
-			msg = f'{ctx.author.mention} You can steal more in **{time_phaser(error.retry_after)}**.'
-			await ctx.send(msg)
-		else:
-			await self.bot.reraise(ctx, error)
-
 	@slots.error
 	async def slots_error(self, ctx, error):
-		if isinstance(error, commands.CommandOnCooldown):
-			msg = f'{ctx.author.mention} You can bet your carrots in the slots machine in **{time_phaser(error.retry_after)}**.'
-			await ctx.send(msg)
-
-		elif isinstance(error, commands.errors.MissingRequiredArgument):
+		if isinstance(error, commands.errors.MissingRequiredArgument):
 			ctx.command.reset_cooldown(ctx)
 			await self.bot.reraise(ctx, error)
 		
 		else:
 			await self.bot.reraise(ctx, error)
 
-
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
 		if member.id == 374622847672254466:
 			return
 		await self.db.delete_one({"_id": member.id})
-
-
-
 
 def setup(bot):
 	bot.add_cog(Economy(bot))
