@@ -75,6 +75,7 @@ class TicTacToe(disnake.ui.View):
 				if self.board[i] == str(i + 1):
 					total += 1
 			if total == 0:
+				self.ended = True
 				for item in self.children:
 					item.disabled = True
 				await self.message.edit(content='___DRAW___', view=self)
