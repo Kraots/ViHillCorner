@@ -78,7 +78,7 @@ class TicTacToe(disnake.ui.View):
 				self.ended = True
 				for item in self.children:
 					item.disabled = True
-				await self.message.edit(content='___DRAW___', view=self)
+				await self.message.edit(content='**___DRAW___**', view=self)
 				self.stop()
 
 	@disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=0)
@@ -226,5 +226,5 @@ class TicTacToe(disnake.ui.View):
 			item.disabled = True
 		await self.db.update_one({'_id': self.turn.id}, {'$inc':{'wallet': -10000}})
 		await self.db.update_one({'_id': winner.id}, {'$inc':{'wallet': 10000}})
-		await self.message.edit(content=f'___FORFEIT___\n{self.turn.mention} forfeited lost **10,000** <:carrots:822122757654577183>\n{winner.mention} won **10,000** <:carrots:822122757654577183>', view=self)
+		await self.message.edit(content=f'**___FORFEIT___**\n{self.turn.mention} forfeited lost **10,000** <:carrots:822122757654577183>\n{winner.mention} won **10,000** <:carrots:822122757654577183>', view=self)
 		self.stop()
