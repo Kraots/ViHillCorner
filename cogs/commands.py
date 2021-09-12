@@ -262,7 +262,7 @@ class General(commands.Cog):
 	async def source(self, ctx, *, command: str = None):
 		"""Sends the source of code for the specified command if any, if not then just the link to the github repository."""
 
-		source_url = 'https://github.com/Kraots/ViHillCorner'
+		source_url = '<https://github.com/Kraots/ViHillCorner>'
 		branch = 'master'
 		if command is None:
 			return await ctx.send(source_url)
