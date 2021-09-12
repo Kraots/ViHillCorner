@@ -191,7 +191,7 @@ class Anime(commands.Cog):
 		em.add_field(name='Favorites:', value=f'{anime.favorites:,}')
 		em.add_field(name='Producers:', value=', '.join(anime.producers))
 		em.add_field(name='Source:', value=anime.source)
-		em.set_footer(text=f'Requested by: {ctx.author} • ID: {anime.mal_id}')
+		em.set_footer(text=f'Requested by: {ctx.author} • ID: {anime.mal_id}', icon_url=ctx.author.avatar.url)
 
 		await ctx.reply(embed=em)
 
