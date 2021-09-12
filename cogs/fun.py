@@ -502,7 +502,9 @@ class Fun(commands.Cog):
 		await view.wait()
 		if view.response is True:
 			await msg.delete()
-			f = games.Fight(p1, p2, ctx)
+			players = [ctx.author, p2]
+			random.shuffle(players)
+			f = games.Fight(players[0], players[1], ctx)
 			return await f.start()
 
 		elif view.response is False:
@@ -609,7 +611,9 @@ class Fun(commands.Cog):
 		await view.wait()
 		if view.response is True:
 			await msg.delete()
-			ttt_view = games.TicTacToe(member, ctx.author, ctx)
+			players = [ctx.author, member]
+			random.shuffle(players)
+			ttt_view = games.TicTacToe(players[0], players[1], ctx)
 			ttt_view.message = await ctx.send(f'You start: {member.mention}', view=ttt_view)
 			return
 			
