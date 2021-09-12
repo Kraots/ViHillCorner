@@ -177,6 +177,10 @@ class on_join(commands.Cog):
 			channel = member.dm_channel
 			
 			def check(message):
+				print(message.channel.id)
+				print(channel.id)
+				print(message.author.id)
+				print(member.id)
 				return message.channel.id == channel.id and message.author.id == member.id
 
 			msg1 = await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself to us?")
