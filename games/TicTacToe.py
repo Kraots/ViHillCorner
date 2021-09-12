@@ -226,5 +226,5 @@ class TicTacToe(disnake.ui.View):
 			item.disabled = True
 		await self.db.update_one({'_id': self.turn.id}, {'$inc':{'wallet': -10000}})
 		await self.db.update_one({'_id': winner.id}, {'$inc':{'wallet': 10000}})
-		await self.message.edit(content=f'**___FORFEIT___**\n{self.turn.mention} forfeited lost **10,000** <:carrots:822122757654577183>\n{winner.mention} won **10,000** <:carrots:822122757654577183>', view=self)
+		await self.message.edit(content=f'**___FORFEIT___**\n{self.turn.mention} forfeited and lost **10,000** <:carrots:822122757654577183>\n{winner.mention} won **10,000** <:carrots:822122757654577183>', view=self)
 		self.stop()

@@ -1,90 +1,98 @@
 import random
-import asyncio
+import disnake
+import inspect
 
-class Fight:
-	def __init__(self, pl1, pl2, ctx):
+class Fight(disnake.ui.View):
+	def __init__(self, pl1: disnake.Member, pl2: disnake.Member, ctx, *, timeout=30.0):
+		super().__init__(timeout=timeout)
 		self.p1 = pl1
 		self.p2 = pl2
 		self.ctx = ctx
 		self.bot = ctx.bot
-		self.p1_hp = 100
-		self.p2_hp = 100
-		self.started = False
-
-	def fight(self, hp) -> list[int, int]:
-		dmg = random.randint(1,50)
-		return [dmg, hp-dmg]
-
-	def health(self, hp) -> list[int, int]:
-		healt = random.randint(1,35)
-		return [healt, hp+healt]
+		self.hp = {self.p1: 100, self.p2: 100}
+		self.turn = pl1
+		self.ended = False
 	
-	def update_health(self, affected_player, option, hp) -> int:
-		if option == 'fight':
-			new_hp = self.fight(hp)
-			if affected_player == self.p1:
-				self.p1_hp = new_hp[1]
-			elif affected_player == self.p2:
-				self.p2_hp = new_hp[1]
-		elif option == 'health':
-			new_hp = self.health(hp)
-			if affected_player == self.p1:
-				self.p1_hp = new_hp[1]
-			elif affected_player == self.p2:
-				self.p2_hp = new_hp[1]
-		return new_hp
-
-	def check_health(self) -> bool:
-		if self.p2_hp <= 0:
-			return True
-		elif self.p1_hp <= 0:
-			return True
-		else:
+	async def interaction_check(self, interaction: disnake.MessageInteraction):
+		if interaction.author.id != self.turn.id:
+			if interaction.author.id not in [self.p1.id, self.p2.id]:
+				await interaction.response.send_message('You are not playing in this game! To start a game with someone you must type `!fight <member>`', ephemeral=True)
+				return False
+			await interaction.response.send_message(f'Not your turn, it\'s {self.turn.display_name}\'s turn', ephemeral=True)
 			return False
+		return True
 
-	async def action(self, p):
-		if p == self.p1:
-			Player = self.p1
-			PlayerHP =  self.p1_hp
-			Opponent = self.p2
-			OpponentHP = self.p2_hp
-		elif p == self.p2:
-			Player = self.p2
-			PlayerHP = self.p2_hp
-			Opponent = self.p1
-			OpponentHP = self.p1_hp
-		def check(m):
-			return m.channel == self.ctx.channel and m.author == p
-		if self.started == False:
-			await self.ctx.send(f"{Player.mention} Please choose what you wish to do next from the following options:\n`fight`, `health`, `forfeit`")
-		try:
-			while True:
-				response = await self.bot.wait_for('message', check=check, timeout=120)
-				option = response.content.lower()
-				if option == 'forfeit':
-					raise Exception(f"**{Player.display_name}** has forfeited. {Opponent.mention} won!")
-				elif option == 'fight':
-					new_hp = self.update_health(Opponent, 'fight', OpponentHP)
-					if self.check_health() == True:
-						return
-					return await self.ctx.send(f"**{Player.display_name}** chose `fight` and has dealt **{new_hp[0]}** damage.\n`{Opponent.display_name}`'s hp is now at **{new_hp[1]}**\n\n{Opponent.mention} Please choose what you wish to do next from the following options:\n`fight`, `health`, `forfeit`")
-				elif option in ['health', 'hp']:
-					new_hp = self.update_health(Player, 'health', PlayerHP)
-					if self.check_health() == True:
-						return
-					return await self.ctx.send(f"**{Player.display_name}** chose `health` and has gotten an increase of **{new_hp[0]}** hp\n`{Player.display_name}`'s hp is now at **{new_hp[1]}**\n\n{Opponent.mention} Please choose what you wish to do next from the following options:\n`fight`, `health`, `forfeit`")
-				else:
-					await response.reply("Invalid option.")
+	async def on_error(self, error: Exception, item, interaction):
+		return await self.bot.reraise(self.ctx, error)
 
-		except asyncio.TimeoutError:
-			raise Exception(f"The game has been canceled since {Player.mention} took too much to give an answer. {Opponent.mention}")
+	async def on_timeout(self):
+		for item in self.children:
+			item.style = disnake.ButtonStyle.grey
+			item.disabled = True
+		if self.turn == self.p1:
+			winner = self.p2
+		else:
+			winner = self.p1
+		await self.message.edit(f'{self._data}\n\n**___TIMEOUT___**\n**{self.turn.display_name}** took too much to react. {winner.mention} won.', view=self)
 
-	async def start(self):
-		while True:
-			await self.action(self.p1)
-			self.started = True
-			if self.p2_hp <= 0:
-				return await self.ctx.send(f"**{self.p1.display_name}** won the fight. {self.p2.mention} you lost!\n\nTotal HP left:\n\u2800• `{self.p1.display_name}` => **{self.p1_hp}**\n\u2800• `{self.p2.display_name}` => **{self.p2_hp}**")
-			await self.action(self.p2)
-			if self.p1_hp <= 0:
-				return await self.ctx.send(f"**{self.p2.display_name}** won the fight. {self.p1.mention} you lost!\n\nTotal HP left:\n\u2800• `{self.p2.display_name}` => **{self.p2_hp}**\n\u2800• `{self.p1.display_name}` => **{self.p1_hp}**")
+	def update_turn(self):
+		if self.turn == self.p1:
+			self.turn = self.p2
+		else:
+			self.turn = self.p1
+
+	@property
+	def _data(self) -> str:
+		data = inspect.cleandoc(
+		f'''
+		`{self.p1.display_name}` now has **{self.hp[self.p1]}** hp
+		`{self.p2.display_name}` now has **{self.hp[self.p2]}** hp
+		'''
+		)
+		return data
+
+	async def check_health(self) -> bool:
+		winner = None
+		if self.hp[self.p1] <= 0:
+			winner = self.p2
+		elif self.hp[self.p2] <= 0:
+			winner = self.p1
+		if winner is not None:
+			self.ended = True
+			for item in self.children:
+				item.style = disnake.ButtonStyle.grey
+				item.disabled = True
+			await self.message.edit(f'{self._data}\n\n**{winner.display_name}** won.\n{self.turn.mention} you lost!', view=self)
+			self.stop()
+
+	@disnake.ui.button(label='Fight', style=disnake.ButtonStyle.red)
+	async def _fight_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		p = self.turn
+		self.update_turn()
+		curr_hp = self.hp[self.turn]
+		dmg = random.randint(1, 51)
+		new_hp = curr_hp - dmg
+		self.hp[self.turn] = new_hp
+		await self.check_health()
+		if self.ended == False:
+			await self.message.edit(f'{self._data}\n\n**{p.display_name}** chose to fight and dealt `{dmg}` damage. Your turn now: {self.turn.mention}')
+
+	@disnake.ui.button(label='Health', style=disnake.ButtonStyle.green)
+	async def _health_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		p = self.turn
+		curr_hp = self.hp[self.turn]
+		hp = random.randint(1, 41)
+		new_hp = curr_hp + hp
+		self.hp[self.turn] = new_hp
+		self.update_turn()
+		await self.message.edit(f'{self._data}\n\n**{p.display_name}** chose health and got `{hp}` hp. Your turn now: {self.turn.mention}')
+
+	@disnake.ui.button(label='Forfeit', style=disnake.ButtonStyle.blurple, row=1)
+	async def _forfeit_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
+		p = self.turn
+		self.update_turn()
+		for item in self.children:
+			item.style = disnake.ButtonStyle.grey
+			item.disabled = True
+		await self.message.edit(f'{self._data}\n\n**___FORFEIT___**\n**{p.display_name}** forfeited, {self.turn.mention} you won!', view=self)
+		self.stop()

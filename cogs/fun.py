@@ -505,7 +505,8 @@ class Fun(commands.Cog):
 			players = [ctx.author, p2]
 			random.shuffle(players)
 			f = games.Fight(players[0], players[1], ctx)
-			return await f.start()
+			f.message = await ctx.send(f'You start: {players[0].mention}', view=f)
+			return
 
 		elif view.response is False:
 			return await msg.edit(content=f"**{p2.display_name}** does not want to fight with you **{p1.display_name}**", view=view)
