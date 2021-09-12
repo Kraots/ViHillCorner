@@ -615,7 +615,7 @@ class Fun(commands.Cog):
 			players = [ctx.author, member]
 			random.shuffle(players)
 			ttt_view = games.TicTacToe(players[0], players[1], ctx)
-			ttt_view.message = await ctx.send(f'You start: {member.mention}', view=ttt_view)
+			ttt_view.message = await ctx.send(f'You start: {players[0].mention}', view=ttt_view)
 			return
 			
 		elif view.response is False:
