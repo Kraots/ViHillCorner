@@ -48,7 +48,7 @@ class CommandButtonRole(disnake.ui.Select['ButtonRoleView']):
 		value = self.values[0]
 		_roles = [role for role in interaction.author.roles if not role.id in all_roles]
 		_roles.append(interaction.guild.get_role(roles[value]))
-		await interaction.author.edit(roles=_roles)
+		await interaction.author.edit(roles=_roles, reason='Colour role update via select menu.')
 		await interaction.response.edit_message(content=f'Changed your colour to `{value}`')
 
 class ButtonRoleView(disnake.ui.View):
