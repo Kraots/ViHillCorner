@@ -18,8 +18,8 @@ from utils.paginator import SimplePages, RoboPages, CustomMenu
 import pymongo
 from disnake.ext.commands import Greedy
 from disnake import Member
-import asyncio
 from utils import menus
+from utils.CommandButtonRoles import ButtonRoleView
 
 filter_invite = re.compile("(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 
@@ -713,6 +713,11 @@ class Misc(commands.Cog):
 			em.set_footer(**em_footer)
 		
 		await inter.response.send_message(embed=em)
+
+	@commands.command(name='colourroles', aliases=['colours'])
+	async def colour_role(self, ctx):
+		view = ButtonRoleView(ctx)
+		await ctx.send('**Please use the select menu below:**', view=view)
 
 	@suggest.error
 	async def suggest_error(self, ctx, error):
