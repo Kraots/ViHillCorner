@@ -159,7 +159,7 @@ class Anime(commands.Cog):
 		return AnimeSearchId(query)
 
 	@commands.command(name='myanimelist', aliases=['mal', 'anime'])
-	async def anime_mal(self, ctx, *, query):
+	async def anime_mal(self, ctx: commands.Context, *, query):
 		"""Search an anime and get an embed with it's info based on its name, it can also accept the anime's id from MyAnimeList."""
 
 		try:
@@ -193,7 +193,11 @@ class Anime(commands.Cog):
 		em.add_field(name='Source:', value=anime.source)
 		em.set_footer(text=f'Requested by: {ctx.author} • ID: {anime.mal_id}', icon_url=ctx.author.avatar.url)
 
-		await ctx.reply(embed=em)
+		ref = ctx.replied_reference
+		if ref is None:
+			ref = ctx.message
+	
+		await ctx.send(embed=em, reference=ref)
 
 
 	@commands.Cog.listener()
