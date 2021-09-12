@@ -7,6 +7,7 @@ import aiohttp
 import motor.motor_asyncio
 from utils.HelpCommand import PaginatedHelpCommand
 from utils.helpers import reraise, ConfirmView
+from utils.ButtonRoles import ButtonRoles
 
 token = os.environ.get('DISCORD_BOT_SECRET')
 
@@ -30,6 +31,7 @@ class ViHillCorner(commands.Bot):
 		self.reraise = reraise
 		self.confirm_view = ConfirmView
 		self.snipes = {}
+		self.added_views = False
 
 		self.load_extension('jishaku')
 		os.environ['JISHAKU_FORCE_PAGINATOR'] = '1'
@@ -52,6 +54,13 @@ class ViHillCorner(commands.Bot):
 			activity = disnake.Activity(type=disnake.ActivityType.watching, name='you | !help')
 			await self.change_presence(status=disnake.Status.dnd, activity=activity)
 			self._presence_changed = True
+		
+		if self.added_views == False:
+			self.add_view(view=ButtonRoles(), message_id=886686657842135100)
+			self.add_view(view=ButtonRoles(), message_id=886686816634277928)
+			self.add_view(view=ButtonRoles(), message_id=886686899371139143)
+			self.add_view(view=ButtonRoles(), message_id=886687040400420915)
+			self.added_views = True
 
 	async def process_commands(self, message):
 		ctx = await self.get_context(message, cls=context.Context)
