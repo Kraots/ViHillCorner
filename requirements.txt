@@ -27,3 +27,4 @@ urllib3
 wolframalpha
 motor
 pymongo
+mal-api
