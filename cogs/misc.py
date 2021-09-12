@@ -714,7 +714,7 @@ class Misc(commands.Cog):
 		
 		await inter.response.send_message(embed=em)
 
-	@commands.command(name='colour-roles', aliases=['color-roles', 'colours', 'colors'])
+	@commands.command(name='colours', aliases=['colors'])
 	async def colour_role(self, ctx):
 		"""Change your colour by selecting one from this message."""
 
