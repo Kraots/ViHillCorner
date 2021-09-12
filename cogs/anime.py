@@ -174,7 +174,7 @@ class Anime(commands.Cog):
 		else:
 			return await ctx.reply('Not a valid query!')
 
-		em = disnake.Embed(title=anime.title, url=anime.url, description=f'**Synopsis:** *{textwrap.shorten(text=anime.synopsis, width=700, placeholder=f" [[...]]({anime.url})")}*')
+		em = disnake.Embed(title=anime.title, url=anime.url, description=f'**Synopsis:** *{textwrap.shorten(text=anime.synopsis.replace("[Written by MAL Rewrite]", ""), width=700, placeholder=f" [[...]]({anime.url})")}*')
 		em.set_thumbnail(url=anime.image_url)
 		em.add_field(name='Episodes:', value=anime.episodes)
 		em.add_field(name='Genres:', value=', '.join(anime.genres))
