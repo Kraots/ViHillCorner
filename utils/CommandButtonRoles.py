@@ -66,6 +66,6 @@ class ButtonRoleView(disnake.ui.View):
 		
 	async def interaction_check(self, interaction: disnake.MessageInteraction):
 		if interaction.author.id != self.ctx.author.id:
-			await interaction.response.send_message(f'{self.ctx.display_name} is using this menu. If you wish to use it too please type `!colours`', ephemeral=True)
+			await interaction.response.send_message(f'{self.ctx.author.display_name} is using this menu. If you wish to use it too please type `!colours`', ephemeral=True)
 			return False
 		return True
