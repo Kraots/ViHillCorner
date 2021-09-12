@@ -57,7 +57,7 @@ class ButtonRoleView(disnake.ui.View):
 		self.ctx = ctx
 		self.add_item(CommandButtonRole())
 	
-	async def on_error(self, error: Exception, item, interaction):
+	async def on_error(self, error, item, interaction):
 		return await self.ctx.bot.reraise(self.ctx, error)
 	
 	async def on_timeout(self):
