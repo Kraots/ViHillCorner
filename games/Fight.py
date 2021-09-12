@@ -45,8 +45,8 @@ class Fight(disnake.ui.View):
 	def _data(self) -> str:
 		data = inspect.cleandoc(
 		f'''
-		`{self.p1.display_name}` now has **{self.hp[self.p1]}** hp
-		`{self.p2.display_name}` now has **{self.hp[self.p2]}** hp
+		`{self.p1.display_name}` **==> {self.hp[self.p1]} hp**
+		`{self.p2.display_name}` **==> {self.hp[self.p2]} hp**
 		'''
 		)
 		return data
