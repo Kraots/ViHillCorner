@@ -172,16 +172,6 @@ class on_join(commands.Cog):
 				await member.add_roles(mute_role)
 			
 			introchannel = VHguild.get_channel(750160850593251449)
-			
-
-			channel = member.dm_channel
-			
-			def check(message):
-				print(message.channel.id)
-				print(channel.id)
-				print(message.author.id)
-				print(member.id)
-				return message.channel.id == channel.id and message.author.id == member.id
 
 			msg1 = await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself to us?")
 			ctx = await self.bot.get_context(msg1)
@@ -197,6 +187,9 @@ class on_join(commands.Cog):
 				return await msg1.edit(content=e, view=view)
 
 			elif view.response is True:
+				channel = msg1.channel
+				def check(message):
+					return message.channel.id == channel.id and message.author.id == member.id
 				e = "What's your name?\n\n*To cancel type `!cancel`*"
 				await msg1.edit(content=e, view=view)
 				try:
