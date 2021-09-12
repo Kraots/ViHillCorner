@@ -170,9 +170,6 @@ class on_join(commands.Cog):
 
 				mute_role = guild.get_role(750465726069997658)
 				await member.add_roles(mute_role)
-
-			user = member
-			
 			
 			introchannel = VHguild.get_channel(750160850593251449)
 			
@@ -180,7 +177,7 @@ class on_join(commands.Cog):
 			channel = member.dm_channel
 			
 			def check(message):
-				return message.channel.id == channel.id and message.author.id == user.id
+				return message.channel.id == channel.id and message.author.id == member.id
 
 			msg1 = await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself to us?")
 			ctx = await self.bot.get_context(msg1)

@@ -24,6 +24,7 @@ class ViHillCorner(commands.Bot):
 		intents = disnake.Intents.all()
 		super().__init__(help_command=PaginatedHelpCommand(), command_prefix=('!', ';'), allowed_mentions=allowed_mentions, intents=intents, case_insensitive=True, test_guilds=None)
 		self.session = aiohttp.ClientSession(loop=self.loop)
+		self.add_check(self.check_dms)
 		self.db1 = database1
 		self.db2 = database2
 		self.reraise = reraise
@@ -55,5 +56,13 @@ class ViHillCorner(commands.Bot):
 	async def process_commands(self, message):
 		ctx = await self.get_context(message, cls=context.Context)
 		await self.invoke(ctx)
+
+	async def check_dms(self, ctx):
+		if ctx.author.id == self.owner_id:
+			return True
+		if isinstance(ctx.channel, disnake.DMChannel):
+			await ctx.send('Commands do not work in dm channels. Please use commands in <#750160851822182486>')
+			return False
+		return True
 
 ViHillCorner().run(token)
