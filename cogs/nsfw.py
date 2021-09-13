@@ -13,7 +13,6 @@ nsfw_url = 'https://nekobot.xyz/api/image?type='
 nsfw_categs = ['hentai', 'ass', 'thigh', 'hass', 'hboobs', 'pgif', 'paizuri', 'boobs', 'pussy', 'hyuri', 'hthigh', 'lewdneko', 'anal', 'hmidriff', 'feet', 'gonewild', 'hkitsune', '4k', 'blowjob', 'tentacle', 'hentai_anal']
 real_categs = ['ass', 'thigh', 'pgif', 'boobs', 'pussy', 'anal', 'feet', 'gonewild', '4k', 'blowjob']
 hentai_categs_1 = ['hentai', 'hass', 'hboobs', 'paizuri', 'hyuri', 'hthigh', 'lewdneko', 'hmidriff', 'hkitsune', 'tentacle', 'hentai_anal']
-hentai_categs_2 = ['ass', 'ecchi', 'ero', 'hentai', 'maid', 'milf', 'oppai', 'oral', 'paizuri', 'selfies', 'uniform']
 
 class NSFWPageEntry:
 	def __init__(self, entry):
@@ -47,29 +46,13 @@ class NSFW(commands.Cog):
 		"""The old nsfw."""
 
 		if category is None:
-			categs = "ass **•** bdsm **•** cum **•** manga/doujin **•** femdom **•** hentai **•** masturbation **•** ero **•** orgy **•** yuri **•** pantsu/panties **•** glasses **•** cuckold **•** blowjob/bj **•** foot **•** thighs **•** vagina **•** ahegao **•** uniform **•** tentacles"
+			categs = "foot **•** mW **•** elves **•** hentai **•** nsfwNeko **•** ero **•** lick **•** glasses **•** blowjob **•** pussy **•** cum **•** femdom **•** cuckold **•** slap **•** ass **•** ahegao **•** incest **•** manga **•** uniform **•** public **•** jahy **•** panties **•** creampie **•** boobjob **•** orgy **•** masturbation **•** yuri **•** bdsm **•** thighs **•** nsfwMW **•** gangbang **•** tentacles **•** hnt_gifs"
 			em = disnake.Embed(title="Here are all the categories for hentai 0", description=categs, color=color.blue)
+			em.set_footer(text='They are all case sensitive!')
 			return await ctx.send(embed=em)
 
-		nsfwType = category.lower()
-		if nsfwType == 'tentacle':
-			nsfwType = 'tentacles'
-		elif nsfwType in ['doujin', 'doujins']:
-			nsfwType = 'manga'
-		elif nsfwType in ['vagina', 'vag']:
-			nsfwType = 'pussy'
-		elif nsfwType == 'pantsu':
-			nsfwType = 'panties'
-		elif nsfwType == 'bj':
-			nsfwType = 'blowjob'
-		elif nsfwType == 'feet':
-			nsfwType = 'foot'
-		
-		elif nsfwType == 'gangbang':
-			return	await ctx.send("This category is not supported.")
-
 		try:
-			result = hmtai.useHM(version='v2', category=nsfwType)
+			result = hmtai.useHM(version='2_9', category=category)
 		
 			em = disnake.Embed(color=color.pastel)
 			em.set_image(url=result)
@@ -121,65 +104,19 @@ class NSFW(commands.Cog):
 		except aiohttp.ClientConnectorError:
 			await ctx.send('Error connecting to this nsfw API. There is no ETA until it will be fixed so please use the others available APIs for nsfw hentai.')
 
-
-	async def nsfw_hentai_2(self, ctx, gif, category):
-		"""The new nsfw."""
-
-		if category is None:
-			categs = "ass **•** ecchi **•** ero **•** hentai **•** maid **•** milf **•** oppai **•** oral **•** paizuri **•** selfies **•** uniform"
-			em = disnake.Embed(color=color.blue, title="Here are all the categories for hentai 2:", description=categs)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
-			return await ctx.send(embed=em)
-
-		categ = category.lower()
-		if categ not in hentai_categs_2:
-			return await ctx.reply("Not in the existing hentai categories.")
-
-		try:
-			async with self.bot.session.get('https://api.hori.ovh:8036/nsfw/' + categ + gif) as resp:
-				if resp.status != 200:
-					err = await resp.json()
-					if err['error'] == 'Sorry no image were found with the criteria you gave to the API, please retry with a different criteria.':
-						return await ctx.reply('No gif found for this type of category.')
-					await self.bot.owner.send(f"`{ctx.command} {categ}` returned\n**{err}**")
-					return await ctx.send("There has been an error from the **API**, please try again later.")
-				content = await resp.json()
-				url= content['url']
-			em = disnake.Embed(color=color.pastel)
-			em.set_image(url=url)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
-			await ctx.send(embed=em)
-		except aiohttp.ClientConnectorError:
-			await ctx.send('Error connecting to this nsfw API. There is no ETA until it will be fixed so please use the others available APIs for nsfw hentai.')
-
-
 	@nsfw.command(name='hentai')
 	@commands.check(NSFW)
-	async def nsfw_hentai(self, ctx, API: int, category: str = None, gif: str = None):
+	async def nsfw_hentai(self, ctx, API: int, category: str = None):
 		"""Get the categories from one of the hentai APIs
 		APIs:
 		\u2800 • **0**
 		\u2800 • **1**
-		\u2800 • **2** (SUPPORTS GIF)
-		The gif param indicates whether to force the API to return a gif image. Only use this on the APIs that support it.
-		Example:
-		\u2800 !nsfw hentai 2 ass gif
 		"""
-
-		if gif == None:
-			gif = ''
-		else:
-			if gif.lower() in ('gif', 'true', '1'):
-				gif = '?gif=True'
-			else:
-				gif = ''
 
 		if API == 0:
 			return await self.nsfw_hentai_0(ctx, category)
 		elif API == 1:
 			return await self.nsfw_hentai_1(ctx, category)
-		elif API == 2:
-			return await self.nsfw_hentai_2(ctx, gif, category)
 
 	@nsfw.command(name='real')
 	@commands.check(NSFW)
