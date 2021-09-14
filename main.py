@@ -47,7 +47,7 @@ class ViHillCorner(commands.Bot):
 				self.load_extension(f'reload_cogs.{filename[:-3]}')
 
 	@property
-	def owner(self) -> disnake.User:
+	def _owner(self) -> disnake.User:
 		if self._owner_id:
 			return self.get_user(self._owner_id)
 
