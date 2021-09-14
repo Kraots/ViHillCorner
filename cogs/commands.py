@@ -72,7 +72,7 @@ class General(commands.Cog):
 			f = disnake.File(fp='ss.png', filename='ss.png')
 			em = disnake.Embed(color=color.lightpink, title="Here's your screen shot of `{}`".format(url))
 			em.set_image(url='attachment://ss.png')
-			em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.avatar.url)
+			em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.display_avatar)
 			await ctx.send(embed=em, file=f)
 
 	@commands.command()
@@ -149,7 +149,7 @@ class General(commands.Cog):
 		"""Get the invite for the server."""
 
 		inv = disnake.Embed(title="https://discord.gg/Uf2kA8q", color=color.lightpink)
-		inv.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar.url)
+		inv.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
 
 		await ctx.send(embed=inv)
 
@@ -171,9 +171,9 @@ class General(commands.Cog):
 
 		member = member or ctx.author
 			
-		avatar = disnake.Embed(title=f"Here's {member.display_name}'s avatar", url=member.avatar.url, color=color.blue)
-		avatar.set_image(url=member.avatar.url)
-		avatar.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+		avatar = disnake.Embed(title=f"Here's {member.display_name}'s avatar", url=member.display_avatar, color=color.blue)
+		avatar.set_image(url=member.display_avatar)
+		avatar.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
 		await ctx.send(embed=avatar, reference=ctx.replied_reference)
 
@@ -185,7 +185,7 @@ class General(commands.Cog):
 
 		embed = disnake.Embed(color=color.lightpink)
 		embed.set_image(url=emoji.url)
-		embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar.url)
+		embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar)
 
 		await ctx.send(embed=embed)
 
@@ -195,7 +195,7 @@ class General(commands.Cog):
 
 		await ctx.message.delete()
 		ad = disnake.Embed(color=color.lightpink, title="Here's the ad to the server:", description=addd)
-		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
 		await ctx.send(embed=ad)
 
@@ -205,7 +205,7 @@ class General(commands.Cog):
 
 		await ctx.message.delete()
 		ad = disnake.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```%s```" % (addd))
-		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
 		await ctx.send(embed=ad)
 

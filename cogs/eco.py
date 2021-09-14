@@ -349,8 +349,8 @@ class Economy(commands.Cog):
 				total_items += item['owned']
 				user_items.append(to_append)
 		em = disnake.Embed(color=member.color, description='\n'.join(user_items))
-		em.set_author(name=f'{member.display_name}\'s inventory', url=member.avatar.url, icon_url=member.avatar.url)
-		em.set_thumbnail(url=member.avatar.url)
+		em.set_author(name=f'{member.display_name}\'s inventory', url=member.display_avatar, icon_url=member.display_avatar)
+		em.set_thumbnail(url=member.display_avatar)
 		_text = f'{total_items:,} total items'
 		if inv_worth != 0:
 			_text = f'Worth: {inv_worth:,} carrots • {total_items:,} total items'
@@ -822,8 +822,8 @@ class Economy(commands.Cog):
 		em.add_field(name="Wallet Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(user_db['wallet'])), inline=False)
 		em.add_field(name="Bank Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(user_db['bank'])), inline=False)
 		em.add_field(name="Total Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(user_db['wallet'] + user_db['bank'])))
-		em.set_footer(text="Rank: {}".format(index), icon_url=member.avatar.url)
-		em.set_thumbnail(url=member.avatar.url)
+		em.set_footer(text="Rank: {}".format(index), icon_url=member.display_avatar)
+		em.set_thumbnail(url=member.display_avatar)
 
 		await ctx.send(embed=em)
 
@@ -853,7 +853,7 @@ class Economy(commands.Cog):
 				break
 			index += 1
 		if found != False:
-			em.set_footer(text=f"Your place: {index}", icon_url=ctx.author.avatar.url)
+			em.set_footer(text=f"Your place: {index}", icon_url=ctx.author.display_avatar)
 			
 		await ctx.send(embed=em)
 

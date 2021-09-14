@@ -48,7 +48,7 @@ class Fun(commands.Cog):
 				pre_size.append("=")
 			size = "".join(pre_size)
 			em.description = f"`{member.name}`'s penis\n8{size}D"
-		em.set_footer(text=f"Requested by: {ctx.author}", icon_url = ctx.author.avatar.url)
+		em.set_footer(text=f"Requested by: {ctx.author}", icon_url = ctx.author.display_avatar)
 
 		await ctx.send(embed=em)
 
@@ -541,7 +541,7 @@ class Fun(commands.Cog):
 
 			embed = disnake.Embed(title="Cat", url=imgUrl, color=color.orange, timestamp=ctx.message.created_at.replace(tzinfo=None))
 			embed.set_image(url=imgUrl)
-			embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+			embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 			msg = await ctx.send(embed=embed)
 			await msg.add_reaction("❤️")
 			await msg.add_reaction("😸")
@@ -556,7 +556,7 @@ class Fun(commands.Cog):
 
 			embed = disnake.Embed(title="Dog", url=data['url'], color=color.orange, timestamp=ctx.message.created_at.replace(tzinfo=None))
 			embed.set_image(url=data['url'])
-			embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+			embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 			msg = await ctx.send(embed=embed)
 			await msg.add_reaction("❤️")
 			await msg.add_reaction("🐶")
@@ -574,7 +574,7 @@ class Fun(commands.Cog):
 				
 				embed = disnake.Embed(color=color.orange, title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at.replace(tzinfo=None))
 				embed.set_image(url=linkUrl)
-				embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+				embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
 				await ctx.send(embed=embed)
 
@@ -645,7 +645,7 @@ class Fun(commands.Cog):
 		pfp = await invert_pfp(member)
 		em = disnake.Embed(color=color.lightpink, title='Here\'s your inverted avatar image:')
 		em.set_image(url=f'attachment://{member.display_name}_inverted_avatar.png')
-		em.set_footer(text=f"Requested by: {ctx.author}", icon_url = ctx.author.avatar.url)
+		em.set_footer(text=f"Requested by: {ctx.author}", icon_url = ctx.author.display_avatar)
 		await ctx.send(embed=em, file=pfp)
 
 	@vampify.error

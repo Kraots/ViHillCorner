@@ -113,7 +113,7 @@ class Snippets(commands.Cog):
 		snippet_owner = self.bot.get_user(snippet_owner_id)
 
 		em = disnake.Embed(color=color.reds, title=snippet_name)
-		em.set_author(name=snippet_owner, url=snippet_owner.avatar.url, icon_url=snippet_owner.avatar.url)
+		em.set_author(name=snippet_owner, url=snippet_owner.display_avatar, icon_url=snippet_owner.display_avatar)
 		em.add_field(name="Owner", value=snippet_owner.mention)
 		em.add_field(name="Uses", value=snippet_uses)
 		em.add_field(name="Rank", value="`#{}`".format(rank))
@@ -263,7 +263,7 @@ class Snippets(commands.Cog):
 		snippet = data['snippet_content']
 		get_credits_info = data['snippet_credits']
 		credits_user = self.bot.get_user(get_credits_info)
-		credits_avatar = credits_user.avatar.url
+		credits_avatar = credits_user.display_avatar
 		await self.db.update_one({"_id": data['_id']}, {"$inc":{"uses_count": 1}})
 
 		if message.content.lower().startswith(f";{snippet_name}"):

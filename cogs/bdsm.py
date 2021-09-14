@@ -75,7 +75,7 @@ class Bdsm(commands.Cog):
 			em.set_image(url=BDSMresult['BDSMresult'])
 			BDSMtimestamp = BDSMresult['timestamp']
 			BDSMtimestamp = BDSMtimestamp.strftime("%Y-%m-%d %H:%M:%S")
-			em.set_footer(text=f"Result set on: {BDSMtimestamp} (UTC timezone)", icon_url=member.avatar.url)
+			em.set_footer(text=f"Result set on: {BDSMtimestamp} (UTC timezone)", icon_url=member.display_avatar)
 			await ctx.send(embed=em)
 		
 		else:

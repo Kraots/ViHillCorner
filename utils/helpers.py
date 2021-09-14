@@ -97,10 +97,10 @@ class Pag(Paginator):
 		self._session_task = ctx.bot.loop.create_task(self._session(ctx))
 
 def get_user_image(user: disnake.User):
-	if str(user.avatar.url_as(static_format='png'))[54:].startswith('a_'):
-		image = str(user.avatar.url).rsplit("?", 1)[0]
+	if str(user.display_avatar_as(static_format='png'))[54:].startswith('a_'):
+		image = str(user.display_avatar).rsplit("?", 1)[0]
 	else:
-		image = user.avatar.url_as(static_format='png')
+		image = user.display_avatar_as(static_format='png')
 	return image
 
 def get_member_role(member: disnake.Member):
@@ -136,8 +136,8 @@ def profile(ctx, user):
 		em.add_field(name="Avatar", value=f'[Click Here]({get_user_image(user)})', inline=False)
 	em.add_field(name='Account Created', value=format_date(user.created_at.replace(tzinfo=None)), inline=False)
 	em.set_thumbnail(url=get_user_image(user))
-	em.set_author(name=user, icon_url=user.avatar.url)
-	em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url) 
+	em.set_author(name=user, icon_url=user.display_avatar)
+	em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar) 
 	return em
 
 def time_phaser(seconds):

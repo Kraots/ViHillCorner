@@ -73,7 +73,7 @@ class ToDo(commands.Cog):
 			index += 1
 			entries[i]['data'] = f"**[{index}.]({entries[i]['url']})** {entries[i]['data']}"
 
-		m = ToDoPages(ctx=ctx, entries=entries, title="Here's your todo list:", author_name=ctx.author, author_icon_url=ctx.author.avatar.url)
+		m = ToDoPages(ctx=ctx, entries=entries, title="Here's your todo list:", author_name=ctx.author, author_icon_url=ctx.author.display_avatar)
 		await m.start()
 
 	@todo.command(name='delete', aliases=['remove'])

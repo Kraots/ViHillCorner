@@ -53,7 +53,7 @@ class Trivia(commands.Cog):
 			title = "Here are %s's points:" % (member.display_name)
 
 		em = disnake.Embed(color=color.lightpink, title=title)
-		em.set_thumbnail(url=member.avatar.url)
+		em.set_thumbnail(url=member.display_avatar)
 		em.add_field(name="Points:", value="**%s**" % (user['points']), inline=False)
 		em.add_field(name="Rank:", value="`#%s`" % (rank), inline=False)
 		await ctx.send(embed=em)

@@ -241,7 +241,7 @@ class Misc(commands.Cog):
 		micro = sys.version_info.micro
 		py_version = "{}.{}.{}".format(major, minor, micro)
 		botinfo = disnake.Embed(title="", color=color.lightpink, timestamp=ctx.message.created_at.replace(tzinfo=None))
-		botinfo.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+		botinfo.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 		botinfo.add_field(name="Name | ID :", value=f"{self.bot.user} | {self.bot.user.id}", inline=False)
 		botinfo.add_field(name="Bot Owner:", value=f"{self.bot._owner}", inline=False)
 		botinfo.add_field(name="Created at:", value="05/09/2020", inline=False)
@@ -252,7 +252,7 @@ class Misc(commands.Cog):
 		botinfo.add_field(name="Last Update:", value=updatedMsg, inline=False)
 		botinfo.add_field(name="Bot's Source of Code:", value="[Click Here](https://github.com/Kraots/ViHillCorner)")
 		botinfo.add_field(name="Vote For Server:", value="\n[Click Here](https://top.gg/servers/750160850077089853/vote)", inline=False)
-		botinfo.set_thumbnail(url=self.bot.user.avatar.url)
+		botinfo.set_thumbnail(url=self.bot.user.display_avatar)
 		await ctx.send(embed=botinfo)
 
 	@commands.command(aliases=['calculator', 'calculate'])
@@ -272,14 +272,14 @@ class Misc(commands.Cog):
 
 		try:
 			em = disnake.Embed()
-			em.set_author(name=f"Here's your result `{ctx.author.display_name}`:", icon_url=ctx.author.avatar.url)
+			em.set_author(name=f"Here's your result `{ctx.author.display_name}`:", icon_url=ctx.author.display_avatar)
 			em.add_field(name="Operation:", value=f"`{args}`", inline=False)
 			em.add_field(name="Result:", value=f"`{result.stdout}`")
 			em.color = color.lightpink
 			await ctx.send(embed=em, reference=ctx.replied_reference)
 		except disnake.HTTPException:
 			em = disnake.Embed()
-			em.set_author(name=f"Here's your result `{ctx.author.display_name}`:", icon_url=ctx.author.avatar.url)
+			em.set_author(name=f"Here's your result `{ctx.author.display_name}`:", icon_url=ctx.author.display_avatar)
 			em.add_field(name="Operation:", value="`Operation too long`", inline=False)
 			em.add_field(name="Result:", value=f"`{result.stdout}`")
 			em.color = color.lightpink
@@ -352,7 +352,7 @@ class Misc(commands.Cog):
 		em.add_field(name='Created At', value=format_date(guild.created_at.replace(tzinfo=None)))
 		em.set_thumbnail(url=guild.icon_url)
 		em.set_author(name='Server Info')
-		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 		
 		await ctx.send(embed=em, reference=ctx.replied_reference)
 
@@ -363,7 +363,7 @@ class Misc(commands.Cog):
 		chosen_image = random.choice(embedlinks.waifuLinks)
 		embed = disnake.Embed(color=color.lightpink)
 		embed.set_image(url=chosen_image)
-		embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar.url)
+		embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar)
 
 		await ctx.send(embed=embed)
 
@@ -461,7 +461,7 @@ class Misc(commands.Cog):
 			return await ctx.send('Nothing to snipe!')
 
 		embed = disnake.Embed(description= msg.content, color=msg.author.color, timestamp=msg.created_at.replace(tzinfo=None))
-		embed.set_author(name=msg.author, icon_url=msg.author.avatar.url)
+		embed.set_author(name=msg.author, icon_url=msg.author.display_avatar)
 		embed.set_footer(text="Deleted in `{}`".format(msg.channel))
 		if msg.attachments:
 			embed.set_image(url=msg.attachments[0].proxy_url)
@@ -504,7 +504,7 @@ class Misc(commands.Cog):
 			return await ctx.send('There is no index with that number. For a list of all available indexes please use `!snipe list`')
 
 		embed = disnake.Embed(description= msg.content, color=msg.author.color, timestamp=msg.created_at.replace(tzinfo=None))
-		embed.set_author(name=msg.author, icon_url=msg.author.avatar.url)
+		embed.set_author(name=msg.author, icon_url=msg.author.display_avatar)
 		embed.set_footer(text="Deleted in `{}`".format(msg.channel))
 		if msg.attachments:
 			embed.set_image(url=msg.attachments[0].proxy_url)
@@ -540,7 +540,7 @@ class Misc(commands.Cog):
 		updatedMsg = update['update']
 		updatedDate = time.human_timedelta(dt=update['date'], accuracy=3, brief=False, suffix=True)
 		em = disnake.Embed(title="Here's what's new to the bot:", description=f"{updatedMsg}\n\n*{updatedDate}*", color=color.red)
-		em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar.url)
+		em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
 		await ctx.send(embed=em, reference=ctx.replied_reference)
 	
 	@update.command(name='set')
@@ -569,7 +569,7 @@ class Misc(commands.Cog):
 
 		await ctx.message.delete()
 		em1 = disnake.Embed(color=color.lightpink, title="Are you ready to post your suggestion?", description="**`%s`**" %(args))
-		em1.set_author(name=f'{ctx.author.name}', icon_url=ctx.author.avatar.url)
+		em1.set_author(name=f'{ctx.author.name}', icon_url=ctx.author.display_avatar)
 		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
 		view.message = msg1 = await ctx.send(embed=em1, view=view)
 		await view.wait()
@@ -577,7 +577,7 @@ class Misc(commands.Cog):
 			return ctx.command.reset_cooldown(ctx)
 		elif view.response is True:
 			suggest = disnake.Embed(color=color.inviscolor, title="", description=f"{args}", timestamp=ctx.message.created_at.replace(tzinfo=None))
-			suggest.set_author(name=f'{ctx.author.name} suggested:', icon_url=ctx.author.avatar.url)
+			suggest.set_author(name=f'{ctx.author.name} suggested:', icon_url=ctx.author.display_avatar)
 			suggestions = self.bot.get_channel(750160850593251454)
 			msg = await suggestions.send(embed=suggest)
 			await msg.add_reaction('<:agree:797537027469082627>')

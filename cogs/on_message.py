@@ -56,7 +56,7 @@ class on_message(commands.Cog):
 
 		else:
 				em = disnake.Embed(color=color.red, description=f'[Message]({message.jump_url}) deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```', timestamp=datetime.datetime.utcnow())
-				em.set_author(name=f'{message.author}', icon_url=f'{message.author.avatar.url}')
+				em.set_author(name=f'{message.author}', icon_url=f'{message.author.display_avatar}')
 				em.set_footer(text=f'User ID: {message.author.id}')
 				if message.attachments:
 					em.set_image(url=message.attachments[0].proxy_url)
@@ -77,7 +77,7 @@ class on_message(commands.Cog):
 				return
 		else:
 				em = disnake.Embed(color=color.yellow, description=f'[Message]({before.jump_url}) edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```', timestamp=datetime.datetime.utcnow())
-				em.set_author(name=f'{before.author}', icon_url=f'{before.author.avatar.url}')
+				em.set_author(name=f'{before.author}', icon_url=f'{before.author.display_avatar}')
 				em.set_footer(text=f'User ID: {before.author.id}')
 
 				await asyncio.sleep(0.5)

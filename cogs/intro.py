@@ -159,8 +159,8 @@ class Intros(commands.Cog):
 
 									else:
 										em = disnake.Embed(color=ctx.author.color)
-										em.set_author(name=ctx.author, url=ctx.author.avatar.url, icon_url=ctx.author.avatar.url)
-										em.set_thumbnail(url=ctx.author.avatar.url)
+										em.set_author(name=ctx.author, url=ctx.author.display_avatar, icon_url=ctx.author.display_avatar)
+										em.set_thumbnail(url=ctx.author.display_avatar)
 										em.add_field(name="Name", value=name.content, inline=True)
 										em.add_field(name="Location", value=location.content, inline=True)
 										em.add_field(name="Age", value=agenumber, inline=True)
@@ -290,8 +290,8 @@ class Intros(commands.Cog):
 								else:
 									em = disnake.Embed(color=ctx.author.color)
 									em = disnake.Embed(color=ctx.author.color)
-									em.set_author(name=ctx.author, url=ctx.author.avatar.url, icon_url=ctx.author.avatar.url)
-									em.set_thumbnail(url=ctx.author.avatar.url)
+									em.set_author(name=ctx.author, url=ctx.author.display_avatar, icon_url=ctx.author.display_avatar)
+									em.set_thumbnail(url=ctx.author.display_avatar)
 									em.add_field(name="Name", value=name.content, inline=True)
 									em.add_field(name="Location", value=location.content, inline=True)
 									em.add_field(name="Age", value=agenumber, inline=True)
@@ -376,8 +376,8 @@ class Intros(commands.Cog):
 
 			await ctx.message.delete()
 			em = disnake.Embed(color=member.color)
-			em.set_author(name=member, url=member.avatar.url, icon_url=member.avatar.url)
-			em.set_thumbnail(url=member.avatar.url)
+			em.set_author(name=member, url=member.display_avatar, icon_url=member.display_avatar)
+			em.set_thumbnail(url=member.display_avatar)
 			em.add_field(name="Name", value=introname, inline=True)
 			em.add_field(name="Location", value=introlocation, inline=True)
 			em.add_field(name="Age", value=introage, inline=True)

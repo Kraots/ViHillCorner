@@ -56,7 +56,7 @@ class NSFW(commands.Cog):
 		
 			em = disnake.Embed(color=color.pastel)
 			em.set_image(url=result)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 			await ctx.send(embed=em)
 		except:
 			return await ctx.send('Category does not exist.')
@@ -67,7 +67,7 @@ class NSFW(commands.Cog):
 		if category is None:
 			categs = "hentai **•** paizuri **•** yuri **•** thighs **•** neko **•** anal **•** hmidriff **•** kitsune **•** tentacle"
 			em = disnake.Embed(color=color.blue, title="Here are all the categories for hentai 1:", description=categs)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 			return await ctx.send(embed=em)
 
 		categ = category.lower()
@@ -99,7 +99,7 @@ class NSFW(commands.Cog):
 				url = content['message']
 			em = disnake.Embed(color=color.pastel)
 			em.set_image(url=url)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 			await ctx.send(embed=em)
 		except aiohttp.ClientConnectorError:
 			await ctx.send('Error connecting to this nsfw API. There is no ETA until it will be fixed so please use the others available APIs for nsfw hentai.')
@@ -126,7 +126,7 @@ class NSFW(commands.Cog):
 		if category is None:
 			categs = "ass **•** thigh **•** gif **•** boobs **•** pussy **•** anal **•** feet **•** wild **•** 4k **•** bj/blowjob"
 			em = disnake.Embed(color=color.blue, title="Here are all the categories for real porn:", description=categs)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 			return await ctx.send(embed=em)
 
 		categ = category.lower()
@@ -153,7 +153,7 @@ class NSFW(commands.Cog):
 				url = content['message']
 			em = disnake.Embed(color=color.pastel)
 			em.set_image(url=url)
-			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
+			em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 			await ctx.send(embed=em)
 		except aiohttp.ClientConnectorError:
 			await ctx.send('Error connecting to this nsfw API. There is no ETA until it will be fixed so please use the nsfw hentai APIs or try again later.')

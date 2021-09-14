@@ -27,7 +27,7 @@ class Ping(commands.Cog):
 		"""See how long the bot has been online for."""
 		
 		uptime = disnake.Embed(description=f"Bot has been online for: `{t.human_timedelta(dt=self.bot.uptime, suffix=False)}`", color=color.lightpink)
-		uptime.set_footer(text=f'Bot made by: {self.bot._owner}', icon_url=self.bot.user.avatar.url)
+		uptime.set_footer(text=f'Bot made by: {self.bot._owner}', icon_url=self.bot.user.display_avatar)
 		await ctx.send(embed=uptime)
 
 

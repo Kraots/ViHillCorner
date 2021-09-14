@@ -75,7 +75,7 @@ class WeeklyTop(commands.Cog):
 				else:
 					em.add_field(name="`#%s`\u2800%s" % (index, mem.name), value="`%s` messages" % (result['messages_count']), inline=False)
 		em.title = "Top `%s` most active members this week" % (index)
-		em.set_footer(text="Resets in %s" % (format_time(data['weekly_reset'])), icon_url=ctx.author.avatar.url)
+		em.set_footer(text="Resets in %s" % (format_time(data['weekly_reset'])), icon_url=ctx.author.display_avatar)
 
 		await ctx.send(embed = em)
 	
@@ -103,7 +103,7 @@ class WeeklyTop(commands.Cog):
 		em.add_field(name="`1st Place`", value="**50k XP**", inline=False)
 		em.add_field(name="`2nd Place`", value="**30k XP**", inline=False)
 		em.add_field(name="`3rd Place`", value="**20k XP**", inline=False)
-		em.set_footer(text="Requested by: %s" % (ctx.author), icon_url=ctx.author.avatar.url)
+		em.set_footer(text="Requested by: %s" % (ctx.author), icon_url=ctx.author.display_avatar)
 		await ctx.send(embed=em)
 
 def setup(bot):

@@ -228,7 +228,7 @@ class Levels(commands.Cog):
 		em.add_field(name="Server Boosters", value="%sx (%s XP per message)" % (boostersMultiplier, 15 * boostersMultiplier), inline=False)
 		em.add_field(name="Members", value="%sx (%s XP per message)" % (membersMultiplier, 5 * membersMultiplier), inline=False)
 		em.add_field(name="Kraots", value="%sx (%s XP per message)" % (kraotsMultiplier, 30 * kraotsMultiplier), inline=False)
-		em.set_footer(text="Requested By: %s" % (ctx.author), icon_url=ctx.author.avatar.url)
+		em.set_footer(text="Requested By: %s" % (ctx.author), icon_url=ctx.author.display_avatar)
 
 		await ctx.send(embed=em)
 

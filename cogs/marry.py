@@ -143,7 +143,7 @@ class Marriage(commands.Cog):
 
 				em = disnake.Embed(color=color.lightpink, title="You are married to `{}` :tada: :tada:".format(the_married_to_user.display_name))
 				em.add_field(name="_ _ \nMarried since:", value="`{}`".format(format_date(user_married_to_since)), inline=False)
-				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar.url)
+				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
 				await ctx.send(embed=em)
 			else:
 				def format_date(dt):
@@ -153,7 +153,7 @@ class Marriage(commands.Cog):
 
 				em = disnake.Embed(color=color.lightpink, title="`{}` is married to `{}` :tada: :tada:".format(user.display_name, the_married_to_user.display_name))
 				em.add_field(name=" _ _ \nMarried since:", value="`{}`".format(format_date(user_married_to_since)), inline=False)
-				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.avatar.url)
+				em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
 				await ctx.send(embed=em)
 
 
