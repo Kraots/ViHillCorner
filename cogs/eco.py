@@ -341,7 +341,7 @@ class Economy(commands.Cog):
 					to_append = f"— {''.join([i['item_emoji'] for i in _shop if i['item_name'] == item['item_name']])} {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
 				except KeyError:
 					to_append = f"— {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
-				item_worth = item['owned'] * int(''.join([str(i['sells_for']) for i in _shop if isinstance(i['sells_for'], int) and i['item_name'] == item['item_name']]))
+				item_worth = item['owned'] * int(''.join([str(i['sells_for']) for i in _shop if i['item_type'] != 'Sellable' and i['item_name'] == item['item_name']]))
 				inv_worth += item_worth
 				total_items += item['owned']
 				user_items.append(to_append)
