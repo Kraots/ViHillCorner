@@ -65,7 +65,7 @@ class on_message(commands.Cog):
 				try:
 					await MessageLogWebhook(em, self.bot)
 				except Exception as e:
-					await self.bot.owner.send(e)
+					await self.bot._owner.send(e)
 		
 
 	@commands.Cog.listener('on_message_edit')
@@ -84,7 +84,7 @@ class on_message(commands.Cog):
 				try:
 					await MessageLogWebhook(em, self.bot)
 				except Exception as e:
-					await self.bot.owner.send(e)
+					await self.bot._owner.send(e)
 
 
 
@@ -105,15 +105,15 @@ class on_message(commands.Cog):
 			if message.attachments:
 				em.set_image(url=message.attachments[0].proxy_url)
 
-			if message.author.id == self.bot.owner.id:
+			if message.author.id == self.bot._owner.id:
 				return
 
 			else:                        
-				await self.bot.owner.send(embed=em)
+				await self.bot._owner.send(embed=em)
 
 		if message.guild:
 
-			if message.author.id == self.bot.owner.id:
+			if message.author.id == self.bot._owner.id:
 				return
 
 			else:
@@ -121,7 +121,7 @@ class on_message(commands.Cog):
 				user_nickname = message.author.nick
 				
 				if any(x == str(user_nickname)[:1] for x in invalid_names_list):
-					new_nick = await check_invalid_name(self.db, message, self.bot.owner)
+					new_nick = await check_invalid_name(self.db, message, self.bot._owner)
 					await message.author.edit(nick=new_nick)
 					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 
@@ -131,19 +131,19 @@ class on_message(commands.Cog):
 						return
 					
 					else:
-						new_nick = await check_invalid_name(self.db, message, self.bot.owner)
+						new_nick = await check_invalid_name(self.db, message, self.bot._owner)
 						await message.author.edit(nick=new_nick)
 						await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 				
 				elif str(user_nickname).lower() in nono_names:
-					new_nick = await check_invalid_name(self.db, message, self.bot.owner)
+					new_nick = await check_invalid_name(self.db, message, self.bot._owner)
 					await message.author.edit(nick=new_nick)
 					await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 					return
 				
 				if not user_nickname:
 					if str(user_name).lower() in nono_names:
-						new_nick = await check_invalid_name(self.db, message, self.bot.owner)
+						new_nick = await check_invalid_name(self.db, message, self.bot._owner)
 						await message.author.edit(nick=new_nick)
 						await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
 						return

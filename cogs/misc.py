@@ -243,7 +243,7 @@ class Misc(commands.Cog):
 		botinfo = disnake.Embed(title="", color=color.lightpink, timestamp=ctx.message.created_at.replace(tzinfo=None))
 		botinfo.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.avatar.url)
 		botinfo.add_field(name="Name | ID :", value=f"{self.bot.user} | {self.bot.user.id}", inline=False)
-		botinfo.add_field(name="Bot Owner:", value=f"{self.bot.owner}", inline=False)
+		botinfo.add_field(name="Bot Owner:", value=f"{self.bot._owner}", inline=False)
 		botinfo.add_field(name="Created at:", value="05/09/2020", inline=False)
 		botinfo.add_field(name="Python Versions:", value=f"`{py_version}`", inline=False)
 		botinfo.add_field(name="Wrapper Version:", value=f"`disnake {package_version('disnake')}`", inline=False)
@@ -647,7 +647,7 @@ class Misc(commands.Cog):
 		url = 'http://api.urbandictionary.com/v0/define'
 		async with ctx.session.get(url, params={'term': word}) as resp:
 			if resp.status != 200:
-				await self.bot.owner.send(embed=disnake.Embed(description=f"[`{ctx.command}`]({ctx.message.jump_url}) gave an error:\n\nWord: **{word}**\nStatus: **{resp.status}**\nReason: **{resp.reason}**"))
+				await self.bot._owner.send(embed=disnake.Embed(description=f"[`{ctx.command}`]({ctx.message.jump_url}) gave an error:\n\nWord: **{word}**\nStatus: **{resp.status}**\nReason: **{resp.reason}**"))
 				return await ctx.send(f'An error occurred. Please try again later.')
 
 			js = await resp.json()

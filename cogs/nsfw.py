@@ -93,7 +93,7 @@ class NSFW(commands.Cog):
 		try:
 			async with self.bot.session.get(nsfw_url + categ) as resp:
 				if resp.status != 200:
-					await self.bot.owner.send(f"`{ctx.command} {categ}` returned\n**{await resp.json()}**")
+					await self.bot._owner.send(f"`{ctx.command} {categ}` returned\n**{await resp.json()}**")
 					return await ctx.send("There has been an error from the **API**, please try again later.")
 				content = await resp.json()
 				url = content['message']
@@ -147,7 +147,7 @@ class NSFW(commands.Cog):
 		try:
 			async with self.bot.session.get(nsfw_url + categ) as resp:
 				if resp.status != 200:
-					await self.bot.owner.send(f"`{ctx.command} {categ}` returned\n**{resp.status}**")
+					await self.bot._owner.send(f"`{ctx.command} {categ}` returned\n**{resp.status}**")
 					return await ctx.send("There has been an error from the **API**, please try again later.")
 				content = await resp.json()
 				url = content['message']

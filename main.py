@@ -46,6 +46,11 @@ class ViHillCorner(commands.Bot):
 			if filename.endswith('.py'):
 				self.load_extension(f'reload_cogs.{filename[:-3]}')
 
+	@property
+	def owner(self) -> disnake.User:
+		if self._owner_id:
+			return self.get_user(self._owner_id)
+
 	async def on_ready(self):
 		if not hasattr(self, 'uptime'):
 			self.uptime = datetime.datetime.utcnow()
@@ -55,6 +60,10 @@ class ViHillCorner(commands.Bot):
 			await self.change_presence(status=disnake.Status.dnd, activity=activity)
 			self._presence_changed = True
 		
+		if not hasattr(self, '_owner_id'):
+			app = await self.application_info()
+			self._owner_id = app.owner.id
+
 		if self.added_views == False:
 			self.add_view(view=ButtonRoles(), message_id=886686657842135100)
 			self.add_view(view=ButtonRoles(), message_id=886686816634277928)

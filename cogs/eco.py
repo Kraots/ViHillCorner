@@ -54,6 +54,7 @@ class ShopMenu(ShopEcoMenu):
 rps = ['rock', 'paper', 'scissors']
 
 _shop = [
+	{'item_type': 'Collectable', 'item_name': 'golden carrot', 'price': 100000000, 'sells_for': 'This item cannot be sold.', 'description': 'Show off to your friends with this item that costs 100M', 'item_emoji': '<:goldencarrot:885075068797984808>'},
 	{'item_type': 'Usable', 'item_name': 'clock', 'price': 25000, 'sells_for': 1200, 'description': 'Increases luck by 5% for 2h', 'expires_in': {'hours': 2}},
 	{'item_type': 'Usable', 'item_name': 'alcohol', 'price': 50000, 'sells_for': 3500, 'description': 'Increases luck by 10% for 1h', 'expires_in': {'hours': 1}},
 	{'item_type': 'Tool', 'item_name': 'fishing pole', 'price': 65000, 'sells_for': 5000, 'description': 'Use this to fish', 'uses': 13},
@@ -70,7 +71,6 @@ _shop = [
 	{'item_type': 'Sellable', 'item_name': 'crocodile', 'price': 'This item cannot be bought.', 'sells_for': 230000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
 	{'item_type': 'Sellable', 'item_name': 'lion', 'price': 'This item cannot be bought.', 'sells_for': 560000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
 	{'item_type': 'Sellable', 'item_name': 'dragon', 'price': 'This item cannot be bought.', 'sells_for': 1250000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-	{'item_type': 'Collectable', 'item_name': 'golden carrot', 'price': 100000000, 'sells_for': 'This item cannot be sold.', 'description': 'Show off to your friends with this item that costs 100M', 'item_emoji': '<:goldencarrot:885075068797984808>'}
 		]
 
 _fishes = [
@@ -341,8 +341,11 @@ class Economy(commands.Cog):
 					to_append = f"— {''.join([i['item_emoji'] for i in _shop if i['item_name'] == item['item_name']])} {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
 				except KeyError:
 					to_append = f"— {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
-				item_worth = item['owned'] * int(''.join([str(i['sells_for']) for i in _shop if i['item_type'] != 'Sellable' and i['item_name'] == item['item_name']]))
-				inv_worth += item_worth
+				try:
+					item_worth = item['owned'] * int(''.join([str(i['sells_for']) for i in _shop if isinstance(i['sells_for'], int) and i['item_name'] == item['item_name']]))
+					inv_worth += item_worth
+				except ValueError:
+					pass
 				total_items += item['owned']
 				user_items.append(to_append)
 		em = disnake.Embed(color=member.color, description='\n'.join(user_items))
