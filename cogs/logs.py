@@ -211,7 +211,7 @@ class Logs(commands.Cog):
 			if len(added_perms) != 0:
 				em.add_field(name='\✅ Added Permissions', value=f'`{"`, `".join(added_perms)}`', inline=False)
 			if len(removed_perms) != 0:
-				em.add_field(name='\\❌ Removed Permissions', value=f'`{"`, `".join(removed_perms)}`', inline=False)
+				em.add_field(name='\❌ Removed Permissions', value=f'`{"`, `".join(removed_perms)}`', inline=False)
 
 		if len(em.fields) != 0:
 			self.embeds.append(em)
@@ -273,8 +273,8 @@ class Logs(commands.Cog):
 		
 		self.embeds.append(em)
 
-	@commands.Cog.listener()
-	async def on_guild_channel_update(self, before: disnake.abc.GuildChannel, after: disnake.abc.GuildChannel):
+	@commands.Cog.listener('on_guild_channel_update')
+	async def mem_perm_add(self, before: disnake.abc.GuildChannel, after: disnake.abc.GuildChannel):
 		if before.guild.id != 750160850077089853:
 			return
 
@@ -286,47 +286,62 @@ class Logs(commands.Cog):
 			added_overwrites = []
 			removed_overwrites = []
 
+			for overwrite in after.overwrites:
+				if overwrite not in before.overwrites:
+					added_overwrites.append(f'`{overwrite.name}`')
+			for overwrite in before.overwrites:
+				if overwrite not in after.overwrites:
+					removed_overwrites.append(f'`{overwrite.name}`')
+			if len(added_overwrites) != 0:
+				em.description = f'Added permissions for {", ".join(added_overwrites)}'
+				em.color = disnake.Colour.green()
+				self.embeds.append(em)
+				return
+			if len(removed_overwrites) != 0:
+				em.description = f'Removed permissions for {", ".join(removed_overwrites)}'
+				em.color = disnake.Colour.red()
+				self.embeds.append(em)
+				return
+
+	@commands.Cog.listener()
+	async def on_guild_channel_update(self, before: disnake.abc.GuildChannel, after: disnake.abc.GuildChannel):
+		if before.guild.id != 750160850077089853:
+			return
+
+		em = disnake.Embed(title=f'Channel Updated: {before.name}', color=disnake.Color.yellow(), timestamp=datetime.datetime.utcnow())
+		em.set_footer(text=f'Channel ID: {after.id}')
+		if before.overwrites != after.overwrites:
 			allowed_perms = []
 			neutral_perms = []
 			denied_perms = []
 			old_perms = {}
 
-			for overwrite in before.overwrites:
-				if overwrite not in after.overwrites:
-					removed_overwrites.append(f'`{overwrite.name}`')
-			for overwrite in after.overwrites:
-				if overwrite not in before.overwrites:
-					added_overwrites.append(f'`{overwrite.name}`')
-			if len(added_overwrites) != 0:
-				em.description = f'Added permissions for {", ".join(added_overwrites)}'
-				em.color = disnake.Colour.green()
-			if len(added_overwrites) != 0:
-				em.description = f'Removed permissions for {", ".join(removed_overwrites)}'
-				em.color = disnake.Colour.red()
-
 			for k in before.overwrites:
+				perms = {}
 				for v in before.overwrites[k]:
-					old_perms[v[0]] = v[1]
-			
-			for k in before.overwrites:
-				try:
-					for v in after.overwrites[k]:
-						if v[1] != old_perms[v[0]]:
+					perms[v[0]] = v[1]
+				old_perms[k.id] = perms
+
+			for k in after.overwrites:
+				for v in after.overwrites[k]:
+					try:
+						if v[1] != old_perms[k.id][v[0]]:
+							em.description = f'Edited permissions for `{k}`'
 							if v[1] == False:
 								denied_perms.append(v[0])
 							elif v[1] == None:
 								neutral_perms.append(v[0])
 							elif v[1] == True:
 								allowed_perms.append(v[0])
-				except KeyError:
-					pass
+					except KeyError:
+						pass
 
 			if len(allowed_perms) != 0:
 				em.add_field(name='\✅ Allowed Perms', value=', '.join(allowed_perms), inline=False)
 			if len(neutral_perms) != 0:
 				em.add_field(name='⧄ Neutral Perms', value=', '.join(neutral_perms), inline=False)
 			if len(denied_perms) != 0:
-				em.add_field(name='\\❌ Denied Perms', value=', '.join(denied_perms), inline=False)
+				em.add_field(name='\❌ Denied Perms', value=', '.join(denied_perms), inline=False)
 
 		if len(em.fields) != 0:
 			self.embeds.append(em)
