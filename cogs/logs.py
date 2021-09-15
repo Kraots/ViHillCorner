@@ -24,7 +24,7 @@ async def send_webhook(em, bot):
 class Logs(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-		self.send_embeds()
+		self.send_embeds.start()
 		self.embeds = []
 
 	@tasks.loop(seconds=15.0)
