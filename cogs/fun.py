@@ -496,6 +496,9 @@ class Fun(commands.Cog):
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
 			return
 
+		if p2 == ctx.author:
+			return await ctx.reply('You cannot fight with yourself.')
+
 		p1 = ctx.author
 		view = self.bot.confirm_view(ctx, f"{p2.mention} Did not react in time.", p2)
 		view.message = msg = await ctx.send(f"**{p1.display_name}** wants to have a fight with you, do you accept? {p2.mention}", view=view)
