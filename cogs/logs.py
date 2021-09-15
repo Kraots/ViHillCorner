@@ -14,12 +14,15 @@ async def send_webhook(em, bot):
 		count = 0
 		embeds = []
 		for embed in em:
-			if count != 10:
-				embeds.append(embed)
-				count += 1
-			else:
+			embeds.append(embed)
+			count += 1
+			if count == 10:
 				await webhook[0].send(embeds=embeds)
 				count = 0
+		else:
+			if count != 0:
+				await webhook[0].send(embeds=embeds)
+				embeds = []
 
 class Logs(commands.Cog):
 	def __init__(self, bot):
@@ -31,6 +34,7 @@ class Logs(commands.Cog):
 	async def send_embeds(self):
 		if len(self.embeds) != 0:
 			await send_webhook(self.embeds, self.bot)
+			self.embeds = []
 
 	@commands.Cog.listener()
 	async def on_user_update(self, before: disnake.User, after: disnake.User):
@@ -70,9 +74,9 @@ class Logs(commands.Cog):
 				if role not in before.roles:
 					added_roles.append(role)
 			if len(added_roles) != 0:
-				em.add_field(name='<:agree:797537027469082627> Added Roles', value='  '.join([role.name for role in added_roles]), inline=False)
+				em.add_field(name='\✅ Added Roles', value=', '.join([role.name for role in added_roles]), inline=False)
 			if len(removed_roles) != 0:
-				em.add_field(name='<:disagree:797537030980239411> Removed Roles', value='  '.join([role.name for role in removed_roles]), inline=False)
+				em.add_field(name='\❌ Removed Roles', value=', '.join([role.name for role in removed_roles]), inline=False)
 			
 		if len(em.fields) != 0:
 			self.embeds.append(em)
@@ -205,9 +209,9 @@ class Logs(commands.Cog):
 						added_perms.append(perm[0].replace('_', ' ').title())
 			
 			if len(added_perms) != 0:
-				em.add_field(name='<:agree:797537027469082627> Added Permissions', value=f'`{"`, `".join(added_perms)}`', inline=False)
+				em.add_field(name='\✅ Added Permissions', value=f'`{"`, `".join(added_perms)}`', inline=False)
 			if len(removed_perms) != 0:
-				em.add_field(name='<:disagree:797537030980239411> Removed Permissions', value=f'`{"`, `".join(removed_perms)}`', inline=False)
+				em.add_field(name='\\❌ Removed Permissions', value=f'`{"`, `".join(removed_perms)}`', inline=False)
 
 		if len(em.fields) != 0:
 			self.embeds.append(em)
@@ -318,11 +322,11 @@ class Logs(commands.Cog):
 					pass
 
 			if len(allowed_perms) != 0:
-				em.add_field(name='<:agree:797537027469082627> Allowed Perms', value=', '.join(allowed_perms), inline=False)
+				em.add_field(name='\✅ Allowed Perms', value=', '.join(allowed_perms), inline=False)
 			if len(neutral_perms) != 0:
 				em.add_field(name='⧄ Neutral Perms', value=', '.join(neutral_perms), inline=False)
 			if len(denied_perms) != 0:
-				em.add_field(name='<:disagree:797537030980239411> Denied Perms', value=', '.join(denied_perms), inline=False)
+				em.add_field(name='\\❌ Denied Perms', value=', '.join(denied_perms), inline=False)
 
 		if len(em.fields) != 0:
 			self.embeds.append(em)
