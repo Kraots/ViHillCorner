@@ -157,10 +157,10 @@ class Logs(commands.Cog):
 			return
 
 		em = disnake.Embed(title=f'Role Deleted: {role.name}',  color=disnake.Color.green(), timestamp=datetime.datetime.utcnow())
-		em.add_field(name='Colour', value=f'[`{role.colour}`](https://www.color-hex.com/color/{str(role.colour).replace("#", "")})', inline=False)
-		em.add_field(name='Hoisted', value='No' if role.hoist is False else 'Yes', inline=False)
-		em.add_field(name='Mentionable', value='No' if role.mentionable is False else True, inline=False)
-		em.add_field(name='Permissions', value=', '.join([perm[0].replace('_', ' ') for perm in [p for p in role.permissions] if perm[1] == True]), inline=False)
+		em.add_field(name='Colour', value=f'[`{role.colour}`](https://www.color-hex.com/color/{str(role.colour).replace("#", "")})')
+		em.add_field(name='Hoisted', value='No' if role.hoist is False else 'Yes')
+		em.add_field(name='Mentionable', value='No' if role.mentionable is False else True)
+		em.add_field(name='Permissions', value=', '.join([perm[0].replace('_', ' ') for perm in [p for p in role.permissions] if perm[1] == True]))
 		em.set_footer(text=f'Role ID: {role.id}')
 		
 		self.embeds.append(em)
