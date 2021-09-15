@@ -38,7 +38,7 @@ class Logs(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_user_update(self, before: disnake.User, after: disnake.User):
-		em = disnake.Embed(description=f'**{after.mention} changed their profile:**', timestamp=datetime.datetime.utcnow(), color=disnake.Color.yellow())
+		em = disnake.Embed(description=f'**{after.mention} updated their profile:**', timestamp=datetime.datetime.utcnow(), color=disnake.Color.yellow())
 		em.set_author(name=before, url=before.display_avatar, icon_url=before.display_avatar)
 		em.set_thumbnail(url=after.display_avatar)
 		em.set_footer(text=f'User ID: {after.id}')
@@ -46,7 +46,7 @@ class Logs(commands.Cog):
 		if before.name != after.name:
 			em.add_field(name='Username', value=f'`{before.name}` **->** `{after.name}`', inline=False)
 		if before.discriminator != after.discriminator:
-			em.add_field(name='Discriminator', value=f'`{before.discriminator}` **->** `{after.discriminator}`', inline=False)
+			em.add_field(name='Discriminator', value=f'`#{before.discriminator}` **->** `#{after.discriminator}`', inline=False)
 		if before.avatar != after.avatar:
 			em.add_field(name='Avatar', value=f'[`Before`]({before.display_avatar}) -> [`After`]({after.display_avatar})', inline=False)
 		
