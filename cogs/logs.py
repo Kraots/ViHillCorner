@@ -257,8 +257,8 @@ class Logs(commands.Cog):
 
 		em = disnake.Embed(title='Channel Created', color=disnake.Color.green(), timestamp=datetime.datetime.utcnow())
 		em.set_footer(text=f'Channel ID: {channel.id}')
-		em.add_field(name='Name', value=f'**{channel.name}**', inline=False)
-		em.add_field(name='Type', value=f'**{str(channel.type).title()} Channel**', inline=False)
+		em.add_field(name='Name', value=f'`{channel.name}`', inline=False)
+		em.add_field(name='Type', value=f'`{str(channel.type).title()} Channel`', inline=False)
 		
 		self.embeds.append(em)
 
@@ -268,8 +268,8 @@ class Logs(commands.Cog):
 			return
 
 		em = disnake.Embed(title='Channel Deleted', color=disnake.Color.red(), timestamp=datetime.datetime.utcnow())
-		em.add_field(name='Name', value=f'**{channel.name}**', inline=False)
-		em.add_field(name='Type', value=f'**{str(channel.type).title()} Channel**', inline=False)
+		em.add_field(name='Name', value=f'`{channel.name}`', inline=False)
+		em.add_field(name='Type', value=f'`{str(channel.type).title()} Channel`', inline=False)
 		
 		self.embeds.append(em)
 
