@@ -39,8 +39,6 @@ class on_join(commands.Cog):
 
 		if member.guild == VHguild:
 			def format_date(dt):
-				if dt is None:
-					return 'N/A'
 				return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 			welcome = disnake.Embed(description="\n\n***Go get a color from*** <#779388444304211991>\n***Go read the rules at*** <#750160850303582236>\n***Go vote the server by clicking the link:*** **[Click Here](https://top.gg/servers/750160850077089853/vote)**\n\nEnjoy your stay\n\n", color=color.pastel)
 			welcome.set_thumbnail(url=member.display_avatar)

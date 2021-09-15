@@ -1,18 +1,12 @@
-from disnake import webhook
-from utils.pag import Session
 import disnake
 from disnake.ext import commands
 import asyncio
 import utils.colors as color
-import aiohttp
 import datetime
-import os
 
 invalid_names_list = ["!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "", "]", "^", "_", "`", "{", "|", "}", "~", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 nono_names = ["kraots", "vihillcorner", "carrots"]
-
-MESSAGE_LOG_CHANNEL = os.getenv('MESSAGE_LOG_CHANNEL_WEBHOOK')
 
 async def check_invalid_name(db, message, kraots) -> str:
 	user = await db.find_one({'_id': message.author.id})
@@ -35,7 +29,7 @@ async def check_invalid_name(db, message, kraots) -> str:
 
 
 # Webhook that sends a message in messages-log channel
-async def MessageLogWebhook(em, bot):
+async def send_webhook(em, bot):
 	webhook = await bot.get_channel(750432155179679815).webhooks()
 	await webhook[0].send(embed=em)
 
@@ -63,10 +57,9 @@ class on_message(commands.Cog):
 				
 				await asyncio.sleep(0.5)
 				try:
-					await MessageLogWebhook(em, self.bot)
+					await send_webhook(em, self.bot)
 				except Exception as e:
 					await self.bot._owner.send(e)
-		
 
 	@commands.Cog.listener('on_message_edit')
 	async def on_message_edit(self, before, after):
@@ -82,11 +75,9 @@ class on_message(commands.Cog):
 
 				await asyncio.sleep(0.5)
 				try:
-					await MessageLogWebhook(em, self.bot)
+					await send_webhook(em, self.bot)
 				except Exception as e:
 					await self.bot._owner.send(e)
-
-
 
 	@commands.Cog.listener()
 	async def on_message(self, message: disnake.Message):
@@ -151,10 +142,6 @@ class on_message(commands.Cog):
 					pass
 		else:
 			return
-
-
-
-
 
 def setup(bot):
 	bot.add_cog(on_message(bot))

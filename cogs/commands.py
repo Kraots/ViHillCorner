@@ -105,8 +105,6 @@ class General(commands.Cog):
 		member = member or ctx.author
 
 		def format_date(dt):
-			if dt is None:
-				return 'N/A'
 			return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
 		if member.id == 374622847672254466:
@@ -136,12 +134,10 @@ class General(commands.Cog):
 			user = ctx.author
 
 		def format_date(dt):
-			if dt is None:
-				return 'N/A'
 			return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 		
 		embed = disnake.Embed(color=color.lightpink)
-		embed.add_field(name='Create Date:', value=f"{user} **--->** {format_date(user.created_at.replace(tzinfo=None).replace(tzinfo=None))}")
+		embed.add_field(name='Create Date:', value=f"{user} **--->** {format_date(user.created_at.replace(tzinfo=None))}")
 		await ctx.send(embed=embed)
 
 	@commands.command(aliases=["inv"])
