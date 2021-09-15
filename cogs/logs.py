@@ -10,7 +10,7 @@ async def send_webhook(em, bot):
 	webhook = await bot.get_channel(750160852380024895).webhooks()
 	if isinstance(em, disnake.Embed):
 		await webhook[0].send(embed=em)
-	elif isinstance(em, list):
+	else:
 		count = 0
 		embeds = []
 		for embed in em:
@@ -305,14 +305,17 @@ class Logs(commands.Cog):
 					old_perms[v[0]] = v[1]
 			
 			for k in before.overwrites:
-				for v in after.overwrites[k]:
-					if v[1] != old_perms[v[0]]:
-						if v[1] == False:
-							denied_perms.append(v[0])
-						elif v[1] == None:
-							neutral_perms.append(v[0])
-						elif v[1] == True:
-							allowed_perms.append(v[0])
+				try:
+					for v in after.overwrites[k]:
+						if v[1] != old_perms[v[0]]:
+							if v[1] == False:
+								denied_perms.append(v[0])
+							elif v[1] == None:
+								neutral_perms.append(v[0])
+							elif v[1] == True:
+								allowed_perms.append(v[0])
+				except KeyError:
+					pass
 
 			if len(allowed_perms) != 0:
 				em.add_field(name='<:agree:797537027469082627> Allowed Perms', value=', '.join(allowed_perms), inline=False)
