@@ -19,7 +19,7 @@ import pymongo
 from disnake.ext.commands import Greedy
 from disnake import Member
 from utils import menus
-from utils.CommandButtonRoles import ButtonRoleView
+from utils.CommandButtonRoles import ButtonRoleView, ButtonRoleViewOwner
 
 filter_invite = re.compile("(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 
@@ -718,8 +718,10 @@ class Misc(commands.Cog):
 	async def colour_role(self, ctx):
 		"""Change your colour by selecting one from this message."""
 
-		view = ButtonRoleView(ctx)
-		view.message = await ctx.send('**Please use the select menu below:**', view=view)
+		view = ButtonRoleViewOwner(ctx)
+		if ctx.author != self.bot._owner:
+			view = ButtonRoleView(ctx)
+		view.message = await ctx.send('**Please use me master 😩**', view=view)
 
 	@suggest.error
 	async def suggest_error(self, ctx, error):
