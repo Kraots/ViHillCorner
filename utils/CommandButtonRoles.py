@@ -23,7 +23,6 @@ class CommandButtonRole(disnake.ui.Select['ButtonRoleView']):
 		self._fill_options()
 	
 	def _fill_options(self):
-		self.add_option(label='Owner Only Red', emoji='<:owner_only_red:888082854695829574>')
 		self.add_option(label='Illusion', emoji='<:illusion:886669987660574803>')
 		self.add_option(label='Black', emoji='<:black:886669987752841216>')
 		self.add_option(label='Screaming Green', emoji='<:screaming_green:886669987769626636>')
