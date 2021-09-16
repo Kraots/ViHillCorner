@@ -719,7 +719,7 @@ class Misc(commands.Cog):
 		"""Change your colour by selecting one from this message."""
 
 		view = ButtonRoleView(ctx)
-		await ctx.send('**Please use the select menu below:**', view=view)
+		view.message = await ctx.send('**Please use the select menu below:**', view=view)
 
 	@suggest.error
 	async def suggest_error(self, ctx, error):

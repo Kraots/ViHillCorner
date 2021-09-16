@@ -6,7 +6,7 @@ all_roles = [
 	750160850299387974, 750160850299518985, 750160850299518984, 750160850299518983, 
 	750160850299518982, 750160850299518981, 750160850299518980, 750160850299518979, 
 	750160850299518978, 750160850299518977, 750160850295324752, 750160850299518976, 
-	750160850295324751, 750272729533644850, 788112413261168660]
+	750160850295324751, 750272729533644850, 788112413261168660, 754680420364451890]
 
 roles = {
 	'Illusion': 750160850299518980, 'Black': 750160850299387974, 'Screaming Green': 750160850299518984, 
@@ -15,7 +15,7 @@ roles = {
 	'Ice Cold': 750160850299518979, 'Primrose': 750160850299518976, 'Orchid': 750272729533644850, 
 	'Mandys Pink': 750160850295324751, 'Perano': 750160850295324752, 'Turquoise': 750160850299387976, 
 	'Wewak': 750160850299518978, 'Sunshade': 750160850299518982, 'White': 788112413261168660, 
-	'Broom': 750160850299518985}
+	'Broom': 750160850299518985, 'Owner Only Red': 754680420364451890}
 
 class CommandButtonRole(disnake.ui.Select['ButtonRoleView']):
 	def __init__(self):
@@ -23,6 +23,9 @@ class CommandButtonRole(disnake.ui.Select['ButtonRoleView']):
 		self._fill_options()
 	
 	def _fill_options(self):
+		assert self.view is not None
+		if self.view.ctx.author == self.view.ctx.bot._owner:
+			self.add_option(label='Owner Only Red', emoji='<:owner_only_red:888082854695829574>')
 		self.add_option(label='Illusion', emoji='<:illusion:886669987660574803>')
 		self.add_option(label='Black', emoji='<:black:886669987752841216>')
 		self.add_option(label='Screaming Green', emoji='<:screaming_green:886669987769626636>')
@@ -63,6 +66,7 @@ class ButtonRoleView(disnake.ui.View):
 	async def on_timeout(self):
 		for item in self.children:
 			item.disabled = True
+		await self.message.edit(view=self)
 		
 	async def interaction_check(self, interaction: disnake.MessageInteraction):
 		if interaction.author.id != self.ctx.author.id:
