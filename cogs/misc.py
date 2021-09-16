@@ -718,10 +718,12 @@ class Misc(commands.Cog):
 	async def colour_role(self, ctx):
 		"""Change your colour by selecting one from this message."""
 
-		view = ButtonRoleViewOwner(ctx)
-		if ctx.author != self.bot._owner:
+		if ctx.author.id != self.bot._owner_id:
 			view = ButtonRoleView(ctx)
-		view.message = await ctx.send('**Please use me master 😩**', view=view)
+			view.message = await ctx.send('**Please use the select menu below:**', view=view)
+		else:
+			view = ButtonRoleViewOwner(ctx)
+			view.message = await ctx.send('**Please use me master 😩**', view=view)
 
 	@suggest.error
 	async def suggest_error(self, ctx, error):
