@@ -203,7 +203,7 @@ class Moderator(commands.Cog):
 		await guild.ban(user, reason=f'{ctx.author}: "{reason}"', delete_message_days=0)
 
 
-		ban = disnake.Embed(description=f"`{user}` has been banned.\n**Reason:** **[{reason}]({ctx.message.jump_url})**.", color=disnake.Color.red())
+		ban = disnake.Embed(description=f"`{user}` has been banned.\n**Reason:** **[{reason}]({ctx.message.jump_url})**", color=disnake.Color.red())
 
 		await ctx.send(embed=ban)
 
