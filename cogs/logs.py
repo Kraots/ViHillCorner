@@ -50,7 +50,8 @@ class Logs(commands.Cog):
 		if before.avatar != after.avatar:
 			em.add_field(name='Avatar', value=f'[`Before`]({before.display_avatar}) -> [`After`]({after.display_avatar})', inline=False)
 		
-		self.embeds.append(em)
+		if len(em.fields) != 0:
+			self.embeds.append(em)
 
 	@commands.Cog.listener()
 	async def on_member_update(self, before: disnake.Member, after: disnake.Member):
@@ -86,7 +87,7 @@ class Logs(commands.Cog):
 		if member.guild.id != 750160850077089853:
 			return
 
-		em = disnake.Embed(description=f'**{member.mention} joined the server**', timestamp=datetime.datetime.utcnow(), color=disnake.Color.green())
+		em = disnake.Embed(description=f'📥 **{member.mention} joined the server**', timestamp=datetime.datetime.utcnow(), color=disnake.Color.green())
 		em.set_author(name=member, url=member.display_avatar, icon_url=member.display_avatar)
 		em.set_thumbnail(url=member.display_avatar)
 		em.set_footer(text=f'Member ID: {member.id}')
@@ -99,7 +100,7 @@ class Logs(commands.Cog):
 		if member.guild.id != 750160850077089853:
 			return
 
-		em = disnake.Embed(description=f'**{member.mention} left the server**', timestamp=datetime.datetime.utcnow(), color=disnake.Color.red())
+		em = disnake.Embed(description=f'📤 **{member.mention} left the server**', timestamp=datetime.datetime.utcnow(), color=disnake.Color.red())
 		em.set_author(name=member, url=member.display_avatar, icon_url=member.display_avatar)
 		em.set_thumbnail(url=member.display_avatar)
 		em.set_footer(text=f'User ID: {member.id}')
@@ -112,7 +113,7 @@ class Logs(commands.Cog):
 		if guild.id != 750160850077089853:
 			return
 
-		em = disnake.Embed(title='Ban', description=f'**{member.mention} was banned**', timestamp=datetime.datetime.utcnow(), color=disnake.Color.red())
+		em = disnake.Embed(description=f'👮‍♂️🔒 **{member.mention} was banned**', timestamp=datetime.datetime.utcnow(), color=disnake.Color.red())
 		em.set_author(name=member, url=member.display_avatar, icon_url=member.display_avatar)
 		em.set_thumbnail(url=member.display_avatar)
 		em.set_footer(text=f'User ID: {member.id}')
@@ -122,7 +123,7 @@ class Logs(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_member_unban(self, guild: disnake.Guild, user: disnake.User):
-		em = disnake.Embed(title='Unban', description=f'**{user.mention} was unbanned**', timestamp=datetime.datetime.utcnow(), color=disnake.Color.green())
+		em = disnake.Embed(description=f'👮‍♂️🔓 **{user.mention} was unbanned**', timestamp=datetime.datetime.utcnow(), color=disnake.Color.green())
 		em.set_author(name=user, url=user.display_avatar, icon_url=user.display_avatar)
 		em.set_thumbnail(url=user.display_avatar)
 		em.set_footer(text=f'User ID: {user.id}')

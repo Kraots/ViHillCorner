@@ -43,15 +43,15 @@ class MessagesTopButtons(disnake.ui.View):
 					index += 1
 					mem = guild.get_member(result['_id'])
 					if mem == self.ctx.author:
-						em.add_field(name=f'**`#{index}\u2800 {mem.name}` (YOU)**', value=f"`{result['messages_count']}` messages", inline=False)
+						em.add_field(name=f'**`#{index}\u2800 {mem.name}` (YOU)**', value=f"`{result['messages_count']:,}` messages", inline=False)
 					else:
-						em.add_field(name=f'`#{index}`\u2800 {mem.name}', value=f"`{result['messages_count']}` messages", inline=False)
+						em.add_field(name=f'`#{index}`\u2800 {mem.name}', value=f"`{result['messages_count']:,}` messages", inline=False)
 				pos_ += 1
 				if mem == self.ctx.author:
 					pos = pos_
 		em.title = "Top 5 most active members"
 		if pos != 0:
-			em.set_footer(text=f'Your position: {pos}')
+			em.set_footer(text=f'Your position: {pos:,}')
 		
 		await self.message.edit(embed=em, view=None)
 		self.stop()
@@ -71,9 +71,9 @@ class MessagesTopButtons(disnake.ui.View):
 				index += 1
 				mem = guild.get_member(result['_id'])
 				if mem == self.ctx.author:
-					em.add_field(name="**`#%s\u2800%s` (YOU)**" % (index, mem.name), value="`%s` messages" % (result['weekly_messages_count']), inline=False)
+					em.add_field(name="**`#%s\u2800%s` (YOU)**" % (index, mem.name), value="`{:,}` messages".format(result['weekly_messages_count']), inline=False)
 				else:
-					em.add_field(name="`#%s`\u2800%s" % (index, mem.name), value="`%s` messages" % (result['weekly_messages_count']), inline=False)
+					em.add_field(name="`#%s`\u2800%s" % (index, mem.name), value="`{:,}` messages".format(result['weekly_messages_count']), inline=False)
 		em.title = "Top `%s` most active members this week" % (index)
 		em.set_footer(text="Resets in %s" % (time.human_timedelta(data['weekly_reset'])), icon_url=self.ctx.author.display_avatar)
 
@@ -136,10 +136,26 @@ class WeeklyTop(commands.Cog):
 			return await ctx.reply(f'`{member.display_name}` sent no messages.')
 		em = disnake.Embed(color=color.lightpink)
 		em.set_author(name=f'{member.display_name}\'s message stats', url=member.display_avatar, icon_url=member.display_avatar)
-		em.add_field(name='Total Messages', value=f"`{user_db['messages_count']}`")
-		em.add_field(name='Weekly Messages', value=f"`{user_db['weekly_messages_count']}`")
+		em.add_field(name='Total Messages', value=f"`{user_db['messages_count']:,}`")
+		em.add_field(name='Weekly Messages', value=f"`{user_db['weekly_messages_count']:,}`")
 		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 		await ctx.send(embed=em)
+	
+	@_msgs.command(name='reset')
+	@commands.is_owner()
+	async def msg_reset(self, ctx, member: disnake.Member):
+		"""Reset the amount of messages from the top for the member."""
+
+		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+		view.message = msg = await ctx.send("Are you sure you want to reset the total message count for member %s?" % (member.mention), view=view)
+		await view.wait()
+		if view.response is True:
+			await self.db.update_one({'_id': member.id}, {'$set':{'messages_count': 0}})
+			return await msg.edit(content='The total message count for member **%s** has been reset successfully.' % (member), view=view)
+		
+		elif view.response is False:
+			return await msg.edit(content="Command to reset the message count for user `%s` has been canceled." % (member), view=view)
+
 
 	@_msgs.group(name='top', invoke_without_command = True, case_insensitive = True, aliases=['lb'])
 	async def msg_top(self, ctx):
@@ -161,7 +177,7 @@ class WeeklyTop(commands.Cog):
 		view.message = msg = await ctx.send("Are you sure you want to reset the message count for this week for member %s?" % (member.mention), view=view)
 		await view.wait()
 		if view.response is True:
-			await self.db.update_one({'_id': member.id}, {'$set':{'messages_count': 0}})
+			await self.db.update_one({'_id': member.id}, {'$set':{'weekly_messages_count': 0}})
 			return await msg.edit(content='The message count for this week for member **%s** has been reset successfully.' % (member), view=view)
 		
 		elif view.response is False:
