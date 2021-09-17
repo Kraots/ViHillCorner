@@ -83,7 +83,7 @@ class Developer(commands.Cog):
 		"""This sends an embed of the rules, the exact ones like in <#750160850303582236>."""
 
 		em = disnake.Embed(color=color.lightpink, title="ViHill Corner Rerver Rules", description="We have a small but strict set of rules on our server. Please read over them and take them on board. If you don't understand anything or need some clarification, feel free to ask any staff member!")
-		em.add_field(name="Rule 1", value="Follow the [disnake Community Guidelines](https://disnake.com/guidelines) and [Terms Of Service](https://disnake.com/terms).", inline=False)
+		em.add_field(name="Rule 1", value="Follow the [Discord Community Guidelines](https://disnake.com/guidelines) and [Terms Of Service](https://disnake.com/terms).", inline=False)
 		em.add_field(name="Rule 2", value="Follow the [ViHill Corner Code Of Conduct](https://medium.com/vihill-corner/vihill-corner-code-of-conduct-7f187ab0c56).", inline=False)
 		em.add_field(name="Rule 3", value="Listen to and respect staff members and their instructions.", inline=False)
 		em.add_field(name="Rule 4", value="This is an English-speaking server, so please speak English to the best of your ability", inline=False)

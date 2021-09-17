@@ -32,6 +32,15 @@ class BotInfoView(disnake.ui.View):
 	async def on_timeout(self):
 		await self.message.edit(view=None)
 
+class SpotifyView(disnake.ui.View):
+	def __init__(self, song_url: str, *, timeout = 180):
+		super().__init__(timeout=timeout)
+		self.add_item(disnake.ui.Button(label='Song', url=song_url, style=disnake.ButtonStyle.blurple))
+		
+	async def on_timeout(self):
+		await self.message.edit(view=None)
+
+
 class UrbanDictionaryPageSource(menus.ListPageSource):
 	BRACKETED = re.compile(r'(\[(.+?)\])')
 	def __init__(self, data):
@@ -415,10 +424,10 @@ class Misc(commands.Cog):
 			playingfor = '{:02}:{:02}'.format(diff.minutes, diff.seconds)
 			m.add_field(name="Duration:", value=f"{playingfor} - {song_length}")
 			m.add_field(name="Total Duration:",value =song_length, inline=False)
-			m.add_field(name='Link to song:', value=f"[Click Here](https://open.spotify.com/track/{member.activities[0].track_id}?si=xrjyVAxhS1y5rNHLM_WRww)", inline=False)
 			m.set_thumbnail(url=member.activities[0].album_cover_url)
 			m.color = disnake.Color.green()
-			await ctx.send(embed=m)
+			view = SpotifyView(song_url=f'https://open.spotify.com/track/{member.activities[0].track_id}?si=xrjyVAxhS1y5rNHLM_WRww')
+			view.message = await ctx.send(embed=m, view=view)
 		
 		elif isinstance(member.activities[1], disnake.activity.Spotify):
 			diff = relativedelta(datetime.datetime.utcnow(), member.activities[1].created_at.replace(tzinfo=None))
@@ -432,11 +441,10 @@ class Misc(commands.Cog):
 			playingfor = '{:02}:{:02}'.format(diff.minutes, diff.seconds)
 			m.add_field(name="Duration:", value=f"{playingfor} - {song_length}")
 			m.add_field(name="Total Duration:",value =song_length, inline=False)
-			m.add_field(name='Link to song:', value=f"[Click Here](https://open.spotify.com/track/{member.activities[1].track_id}?si=xrjyVAxhS1y5rNHLM_WRww)", inline=False)
 			m.set_thumbnail(url=member.activities[1].album_cover_url)
 			m.color = disnake.Color.green() 
-			await ctx.send(embed=m)
-			return
+			view = SpotifyView(song_url=f'https://open.spotify.com/track/{member.activities[0].track_id}?si=xrjyVAxhS1y5rNHLM_WRww')
+			view.message = await ctx.send(embed=m, view=view)
 
 		else:
 			await ctx.send("No spotify activity detected!")
