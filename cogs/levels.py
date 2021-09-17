@@ -28,7 +28,7 @@ class Levels(commands.Cog):
 					guild = self.bot.get_guild(750160850077089853)
 					stats = await self.db.find_one({"_id": message.author.id})
 					if stats is None:
-						newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0}
+						newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0, "weekly_messages_count": 0}
 						await self.db.insert_one(newuser)
 					else:			
 						
@@ -39,7 +39,7 @@ class Levels(commands.Cog):
 						kraotsMultiplier = kraotsDocument['kraots xp multiplier']
 						
 						if not ch_id in botsChannels:
-							await self.db.update_one({"_id": message.author.id}, {"$inc": {"messages_count": 1}})
+							await self.db.update_one({"_id": message.author.id}, {"$inc": {"messages_count": 1, "weekly_messages_count": 1}})
 						xp = stats['xp']
 						lvl = 0
 						while True:
