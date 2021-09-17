@@ -156,7 +156,7 @@ class Logs(commands.Cog):
 		if role.guild.id != 750160850077089853:
 			return
 
-		em = disnake.Embed(title=f'Role Deleted: {role.name}',  color=disnake.Color.green(), timestamp=datetime.datetime.utcnow())
+		em = disnake.Embed(title=f'Role Deleted: {role.name}',  color=disnake.Color.red(), timestamp=datetime.datetime.utcnow())
 		em.add_field(name='Colour', value=f'[`{role.colour}`](https://www.color-hex.com/color/{str(role.colour).replace("#", "")})')
 		em.add_field(name='Hoisted', value='No' if role.hoist is False else 'Yes')
 		em.add_field(name='Mentionable', value='No' if role.mentionable is False else True)
