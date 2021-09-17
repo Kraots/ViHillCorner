@@ -43,9 +43,9 @@ class MessagesTopButtons(disnake.ui.View):
 					index += 1
 					mem = guild.get_member(result['_id'])
 					if mem == self.ctx.author:
-						em.add_field(name=f'**`#{index}\u2800 {mem.display_name}` (YOU)**', value=f"`{result['messages_count']}` messages", inline=False)
+						em.add_field(name=f'**`#{index}\u2800 {mem.name}` (YOU)**', value=f"`{result['messages_count']}` messages", inline=False)
 					else:
-						em.add_field(name=f'`#{index}`\u2800 {mem.display_name}', value=f"`{result['messages_count']}` messages", inline=False)
+						em.add_field(name=f'`#{index}`\u2800 {mem.name}', value=f"`{result['messages_count']}` messages", inline=False)
 				pos_ += 1
 				if mem == self.ctx.author:
 					pos = pos_
