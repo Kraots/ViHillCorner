@@ -144,7 +144,7 @@ class WeeklyTop(commands.Cog):
 	@_msgs.command(name='reset')
 	@commands.is_owner()
 	async def msg_reset(self, ctx, member: disnake.Member):
-		"""Reset the amount of messages from the top for the member."""
+		"""Reset the amount of total messages for the member."""
 
 		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
 		view.message = msg = await ctx.send("Are you sure you want to reset the total message count for member %s?" % (member.mention), view=view)
@@ -171,7 +171,7 @@ class WeeklyTop(commands.Cog):
 	@msg_top.command(name='reset')
 	@commands.is_owner()
 	async def msg_top_reset(self, ctx, member: disnake.Member):
-		"""Reset the amount of messages from the top for the member."""
+		"""Reset the amount of weekly messages for the member."""
 
 		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
 		view.message = msg = await ctx.send("Are you sure you want to reset the message count for this week for member %s?" % (member.mention), view=view)
