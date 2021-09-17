@@ -23,6 +23,15 @@ from utils.CommandButtonRoles import ButtonRoleView, ButtonRoleViewOwner
 
 filter_invite = re.compile("(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 
+class BotInfoView(disnake.ui.View):
+	def __init__(self, *, timeout = 180):
+		super().__init__(timeout=timeout)
+		self.add_item(disnake.ui.Button(label='Bot\'s Source', url='https://github.com/Kraots/ViHillCorner', style=disnake.ButtonStyle.blurple))
+		self.add_item(disnake.ui.Button(label='Vote The Server', url='https://top.gg/servers/750160850077089853/vote', style=disnake.ButtonStyle.blurple))
+	
+	async def on_timeout(self):
+		await self.message.edit(view=None)
+
 class UrbanDictionaryPageSource(menus.ListPageSource):
 	BRACKETED = re.compile(r'(\[(.+?)\])')
 	def __init__(self, data):
@@ -250,10 +259,9 @@ class Misc(commands.Cog):
 		botinfo.add_field(name="Commands loaded:", value=f"{len([x.name for x in self.bot.commands])}", inline=False)
 		botinfo.add_field(name="About:", value="*This bot is a private bot made only for ViHill Corner, so do not ask to host it or to add it to your server!*", inline=True)
 		botinfo.add_field(name="Last Update:", value=updatedMsg, inline=False)
-		botinfo.add_field(name="Bot's Source of Code:", value="[Click Here](https://github.com/Kraots/ViHillCorner)")
-		botinfo.add_field(name="Vote For Server:", value="\n[Click Here](https://top.gg/servers/750160850077089853/vote)", inline=False)
 		botinfo.set_thumbnail(url=self.bot.user.display_avatar)
-		await ctx.send(embed=botinfo)
+		view = BotInfoView()
+		view.message = await ctx.send(embed=botinfo, view=view)
 
 	@commands.command(aliases=['calculator', 'calculate'])
 	async def calc(self, ctx, *, operation:str):
