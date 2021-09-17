@@ -50,6 +50,14 @@ addd = """
 
 nono_list = ['pornhub.com', 'https://pornhub.com', 'hentaiheaven.com', 'https://hentaiheaven.com', 'nhentai.net', 'https://nhentai.net', 'hanime.tv', 'https://hanime.tv', 'xvideos.com', 'https://xvideos.com', 'hentai.com', 'https://hentai.com', 'hentai.net', 'https://hentai.net', 'https://www.pornhub.com/', 'www.pornhub.com/']
 
+class VoteView(disnake.ui.View):
+	def __init__(self, *, timeout = 180.0):
+		super().__init__(timeout=timeout)
+		self.add_item(disnake.ui.Button(label='Vote Here', url='https://top.gg/servers/750160850077089853/vote'))
+
+	async def on_timeout(self):
+		await self.message.delete()
+
 class General(commands.Cog):
 
 	def __init__(self, bot):
@@ -79,9 +87,10 @@ class General(commands.Cog):
 	async def vote(self, ctx):
 		"""Get the link to vote for the server."""
 
-		em = disnake.Embed(title="Click Here", url="https://top.gg/servers/750160850077089853/vote", color=color.lightpink)
+		em = disnake.Embed(title="To go to the voting server page click the button below.", color=color.lightpink)
 		
-		await ctx.send(embed=em)
+		view = VoteView()
+		view.message = await ctx.send(embed=em, view=view)
 
 	@commands.command(name="perm-calc")
 	async def perm_calc(self, ctx):
