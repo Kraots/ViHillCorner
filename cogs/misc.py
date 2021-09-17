@@ -26,8 +26,8 @@ filter_invite = re.compile("(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?
 class BotInfoView(disnake.ui.View):
 	def __init__(self, *, timeout = 180):
 		super().__init__(timeout=timeout)
-		self.add_item(disnake.ui.Button(label='Bot\'s Source', url='https://github.com/Kraots/ViHillCorner', style=disnake.ButtonStyle.blurple))
-		self.add_item(disnake.ui.Button(label='Vote The Server', url='https://top.gg/servers/750160850077089853/vote', style=disnake.ButtonStyle.blurple))
+		self.add_item(disnake.ui.Button(label='Bot\'s Source', url='https://github.com/Kraots/ViHillCorner'))
+		self.add_item(disnake.ui.Button(label='Vote The Server', url='https://top.gg/servers/750160850077089853/vote'))
 	
 	async def on_timeout(self):
 		await self.message.edit(view=None)
@@ -35,7 +35,7 @@ class BotInfoView(disnake.ui.View):
 class SpotifyView(disnake.ui.View):
 	def __init__(self, song_url: str, *, timeout = 180):
 		super().__init__(timeout=timeout)
-		self.add_item(disnake.ui.Button(label='Song', url=song_url, style=disnake.ButtonStyle.blurple))
+		self.add_item(disnake.ui.Button(label='Song', url=song_url))
 		
 	async def on_timeout(self):
 		await self.message.edit(view=None)
