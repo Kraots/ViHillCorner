@@ -77,7 +77,7 @@ class MessagesTopButtons(disnake.ui.View):
 		await self.message.edit(embed=em, view=None)
 		self.stop()
 	
-	@disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red)
+	@disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red, row=1)
 	async def _stop_view(self, button: disnake.Button, inter: disnake.Interaction):
 		await self.message.delete()
 		self.stop()
@@ -133,8 +133,8 @@ class WeeklyTop(commands.Cog):
 			return await ctx.reply(f'`{member.display_name}` sent no messages.')
 		em = disnake.Embed(color=color.lightpink)
 		em.set_author(name=f'{member.display_name}\'s message stats', url=member.display_avatar, icon_url=member.display_avatar)
-		em.add_field(name='Total Messages', value=f"`{user_db['messages_count']}`", inline=False)
-		em.add_field(name='Weekly Messages', value=f"`{user_db['weekly_messages_count']}`", inline=False)
+		em.add_field(name='Total Messages', value=f"`{user_db['messages_count']}`")
+		em.add_field(name='Weekly Messages', value=f"`{user_db['weekly_messages_count']}`")
 		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 		await ctx.send(embed=em)
 
