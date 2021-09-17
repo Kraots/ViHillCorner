@@ -161,7 +161,7 @@ class Moderator(commands.Cog):
 		
 		await guild.kick(member, reason=f'{ctx.author}: "{reason}"')
 
-		ban = disnake.Embed(description=f"{member} has been kicked.\n**Reason:** **[{reason}]({ctx.message.jump_url})**" , color=disnake.Color.red())
+		ban = disnake.Embed(description=f"`{member}` has been kicked.\n**Reason:** **[{reason}]({ctx.message.jump_url})**" , color=disnake.Color.red())
 
 		await ctx.send(embed=ban)
 
