@@ -41,8 +41,11 @@ class MessagesTopButtons(disnake.ui.View):
 			if result['messages_count'] != 0:
 				if index != 5:
 					index += 1
-					mem = guild.get_member(result['_id'])		
-					em.add_field(name=f'`#{index}`\u2800 {mem.display_name}', value=f"`{result['messages_count']}` messages", inline=False)
+					mem = guild.get_member(result['_id'])
+					if mem == self.ctx.author:
+						em.add_field(name=f'**`#{index}\u2800 {mem.display_name}` (YOU)**', value=f"`{result['messages_count']}` messages", inline=False)
+					else:
+						em.add_field(name=f'`#{index}`\u2800 {mem.display_name}', value=f"`{result['messages_count']}` messages", inline=False)
 				pos_ += 1
 				if mem == self.ctx.author:
 					pos = pos_
@@ -67,7 +70,7 @@ class MessagesTopButtons(disnake.ui.View):
 			if result['weekly_messages_count'] != 0:
 				index += 1
 				mem = guild.get_member(result['_id'])
-				if self.ctx.author == mem:
+				if mem == self.ctx.author:
 					em.add_field(name="**`#%s\u2800%s` (YOU)**" % (index, mem.name), value="`%s` messages" % (result['weekly_messages_count']), inline=False)
 				else:
 					em.add_field(name="`#%s`\u2800%s" % (index, mem.name), value="`%s` messages" % (result['weekly_messages_count']), inline=False)
