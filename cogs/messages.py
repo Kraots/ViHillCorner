@@ -141,10 +141,38 @@ class WeeklyTop(commands.Cog):
 		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 		await ctx.send(embed=em)
 	
+	@_msgs.command(name='add')
+	@commands.is_owner()
+	async def msg_add(self, ctx, member: disnake.Member, amount: int):
+		"""Add a certain amount of messages for the member."""
+
+		usr_db = await self.db.find_one({'_id': member.id})
+		if usr_db is None:
+			return await ctx.reply('User not in the database.')
+
+		await self.db.update_one({'_id': member.id}, {'$inc':{'messages_count': amount}})
+		await ctx.send(content=f'Added `{amount:,}` messages to {member.mention}')
+	
+	@_msgs.command(name='set')
+	@commands.is_owner()
+	async def msg_set(self, ctx, member: disnake.Member, amount: int):
+		"""Set the amount of messages for the member."""
+
+		usr_db = await self.db.find_one({'_id': member.id})
+		if usr_db is None:
+			return await ctx.reply('User not in the database.')
+
+		await self.db.update_one({'_id': member.id}, {'$set':{'messages_count': amount}})
+		await ctx.send(content=f'Added `{amount:,}` messages to {member.mention}')
+		
 	@_msgs.command(name='reset')
 	@commands.is_owner()
 	async def msg_reset(self, ctx, member: disnake.Member):
 		"""Reset the amount of total messages for the member."""
+
+		usr_db = await self.db.find_one({'_id': member.id})
+		if usr_db is None:
+			return await ctx.reply('User not in the database.')
 
 		view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
 		view.message = msg = await ctx.send("Are you sure you want to reset the total message count for member %s?" % (member.mention), view=view)
