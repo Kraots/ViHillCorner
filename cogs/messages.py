@@ -143,24 +143,38 @@ class WeeklyTop(commands.Cog):
 	
 	@_msgs.command(name='add')
 	@commands.is_owner()
-	async def msg_add(self, ctx, member: disnake.Member, amount: int):
+	async def msg_add(self, ctx, member: disnake.Member, amount: str):
 		"""Add a certain amount of messages for the member."""
 
 		usr_db = await self.db.find_one({'_id': member.id})
 		if usr_db is None:
 			return await ctx.reply('User not in the database.')
 
+		try:
+			amount = amount.replace(', ', '')
+			amount = amount.replace(',', '')
+			amount = int(amount)
+		except ValueError:
+			return await ctx.reply('Master, the amount must be an integer 🥺')
+
 		await self.db.update_one({'_id': member.id}, {'$inc':{'messages_count': amount}})
 		await ctx.send(content=f'Added `{amount:,}` messages to {member.mention}')
 	
 	@_msgs.command(name='set')
 	@commands.is_owner()
-	async def msg_set(self, ctx, member: disnake.Member, amount: int):
+	async def msg_set(self, ctx, member: disnake.Member, amount: str):
 		"""Set the amount of messages for the member."""
 
 		usr_db = await self.db.find_one({'_id': member.id})
 		if usr_db is None:
 			return await ctx.reply('User not in the database.')
+
+		try:
+			amount = amount.replace(', ', '')
+			amount = amount.replace(',', '')
+			amount = int(amount)
+		except ValueError:
+			return await ctx.reply('Master, the amount must be an integer 🥺')
 
 		await self.db.update_one({'_id': member.id}, {'$set':{'messages_count': amount}})
 		await ctx.send(content=f'Added `{amount:,}` messages to {member.mention}')
