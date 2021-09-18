@@ -83,8 +83,6 @@ class on_message(commands.Cog):
 	async def on_message(self, message: disnake.Message):
 		if message.channel.id == 750160850593251449:
 			await message.add_reaction("<:hug:750751796317913218>")
-			await message.add_reaction("<:bloblove:758378159015723049>")
-			await message.add_reaction("<:LoveHeart:777868133087707157>")
 
 		if message.author.bot:
 			return
