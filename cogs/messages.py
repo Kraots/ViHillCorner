@@ -151,7 +151,6 @@ class WeeklyTop(commands.Cog):
 			return await ctx.reply('User not in the database.')
 
 		try:
-			amount = amount.replace(', ', '')
 			amount = amount.replace(',', '')
 			amount = int(amount)
 		except ValueError:
@@ -170,7 +169,6 @@ class WeeklyTop(commands.Cog):
 			return await ctx.reply('User not in the database.')
 
 		try:
-			amount = amount.replace(', ', '')
 			amount = amount.replace(',', '')
 			amount = int(amount)
 		except ValueError:
