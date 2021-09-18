@@ -27,8 +27,7 @@ class BotInfoView(disnake.ui.View):
 	def __init__(self, *, timeout = 180):
 		super().__init__(timeout=timeout)
 		self.add_item(disnake.ui.Button(label='Bot\'s Source', url='https://github.com/Kraots/ViHillCorner'))
-		self.add_item(disnake.ui.Button(label='Vote The Server', url='https://top.gg/servers/750160850077089853/vote'))
-	
+		
 	async def on_timeout(self):
 		await self.message.edit(view=None)
 

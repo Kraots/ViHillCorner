@@ -40,7 +40,7 @@ class on_join(commands.Cog):
 		if member.guild == VHguild:
 			def format_date(dt):
 				return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
-			welcome = disnake.Embed(description="\n\n***Go get a color from*** <#779388444304211991>\n***Go read the rules at*** <#750160850303582236>\n***Go vote the server by clicking the link:*** **[Click Here](https://top.gg/servers/750160850077089853/vote)**\n\nEnjoy your stay\n\n", color=color.pastel)
+			welcome = disnake.Embed(description="\n\n***Please read the rules at*** <#750160850303582236>\n***You can always get a colour from*** <#779388444304211991>\n***For bot commands please use*** <#750160851822182486>\n\nEnjoy your stay and don't forget to do your intro by typing `!intro` in a bots channel ^-^\n\n", color=color.pastel)
 			welcome.set_thumbnail(url=member.display_avatar)
 			welcome.set_footer(text=f"Created: {format_date(member.created_at.replace(tzinfo=None))}", icon_url=member.display_avatar)
 			msg = f'Hey {member.mention}, welcome to **ViHill Corner!** \nYou are our **{member_count}** member.\n\n\n‎'
