@@ -206,26 +206,16 @@ class RPSView(disnake.ui.View):
 		won_message = f'**__You won__** and got **{won_amt:,}** <:carrots:822122757654577183>\nYou chose `{choice}` while the bot chose `{bot_choice}`'
 		lost_message = f'**__The bot won__** and you lost **{lost_amt:,}** <:carrots:822122757654577183>\nYou chose `{choice}` while the bot chose `{bot_choice}`'
 		self.disable_buttons(button)
-		if choice == bot_choice:
+		if (
+			(choice == 'rock' and bot_choice == 'paper') or 
+			(choice == 'paper' and bot_choice == 'scissors') or 
+			(choice == 'scissors' and bot_choice == 'rock')
+		):
+			await self.message.edit(lost_message, view=self)
+			won = False
+		elif choice == bot_choice:
 			return await self.message.edit('We both chose `scissors`. Nothing happened, your balance stays the same.', view=self)
-		
-		elif choice == 'rock' and bot_choice == 'paper':
-			await self.message.edit(lost_message, view=self)
-			won = False
-		elif choice == 'paper' and bot_choice == 'scissors':
-			await self.message.edit(lost_message, view=self)
-			won = False
-		elif choice == 'scissors' and bot_choice == 'rock':
-			await self.message.edit(lost_message, view=self)
-			won = False
-		
-		elif bot_choice == 'rock' and choice == 'paper':
-			await self.message.edit(won_message, view=self)
-			won = True
-		elif bot_choice == 'paper' and choice == 'scissors':
-			await self.message.edit(won_message, view=self)
-			won = True
-		elif bot_choice == 'scissors' and choice == 'rock':
+		else:
 			await self.message.edit(won_message, view=self)
 			won = True
 		
@@ -282,6 +272,7 @@ class Economy(commands.Cog):
 		results = await self.db.find_one({"_id": user.id})
 
 		if results == None:
+			ctx.command.reset_cooldown(ctx)
 			await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 			return
 		else:
@@ -371,6 +362,7 @@ class Economy(commands.Cog):
 		user = ctx.author
 		results = await self.db.find_one({"_id": user.id})
 		if results == None:
+			ctx.command.reset_cooldown(ctx)
 			await ctx.send("You are not registered! %s" % (ctx.author.mention))
 			return
 
@@ -389,8 +381,10 @@ class Economy(commands.Cog):
 		user_db = await self.db.find_one({'_id': member.id})
 		if user_db is None:
 			if member.id == ctx.author.id:
+				ctx.command.reset_cooldown(ctx)
 				return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 			else:
+				ctx.command.reset_cooldown(ctx)
 				return await ctx.send("User is not registered! %s" % (ctx.author.mention))
 		_count = 0
 		for item in user_db['items']:
@@ -511,6 +505,7 @@ class Economy(commands.Cog):
 				item_found = True
 				user_db = await self.db.find_one({'_id': ctx.author.id})
 				if user_db is None:
+					ctx.command.reset_cooldown(ctx)
 					return await ctx.send(f'You are not registered! Type: `!register` to register {ctx.author.mention}')
 				elif _item['item_type'] == 'Sellable':
 					return await ctx.reply(_item['price'])
@@ -543,6 +538,7 @@ class Economy(commands.Cog):
 
 		user_db = await self.db.find_one({'_id': ctx.author.id})
 		if user_db is None:
+			ctx.command.reset_cooldown(ctx)
 			return await ctx.send(f'You are not registered! Type: `!register` to register {ctx.author.mention}')
 		item_ = item.lower()
 		if item_ == 'all':
@@ -661,6 +657,7 @@ class Economy(commands.Cog):
 
 		user_db = await self.db.find_one({'_id': ctx.author.id})
 		if user_db == None:
+			ctx.command.reset_cooldown(ctx)
 			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 		if len(user_db['items_in_use']) == 0:
 			return await ctx.reply('You do not have any items in use currently.')
@@ -823,6 +820,7 @@ class Economy(commands.Cog):
 					item.label = search3
 			view.message = await ctx.send('**Where do you want to search?**\n*Pick an option below to start searching that location*', view=view)
 		else:
+			ctx.command.reset_cooldown(ctx)
 			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 
 	@commands.command(name='passive')
@@ -836,6 +834,7 @@ class Economy(commands.Cog):
 
 		user_db = await self.db.find_one({'_id': ctx.author.id})
 		if user_db == None:
+			ctx.command.reset_cooldown(ctx)
 			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 		elif option is None:
 			return await ctx.send(f"Your current passive is {'**enabled.**' if user_db['passive'] == True else '**disabled.**'}")
@@ -874,8 +873,10 @@ class Economy(commands.Cog):
 		user_db = await self.db.find_one({"_id": member.id})
 		if user_db == None:
 			if member.id == member.id:
+				ctx.command.reset_cooldown(ctx)
 				await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 			else:
+				ctx.command.reset_cooldown(ctx)
 				await ctx.send("User is not registered! %s" % (ctx.author.mention))
 			return
 
@@ -1216,6 +1217,7 @@ class Economy(commands.Cog):
 				return  await msg.edit(content=e, view=view)
 
 		else:
+			ctx.command.reset_cooldown(ctx)
 			await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 			return
 
@@ -1712,6 +1714,7 @@ class Economy(commands.Cog):
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 		if results == None:
+			ctx.command.reset_cooldown(ctx)
 			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 		
 		view = RPSView(self.db, ctx)
