@@ -694,17 +694,14 @@ class Misc(commands.Cog):
 		await pages.start()
 
 	@commands.slash_command(name='embed', description='Creates an embed', options=[
+			disnake.Option("description", "Creates the description of the embed", disnake.OptionType.string, required=True),
 			disnake.Option("title", "Creates the title of the embed", disnake.OptionType.string),
-			disnake.Option("description", "Creates the description of the embed", disnake.OptionType.string),
 			disnake.Option("color", "Sets the embed's color", disnake.OptionType.string),
 			disnake.Option("image_url", "URL of the embed's image", disnake.OptionType.string),
 			disnake.Option("footer", "Creates the footer of the embed", disnake.OptionType.string),
 			disnake.Option("footer_url", "Sets the footer url of the embed", disnake.OptionType.string)
 			])
-	async def make_embed(self, inter: disnake.ApplicationCommandInteraction, title: str = None, description: str = None, color: str = None, image_url: str = None, footer: str = None, footer_url: str = None):
-		if description is None:
-			return await inter.response.send_message(ephemeral=True, content='`description` is a required argument that is missing.')
-		
+	async def make_embed(self, inter: disnake.Interaction, description, title: str = None, color: str = None, image_url: str = None, footer: str = None, footer_url: str = None):	
 		if color is not None:
 			try:
 				color = await commands.ColourConverter().convert(inter, color)
