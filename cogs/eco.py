@@ -1707,8 +1707,8 @@ class Economy(commands.Cog):
 	async def eco_rps(self, ctx):
 		"""Play a game of rock-paper-scissors with the bot and earn <:carrots:822122757654577183> if you win or lose some if you lose the game."""
 
-		# if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-		# 	return ctx.command.reset_cooldown(ctx)
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return ctx.command.reset_cooldown(ctx)
 
 		results = await self.db.find_one({"_id": ctx.author.id})
 		if results == None:
