@@ -129,6 +129,8 @@ class WeeklyTop(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message(self, message: disnake.Message):
+		if message.author.bot:
+			return
 		data = await self.db.find_one({'_id': message.author.id})
 		if data is None:
 			newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0, "weekly_messages_count": 0}
