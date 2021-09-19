@@ -73,14 +73,14 @@ class General(commands.Cog):
 			em = disnake.Embed(color=color.lightpink, title="Here's your screen shot of `{}`".format(url))
 			em.set_image(url='attachment://ss.png')
 			em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.display_avatar)
-			await ctx.send(embed=em, file=f)
+			await ctx.send(embed=em, file=f, reference=ctx.replied_reference)
 
 	@commands.command(name="perm-calc")
 	async def perm_calc(self, ctx):
 		"""Sends the link for the permission calculator for bots."""
 
 		em = disnake.Embed(color=color.lightpink, title= " Here's the link to the permission calculator for bots. ", description = "https://discordapi.com/permissions.html#8589934591")
-		await ctx.send(embed=em)
+		await ctx.send(embed=em, reference=ctx.replied_reference)
 
 
 	@commands.command(name="dev-portal")
@@ -88,7 +88,7 @@ class General(commands.Cog):
 		"""Sends a link for the developer portal."""
 
 		em = disnake.Embed(color=color.lightpink, title = " Here's the link to dev portal. ", description="https://discord.com/developers/applications")
-		await ctx.send(embed=em)
+		await ctx.send(embed=em, reference=ctx.replied_reference)
 
 	@commands.command()
 	async def joined(self, ctx, member: disnake.Member=None):
@@ -104,19 +104,19 @@ class General(commands.Cog):
 			kraots_joined = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
 			embed = disnake.Embed(color=color.lightpink)
 			embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(kraots_joined)}")
-			await ctx.send(embed=embed)
+			await ctx.send(embed=embed, reference=ctx.replied_reference)
 		
 		elif member.id == 747329236695777340:
 			x = "2020-09-30 12:12"
 			twil_joined = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
 			embed = disnake.Embed(color=color.lightpink)
 			embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(twil_joined)}")
-			await ctx.send(embed=embed)
+			await ctx.send(embed=embed, reference=ctx.replied_reference)
 
 		else:
 			embed = disnake.Embed(color=color.lightpink)
 			embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(member.joined_at.replace(tzinfo=None))}")
-			await ctx.send(embed=embed)
+			await ctx.send(embed=embed, reference=ctx.replied_reference)
 
 	@commands.command()
 	async def created(self, ctx, user: disnake.User=None):
@@ -130,7 +130,7 @@ class General(commands.Cog):
 		
 		embed = disnake.Embed(color=color.lightpink)
 		embed.add_field(name='Create Date:', value=f"{user} **--->** {format_date(user.created_at.replace(tzinfo=None))}")
-		await ctx.send(embed=embed)
+		await ctx.send(embed=embed, reference=ctx.replied_reference)
 
 	@commands.command(aliases=["inv"])
 	async def invite(self, ctx):
@@ -139,7 +139,7 @@ class General(commands.Cog):
 		inv = disnake.Embed(title="https://discord.gg/Uf2kA8q", color=color.lightpink)
 		inv.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
 
-		await ctx.send(embed=inv)
+		await ctx.send(embed=inv, reference=ctx.replied_reference)
 
 	@commands.command()
 	async def membercount(self, ctx):
@@ -175,7 +175,7 @@ class General(commands.Cog):
 		embed.set_image(url=emoji.url)
 		embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar)
 
-		await ctx.send(embed=embed)
+		await ctx.send(embed=embed, reference=ctx.replied_reference)
 
 	@commands.command(aliases=['ad'])
 	async def serverad(self, ctx):
@@ -185,7 +185,7 @@ class General(commands.Cog):
 		ad = disnake.Embed(color=color.lightpink, title="Here's the ad to the server:", description=addd)
 		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
-		await ctx.send(embed=ad)
+		await ctx.send(embed=ad, reference=ctx.replied_reference)
 
 	@commands.command(aliases=["ra"])
 	async def rawad(self, ctx):
@@ -195,7 +195,7 @@ class General(commands.Cog):
 		ad = disnake.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```%s```" % (addd))
 		ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
-		await ctx.send(embed=ad)
+		await ctx.send(embed=ad, reference=ctx.replied_reference)
 
 	@commands.command(aliases=["untill-partner"])
 	async def up(self, ctx):
@@ -270,7 +270,7 @@ class General(commands.Cog):
 		location = os.path.relpath(filename).replace('\\', '/')
 		final_url = f'<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>'
 		
-		await ctx.send(final_url)
+		await ctx.send(final_url, reference=ctx.replied_reference)
 
 def setup(bot):
 	bot.add_cog(General(bot))
