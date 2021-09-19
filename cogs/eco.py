@@ -51,8 +51,6 @@ class ShopMenu(ShopEcoMenu):
 		converted = [ShopPageEntry(entry) for entry in entries]
 		super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color)
 
-rps = ['rock', 'paper', 'scissors']
-
 _shop = [
 	{'item_type': 'Collectable', 'item_name': 'golden carrot', 'price': 100000000, 'sells_for': 'This item cannot be sold.', 'description': 'Show off to your friends with this item that costs 100M', 'item_emoji': '<:goldencarrot:885075068797984808>'},
 	{'item_type': 'Usable', 'item_name': 'clock', 'price': 25000, 'sells_for': 1200, 'description': 'Increases luck by 5% for 2h', 'expires_in': {'hours': 2}},
@@ -176,6 +174,78 @@ class EcoSearchView(disnake.ui.View):
 		await inter.response.edit_message(content=None, embed=em, view=self)
 		self.stop()
 
+class RPSView(disnake.ui.View):
+	def __init__(self, db, ctx, *, timeout = 180):
+		super().__init__(timeout=timeout)
+		self.db = db
+		self.ctx = ctx
+
+	async def interaction_check(self, interaction: disnake.MessageInteraction):
+		if interaction.author.id != self.ctx.author.id:
+			await interaction.response.send_message(f'Only {self.ctx.author.display_name} can use the buttons on this message!', ephemeral=True)
+			return False
+		return True
+
+	async def on_timeout(self):
+		for item in self.children:
+			item.disabled = True
+			item.style = disnake.ButtonStyle.gray
+		await self.message.edit('Timed Out.', view=self)
+	
+	def disable_buttons(self, button):
+		for item in self.children:
+			if item.label != button.style:
+				item.style = disnake.ButtonStyle.gray
+			item.disabled = True
+
+	async def check_result(self, button):
+		bot_choice = random.choice(('rock', 'paper', 'scissors'))
+		choice = button.label.lower()
+		won_amt = randint(5000, 35000)
+		lost_amt = randint(1000, 7001)
+		won_message = f'**__You won__** and got **{won_amt:,}** <:carrots:822122757654577183>\nYou chose `{choice}` while the bot chose `{bot_choice}`'
+		lost_message = f'**__The bot won__** and you lost **{lost_amt:,}** <:carrots:822122757654577183>\nYou chose `{choice}` while the bot chose `{bot_choice}`'
+		self.disable_buttons(button)
+		if choice == bot_choice:
+			return await self.message.edit('We both chose `scissors`. Nothing happened, your balance stays the same.', view=self)
+		
+		elif choice == 'rock' and bot_choice == 'paper':
+			await self.message.edit(lost_message, view=self)
+			won = False
+		elif choice == 'paper' and bot_choice == 'scissors':
+			await self.message.edit(lost_message, view=self)
+			won = False
+		elif choice == 'scissors' and bot_choice == 'rock':
+			await self.message.edit(lost_message, view=self)
+			won = False
+		
+		elif bot_choice == 'rock' and choice == 'paper':
+			await self.message.edit(won_message, view=self)
+			won = True
+		elif bot_choice == 'paper' and choice == 'scissors':
+			await self.message.edit(won_message, view=self)
+			won = True
+		elif bot_choice == 'scissors' and choice == 'rock':
+			await self.message.edit(won_message, view=self)
+			won = True
+		
+		if won == True:
+			await self.db.update_one({'_id': self.ctx.author.id}, {'$inc':{'wallet': won_amt}})
+		elif won == False:
+			await self.db.update_one({'_id': self.ctx.author.id}, {'$inc':{'wallet': -lost_amt}})
+		self.stop()
+
+	@disnake.ui.button(label='Rock', style=disnake.ButtonStyle.blurple)
+	async def rock(self, button: disnake.Button, inter: disnake.Interaction):
+		await self.check_result(button)
+
+	@disnake.ui.button(label='Paper', style=disnake.ButtonStyle.blurple)
+	async def paper(self, button: disnake.Button, inter: disnake.Interaction):
+		await self.check_result(button)
+	
+	@disnake.ui.button(label='Scissors', style=disnake.ButtonStyle.blurple)
+	async def scissors(self, button: disnake.Button, inter: disnake.Interaction):
+		await self.check_result(button)
 
 class Economy(commands.Cog):
 
@@ -1632,79 +1702,20 @@ class Economy(commands.Cog):
 			return
 
 
-	@commands.command(name='rock-paper-scissors', aliases=['rps', 'rockpaperscissors'])
+	@commands.command(name='rock-paper-scissors', aliases=['rps'])
 	@commands.cooldown(1, 15, commands.BucketType.user)
 	async def eco_rps(self, ctx):
 		"""Play a game of rock-paper-scissors with the bot and earn <:carrots:822122757654577183> if you win or lose some if you lose the game."""
 
-		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
-			return ctx.command.reset_cooldown(ctx)
+		# if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+		# 	return ctx.command.reset_cooldown(ctx)
 
-		user = ctx.author
-		results = await self.db.find_one({"_id": user.id})
+		results = await self.db.find_one({"_id": ctx.author.id})
 		if results == None:
-			await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
-			return
-		def check(m):
-			return m.author == ctx.author and m.channel == ctx.channel
-		bot_rps = random.choice(rps)
-		earned = randint(5000, 15000)
-		await ctx.send("Please choose between `rock`/`paper`/`scissors`. You have **60** seconds to give your answer. %s" % (user.mention))
-		try:
-			while True:
-				user_rps = 	await self.bot.wait_for('message', timeout= 60, check=check)
-				user_rps = user_rps.content.lower()
-				if not user_rps in rps:
-					await ctx.send("You can only choose from `rock`/`paper`/`scissors`. %s" % (user.mention))
-				else:
-					break
-		except asyncio.TimeoutError:
-			await ctx.send("You ran out of time. %s" % (user.mention))
-			return
-		else:
-
-			if user_rps == "rock":
-				if bot_rps == "paper":
-					await ctx.send("You chose `rock`, and i chose `paper`. You lost **325** <:carrots:822122757654577183>. %s" % (user.mention))
-					await self.db.update_one({'_id': user.id}, {'$inc':{'wallet': -325}})
-					return
-				elif bot_rps == "scissors":
-					await ctx.send("You chose `rock`, and i chose `scissors`. You won **{:,}** <:carrots:822122757654577183>. {}".format(earned, user.mention))
-					await self.db.update_one({'_id': user.id}, {'$inc':{'wallet': earned}})
-					return
-				elif bot_rps == "rock":
-					await ctx.send("We both chose `rock`. Nothing happened, your balance stays the same. %s" % (user.mention))
-					ctx.command.reset_cooldown(ctx)
-					return
-			
-			
-			elif user_rps == "paper":
-				if bot_rps == "scissors":
-					await ctx.send("You chose `paper`, and i chose `scissors`. You lost **325** <:carrots:822122757654577183>. %s" % (user.mention))
-					await self.db.update_one({'_id': user.id}, {'$inc':{'wallet': -325}})
-					return
-				elif bot_rps == "rock":
-					await ctx.send("You chose `paper`, and i chose `rock`. You won **{:,}** <:carrots:822122757654577183>. {}".format(earned, user.mention))
-					await self.db.update_one({'_id': user.id}, {'$inc':{'wallet': earned}})
-					return
-				elif bot_rps == "paper":
-					await ctx.send("We both chose `paper`. Nothing happened, your balance stays the same. %s" % (user.mention))
-					ctx.command.reset_cooldown(ctx)
-					return
-			
-			elif user_rps == "scissors":
-				if bot_rps == "rock":
-					await ctx.send("You chose `scissors`, and i chose `rock`. You lost **325** <:carrots:822122757654577183>. %s" % (user.mention))
-					await self.db.update_one({'_id': user.id}, {'$inc':{'wallet': -325}})
-					return
-				elif bot_rps == "paper":
-					await ctx.send("You chose `scissors`, and i chose `paper`. You won **{:,}** <:carrots:822122757654577183>. {}".format(earned, user.mention))
-					await self.db.update_one({'_id': user.id}, {'$inc':{'wallet': earned}})
-					return
-				elif bot_rps == "scissors":
-					await ctx.send("We both chose `scissors`. Nothing happened, your balance stays the same. %s" % (user.mention))
-					ctx.command.reset_cooldown(ctx)
-					return
+			return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+		
+		view = RPSView(self.db, ctx)
+		view.message = await ctx.send('Please choose by clicking one of the buttons below.', view=view)
 
 	@slots.error
 	async def slots_error(self, ctx, error):
