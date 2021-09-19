@@ -2,6 +2,7 @@ import disnake
 from disnake.ext import commands
 import utils.colors as color
 from utils.pillow import rank_card
+from utils.paginator import RoboPages, FieldPageSource
 
 bot_channel = [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787357561116426258]
 no_talk_channels = [750160852006469807, 780374324598145055]
@@ -30,20 +31,44 @@ class Levels(commands.Cog):
 					if stats is None:
 						newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0, "weekly_messages_count": 0}
 						await self.db.insert_one(newuser)
-					else:			
+						return
 						
-						kraotsDocument = await self.db.find_one({'_id': 374622847672254466})
-						membersMultiplier = kraotsDocument['xp multiplier']
-						boostersMultiplier = kraotsDocument['booster xp multiplier']
-						modMultiplier = kraotsDocument['mod xp multiplier']
-						kraotsMultiplier = kraotsDocument['kraots xp multiplier']
-						
-						if not ch_id in botsChannels:
-							await self.db.update_one({"_id": message.author.id}, {"$inc": {"messages_count": 1, "weekly_messages_count": 1}})
+					kraotsDocument = await self.db.find_one({'_id': 374622847672254466})
+					membersMultiplier = kraotsDocument['xp multiplier']
+					boostersMultiplier = kraotsDocument['booster xp multiplier']
+					modMultiplier = kraotsDocument['mod xp multiplier']
+					kraotsMultiplier = kraotsDocument['kraots xp multiplier']
+					
+					if not ch_id in botsChannels:
+						await self.db.update_one({"_id": message.author.id}, {"$inc": {"weekly_messages_count": 1}})
+					xp = stats['xp']
+					lvl = 0
+					while True:
+						if xp < ((50 * (lvl ** 2)) + (50 * (lvl - 1))):
+							break
+						lvl += 1
+					xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
+					if xp < 0:
+						lvl = lvl - 1
 						xp = stats['xp']
+						xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
+					if lvl >= 500:
+						return
+					
+					else:
+						if message.author.id == 374622847672254466:
+							xp = stats['xp'] + (30 * kraotsMultiplier)
+						elif 754676705741766757 in [role.id for role in message.author.roles]:
+							xp = stats['xp'] + (20 * modMultiplier)
+						elif 759475712867565629 in [role.id for role in message.author.roles]:
+							xp = stats['xp'] + (15 * boostersMultiplier)
+						else:
+							xp = stats['xp'] + (5 * membersMultiplier)
+
+						await self.db.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
 						lvl = 0
 						while True:
-							if xp < ((50 * (lvl ** 2)) + (50 * (lvl - 1))):
+							if xp < ((50*(lvl**2))+ (50*(lvl-1))):
 								break
 							lvl += 1
 						xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
@@ -51,53 +76,29 @@ class Levels(commands.Cog):
 							lvl = lvl - 1
 							xp = stats['xp']
 							xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
-						if lvl >= 500:
-							return
-						
-						else:
-							if message.author.id == 374622847672254466:
-								xp = stats['xp'] + (30 * kraotsMultiplier)
-							elif 754676705741766757 in [role.id for role in message.author.roles]:
-								xp = stats['xp'] + (20 * modMultiplier)
-							elif 759475712867565629 in [role.id for role in message.author.roles]:
-								xp = stats['xp'] + (15 * boostersMultiplier)
-							else:
-								xp = stats['xp'] + (5 * membersMultiplier)
-
-							await self.db.update_one({"_id": message.author.id}, {"$set":{"xp": xp}})
-							lvl = 0
-							while True:
-								if xp < ((50*(lvl**2))+ (50*(lvl-1))):
-									break
-								lvl += 1
-							xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
-							if xp < 0:
-								lvl = lvl - 1
-								xp = stats['xp']
-								xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
-							elif xp >= 0:
-								if message.guild.id == 750160850077089853:
-									try:
-										role_id = levels[lvl]
-										roles_id = [role.id for role in message.author.roles if not role.id in [levels[k] for k in levels]] + [role_id]
-										newroles = []
-										for role in roles_id:
-											newrole = guild.get_role(role)
-											newroles.append(newrole)
-										await message.author.edit(roles=newroles)
-									except KeyError:
-										role_id = 0
-										for k in levels:
-											if k < lvl:
-												role_id = levels[k]
-											else:
-												break
-										roles_id = [role.id for role in message.author.roles if not role.id in [levels[k] for k in levels]] + [role_id]
-										newroles = []
-										for role in roles_id:
-											newrole = guild.get_role(role)
-											newroles.append(newrole)
-										await message.author.edit(roles=newroles)
+						elif xp >= 0:
+							if message.guild.id == 750160850077089853:
+								try:
+									role_id = levels[lvl]
+									roles_id = [role.id for role in message.author.roles if not role.id in [levels[k] for k in levels]] + [role_id]
+									newroles = []
+									for role in roles_id:
+										newrole = guild.get_role(role)
+										newroles.append(newrole)
+									await message.author.edit(roles=newroles)
+								except KeyError:
+									role_id = 0
+									for k in levels:
+										if k < lvl:
+											role_id = levels[k]
+										else:
+											break
+									roles_id = [role.id for role in message.author.roles if not role.id in [levels[k] for k in levels]] + [role_id]
+									newroles = []
+									for role in roles_id:
+										newrole = guild.get_role(role)
+										newroles.append(newrole)
+									await message.author.edit(roles=newroles)
 
 
 
@@ -173,12 +174,13 @@ class Levels(commands.Cog):
 
 	@rank.command(name='leaderboard', aliases=['lb', 'top'])
 	async def rank_leaderboard(self, ctx):
-		"""Leaderboard for levels, shows the top **10**."""
+		"""Leaderboard for levels."""
 
 		if ctx.channel.id in bot_channel:
-			results = await self.db.find().sort([('xp', -1)]).to_list(10)
+			top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
+			data = []
+			results = await self.db.find().sort([('xp', -1)]).to_list(100000)
 			index = 0
-			em = disnake.Embed(color=color.lightpink, title="Top 10 highest level people")
 			for result in results:
 				xp = result['xp']
 				user = result['_id']
@@ -207,10 +209,21 @@ class Levels(commands.Cog):
 				else:
 					f = int(f)
 				
-
-				em.add_field(name=f"`#{index}` {user.display_name}", value=f"Level: `{lvl}`\nTotal XP: `{f:,}`", inline=False)
+				if index in (1, 2, 3):
+					place = top_3_emojis[index]
+				else:
+					place = f'`#{index:,}`'
+				if user == ctx.author:
+					to_append = (f"**{place} {user.name} (YOU)**", f"Level: `{lvl}`\nTotal XP: `{f:,}`")
+					data.append(to_append)
+				else:
+					to_append = (f"{place} {user.name}", f"Level: `{lvl}`\nTotal XP: `{f:,}`")
+					data.append(to_append)
 			
-			await ctx.send(embed=em)
+			source = FieldPageSource(data, per_page=10)
+			source.embed.colour = color.lightpink
+			pages = RoboPages(source, ctx=ctx)
+			await pages.start()
 
 
 	@commands.group(invoke_without_command = True, case_insensitive = True, aliases=['multipliers'])

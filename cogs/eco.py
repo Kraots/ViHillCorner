@@ -4,12 +4,12 @@ from random import randint
 import random
 import utils.colors as color
 import asyncio
-from utils.helpers import time_phaser, format_balance
 import pymongo
 import datetime
 from dateutil.relativedelta import relativedelta
 from utils import time, menus
-from utils.paginator import RoboPages
+from utils.paginator import RoboPages, FieldPageSource
+from utils.helpers import format_balance
 
 class ShopEcoMenus(menus.ListPageSource):
 	def __init__(self, entries, *, per_page=12):
@@ -829,33 +829,35 @@ class Economy(commands.Cog):
 
 	@balance.command(name='leaderboard', aliases=['lb', 'top'])
 	async def eco_bal_leaderboard(self, ctx):
-		"""See top `10` richest people."""
+		"""See top richest people."""
 
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
 			return
 
-		results = await self.db.find().sort([('wallet', -1)]).to_list(100000)
-		em = disnake.Embed(title=f'Top 10 richest people', color=color.lightpink)
-		index = 1
-		for m in results:
-			user = self.bot.get_user(m['_id'])
-			if not str(m['wallet']).startswith('0'):
-				em.add_field(name=f"`#{index}` {user.name}", value="{} <:carrots:822122757654577183> ".format(format_balance(m['wallet'])), inline=False)
-			if index == 10:
-				break
-			index += 1
-
-		index = 1
-		found = False
-		for i in results:
-			if i['_id'] == ctx.author.id:
-				found = True
-				break
-			index += 1
-		if found != False:
-			em.set_footer(text=f"Your place: {index}", icon_url=ctx.author.display_avatar)
-			
-		await ctx.send(embed=em)
+		index = 0
+		data = []
+		top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
+		guild = self.bot.get_guild(750160850077089853)
+		
+		results = await self.db.find().sort([("wallet", -1)]).to_list(100000)
+		for result in results:
+			if not result['wallet'] in (0, 0.0):
+				index += 1
+				mem = guild.get_member(result['_id'])
+				if index in (1, 2, 3):
+					place = top_3_emojis[index]
+				else:
+					place = f'`#{index:,}`'
+				if mem == ctx.author:
+					to_append = (f'**{place} {mem.name} (YOU)**', f"**{result['wallet']:,}** <:carrots:822122757654577183>")
+					data.append(to_append)
+				else:
+					to_append = (f'{place} {mem.name}', f"**{result['wallet']:,}** <:carrots:822122757654577183>")
+					data.append(to_append)
+		source = FieldPageSource(data, per_page=10)
+		source.embed.colour = color.lightpink
+		pages = RoboPages(source, ctx=ctx)
+		await pages.start()
 
 	@balance.command(name='add-bank')
 	@commands.is_owner()

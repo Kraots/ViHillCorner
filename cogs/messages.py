@@ -4,6 +4,7 @@ import utils.colors as color
 import datetime
 from dateutil.relativedelta import relativedelta
 from utils import time
+from utils.paginator import RoboPages, FieldPageSource
 
 class MessagesTopButtons(disnake.ui.View):
 	def __init__(self, db, ctx, *, timeout = 180.0):
@@ -27,60 +28,61 @@ class MessagesTopButtons(disnake.ui.View):
 
 	@disnake.ui.button(label='Total Messages Top', style=disnake.ButtonStyle.blurple)
 	async def total_messages_top(self, button: disnake.Button, inter: disnake.Interaction):
-		data = await self.db.find_one({"_id": 374622847672254466})
-
-		em = disnake.Embed(color=color.lightpink)
-		
 		index = 0
-		pos_ = 0
-		pos = 0
+		data = []
+		top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
 		guild = self.ctx.bot.get_guild(750160850077089853)
 		
 		results = await self.db.find().sort([("messages_count", -1)]).to_list(100000)
 		for result in results:
 			if result['messages_count'] != 0:
-				if index != 5:
-					index += 1
-					mem = guild.get_member(result['_id'])
-					if mem == self.ctx.author:
-						em.add_field(name=f'**`#{index}\u2800 {mem.name}` (YOU)**', value=f"`{result['messages_count']:,}` messages", inline=False)
-					else:
-						em.add_field(name=f'`#{index}`\u2800 {mem.name}', value=f"`{result['messages_count']:,}` messages", inline=False)
-				pos_ += 1
+				index += 1
+				mem = guild.get_member(result['_id'])
+				if index in (1, 2, 3):
+					place = top_3_emojis[index]
+				else:
+					place = f'`#{index:,}`'
 				if mem == self.ctx.author:
-					pos = pos_
-		em.title = "Top 5 most active members"
-		if pos != 0:
-			em.set_footer(text=f'Your position: {pos:,}')
-		
-		await self.message.edit(embed=em, view=None)
+					to_append = (f'**{place} {mem.name} (YOU)**', f"**{result['messages_count']:,}** messages")
+					data.append(to_append)
+				else:
+					to_append = (f'{place} {mem.name}', f"**{result['messages_count']:,}** messages")
+					data.append(to_append)
+		source = FieldPageSource(data, per_page=10)
+		await self.message.delete()
+		pages = RoboPages(source, ctx=self.ctx)
+		await pages.start()
 		self.stop()
 	
 	@disnake.ui.button(label='Weekly Messages Top', style=disnake.ButtonStyle.blurple)
 	async def weekly_messages_top(self, button: disnake.Button, inter: disnake.Interaction):
-		data = await self.db.find_one({"_id": 374622847672254466})
-
-		em = disnake.Embed(color=color.lightpink)
-		
 		index = 0
+		data = []
+		top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
 		guild = self.ctx.bot.get_guild(750160850077089853)
 		
-		results = await self.db.find().sort([("weekly_messages_count", -1)]).to_list(10)
+		results = await self.db.find().sort([("weekly_messages_count", -1)]).to_list(100000)
 		for result in results:
 			if result['weekly_messages_count'] != 0:
 				index += 1
 				mem = guild.get_member(result['_id'])
-				if mem == self.ctx.author:
-					em.add_field(name="**`#%s\u2800%s` (YOU)**" % (index, mem.name), value="`{:,}` messages".format(result['weekly_messages_count']), inline=False)
+				if index in (1, 2, 3):
+					place = top_3_emojis[index]
 				else:
-					em.add_field(name="`#%s`\u2800%s" % (index, mem.name), value="`{:,}` messages".format(result['weekly_messages_count']), inline=False)
-		em.title = "Top `%s` most active members this week" % (index)
-		em.set_footer(text="Resets in %s" % (time.human_timedelta(data['weekly_reset'])), icon_url=self.ctx.author.display_avatar)
-
-		await self.message.edit(embed=em, view=None)
+					place = f'`#{index:,}`'
+				if mem == self.ctx.author:
+					to_append = (f'**{place} {mem.name} (YOU)**', f"**{result['weekly_messages_count']:,}** messages")
+					data.append(to_append)
+				else:
+					to_append = (f'{place} {mem.name}', f"**{result['weekly_messages_count']:,}** messages")
+					data.append(to_append)
+		source = FieldPageSource(data, per_page=10)
+		await self.message.delete()
+		pages = RoboPages(source, ctx=self.ctx)
+		await pages.start()
 		self.stop()
 	
-	@disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red, row=1)
+	@disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red)
 	async def _stop_view(self, button: disnake.Button, inter: disnake.Interaction):
 		await self.message.delete()
 		self.stop()
@@ -124,6 +126,15 @@ class WeeklyTop(commands.Cog):
 			await self.db.update_many({}, {"$set": {"weekly_messages_count": 0}})
 			x = dateNow + relativedelta(weeks = 1)
 			await self.db.update_one({'_id': 374622847672254466}, {'$set':{'weekly_reset': x}})
+
+	@commands.Cog.listener()
+	async def on_message(self, message: disnake.Message):
+		data = await self.db.find_one({'_id': message.author.id})
+		if data is None:
+			newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0, "weekly_messages_count": 0}
+			await self.db.insert_one(newuser)
+			return
+		await self.db.update_one({"_id": message.author.id}, {"$inc": {"messages_count": 1}})
 
 	@commands.group(name='messages', invoke_without_command = True, case_insensitive = True, aliases=['msg'])
 	async def _msgs(self, ctx, member: disnake.Member = None):
@@ -208,6 +219,13 @@ class WeeklyTop(commands.Cog):
 		em = disnake.Embed(title='Please click the button of the top you wish to see.', color=color.reds)
 		view.message = await ctx.send(embed=em, view=view)
 	
+	@msg_top.command(name='time', aliases=['time-left', 'remaining', 'left'])
+	async def msg_top_remaining(self, ctx):
+		"""Check how much time until the top ends."""
+
+		data = await self.db.find_one({'_id': self.bot._owner_id})
+		await ctx.send(f"The weekly top resets in: `{time.human_timedelta(data['weekly_reset'])}`")
+
 	@msg_top.command(name='reset')
 	@commands.is_owner()
 	async def msg_top_reset(self, ctx, member: disnake.Member):
