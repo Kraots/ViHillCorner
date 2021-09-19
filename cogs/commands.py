@@ -42,7 +42,7 @@ addd = """
 ﹕・Lots of emotes
 ﹕・Intros (Instead of reaction roles :D)
 ﹕・Not that active unless there's someone to start the convo, then there's a 80% chance it'll be active
-╰・Horny Peeps (mostly 1 but ok)
+╰・Horny Peeps
 
 ♥︎ server link: https://discord.gg/Uf2kA8q ♥︎
 ° . · . ✧ °  .  ₊˚ˑ˚₊ . ° ✧ . · .°
