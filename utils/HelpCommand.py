@@ -156,7 +156,7 @@ class PaginatedHelpCommand(commands.HelpCommand):
 			if isinstance(error.original, disnake.HTTPException) and error.original.code == 50013:
 				return
 
-			await ctx.send(str(error.original))
+			await ctx.bot.reraise(ctx, error)
 
 	def get_command_signature(self, command):
 		parent = command.full_parent_name
