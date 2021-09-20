@@ -926,7 +926,7 @@ class Economy(commands.Cog):
 					to_append = (f'{place} {mem.name}', f"**{result['wallet']:,}** <:carrots:822122757654577183>")
 					data.append(to_append)
 		source = FieldPageSource(data, per_page=10)
-		source.embed.colour = color.lightpink
+		source.embed.title = 'Top users with highest wallet balance'
 		pages = RoboPages(source, ctx=ctx)
 		await pages.start()
 

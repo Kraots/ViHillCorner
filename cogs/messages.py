@@ -49,6 +49,7 @@ class MessagesTopButtons(disnake.ui.View):
 					to_append = (f'{place} {mem.name}', f"**{result['messages_count']:,}** messages")
 					data.append(to_append)
 		source = FieldPageSource(data, per_page=10)
+		source.embed.title = 'Top most active users'
 		await self.message.delete()
 		pages = RoboPages(source, ctx=self.ctx)
 		await pages.start()
@@ -77,6 +78,7 @@ class MessagesTopButtons(disnake.ui.View):
 					to_append = (f'{place} {mem.name}', f"**{result['weekly_messages_count']:,}** messages")
 					data.append(to_append)
 		source = FieldPageSource(data, per_page=10)
+		source.embed.title = 'This week\'s most active members'
 		await self.message.delete()
 		pages = RoboPages(source, ctx=self.ctx)
 		await pages.start()

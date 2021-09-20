@@ -221,7 +221,7 @@ class Levels(commands.Cog):
 					data.append(to_append)
 			
 			source = FieldPageSource(data, per_page=10)
-			source.embed.colour = color.lightpink
+			source.embed.title = 'Rank top'
 			pages = RoboPages(source, ctx=ctx)
 			await pages.start()
 
