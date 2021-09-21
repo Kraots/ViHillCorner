@@ -760,7 +760,10 @@ class Fun(commands.Cog):
 			elif view.response == 'quit':
 				for item in view.children:
 					item.disabled = True
-					item.style = disnake.ButtonStyle.grey
+					if item.label == 'quit':
+						item.style = disnake.ButtonStyle.blurple
+					else:
+						item.style = disnake.ButtonStyle.grey
 				aki_em.description = 'Quit the game.'
 				return await msg.edit(embed=aki_em, view=view)
 			elif view.response == 'back':
@@ -806,7 +809,10 @@ class Fun(commands.Cog):
 		elif view.response == 'cancel':
 			for item in view.children:
 				item.disabled = True
-				item.style = disnake.ButtonStyle.grey
+				if item.label == 'cancel':
+					item.style = disnake.ButtonStyle.blurple
+				else:
+					item.style = disnake.ButtonStyle.grey
 			em = disnake.Embed(description='Canceled.')
 			return await msg.edit(embed=em, view=view)
 		else:
