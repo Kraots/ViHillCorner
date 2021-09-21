@@ -208,7 +208,7 @@ class Misc(commands.Cog):
 
 	async def do_rtfm(self, ctx, key, obj):
 		page_types = {
-			'master': 'https://disnake.readthedocs.io/en/latest',
+			'latest': 'https://disnake.readthedocs.io/en/latest',
 			'python': 'https://docs.python.org/3'
 		}
 
@@ -319,7 +319,7 @@ class Misc(commands.Cog):
 	async def rtfm(self, ctx, *, obj: str = None):
 		"""Gives you a documentation link for a disnake entity."""
 
-		key = self.transform_rtfm_language_key(ctx, 'master')
+		key = self.transform_rtfm_language_key(ctx, 'latest')
 		await self.do_rtfm(ctx, key, obj)
 
 	@rtfm.command(name='python', aliases=['py'])
