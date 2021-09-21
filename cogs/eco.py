@@ -847,7 +847,7 @@ class Economy(commands.Cog):
 					return await ctx.reply('Not a valid option')
 				elif options[option] == user_db['passive']:
 					return await ctx.reply(f"Your passive is already {'**enabled.**' if option == 'on' else '**disabled.**'}")
-				updated_cooldown = user_db['passive_cooldown'] + relativedelta(days=1)
+				updated_cooldown = datetime.datetime.utcnow() + relativedelta(days=1)
 				await self.db.update_one({'_id': ctx.author.id}, {'$set': {'passive': options[option], 'passive_cooldown': updated_cooldown}})
 				await ctx.reply(f"Passive has been {'**enabled.**' if option == 'on' else '**disabled.**'}")
 			else:
@@ -857,7 +857,7 @@ class Economy(commands.Cog):
 				return await ctx.reply('Not a valid option')
 			elif options[option] == user_db['passive']:
 				return await ctx.reply(f"Your passive is already {'**enabled.**' if option == 'on' else '**disabled.**'}")
-			updated_cooldown = user_db['passive_cooldown'] + relativedelta(days=1)
+			updated_cooldown = datetime.datetime.utcnow() + relativedelta(days=1)
 			await self.db.update_one({'_id': ctx.author.id}, {'$set': {'passive': options[option], 'passive_cooldown': updated_cooldown}})
 			await ctx.reply(f"Passive has been {'**enabled.**' if option == 'on' else '**disabled.**'}")
 
