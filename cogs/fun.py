@@ -10,6 +10,8 @@ import utils.colors as color
 import functools
 from utils.helpers import replace_many, suppress_links
 from utils.pillow import invert_pfp
+import akinator
+import inspect
 
 UWU_WORDS = {
     "fi": "fwi",
@@ -23,6 +25,46 @@ UWU_WORDS = {
     "your": "yur",
     "you": "yuw",
 }
+
+class AkinatorView(disnake.ui.View):
+	def __init__(self, *, timeout = 180.0):
+		super().__init__(timeout=timeout)
+		self.response = None
+	
+	@disnake.ui.button(label='Yes', style=disnake.ButtonStyle.green)
+	async def _yes_butt(self, button: disnake.Button, inter: disnake.Interaction):
+		self.response = 'yes'
+		self.stop()
+
+	@disnake.ui.button(label='No', style=disnake.ButtonStyle.red)
+	async def _no_butt(self, button: disnake.Button, inter: disnake.Interaction):
+		self.response = 'no'
+		self.stop()
+
+	@disnake.ui.button(label='I don\'t know')
+	async def _idk_butt(self, button: disnake.Button, inter: disnake.Interaction):
+		self.response = 'idk'
+		self.stop()
+
+	@disnake.ui.button(label='Probably', row=1)
+	async def _probs_butt(self, button: disnake.Button, inter: disnake.Interaction):
+		self.response = 'probably'
+		self.stop()
+
+	@disnake.ui.button(label='Probably not', row=1)
+	async def _probs_not_butt(self, button: disnake.Button, inter: disnake.Interaction):
+		self.response = 'probably not'
+		self.stop()
+	
+	@disnake.ui.button(label='Back', row=1)
+	async def _back_butt(self, button: disnake.Button, inter: disnake.Interaction):
+		self.response = 'back'
+		self.stop()
+	
+	@disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red, row=2)
+	async def _quit_butt(self, button: disnake.Button, inter: disnake.Interaction):
+		self.response = 'quit'
+		self.stop()
 
 class Fun(commands.Cog):
 
@@ -650,6 +692,54 @@ class Fun(commands.Cog):
 		em.set_image(url=f'attachment://{member.display_name}_inverted_avatar.png')
 		em.set_footer(text=f"Requested by: {ctx.author}", icon_url = ctx.author.display_avatar)
 		await ctx.send(embed=em, file=pfp)
+	
+	@commands.command(name='akinator', aliases=['aki'])
+	async def _akinator(self, ctx):
+		"""Play a game with akinator."""
+
+		aki_em = disnake.Embed(title='Akinator', description='Starting game...')
+		msg = await ctx.send(embed=aki_em)
+		aki = akinator.Akinator()
+		q = aki.start_game()
+		def check(m):
+			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+
+		while aki.progression <= 90:
+			view = AkinatorView()
+			aki_em.description = q
+			await msg.edit(embed=aki_em, view=view)
+			await view.wait()
+			if view.response == None:
+				for item in view.children:
+					item.disabled = True
+					item.style = disnake.ButtonStyle.grey
+				aki_em.description = 'Ran out of time.'
+				return await msg.edit(embed=aki_em, view=view)
+			elif view.response == 'quit':
+				for item in view.children:
+					item.disabled = True
+					item.style = disnake.ButtonStyle.grey
+				aki_em.description = 'Quit the game.'
+				return await msg.edit(embed=aki_em, view=view)
+			elif view.response == 'back':
+				try:
+					q = aki.back()
+				except akinator.CantGoBackAnyFurther:
+					pass
+			else:
+				q = aki.answer(view.response)
+		aki.win()
+		em = disnake.Embed(title='Akinator', description=f'**Is it {aki.first_guess["name"]}**\n{aki.first_guess["description"]}')
+		em.set_image(url=aki.first_guess['absolute_picture_path'])
+		view = self.bot.confirm_view(ctx)
+		view.message = await msg.edit(embed=em, view=view)
+		await view.wait()
+		if view.response == True:
+			em = disnake.Embed(color=disnake.Color.green(), title='Akinator', description='Yay. My knowledge is outwordly like always.')
+			await msg.edit(embed=em, view=view)
+		elif view.response == False:
+			em = disnake.Embed(color=disnake.Color.red(), title='Akinator', description='Oof. It seems like this was too hard for me to guess.')
+			await msg.edit(embed=em, view=view)
 
 	@vampify.error
 	async def vampify_error(self, ctx, error):

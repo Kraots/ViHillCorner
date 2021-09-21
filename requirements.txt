@@ -1,3 +1,4 @@
+akinator.py
 aiodns
 aiohttp
 async-cse
