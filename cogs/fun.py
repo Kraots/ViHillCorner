@@ -697,6 +697,9 @@ class Fun(commands.Cog):
 	async def _akinator(self, ctx):
 		"""Play a game with akinator."""
 
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
+
 		aki_em = disnake.Embed(title='Akinator', description='Starting game...')
 		msg = await ctx.send(embed=aki_em)
 		aki = akinator.Akinator()
