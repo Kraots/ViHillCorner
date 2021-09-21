@@ -816,6 +816,7 @@ class Fun(commands.Cog):
 			em = disnake.Embed(description='Canceled.')
 			return await msg.edit(embed=em, view=view)
 		else:
+			await msg.edit(view=view)
 			def check(m):
 				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 			guesses = 10
