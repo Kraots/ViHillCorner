@@ -6,7 +6,7 @@ attrs
 braceexpand
 chardet
 git+https://github.com/Kraots/jishaku
-git+https://github.com/EQUENOS/disnake
+disnake
 dnspython
 python-dateutil
 hmtai
