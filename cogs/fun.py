@@ -846,7 +846,7 @@ class Fun(commands.Cog):
 					counter += 1
 
 					if guess == number:
-						return await ctx.send(f'You got it! The number was `{guess}`')
+						return await ctx.send(f'You got it! The number was `{guess}`\nHere\'s your 🥯')
 					if counter > guesses:
 						return await ctx.send(f'You ran out of guesses. The answer was `{number}`')
 
