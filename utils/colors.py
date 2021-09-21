@@ -6,3 +6,5 @@ yellow = 0xb9b211
 lightpink = 0xf1a3d8
 blue = 0x708DD0
 reds = 0xf93b3b
+gray = 0x94feff
+grey = gray

@@ -27,9 +27,16 @@ UWU_WORDS = {
 }
 
 class AkinatorView(disnake.ui.View):
-	def __init__(self, *, timeout = 180.0):
+	def __init__(self, ctx, *, timeout = 180.0):
 		super().__init__(timeout=timeout)
+		self.ctx = ctx
 		self.response = None
+	
+	async def interaction_check(self, interaction: disnake.MessageInteraction):
+		if interaction.author.id != self.ctx.author.id:
+			await interaction.response.send_message(f'Only {self.ctx.author.display_name} can use the buttons on this message!', ephemeral=True)
+			return False
+		return True
 	
 	@disnake.ui.button(label='Yes', style=disnake.ButtonStyle.green)
 	async def _yes_butt(self, button: disnake.Button, inter: disnake.Interaction):
@@ -64,6 +71,40 @@ class AkinatorView(disnake.ui.View):
 	@disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red, row=2)
 	async def _quit_butt(self, button: disnake.Button, inter: disnake.Interaction):
 		self.response = 'quit'
+		self.stop()
+
+class BagelsView(disnake.ui.View):
+	def __init__(self, ctx, *, timeout = 180.0):
+		super().__init__(timeout=timeout)
+		self.response = None
+		self.ctx = ctx
+	
+	async def interaction_check(self, interaction: disnake.MessageInteraction):
+		if interaction.author.id != self.ctx.author.id:
+			await interaction.response.send_message(f'Only {self.ctx.author.display_name} can use the buttons on this message!', ephemeral=True)
+			return False
+		return True
+	
+	@disnake.ui.button(label='Start', style=disnake.ButtonStyle.green)
+	async def start(self, button: disnake.Button, inter: disnake.Interaction):
+		self.response = 'start'
+		for item in self.children:
+			item.disabled = True
+			if item.label != button.label:
+				item.style = disnake.ButtonStyle.grey
+			else:
+				item.style = disnake.ButtonStyle.blurple
+		self.stop()
+	
+	@disnake.ui.button(label='Cancel', style=disnake.ButtonStyle.red)
+	async def cancel(self, button: disnake.Button, inter: disnake.Interaction):
+		self.response = 'cancel'
+		for item in self.children:
+			item.disabled = True
+			if item.label != button.label:
+				item.style = disnake.ButtonStyle.grey
+			else:
+				item.style = disnake.ButtonStyle.blurple
 		self.stop()
 
 class Fun(commands.Cog):
@@ -704,11 +745,9 @@ class Fun(commands.Cog):
 		msg = await ctx.send(embed=aki_em)
 		aki = akinator.Akinator()
 		q = aki.start_game()
-		def check(m):
-			return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
-
+		
 		while aki.progression <= 90:
-			view = AkinatorView()
+			view = AkinatorView(ctx)
 			aki_em.description = q
 			await msg.edit(embed=aki_em, view=view)
 			await view.wait()
@@ -744,6 +783,73 @@ class Fun(commands.Cog):
 			em = disnake.Embed(color=disnake.Color.red(), title='Akinator', description='Oof. It seems like this was too hard for me to guess.')
 			await msg.edit(embed=em, view=view)
 
+	@commands.command()
+	async def bagels(self, ctx):
+		"""Play a game of bagels."""
+
+		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+			return
+
+		em = disnake.Embed(color=color.grey, title='Bagels, a deductive logic game', description='I am thinking of a 3-digit number with no repeated digits.')
+		em.add_field(name='When I say', value='Pico\nFermi\nBagels')
+		em.add_field(name='That means', value='One digit is correct but in the wrong position.\nOne digit is correct and in the right position.\nNo digit is correct.')
+		em.add_field(name='Example', value='If the secret number was 248 and your guess was 843, the clues would be Fermi Pico.', inline=False)
+		view = BagelsView(ctx)
+		msg = await ctx.send(embed=em, view=view)
+		await view.wait()
+		if view.response is None:
+			for item in view.children:
+				item.disabled = True
+				item.style = disnake.ButtonStyle.grey
+			em = disnake.Embed(description='Ran out of time.')
+			return await msg.edit(embed=em, view=view)
+		elif view.response == 'cancel':
+			for item in view.children:
+				item.disabled = True
+				item.style = disnake.ButtonStyle.grey
+			em = disnake.Embed(description='Canceled.')
+			return await msg.edit(embed=em, view=view)
+		else:
+			def check(m):
+				return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
+			guesses = 10
+			digits = 3
+			letters = random.sample('0123456789', digits)
+			if letters[0] == '0':
+				letters.reverse()
+			number = ''.join(letters)
+			counter = 1
+			while True:
+				await ctx.send(f'Input your guess #{counter}:')
+				try:
+					ans = await self.bot.wait_for('message', check=check, timeout=180.0)
+					guess = ans.content
+				except asyncio.TimeoutError:
+					return await ctx.reply('Took too much to give an answer.')
+				else:
+					if len(guess) != digits:
+						await ctx.send('Wrong number of digits. Try again!')
+						continue
+					
+					clues = []
+					for index in range(digits):
+						if guess[index] == number[index]:
+							clues.append('Fermi')
+						elif guess[index] in number:
+							clues.append('Pico')
+					random.shuffle(clues)
+
+					if len(clues) == 0:
+						await ctx.send('Bagels')
+					else:
+						await ctx.send(' '.join(clues))
+					counter += 1
+
+					if guess == number:
+						return await ctx.send(f'You got it! The number was `{guess}`')
+					if counter > guesses:
+						return await ctx.send(f'You ran out of guesses. The answer was `{number}`')
+
 	@vampify.error
 	async def vampify_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandOnCooldown):
@@ -753,8 +859,6 @@ class Fun(commands.Cog):
 			await self.bot.reraise(ctx, error)
 		else:
 			await self.bot.reraise(ctx, error)
-		 
-
 
 	@clapify.error
 	async def clapify_error(self, ctx, error):
@@ -766,7 +870,6 @@ class Fun(commands.Cog):
 		else:
 			await self.bot.reraise(ctx, error)
 		 
-
 	@fight.error
 	async def fight_error(self, ctx, error):
 		if isinstance(error, commands.errors.CommandInvokeError):
