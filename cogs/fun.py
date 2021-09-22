@@ -781,7 +781,7 @@ class Fun(commands.Cog):
 		await view.wait()
 		if view.response == True:
 			em.colour = disnake.Color.green()
-			em.set_footer('I win :D')
+			em.set_footer(text='It seems like I win :D')
 			await msg.edit(embed=em, view=view)
 		elif view.response == False:
 			em = disnake.Embed(color=disnake.Color.red(), title='Akinator', description='Oof. It seems like this was too hard for me to guess.')
