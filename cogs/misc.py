@@ -618,7 +618,7 @@ class Misc(commands.Cog):
 			await msg.add_reaction('<:agree:797537027469082627>')
 			await msg.add_reaction('<:disagree:797537030980239411>')
 			em = disnake.Embed(color=color.inviscolor, title="Suggestion successfully added!", url=msg.jump_url)
-			return await msg1.edit(embed=em, view=view)
+			return await msg1.edit(content=ctx.author.mention, embed=em, view=view)
 
 		elif view.response is False:
 			e = "Suggestion aborted. %s" % (ctx.author.mention)
