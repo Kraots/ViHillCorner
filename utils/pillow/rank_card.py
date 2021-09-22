@@ -57,7 +57,7 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
 	final_img = Image.fromarray(npImage)
 	final_img.thumbnail((250, 250))
 	final_img.save('avatar.png')
-	av = Image.open('avatar.png')
+	av = Image.open('avatar.png').convert('RGBA')
 
 	orange_line = Image.new("RGBA", (500, 10), ORANGE)
 	
