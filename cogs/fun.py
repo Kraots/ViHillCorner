@@ -774,13 +774,14 @@ class Fun(commands.Cog):
 			else:
 				q = aki.answer(view.response)
 		aki.win()
-		em = disnake.Embed(title='Akinator', description=f'**Is it {aki.first_guess["name"]}**\n{aki.first_guess["description"]}')
+		em = disnake.Embed(title='Akinator', description=f'**{aki.first_guess["name"]}**\n{aki.first_guess["description"]}')
 		em.set_image(url=aki.first_guess['absolute_picture_path'])
 		view = self.bot.confirm_view(ctx)
 		view.message = await msg.edit(embed=em, view=view)
 		await view.wait()
 		if view.response == True:
-			em = disnake.Embed(color=disnake.Color.green(), title='Akinator', description='Yay. My knowledge is outwordly like always.')
+			em.colour = disnake.Color.green()
+			em.set_footer('I win :D')
 			await msg.edit(embed=em, view=view)
 		elif view.response == False:
 			em = disnake.Embed(color=disnake.Color.red(), title='Akinator', description='Oof. It seems like this was too hard for me to guess.')
@@ -793,7 +794,7 @@ class Fun(commands.Cog):
 		if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
 			return
 
-		em = disnake.Embed(color=color.grey, title='Bagels, a deductive logic game', description='I am thinking of a 3-digit number with no repeated digits.')
+		em = disnake.Embed(color=color.light_blue, title='Bagels, a deductive logic game', description='I am thinking of a 3-digit number with no repeated digits.')
 		em.add_field(name='When I say', value='Pico\nFermi\nBagels')
 		em.add_field(name='That means', value='One digit is correct but in the wrong position.\nOne digit is correct and in the right position.\nNo digit is correct.')
 		em.add_field(name='Example', value='If the secret number was 248 and your guess was 843, the clues would be Fermi Pico.', inline=False)
@@ -806,7 +807,7 @@ class Fun(commands.Cog):
 				item.disabled = True
 				item.style = disnake.ButtonStyle.grey
 			em = disnake.Embed(description='Ran out of time.')
-			return await msg.edit(embed=em, view=view)
+			return await msg.edit(embed=em, view=view, color=color.light_blue)
 		elif view.response == 'cancel':
 			for item in view.children:
 				item.disabled = True
@@ -815,7 +816,7 @@ class Fun(commands.Cog):
 				else:
 					item.style = disnake.ButtonStyle.grey
 			em = disnake.Embed(description='Canceled.')
-			return await msg.edit(embed=em, view=view)
+			return await msg.edit(embed=em, view=view, color=color.light_blue)
 		else:
 			await msg.edit(view=view)
 			def check(m):
