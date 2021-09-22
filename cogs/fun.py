@@ -803,20 +803,11 @@ class Fun(commands.Cog):
 		msg = await ctx.send(embed=em, view=view)
 		await view.wait()
 		if view.response is None:
-			for item in view.children:
-				item.disabled = True
-				item.style = disnake.ButtonStyle.grey
-			em = disnake.Embed(description='Ran out of time.')
-			return await msg.edit(embed=em, view=view, color=color.light_blue)
+			em = disnake.Embed(description='Ran out of time.', color=color.light_blue)
+			return await msg.edit(embed=em, view=view)
 		elif view.response == 'cancel':
-			for item in view.children:
-				item.disabled = True
-				if item.label == 'cancel':
-					item.style = disnake.ButtonStyle.blurple
-				else:
-					item.style = disnake.ButtonStyle.grey
-			em = disnake.Embed(description='Canceled.')
-			return await msg.edit(embed=em, view=view, color=color.light_blue)
+			em = disnake.Embed(description='Canceled.', color=color.light_blue)
+			return await msg.edit(embed=em, view=view)
 		else:
 			await msg.edit(view=view)
 			def check(m):
