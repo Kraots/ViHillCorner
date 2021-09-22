@@ -831,6 +831,8 @@ class Fun(commands.Cog):
 				try:
 					ans = await self.bot.wait_for('message', check=check, timeout=180.0)
 					guess = ans.content
+					if guess in ('quit', 'q', '!cancel', 'exit'):
+						return await ctx.reply('Quit the game.')
 				except asyncio.TimeoutError:
 					return await ctx.reply('Took too much to give an answer.')
 				else:
