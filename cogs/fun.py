@@ -797,6 +797,7 @@ class Fun(commands.Cog):
 		em.add_field(name='When I say', value='Pico\nFermi\nBagels')
 		em.add_field(name='That means', value='One digit is correct but in the wrong position.\nOne digit is correct and in the right position.\nNo digit is correct.')
 		em.add_field(name='Example', value='If the secret number was 248 and your guess was 843, the clues would be Fermi Pico.', inline=False)
+		em.set_footer(text='You can quit the game by typing ``quit``')
 		view = BagelsView(ctx)
 		msg = await ctx.send(embed=em, view=view)
 		await view.wait()
@@ -832,7 +833,7 @@ class Fun(commands.Cog):
 					ans = await self.bot.wait_for('message', check=check, timeout=180.0)
 					guess = ans.content
 					if guess in ('quit', 'q', '!cancel', 'exit'):
-						return await ctx.reply('Quit the game.')
+						return await ans.reply('Quit the game.')
 				except asyncio.TimeoutError:
 					return await ctx.reply('Took too much to give an answer.')
 				else:
