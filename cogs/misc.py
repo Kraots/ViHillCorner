@@ -366,7 +366,7 @@ class Misc(commands.Cog):
 		em.add_field(name='Number of roles', value=str(role_count))
 		em.add_field(name='Number of emotes', value=str(emoji_count))
 		em.add_field(name='Created At', value=format_date(guild.created_at.replace(tzinfo=None)))
-		em.set_thumbnail(url=guild.icon_url)
+		em.set_thumbnail(url=guild.icon.url)
 		em.set_author(name='Server Info')
 		em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 		
