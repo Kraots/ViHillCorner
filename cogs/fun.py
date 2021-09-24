@@ -39,37 +39,37 @@ class AkinatorView(disnake.ui.View):
 		return True
 	
 	@disnake.ui.button(label='Yes', style=disnake.ButtonStyle.green)
-	async def _yes_butt(self, button: disnake.Button, inter: disnake.Interaction):
+	async def _yes_butt(self, button: disnake.Button, inter: disnake.MessageInteraction):
 		self.response = 'yes'
 		self.stop()
 
 	@disnake.ui.button(label='No', style=disnake.ButtonStyle.red)
-	async def _no_butt(self, button: disnake.Button, inter: disnake.Interaction):
+	async def _no_butt(self, button: disnake.Button, inter: disnake.MessageInteraction):
 		self.response = 'no'
 		self.stop()
 
 	@disnake.ui.button(label='I don\'t know')
-	async def _idk_butt(self, button: disnake.Button, inter: disnake.Interaction):
+	async def _idk_butt(self, button: disnake.Button, inter: disnake.MessageInteraction):
 		self.response = 'idk'
 		self.stop()
 
 	@disnake.ui.button(label='Probably', row=1)
-	async def _probs_butt(self, button: disnake.Button, inter: disnake.Interaction):
+	async def _probs_butt(self, button: disnake.Button, inter: disnake.MessageInteraction):
 		self.response = 'probably'
 		self.stop()
 
 	@disnake.ui.button(label='Probably not', row=1)
-	async def _probs_not_butt(self, button: disnake.Button, inter: disnake.Interaction):
+	async def _probs_not_butt(self, button: disnake.Button, inter: disnake.MessageInteraction):
 		self.response = 'probably not'
 		self.stop()
 	
 	@disnake.ui.button(label='Back', row=1)
-	async def _back_butt(self, button: disnake.Button, inter: disnake.Interaction):
+	async def _back_butt(self, button: disnake.Button, inter: disnake.MessageInteraction):
 		self.response = 'back'
 		self.stop()
 	
 	@disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red, row=2)
-	async def _quit_butt(self, button: disnake.Button, inter: disnake.Interaction):
+	async def _quit_butt(self, button: disnake.Button, inter: disnake.MessageInteraction):
 		self.response = 'quit'
 		self.stop()
 
@@ -86,7 +86,7 @@ class BagelsView(disnake.ui.View):
 		return True
 	
 	@disnake.ui.button(label='Start', style=disnake.ButtonStyle.green)
-	async def start(self, button: disnake.Button, inter: disnake.Interaction):
+	async def start(self, button: disnake.Button, inter: disnake.MessageInteraction):
 		self.response = 'start'
 		for item in self.children:
 			item.disabled = True
@@ -97,7 +97,7 @@ class BagelsView(disnake.ui.View):
 		self.stop()
 	
 	@disnake.ui.button(label='Cancel', style=disnake.ButtonStyle.red)
-	async def cancel(self, button: disnake.Button, inter: disnake.Interaction):
+	async def cancel(self, button: disnake.Button, inter: disnake.MessageInteraction):
 		self.response = 'cancel'
 		for item in self.children:
 			item.disabled = True

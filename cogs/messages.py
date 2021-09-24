@@ -27,7 +27,7 @@ class MessagesTopButtons(disnake.ui.View):
 		await self.message.edit(content='Did not click any button in time.', view=self)
 
 	@disnake.ui.button(label='Total Messages Top', style=disnake.ButtonStyle.blurple)
-	async def total_messages_top(self, button: disnake.Button, inter: disnake.Interaction):
+	async def total_messages_top(self, button: disnake.Button, inter: disnake.MessageInteraction):
 		index = 0
 		data = []
 		top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
@@ -56,7 +56,7 @@ class MessagesTopButtons(disnake.ui.View):
 		self.stop()
 	
 	@disnake.ui.button(label='Weekly Messages Top', style=disnake.ButtonStyle.blurple)
-	async def weekly_messages_top(self, button: disnake.Button, inter: disnake.Interaction):
+	async def weekly_messages_top(self, button: disnake.Button, inter: disnake.MessageInteraction):
 		index = 0
 		data = []
 		top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
@@ -85,7 +85,7 @@ class MessagesTopButtons(disnake.ui.View):
 		self.stop()
 	
 	@disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red)
-	async def _stop_view(self, button: disnake.Button, inter: disnake.Interaction):
+	async def _stop_view(self, button: disnake.Button, inter: disnake.MessageInteraction):
 		await self.message.delete()
 		self.stop()
 
