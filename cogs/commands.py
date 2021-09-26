@@ -48,7 +48,7 @@ addd = """
 ° . · . ✧ °  .  ₊˚ˑ˚₊ . ° ✧ . · .°
 """
 
-nono_list = ['pornhub.com', 'https://pornhub.com', 'hentaiheaven.com', 'https://hentaiheaven.com', 'nhentai.net', 'https://nhentai.net', 'hanime.tv', 'https://hanime.tv', 'xvideos.com', 'https://xvideos.com', 'hentai.com', 'https://hentai.com', 'hentai.net', 'https://hentai.net', 'https://www.pornhub.com/', 'www.pornhub.com/']
+nono_list = ('pornhub.com', 'https://pornhub.com', 'hentaiheaven.com', 'https://hentaiheaven.com', 'nhentai.net', 'https://nhentai.net', 'hanime.tv', 'https://hanime.tv', 'xvideos.com', 'https://xvideos.com', 'hentai.com', 'https://hentai.com', 'hentai.net', 'https://hentai.net', 'https://www.pornhub.com/', 'www.pornhub.com/')
 
 class General(commands.Cog):
 
@@ -254,7 +254,7 @@ class General(commands.Cog):
         branch = 'master'
         if command is None:
             return await ctx.send('<' + source_url + '>')
-        elif command.lower() in ['jsk', 'jishaku']:
+        elif command.lower() in ('jsk', 'jishaku'):
             return await ctx.send("That is an extension's command, code unavailable.")
         elif command.lower() == 'help':
             src = type(self.bot.help_command)

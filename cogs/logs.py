@@ -148,7 +148,7 @@ class Logs(commands.Cog):
             return
 
         em = disnake.Embed(title=f'Role Created: {role.name}', color=disnake.Color.green(), timestamp=datetime.datetime.utcnow())
-        em.add_field(name='Permissions', value=', '.join([perm[0].replace('_', ' ') for perm in [p for p in role.permissions] if perm[1] == True]))
+        em.add_field(name='Permissions', value=', '.join((perm[0].replace('_', ' ') for perm in (p for p in role.permissions) if perm[1] == True)))
 
         self.embeds.append(em)
 
@@ -161,7 +161,7 @@ class Logs(commands.Cog):
         em.add_field(name='Colour', value=f'[`{role.colour}`](https://www.color-hex.com/color/{str(role.colour).replace("#", "")})')
         em.add_field(name='Hoisted', value='No' if role.hoist is False else 'Yes')
         em.add_field(name='Mentionable', value='No' if role.mentionable is False else True)
-        em.add_field(name='Permissions', value=', '.join([perm[0].replace('_', ' ') for perm in [p for p in role.permissions] if perm[1] == True]))
+        em.add_field(name='Permissions', value=', '.join((perm[0].replace('_', ' ') for perm in (p for p in role.permissions) if perm[1] == True)))
         em.set_footer(text=f'Role ID: {role.id}')
         
         self.embeds.append(em)
@@ -228,17 +228,17 @@ class Logs(commands.Cog):
         old_name = 'None'
         new_name = 'None'
         for emoji in before:
-            if emoji.id in [e.id for e in after]:
+            if emoji.id in (e.id for e in after):
                 if emoji.name != ''.join([e.name for e in after if e.id == emoji.id]):
                     old_name = emoji.name
                     new_name = ''.join([e.name for e in after if e.id == emoji.id])
                     break
         for emoji in before:
-            if emoji.id not in [e.id for e in after]:
+            if emoji.id not in (e.id for e in after):
                 removed_emoji = (emoji.name, emoji.url)
                 break
         for emoji in after:
-            if emoji.id not in [e.id for e in before]:
+            if emoji.id not in (e.id for e in before):
                 added_emoji = emoji
                 break
         if len(new_name) != 0:

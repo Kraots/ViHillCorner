@@ -17,7 +17,7 @@ class Trivia(commands.Cog):
     async def trivia(self, ctx):
         """Start your trivia game."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         trivia = games.Trivia(ctx)
@@ -27,7 +27,7 @@ class Trivia(commands.Cog):
     async def trivia_points(self, ctx, member: disnake.Member = None):
         """See how many points the member has."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         member = member or ctx.author
@@ -62,7 +62,7 @@ class Trivia(commands.Cog):
     async def trivia_leaderboard(self, ctx):
         """See the top 5 members with the most amount of trivia points."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         rank = 0
@@ -125,7 +125,7 @@ class Trivia(commands.Cog):
     async def trivia_points_gift(self, ctx, amount: str, member: disnake.Member = None):
         """Gift some of your points to the other member."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         if member is None:
@@ -154,7 +154,7 @@ class Trivia(commands.Cog):
         elif amount < 5:
             await ctx.send("You cannot give less than **5** points. %s" % (ctx.author.mention))
             return
-        elif str(amount)[-1] not in ['5', '0']:
+        elif str(amount)[-1] not in ('5', '0'):
             await ctx.send("The number must always end in **5** or **0**. %s" % (ctx.author.mention))
             return
         elif memberDb is None:

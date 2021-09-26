@@ -711,7 +711,7 @@ class Misc(commands.Cog):
     async def suggest(self, ctx, *, args):
         """Make a suggestion in <#750160850593251454>."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         result = await self.db2.find_one({'_id': ctx.author.id})

@@ -89,7 +89,7 @@ _animals = [
     {'animal': 'dragon', 'chances': (108, 109, 110)}
             ]
 
-all_search_choices = ['purse', 'discord', 'pocket', 'street', 'dog', 'uber', 'canals', 'washer', 'sink', 'fridge', 'area51', 'dumpster', 'couch', 'dress', 'tree', 'glovebox']
+all_search_choices = ('purse', 'discord', 'pocket', 'street', 'dog', 'uber', 'canals', 'washer', 'sink', 'fridge', 'area51', 'dumpster', 'couch', 'dress', 'tree', 'glovebox')
 
 class EcoSearchView(disnake.ui.View):
     def __init__(self, ctx, *, timeout=10.0):
@@ -265,7 +265,7 @@ class Economy(commands.Cog):
     async def daily(self, ctx):
         """Get your daily 75.00K <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         user = ctx.author
@@ -331,7 +331,7 @@ class Economy(commands.Cog):
     async def eco_register(self, ctx):
         """Register yourself to be able to use the economy commands."""
         
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         user = ctx.author
@@ -356,7 +356,7 @@ class Economy(commands.Cog):
     async def eco_unregister(self, ctx):
         """Unregister yourself, you won't be able to use the economy commands anymore."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         user = ctx.author
@@ -373,7 +373,7 @@ class Economy(commands.Cog):
     async def inventory(self, ctx, member: disnake.Member = None):
         """Check your or someone else's inventory."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         member = member or ctx.author
@@ -428,13 +428,13 @@ class Economy(commands.Cog):
         These items provide different perks such as luck multipliers, tools to get more <:carrots:822122757654577183>, etc...
         """
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         if item is None:
             shop = []
             for item in _shop:
-                if item['item_type'] in ['Tool', 'Usable', 'Collectable']:
+                if item['item_type'] in ('Tool', 'Usable', 'Collectable'):
                     shop.append(item)
             p = ShopMenu(ctx=ctx, entries=shop)
             await p.start()
@@ -477,7 +477,7 @@ class Economy(commands.Cog):
         for user in await self.db.find().to_list(100000):
             items = []
             index = 0
-            names = [i['item_name'] for i in _shop]
+            names = (i['item_name'] for i in _shop)
             for i in names:
                 try:
                     if i in user['items'][index]['item_name']:
@@ -495,7 +495,7 @@ class Economy(commands.Cog):
     async def eco_shop_buy(self, ctx, *, item):
         """Buy an item from the shop."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         item_ = item.lower()
@@ -533,7 +533,7 @@ class Economy(commands.Cog):
     async def eco_shop_sell(self, ctx, *, item):
         """Sell an item that you own."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         user_db = await self.db.find_one({'_id': ctx.author.id})
@@ -550,7 +550,7 @@ class Economy(commands.Cog):
                 items = []
                 sellables = 0
                 for _item in user_db['items']:
-                    if _item['owned'] != 0 and _item['item_name'] in [i['item_name'] for i in _shop if i['item_type'] == 'Sellable']:
+                    if _item['owned'] != 0 and _item['item_name'] in (i['item_name'] for i in _shop if i['item_type'] == 'Sellable'):
                         sold_for = _item['owned'] * int(''.join([str(i_['sells_for']) for i_ in _shop if i_['item_name'] == _item['item_name']]))
                         total_sold_for += sold_for
                         sellables += 1
@@ -617,10 +617,10 @@ class Economy(commands.Cog):
     async def eco_shop_use(self, ctx, *, item: str):
         """Use an item that you have."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
-        usable_items = [i['item_name'] for i in _shop if i['item_type'] == 'Usable']
+        usable_items = (i['item_name'] for i in _shop if i['item_type'] == 'Usable')
         user_db = await self.db.find_one({'_id': ctx.author.id})
         item = item.lower()
         if item not in usable_items:
@@ -652,7 +652,7 @@ class Economy(commands.Cog):
     async def eco_shop_using(self, ctx):
         """See what items you have in use."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         user_db = await self.db.find_one({'_id': ctx.author.id})
@@ -680,7 +680,7 @@ class Economy(commands.Cog):
         ***Requires 1x fishing pool.***
         """
         
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         user_db = await self.db.find_one({'_id': ctx.author.id})
@@ -739,7 +739,7 @@ class Economy(commands.Cog):
         ***Requires 1x hunting rifle.***
         """
         
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -796,7 +796,7 @@ class Economy(commands.Cog):
     async def eco_search(self, ctx):
         """Search and get or lose carrots."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         user_db = await self.db.find_one({'_id': ctx.author.id})
@@ -843,7 +843,7 @@ class Economy(commands.Cog):
 
         if ctx.author.id != 374622847672254466:
             if datetime.datetime.utcnow() >= user_db['passive_cooldown']:
-                if option not in ['on', 'off']:
+                if option not in ('on', 'off'):
                     return await ctx.reply('Not a valid option')
                 elif options[option] == user_db['passive']:
                     return await ctx.reply(f"Your passive is already {'**enabled.**' if option == 'on' else '**disabled.**'}")
@@ -853,7 +853,7 @@ class Economy(commands.Cog):
             else:
                 await ctx.reply(f"You can set your passive again in **{time.human_timedelta(user_db['passive_cooldown'])}**.")
         else:
-            if option not in ['on', 'off']:
+            if option not in ('on', 'off'):
                 return await ctx.reply('Not a valid option')
             elif options[option] == user_db['passive']:
                 return await ctx.reply(f"Your passive is already {'**enabled.**' if option == 'on' else '**disabled.**'}")
@@ -865,7 +865,7 @@ class Economy(commands.Cog):
     async def balance(self, ctx, member: disnake.Member = None):
         """Check your or another member's balance."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         member = member or ctx.author
@@ -902,7 +902,7 @@ class Economy(commands.Cog):
     async def eco_bal_leaderboard(self, ctx):
         """See top richest people."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         index = 0
@@ -1058,7 +1058,7 @@ class Economy(commands.Cog):
     async def withdraw(self, ctx, amount = None):
         """Withdraw the amount of <:carrots:822122757654577183> from your bank."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         results = await self.db.find_one({"_id": ctx.author.id})
@@ -1109,7 +1109,7 @@ class Economy(commands.Cog):
     async def deposit(self, ctx, amount = None):
         """Deposit the amount of <:carrots:822122757654577183> in your bank."""
         
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         results = await self.db.find_one({"_id": ctx.author.id})
@@ -1159,7 +1159,7 @@ class Economy(commands.Cog):
     async def bal_eco_give(self, ctx, member : disnake.Member, amount = None):
         """Be a kind person and give some of your <:carrots:822122757654577183> from your **bank** to someone else's."""
         
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         results = await self.db.find_one({"_id": ctx.author.id})
@@ -1226,7 +1226,7 @@ class Economy(commands.Cog):
     async def rob(self, ctx, member : disnake.Member = None):
         """Rob someone of their <:carrots:822122757654577183> from their wallet."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         if member is None:
@@ -1310,7 +1310,7 @@ class Economy(commands.Cog):
     async def slots(self, ctx, amount = None):
         """Gamble your <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
@@ -1433,7 +1433,7 @@ class Economy(commands.Cog):
     async def beg(self, ctx):
         """Beg for some <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
@@ -1455,7 +1455,7 @@ class Economy(commands.Cog):
     async def work(self, ctx):
         """Work and get <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
@@ -1476,7 +1476,7 @@ class Economy(commands.Cog):
     async def crime(self, ctx):
         """Commit crimes that range between `small-medium-big`, and depending on which one you get, the more <:carrots:822122757654577183> you get, but be careful! You can lose the carrots as well."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
@@ -1526,7 +1526,7 @@ class Economy(commands.Cog):
     async def eco_gtn(self, ctx):
         """Play a guess the number game and earn <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
@@ -1585,7 +1585,7 @@ class Economy(commands.Cog):
     async def ppsuck(self, ctx):
         """Suck some pp 😳 for some quick <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
@@ -1652,7 +1652,7 @@ class Economy(commands.Cog):
     async def race(self, ctx):
         """Participate in a race and earn <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
@@ -1709,7 +1709,7 @@ class Economy(commands.Cog):
     async def eco_rps(self, ctx):
         """Play a game of rock-paper-scissors with the bot and earn <:carrots:822122757654577183> if you win or lose some if you lose the game."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})

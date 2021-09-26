@@ -10,10 +10,10 @@ import hmtai
 import aiohttp
 
 nsfw_url = 'https://nekobot.xyz/api/image?type='
-nsfw_categs = ['hentai', 'ass', 'thigh', 'hass', 'hboobs', 'pgif', 'paizuri', 'boobs', 'pussy', 'hyuri', 'hthigh', 'lewdneko', 'anal', 'hmidriff', 'feet', 'gonewild', 'hkitsune', '4k', 'blowjob', 'tentacle', 'hentai_anal']
-real_categs = ['ass', 'thigh', 'pgif', 'boobs', 'pussy', 'anal', 'feet', 'gonewild', '4k', 'blowjob']
-hentai_categs_1 = ['hentai', 'hass', 'hboobs', 'paizuri', 'hyuri', 'hthigh', 'lewdneko', 'hmidriff', 'hkitsune', 'tentacle', 'hentai_anal']
-hentai_categs_2 = ['ass', 'ecchi', 'ero', 'hentai', 'maid', 'milf', 'oppai', 'oral', 'paizuri', 'selfies', 'uniform']
+nsfw_categs = ('hentai', 'ass', 'thigh', 'hass', 'hboobs', 'pgif', 'paizuri', 'boobs', 'pussy', 'hyuri', 'hthigh', 'lewdneko', 'anal', 'hmidriff', 'feet', 'gonewild', 'hkitsune', '4k', 'blowjob', 'tentacle', 'hentai_anal')
+real_categs = ('ass', 'thigh', 'pgif', 'boobs', 'pussy', 'anal', 'feet', 'gonewild', '4k', 'blowjob')
+hentai_categs_1 = ('hentai', 'hass', 'hboobs', 'paizuri', 'hyuri', 'hthigh', 'lewdneko', 'hmidriff', 'hkitsune', 'tentacle', 'hentai_anal')
+hentai_categs_2 = ('ass', 'ecchi', 'ero', 'hentai', 'maid', 'milf', 'oppai', 'oral', 'paizuri', 'selfies', 'uniform')
 
 class NSFWPageEntry:
     def __init__(self, entry):
@@ -75,11 +75,11 @@ class NSFW(commands.Cog):
         if not categ in hentai_categs_1:
             if categ == 'ass':
                 categ = 'hass'
-            elif categ in ['boob', 'boobs']:
+            elif categ in ('boob', 'boobs'):
                 categ = 'hboobs'
             elif categ == 'yuri':
                 categ = 'hyuri'
-            elif categ in ['thigh', 'thighs']:
+            elif categ in ('thigh', 'thighs'):
                 categ = 'hthigh'
             elif categ == 'neko':
                 categ = 'lewdneko'
@@ -314,7 +314,7 @@ class NSFW(commands.Cog):
     async def nsfw_error(self, ctx, error):
         if isinstance(error, commands.CheckFailure):
             if not isinstance(ctx.channel, disnake.DMChannel):
-                if 754676705741766757 in [role.id for role in ctx.message.author.roles]:
+                if 754676705741766757 in (role.id for role in ctx.author.roles):
                     await ctx.send('Invalid format!\nUse: `!nsfw block <users>` or `!nsfw unblock <users>`!')
         else:
             await self.bot.reraise(ctx, error)

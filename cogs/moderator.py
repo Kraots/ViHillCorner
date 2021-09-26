@@ -48,7 +48,7 @@ class Moderator(commands.Cog):
         self.db2 = bot.db1['Filter Mutes']
         self.prefix = "!"
         self.check_current_mutes.start()
-        self.ignored_channels = [750645852237987891, 750160850303582236, 779388444304211991, 750160850303582237, 750160850593251449, 797867811967467560, 752164200222163016, 783304066691235850, 770209436488171530, 779280794530086952, 788377362739494943, 750160852380024895, 781777255885570049, 750432155179679815, 750160850593251454]
+        self.ignored_channels = (750645852237987891, 750160850303582236, 779388444304211991, 750160850303582237, 750160850593251449, 797867811967467560, 752164200222163016, 783304066691235850, 770209436488171530, 779280794530086952, 788377362739494943, 750160852380024895, 781777255885570049, 750432155179679815, 750160850593251454)
     async def cog_check(self, ctx):
         return ctx.prefix == self.prefix
 
@@ -187,7 +187,7 @@ class Moderator(commands.Cog):
 
         try:
             member = guild.get_member(user.id)
-            if 754676705741766757 in [role.id for role in member.roles]:
+            if 754676705741766757 in (role.id for role in member.roles):
                 return await ctx.reply("Cannot perform this action against staff members.")
         except:
             pass
@@ -264,7 +264,7 @@ class Moderator(commands.Cog):
         """
 
         isStaff = False
-        if 754676705741766757 in [role.id for role in member.roles]:
+        if 754676705741766757 in (role.id for role in member.roles):
             if ctx.author.id != 374622847672254466:
                 return await ctx.send("You can't mute mods or take any moderator action against them.")
             isStaff = True
@@ -313,7 +313,7 @@ class Moderator(commands.Cog):
             log_channel = guild.get_channel(788377362739494943)
             muted = guild.get_role(750465726069997658)
             if isStaff == True:
-                new_roles = [role for role in member.roles if not role.id in [754676705741766757, 750162714407600228]] + [muted]
+                new_roles = [role for role in member.roles if not role.id in (754676705741766757, 750162714407600228)] + [muted]
             else:
                 new_roles = [role for role in member.roles] + [muted]
             await member.edit(roles=new_roles, reason=f'{ctx.author}: "{reason_content}"')

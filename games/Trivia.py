@@ -25,7 +25,7 @@ class Trivia:
                 mode = await self.bot.wait_for('message', check=check, timeout=180)
                 if mode.content.lower() == '!cancel':
                     raise Exception('Cancelled.')
-                elif mode.content.lower() in ['solo', 'competitive', 'comp']:
+                elif mode.content.lower() in ('solo', 'competitive', 'comp'):
                     break
                 else:
                     await mode.reply("Invalid mode.")
@@ -68,7 +68,7 @@ class Trivia:
                 difficulty = _difficulty.content.lower()
                 if difficulty == '!cancel':
                     raise Exception('Cancelled')
-                elif difficulty in ['easy', 'medium', 'hard']:
+                elif difficulty in ('easy', 'medium', 'hard'):
                     break
                 else:
                     await _difficulty.reply("That is not a valid form of difficulty. Please choose from:\n\u2800• **Easy**\n\u2800• **Medium**\n\u2800• **Hard**")
@@ -100,7 +100,7 @@ class Trivia:
                         await _wager_amount.reply("Not a number!")
                 if wager_amount < 15:
                     await _wager_amount.reply(f"You must place a minimum of `15` points bet. {self.player.mention}")
-                elif str(wager_amount)[-1] not in ['5', '0']:
+                elif str(wager_amount)[-1] not in ('5', '0'):
                     await _wager_amount.reply(f"The number must always end in **5** or **0**. {self.player.mention}")
                 elif user['points'] < wager_amount:
                     raise Exception(f"You do not have enough points to place this bet. {self.player.mention}")
@@ -205,26 +205,26 @@ class Trivia:
             while True:
                 _answer = await self.bot.wait_for('message', check=check, timeout=180)
                 answer = _answer.content.lower()
-                if answer in ['a', 'b', 'c', 'd', 'true', 'false']:
+                if answer in ('a', 'b', 'c', 'd', 'true', 'false'):
                     if rand == 1:
                         if answer == 'a':
                             answer = question[question_index]['correct_answer'].lower()
-                        elif answer not in ['true', 'false']:
+                        elif answer not in ('true', 'false'):
                             answer = "."
                     elif rand == 2:
                         if answer == 'b':
                             answer = question[question_index]['correct_answer'].lower()
-                        elif answer not in ['true', 'false']:
+                        elif answer not in ('true', 'false'):
                             answer = "."
                     elif rand == 3:
                         if answer == 'c':
                             answer = question[question_index]['correct_answer'].lower()
-                        elif answer not in ['true', 'false']:
+                        elif answer not in ('true', 'false'):
                             answer = "."
                     elif rand == 4:
                         if answer == 'd':
                             answer = question[question_index]['correct_answer'].lower()
-                        elif answer not in ['true', 'false']:
+                        elif answer not in ('true', 'false'):
                             answer = "."
                     break
                 else:

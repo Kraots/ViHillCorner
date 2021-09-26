@@ -4,8 +4,8 @@ import json
 import utils.colors as color
 import datetime
 
-no_mute_these = [374622847672254466]
-ignored_channels = [790310516266500098, 780374324598145055, 750160851822182487, 750160851822182486, 750160852006469807, 750160852006469810, 790309304422629386, 750160852006469806, 750160851822182484, 752164200222163016]
+no_mute_these = (374622847672254466,)
+ignored_channels = (790310516266500098, 780374324598145055, 750160851822182487, 750160851822182486, 750160852006469807, 750160852006469810, 790309304422629386, 750160852006469806, 750160851822182484, 752164200222163016)
 
 time_convert = {900: '15 minutes', 1800: '30 minutes', 2700: '45 minutes', 3600: '60 minutes', 43200: '12 hours', 86400: '24 hours', None: 'Forever'}
 muted_amount_count = {}
@@ -87,7 +87,7 @@ class RepeatedTextFilter(commands.Cog):
                         json.dump(users, f, ensure_ascii = False, indent = 4)
 
                     isStaff = False
-                    if 754676705741766757 in [role.id for role in message.author.roles]:
+                    if 754676705741766757 in (role.id for role in message.author.roles):
                         isStaff = True
                     
                     mute_time = get_mute_time(message.author.id) 
@@ -107,7 +107,7 @@ class RepeatedTextFilter(commands.Cog):
                     guild = self.bot.get_guild(750160850077089853)
                     muted = guild.get_role(750465726069997658)
                     if isStaff == True:
-                        new_roles = [role for role in message.author.roles if not role.id in [754676705741766757, 750162714407600228]] + [muted]
+                        new_roles = [role for role in message.author.roles if not role.id in (754676705741766757, 750162714407600228)] + [muted]
                     else:
                         new_roles = [role for role in message.author.roles] + [muted]
                     await message.author.edit(roles=new_roles, reason='Filter Mute (Repeated Text)')
@@ -170,7 +170,7 @@ class SpamFilter(commands.Cog):
                             json.dump(users, f, ensure_ascii = False, indent = 4)
                         
                         isStaff = False
-                        if 754676705741766757 in [role.id for role in message.author.roles]:
+                        if 754676705741766757 in (role.id for role in message.author.roles):
                             isStaff = True
                         
                         mute_time = get_mute_time(message.author.id)
@@ -190,7 +190,7 @@ class SpamFilter(commands.Cog):
                         guild = self.bot.get_guild(750160850077089853)
                         muted = guild.get_role(750465726069997658)
                         if isStaff == True:
-                            new_roles = [role for role in message.author.roles if not role.id in [754676705741766757, 750162714407600228]] + [muted]
+                            new_roles = [role for role in message.author.roles if not role.id in (754676705741766757, 750162714407600228)] + [muted]
                         else:
                             new_roles = [role for role in message.author.roles] + [muted]
                         await message.author.edit(roles=new_roles, reason='Filter Mute (Spam)')

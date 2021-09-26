@@ -17,7 +17,7 @@ class Intros(commands.Cog):
     async def intro(self, ctx):
         """Create a new intro if you don't have one or edit an existing one."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
@@ -132,7 +132,7 @@ class Intros(commands.Cog):
                                             await channel.send("Canceled. %s" % (ctx.author.mention))
                                             ctx.command.reset_cooldown(ctx)
                                             return
-                                        elif status in ['single', 'taken', 'complicated']:
+                                        elif status in ('single', 'taken', 'complicated'):
                                             break
                                         else:
                                             await channel.send("Please only choose from `single` | `taken` | `complicated`")
@@ -262,7 +262,7 @@ class Intros(commands.Cog):
                                         await channel.send("Canceled. %s" % (ctx.author.mention))
                                         ctx.command.reset_cooldown(ctx)
                                         return
-                                    elif status in ['single', 'taken', 'complicated']:
+                                    elif status in ('single', 'taken', 'complicated'):
                                         break
                                     else:
                                         await channel.send("Please only choose from `single` | `taken` | `complicated`")

@@ -216,7 +216,7 @@ class WeeklyTop(commands.Cog):
     async def msg_top(self, ctx):
         """See the top 15 most active members of the server and when the top restarts."""
         
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         view = MessagesTopButtons(self.db, ctx)

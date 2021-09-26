@@ -4,9 +4,9 @@ import asyncio
 import utils.colors as color
 import datetime
 
-invalid_names_list = ["!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "", "]", "^", "_", "`", "{", "|", "}", "~", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+invalid_names_list = ("!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "", "]", "^", "_", "`", "{", "|", "}", "~", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
 
-nono_names = ["kraots", "vihillcorner", "carrots"]
+nono_names = ("kraots", "vihillcorner", "carrots")
 
 async def check_invalid_name(db, message, kraots) -> str:
     user = await db.find_one({'_id': message.author.id})

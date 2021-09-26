@@ -199,12 +199,13 @@ async def reraise(ctx, error):
         await asyncio.sleep(7.5)
         await ctx.message.delete()
     
-    elif isinstance(error, commands.TooManyArguments):
+    elif (
+        isinstance(error, commands.TooManyArguments) or
+        isinstance(error, commands.BadArgument) or
+        isinstance(error, commands.CommandNotFound)
+    ):
         return
 
-    elif isinstance(error, commands.errors.CommandNotFound):
-        return
-    
     elif isinstance(error, commands.CommandOnCooldown):
         return await ctx.send(f'You are on cooldown, **`{time_phaser(error.retry_after)}`** remaining.')
 
@@ -223,9 +224,6 @@ async def reraise(ctx, error):
 
     elif isinstance(error, commands.errors.CheckFailure):
         ctx.command.reset_cooldown(ctx)
-        return
-
-    elif isinstance(error, commands.BadArgument):
         return
 
     else:

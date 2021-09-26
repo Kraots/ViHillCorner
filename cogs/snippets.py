@@ -5,7 +5,7 @@ from utils.paginator import SimplePages
 import datetime
 import utils.colors as color
 
-nono_names = ["huggles", "grouphug", "eat", "chew", "sip", "clap", "cry", "rofl", "lol", "kill", "pat", "rub", "nom", "catpat", "hug", "pillow", "spray", "hype", "specialkiss", "kiss", "ily", "nocry", "shrug", "smug", "bearhug", "moan"]
+nono_names = ("huggles", "grouphug", "eat", "chew", "sip", "clap", "cry", "rofl", "lol", "kill", "pat", "rub", "nom", "catpat", "hug", "pillow", "spray", "hype", "specialkiss", "kiss", "ily", "nocry", "shrug", "smug", "bearhug", "moan")
 
 class SnippetPageEntry:
     def __init__(self, entry):
@@ -141,7 +141,7 @@ class Snippets(commands.Cog):
         data = await self.db.find_one({'_id': snippet_name.lower()})
         if data != None:
             return await ctx.send("Snippet name (`%s`) is already taken. %s" % (snippet_name, ctx.author.mention))
-        for x in ['kraots', 'carrots', 'carots', 'carot', 'carrot']:
+        for x in ('kraots', 'carrots', 'carots', 'carot', 'carrot'):
             if x in snippet_name.lower():
                 if ctx.author.id != 374622847672254466:
                     return await ctx.send("You cannot create a snippet with that name. %s" % (ctx.author.mention))

@@ -131,7 +131,7 @@ class Developer(commands.Cog):
         """Removes the mod/staff roles from a member."""
 
         for member in members:
-            new_roles = [role for role in member.roles if not role.id in [754676705741766757, 750162714407600228]]
+            new_roles = [role for role in member.roles if not role.id in (754676705741766757, 750162714407600228)]
             await member.edit(roles=new_roles, reason='Master removed their staff/mod.')
         
             removemod = disnake.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')

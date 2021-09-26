@@ -56,7 +56,7 @@ class OnBanAppealJoin(commands.Cog):
         if message.guild:
             if message.guild.id == 788384492175884299:
                 if message.content.lower() == 'bye':
-                    if 788384677987352608 in [role.id for role in message.author.roles] or message.author.id == 374622847672254466:
+                    if 788384677987352608 in (role.id for role in message.author.roles) or message.author.id == 374622847672254466:
                         found = False
                         for obj in message.channel.overwrites:
                             if obj.id == int(message.channel.topic):
@@ -66,7 +66,7 @@ class OnBanAppealJoin(commands.Cog):
                         if found == False:
                             return
                         def check(reaction, user):
-                            return str(reaction.emoji) in ['<:agree:797537027469082627>', '<:disagree:797537030980239411>'] and user.id == message.author.id
+                            return str(reaction.emoji) in ('<:agree:797537027469082627>', '<:disagree:797537030980239411>') and user.id == message.author.id
                         await message.add_reaction('<:agree:797537027469082627>')
                         await message.add_reaction('<:disagree:797537030980239411>')
                         try:

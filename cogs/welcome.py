@@ -17,7 +17,7 @@ def remove_emoji(string):
                         "]+", flags=re.UNICODE)
     return emoji_pattern.sub(r'', string)
 
-allowed_letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "", "]", "^", "_", "`", "{", "|", "}", "~", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "♡", " ", "\\"]
+allowed_letters = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "", "]", "^", "_", "`", "{", "|", "}", "~", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "♡", " ", "\\")
 
 
 class on_join(commands.Cog):
@@ -258,7 +258,7 @@ class on_join(commands.Cog):
                                         if status == '!cancel':
                                             await channel.send("Canceled.")
                                             return
-                                        if status in ['single', 'taken', 'complicated']:
+                                        if status in ('single', 'taken', 'complicated'):
                                             break
                                         else:
                                             await channel.send("Please only choose from single` | `taken` | `complicated`")

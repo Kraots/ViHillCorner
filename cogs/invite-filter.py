@@ -3,7 +3,7 @@ from disnake.ext import commands
 import re
 import asyncio
 import utils.colors as color
-no_mute_these = [374622847672254466]
+no_mute_these = (374622847672254466,)
 
 filter_invite = re.compile("(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 

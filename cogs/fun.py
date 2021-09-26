@@ -576,7 +576,7 @@ class Fun(commands.Cog):
     async def fight(self, ctx, p2: disnake.Member):
         """Have an interactive fight with someone."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         if p2 == ctx.author:
@@ -668,7 +668,7 @@ class Fun(commands.Cog):
     async def _tictactoe(self, ctx, member: disnake.Member = None):
         """Play a game of tictactoe against someone."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         if member is None:
@@ -738,7 +738,7 @@ class Fun(commands.Cog):
     async def _akinator(self, ctx):
         """Play a game with akinator."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         aki_em = disnake.Embed(title='Akinator', description='Starting game...')
@@ -791,7 +791,7 @@ class Fun(commands.Cog):
     async def bagels(self, ctx):
         """Play a game of bagels."""
 
-        if not ctx.channel.id in [750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061]:
+        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         em = disnake.Embed(color=color.light_blue, title='Bagels, a deductive logic game', description='I am thinking of a 3-digit number with no repeated digits.')
