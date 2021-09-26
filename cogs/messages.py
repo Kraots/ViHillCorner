@@ -5,6 +5,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from utils import time
 from utils.paginator import RoboPages, FieldPageSource
+import pymongo
 
 class MessagesTopButtons(disnake.ui.View):
     def __init__(self, db, ctx, *, timeout = 180.0):
@@ -135,9 +136,12 @@ class WeeklyTop(commands.Cog):
             return
         data = await self.db.find_one({'_id': message.author.id})
         if data is None:
-            newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0, "weekly_messages_count": 0}
-            await self.db.insert_one(newuser)
-            return
+            try:
+                newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0, "weekly_messages_count": 0}
+                await self.db.insert_one(newuser)
+                return
+            except pymongo.errors.DuplicateKeyError:
+                return
         await self.db.update_one({"_id": message.author.id}, {"$inc": {"messages_count": 1}})
 
     @commands.group(name='messages', invoke_without_command = True, case_insensitive = True, aliases=['msg'])

@@ -3,6 +3,7 @@ from disnake.ext import commands
 import utils.colors as color
 from utils.pillow import rank_card
 from utils.paginator import RoboPages, FieldPageSource
+import pymongo
 
 bot_channel = (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787357561116426258)
 no_talk_channels = (750160852006469807, 780374324598145055)
@@ -29,9 +30,12 @@ class Levels(commands.Cog):
                     guild = self.bot.get_guild(750160850077089853)
                     stats = await self.db.find_one({"_id": message.author.id})
                     if stats is None:
-                        newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0, "weekly_messages_count": 0}
-                        await self.db.insert_one(newuser)
-                        return
+                        try:
+                            newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0, "weekly_messages_count": 0}
+                            await self.db.insert_one(newuser)
+                            return
+                        except pymongo.errors.DuplicateKeyError:
+                            return
                         
                     kraotsDocument = await self.db.find_one({'_id': 374622847672254466})
                     membersMultiplier = kraotsDocument['xp multiplier']
