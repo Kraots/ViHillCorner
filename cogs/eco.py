@@ -214,7 +214,7 @@ class RPSView(disnake.ui.View):
             await self.message.edit(lost_message, view=self)
             won = False
         elif choice == bot_choice:
-            return await self.message.edit('We both chose `scissors`. Nothing happened, your balance stays the same.', view=self)
+            return await self.message.edit(f'We both chose `{choice}`. Nothing happened, your balance stays the same.', view=self)
         else:
             await self.message.edit(won_message, view=self)
             won = True
