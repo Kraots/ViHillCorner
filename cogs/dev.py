@@ -13,6 +13,8 @@ import io
 import textwrap
 from traceback import format_exception
 import time
+from disnake import Option, ApplicationCommandInteraction
+from utils.database import Database
     
 def restart_program():
     python = sys.executable
@@ -22,9 +24,86 @@ class Developer(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.db = Database(bot.session)
         self.prefix = '!'
     async def cog_check(self, ctx):
         return ctx.prefix == self.prefix
+
+    @commands.slash_command()
+    async def schema(self, inter):
+        pass
+
+    @schema.sub_command(
+        name='create',
+        options=[
+            Option(name='name', description='The schema\'s name.', required=True)
+        ]
+    )
+    @commands.is_owner()
+    async def schema_create(self, inter: ApplicationCommandInteraction, name: str):
+        """Creates a schema."""
+    
+        operation = await self.db.create_schema(name)
+        await inter.response.send_message(str(operation), ephemeral=True)
+    
+    @schema.sub_command(
+        name='drop',
+        options=[
+            Option(name='name', description='The schema\'s name.', required=True)
+        ]
+    )
+    @commands.is_owner()
+    async def schema_drop(self, inter: ApplicationCommandInteraction, name: str):
+        """Drops a schema."""
+    
+        operation = await self.db.drop_schema(name)
+        await inter.response.send_message(str(operation), ephemeral=True)
+
+    @commands.slash_command()
+    async def table(self, inter):
+        pass
+
+    @table.sub_command(
+        name='create',
+        options=[
+            Option(name='schema', description='The schema this table is for.', required=True),
+            Option(name='name', description='The table\'s name.', required=True),
+            Option(name='hash_attribute', description='The hash attr of this table.', required=True)
+        ]
+    )
+    @commands.is_owner()
+    async def table_create(self, inter: ApplicationCommandInteraction, schema: str, name: str, hash_attribute: str):
+        """Creates a table for the given schema."""
+    
+        operation = await self.db.create_table(schema, name, hash_attribute)
+        await inter.response.send_message(str(operation), ephemeral=True)
+    
+    @table.sub_command(
+        name='drop',
+        options=[
+            Option(name='schema', description='The schema this table is for.', required=True),
+            Option(name='name', description='The table\'s name.', required=True)
+        ]
+    )
+    @commands.is_owner()
+    async def table_drop(self, inter: ApplicationCommandInteraction, schema: str, name: str):
+        """Drops the table for the given schema."""
+    
+        operation = await self.db.drop_table(schema, name)
+        await inter.response.send_message(str(operation), ephemeral=True)
+
+    @commands.slash_command(
+        name='sql',
+        options=[
+            Option(name='sql', description='The sql code.', required=True)
+        ]
+    )
+    @commands.is_owner()
+    async def sql(self, inter: ApplicationCommandInteraction, sql: str):
+        """Executes an SQL code."""
+    
+        operation = await self.db.do_sql(sql)
+        await inter.response.send_message(str(operation), ephemeral=True)
 
     @commands.command(name='eval', aliases=['e'])
     @commands.is_owner()

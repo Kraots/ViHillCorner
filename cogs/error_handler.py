@@ -1,4 +1,5 @@
 from disnake.ext import commands
+import disnake
 
 class GlobalErrorHandler(commands.Cog):
 
@@ -16,6 +17,10 @@ class GlobalErrorHandler(commands.Cog):
                 return
     
         await self.bot.reraise(ctx, error)
+
+    @commands.Cog.listener()
+    async def on_slash_command_error(self, inter: disnake.ApplicationCommandInteraction, error):
+        await self.bot.slash_reraise(inter, error)
 
 def setup(bot):
     bot.add_cog(GlobalErrorHandler(bot))

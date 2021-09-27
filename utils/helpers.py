@@ -194,6 +194,7 @@ def format_balance(balance):
 async def reraise(ctx, error):
     if isinstance(error, commands.NotOwner):
         error = disnake.Embed(title="ERROR", description="Command Error: You do not own this bot!")
+        error.set_footer(text='This is an owner only command')
         
         await ctx.send(embed=error, delete_after=8)
         await asyncio.sleep(7.5)
@@ -235,6 +236,32 @@ async def reraise(ctx, error):
             await ctx.send(embed=em)
         else:
             await ctx.send(embed=em)
+
+async def slash_reraise(inter: disnake.ApplicationCommandInteraction, error):
+    if isinstance(error, commands.NotOwner):
+        error = disnake.Embed(title="ERROR", description="Command Error: You do not own this bot!")
+        error.set_footer(text='This is an owner only command')
+        return await inter.response.send_message(embed=error, ephemeral=True)
+    
+    elif (
+        isinstance(error, commands.TooManyArguments) or
+        isinstance(error, commands.BadArgument) or
+        isinstance(error, commands.CommandNotFound)
+    ):
+        return
+
+    elif isinstance(error, commands.errors.CheckFailure):
+        return
+
+    else:
+        get_error = "".join(format_exception(error, error, error.__traceback__))
+        em = disnake.Embed(description=f'```py\n{get_error}\n```')
+        if inter.guild.id == 750160850077089853:
+            await inter.bot._owner.send(content=f"**An error occured with the slash_command `{inter}`, here is the error:**", embed=em)
+            em = disnake.Embed(title='Oops... An error has occured.', description='An error has occured while invoking this command and has been sent to my master for a fix.', color=color.red)
+            await inter.response.send_message(embed=em)
+        else:
+            await inter.response.send_message(embed=em)
 
 def replace_many(
     sentence: str, replacements: dict, *, ignore_case: bool = False, match_case: bool = False
