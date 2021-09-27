@@ -171,7 +171,7 @@ class Logs(commands.Cog):
         if before.guild.id != 750160850077089853:
             return
 
-        em = disnake.Embed(title=f'Role Updated {after.mention}', description=f'`{before.name}` has been updated', color=disnake.Color.yellow(), timestamp=datetime.datetime.utcnow())
+        em = disnake.Embed(title=f'Role Updated {after.name}', description=f'`{before.name}` has been updated', color=disnake.Color.yellow(), timestamp=datetime.datetime.utcnow())
         em.set_footer(text=f'Role ID: {after.id}')
         em.set_thumbnail(url=before.guild.icon.url)
 
@@ -190,17 +190,6 @@ class Logs(commands.Cog):
             old_perms = {}
             for perm in before.permissions:
                 old_perms[perm[0]] = perm[1]
-            
-            new_perms = {}
-            for perm in after.permissions:
-                new_perms[perm[0]] = perm[1]
-            
-            for perm in before.permissions:
-                if perm[1] != new_perms[perm[0]]:
-                    if perm[1] == False:
-                        removed_perms.append(perm[0].replace('_', ' ').title())
-                    elif perm[1] == True:
-                        added_perms.append(perm[0].replace('_', ' ').title())
             
             for perm in after.permissions:
                 if perm[1] != old_perms[perm[0]]:
