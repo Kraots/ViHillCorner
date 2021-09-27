@@ -81,28 +81,29 @@ class Levels(commands.Cog):
                             xp = stats['xp']
                             xp -= ((50*((lvl-1)**2))+(50*(lvl-1)))
                         elif xp >= 0:
-                            if message.guild.id == 750160850077089853:
-                                try:
-                                    role_id = levels[lvl]
-                                    roles_id = [role.id for role in message.author.roles if not role.id in (levels[k] for k in levels)] + [role_id]
-                                    newroles = []
-                                    for role in roles_id:
-                                        newrole = guild.get_role(role)
-                                        newroles.append(newrole)
-                                    await message.author.edit(roles=newroles)
-                                except KeyError:
-                                    role_id = 0
-                                    for k in levels:
-                                        if k < lvl:
-                                            role_id = levels[k]
-                                        else:
-                                            break
-                                    roles_id = [role.id for role in message.author.roles if not role.id in (levels[k] for k in levels)] + [role_id]
-                                    newroles = []
-                                    for role in roles_id:
-                                        newrole = guild.get_role(role)
-                                        newroles.append(newrole)
-                                    await message.author.edit(roles=newroles)
+                            if lvl >= 3:
+                                if message.guild.id == 750160850077089853:
+                                    try:
+                                        role_id = levels[lvl]
+                                        roles_id = [role.id for role in message.author.roles if not role.id in (levels[k] for k in levels)] + [role_id]
+                                        newroles = []
+                                        for role in roles_id:
+                                            newrole = guild.get_role(role)
+                                            newroles.append(newrole)
+                                        await message.author.edit(roles=newroles)
+                                    except KeyError:
+                                        role_id = 0
+                                        for k in levels:
+                                            if k < lvl:
+                                                role_id = levels[k]
+                                            else:
+                                                break
+                                        roles_id = [role.id for role in message.author.roles if not role.id in (levels[k] for k in levels)] + [role_id]
+                                        newroles = []
+                                        for role in roles_id:
+                                            newrole = guild.get_role(role)
+                                            newroles.append(newrole)
+                                        await message.author.edit(roles=newroles)
 
 
 
