@@ -171,7 +171,7 @@ class Logs(commands.Cog):
         if before.guild.id != 750160850077089853:
             return
 
-        em = disnake.Embed(title=f'Role Updated {after.name}', description=f'`{before.name}` has been updated', color=disnake.Color.yellow(), timestamp=datetime.datetime.utcnow())
+        em = disnake.Embed(title=f'Role Updated: {after.name}', description=f'`{before.name}` has been updated', color=disnake.Color.yellow(), timestamp=datetime.datetime.utcnow())
         em.set_footer(text=f'Role ID: {after.id}')
         em.set_thumbnail(url=before.guild.icon.url)
 
