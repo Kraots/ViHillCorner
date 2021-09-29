@@ -1244,15 +1244,17 @@ class Economy(commands.Cog):
             user = member
             author = ctx.author
             
-            get_user_bal = await self.db.find_one({"_id": user.id})
+            user_db = await self.db.find_one({"_id": user.id})
+            if user_db is None:
+                return await ctx.reply('That member is not registered.')
             if results['passive'] == True:
                 ctx.command.reset_cooldown(ctx)
                 return await ctx.reply('You cannot rob because you have passive **enabled.**')
-            elif get_user_bal['passive'] == True:
+            elif user_db['passive'] == True:
                 ctx.command.reset_cooldown(ctx)
                 return await ctx.reply('You cannot rob that user because they have passive **enabled.**')
 
-            user_bal = get_user_bal["wallet"]
+            user_bal = user_db["wallet"]
 
             author_bal = results["wallet"]
 
