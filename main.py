@@ -8,7 +8,6 @@ import motor.motor_asyncio
 from utils.HelpCommand import PaginatedHelpCommand
 from utils.helpers import reraise, slash_reraise, ConfirmView
 from utils.ButtonRoles import ButtonRoles
-import asyncio
 
 token = os.environ.get('DISCORD_BOT_SECRET')
 
