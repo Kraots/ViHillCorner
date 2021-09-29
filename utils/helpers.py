@@ -96,13 +96,6 @@ class Pag(Paginator):
 
         self._session_task = ctx.bot.loop.create_task(self._session(ctx))
 
-def get_user_image(user: disnake.User):
-    if str(user.display_avatar_as(static_format='png'))[54:].startswith('a_'):
-        image = str(user.display_avatar).rsplit("?", 1)[0]
-    else:
-        image = user.display_avatar_as(static_format='png')
-    return image
-
 def get_member_role(member: disnake.Member):
     role = member.top_role.name
     if role == "@everyone":
@@ -133,9 +126,9 @@ def profile(ctx, user):
         em.add_field(name='Game', value=user.activity, inline=False)
         em.add_field(name='Highest Role', value=get_member_role(user), inline=False)
         em.add_field(name='Join Date', value=format_date(user.joined_at.replace(tzinfo=None)), inline=False)
-        em.add_field(name="Avatar", value=f'[Click Here]({get_user_image(user)})', inline=False)
+        em.add_field(name="Avatar", value=f'[Click Here]({user.display_avatar.with_static_format("jpg")})', inline=False)
     em.add_field(name='Account Created', value=format_date(user.created_at.replace(tzinfo=None)), inline=False)
-    em.set_thumbnail(url=get_user_image(user))
+    em.set_thumbnail(url=user.display_avatar.with_static_format("jpg"))
     em.set_author(name=user, icon_url=user.display_avatar)
     em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar) 
     return em
