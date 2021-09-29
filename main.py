@@ -8,6 +8,7 @@ import motor.motor_asyncio
 from utils.HelpCommand import PaginatedHelpCommand
 from utils.helpers import reraise, slash_reraise, ConfirmView
 from utils.ButtonRoles import ButtonRoles
+import asyncio
 
 token = os.environ.get('DISCORD_BOT_SECRET')
 
@@ -24,7 +25,6 @@ class ViHillCorner(commands.Bot):
         allowed_mentions = disnake.AllowedMentions(roles=False, everyone=False, users=True)
         intents = disnake.Intents.all()
         super().__init__(help_command=PaginatedHelpCommand(), command_prefix=('!', ';'), allowed_mentions=allowed_mentions, intents=intents, case_insensitive=True, test_guilds=[750160850077089853, 787357561116426258])
-        self.session = aiohttp.ClientSession(loop=self.loop)
         self.add_check(self.check_dms)
         self.db1 = database1
         self.db2 = database2
@@ -52,9 +52,16 @@ class ViHillCorner(commands.Bot):
         if self._owner_id:
             return self.get_user(self._owner_id)
 
+    @property
+    def session(self) -> aiohttp.ClientSession:
+        return self._session
+
     async def on_ready(self):
         if not hasattr(self, 'uptime'):
             self.uptime = datetime.datetime.utcnow()
+        
+        if not hasattr(self, '_session'):
+            self._session = aiohttp.ClientSession(loop=self.loop)
         
         if not hasattr(self, '_presence_changed'):
             activity = disnake.Activity(type=disnake.ActivityType.watching, name='you | !help')
