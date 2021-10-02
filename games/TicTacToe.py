@@ -1,7 +1,9 @@
 import disnake
+from utils.context import Context
+
 
 class TicTacToe(disnake.ui.View):
-    def __init__(self, p1: disnake.Member, p2: disnake.Member, ctx, *, timeout= 60.0):
+    def __init__(self, p1: disnake.Member, p2: disnake.Member, ctx: Context, *, timeout= 60.0):
         super().__init__(timeout=timeout)
         self.p1 = p1
         self.p2 = p2

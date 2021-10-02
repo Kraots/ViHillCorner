@@ -3,29 +3,35 @@ import disnake
 
 import itertools
 import inspect
-import bisect
-import logging
+import bisect  # noqa
+import logging  # noqa
 import re
 from collections import OrderedDict, namedtuple
 
+
 class MenuError(Exception):
     pass
+
 
 class CannotEmbedLinks(MenuError):
     def __init__(self):
         super().__init__('Bot does not have embed links permission in this channel.')
 
+
 class CannotSendMessages(MenuError):
     def __init__(self):
         super().__init__('Bot cannot send messages in this channel.')
+
 
 class CannotAddReactions(MenuError):
     def __init__(self):
         super().__init__('Bot cannot add reactions in this channel.')
 
+
 class CannotReadMessageHistory(MenuError):
     def __init__(self):
         super().__init__('Bot does not have Read Message History permissions in this channel.')
+
 
 class Position:
     __slots__ = ('number', 'bucket')
@@ -61,17 +67,23 @@ class Position:
     def __repr__(self):
         return '<{0.__class__.__name__}: {0.number}>'.format(self)
 
+
 class Last(Position):
     __slots__ = ()
+
     def __init__(self, number=0):
         super().__init__(number, bucket=2)
 
+
 class First(Position):
     __slots__ = ()
+
     def __init__(self, number=0):
         super().__init__(number, bucket=0)
 
+
 _custom_emoji = re.compile(r'<?(?P<animated>a)?:?(?P<name>[A-Za-z0-9\_]+):(?P<id>[0-9]{13,20})>?')
+
 
 def _cast_emoji(obj, *, _custom_emoji=_custom_emoji):
     if isinstance(obj, disnake.PartialEmoji):
@@ -86,6 +98,7 @@ def _cast_emoji(obj, *, _custom_emoji=_custom_emoji):
         name = groups['name']
         return disnake.PartialEmoji(name=name, animated=animated, id=emoji_id)
     return disnake.PartialEmoji(name=obj, id=None, animated=False)
+
 
 class Button:
     """Represents a reaction-style button for the :class:`Menu`.
@@ -180,6 +193,7 @@ class Button:
     def is_valid(self, menu):
         return not self.skip_if(menu)
 
+
 def button(emoji, **kwargs):
     """Denotes a method to be button for the :class:`Menu`.
 
@@ -215,6 +229,7 @@ def button(emoji, **kwargs):
         func.__menu_button_kwargs__ = kwargs
         return func
     return decorator
+
 
 class _MenuMeta(type):
     @classmethod
@@ -256,6 +271,7 @@ class _MenuMeta(type):
             buttons[emoji] = Button(emoji, func, **func.__menu_button_kwargs__)
         return buttons
 
+
 class Menu(metaclass=_MenuMeta):
     r"""An interface that allows handling menus by using reactions as buttons.
 
@@ -288,8 +304,10 @@ class Menu(metaclass=_MenuMeta):
         calling :meth:`send_initial_message`\, if for example you have a pre-existing
         message you want to attach a menu to.
     """
-    def __init__(self, *, timeout=180.0, delete_message_after=False,
-                        clear_reactions_after=False, check_embeds=False, message=None):
+    def __init__(
+        self, *, timeout=180.0, delete_message_after=False,
+        clear_reactions_after=False, check_embeds=False, message=None
+    ):
 
         self.timeout = timeout
         self.delete_message_after = delete_message_after
@@ -473,8 +491,10 @@ class Menu(metaclass=_MenuMeta):
                         await self.message.remove_reaction(reaction, self.__me)
 
                 return wrapped()
+
             async def dummy():
                 raise MenuError('Menu has not been started yet')
+
             return dummy()
 
     def should_add_reactions(self):
@@ -628,7 +648,7 @@ class Menu(metaclass=_MenuMeta):
         """
         # some users may wish to take other actions during or beyond logging
         # which would require awaiting, such as stopping an erroring menu.
-        log.exception("Unhandled exception during menu update.", exc_info=exc)
+        log.exception("Unhandled exception during menu update.", exc_info=exc)  # noqa
 
     async def start(self, ctx, *, channel=None, wait=False):
         """|coro|
@@ -696,7 +716,7 @@ class Menu(metaclass=_MenuMeta):
         A coroutine that is called when the menu loop has completed
         its run. This is useful if some asynchronous clean-up is
         required after the fact.
-        
+
         Parameters
         --------------
         timed_out: :class:`bool`
@@ -735,6 +755,7 @@ class Menu(metaclass=_MenuMeta):
         for task in self.__tasks:
             task.cancel()
         self.__tasks.clear()
+
 
 class PageSource:
     """An interface representing a menu page's data source for the actual menu page.
@@ -856,6 +877,7 @@ class PageSource:
         """
         raise NotImplementedError
 
+
 class MenuPages(Menu):
     """A special type of Menu dedicated to pagination.
 
@@ -907,9 +929,9 @@ class MenuPages(Menu):
         if isinstance(value, dict):
             return value
         elif isinstance(value, str):
-            return { 'content': value, 'embed': None }
+            return {'content': value, 'embed': None}
         elif isinstance(value, disnake.Embed):
-            return { 'embed': value, 'content': None }
+            return {'embed': value, 'content': None}
 
     async def show_page(self, page_number):
         page = await self._source.get_page(page_number)
@@ -983,6 +1005,7 @@ class MenuPages(Menu):
         """stops the pagination session."""
         self.stop()
 
+
 class ListPageSource(PageSource):
     """A data source for a sequence of items.
 
@@ -1033,7 +1056,9 @@ class ListPageSource(PageSource):
             base = page_number * self.per_page
             return self.entries[base:base + self.per_page]
 
+
 _GroupByEntry = namedtuple('_GroupByEntry', 'key items')
+
 
 class GroupByPageSource(ListPageSource):
     """A data source for grouped by sequence of items.
@@ -1096,6 +1121,7 @@ class GroupByPageSource(ListPageSource):
         """
         raise NotImplementedError
 
+
 def _aiter(obj, *, _isasync=inspect.iscoroutinefunction):
     cls = obj.__class__
     try:
@@ -1107,6 +1133,7 @@ def _aiter(obj, *, _isasync=inspect.iscoroutinefunction):
     if _isasync(async_iter):
         raise TypeError('{0.__name__!r} object is not an async iterable'.format(cls))
     return async_iter
+
 
 class AsyncIteratorPageSource(PageSource):
     """A data source for data backed by an asynchronous iterator.

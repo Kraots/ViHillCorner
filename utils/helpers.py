@@ -14,13 +14,31 @@ from .pag import Paginator
 import typing
 import pkg_resources
 
+
 class Pag(Paginator):
-    def __init__(self, *, title: str = '', length: int = 10, entries: list = None,
-                extra_pages: list = None, prefix: str = '', suffix: str = '', format: str = '',
-                colour: Union[int, disnake.Colour] = disnake.Embed.Empty,
-                color: Union[int, disnake.Colour] = disnake.Embed.Empty, use_defaults: bool = True, embed: bool = True,
-                joiner: str = '\n', timeout: int = 180, thumbnail: str = None, ctx, footer: str = ''):
-        super().__init__(title=title, length=length, entries=entries, extra_pages=extra_pages, prefix=prefix, suffix=suffix, format=format, colour=colour, color=color, use_defaults=use_defaults, embed=embed, joiner=joiner, timeout=timeout, thumbnail=thumbnail)
+    def __init__(
+        self, *, title: str = '', length: int = 10, entries: list = None,
+        extra_pages: list = None, prefix: str = '', suffix: str = '', format: str = '',
+        colour: Union[int, disnake.Colour] = disnake.Embed.Empty,
+        color: Union[int, disnake.Colour] = disnake.Embed.Empty, use_defaults: bool = True, embed: bool = True,
+        joiner: str = '\n', timeout: int = 180, thumbnail: str = None, ctx, footer: str = ''
+    ):
+        super().__init__(
+            title=title,
+            length=length,
+            entries=entries,
+            extra_pages=extra_pages,
+            prefix=prefix,
+            suffix=suffix,
+            format=format,
+            colour=colour,
+            color=color,
+            use_defaults=use_defaults,
+            embed=embed,
+            joiner=joiner,
+            timeout=timeout,
+            thumbnail=thumbnail
+        )
         self.ctx = ctx
         self.footer = footer
 
@@ -31,13 +49,13 @@ class Pag(Paginator):
 
     async def teardown(self):
         self._cancelled = True
-        
+
         try:
             await self.page.delete()
             await self.ctx.message.delete()
         except disnake.HTTPException:
             pass
-        
+
         self._session_task.cancel()
 
     async def _default_indexer(self, control, ctx, member):
@@ -96,17 +114,20 @@ class Pag(Paginator):
 
         self._session_task = ctx.bot.loop.create_task(self._session(ctx))
 
+
 def get_member_role(member: disnake.Member):
     role = member.top_role.name
     if role == "@everyone":
         role = "N/A"
     return role
 
+
 def get_member_voice(member: disnake.Member):
     return "Not in VC" if not member.voice else member.voice.channel
 
+
 def profile(ctx, user):
-    
+
     def format_date(dt):
         if dt is None:
             return 'N/A'
@@ -130,8 +151,9 @@ def profile(ctx, user):
     em.add_field(name='Account Created', value=format_date(user.created_at.replace(tzinfo=None)), inline=False)
     em.set_thumbnail(url=user.display_avatar.with_static_format("jpg"))
     em.set_author(name=user, icon_url=user.display_avatar)
-    em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar) 
+    em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
     return em
+
 
 def time_phaser(seconds):
     output = ""
@@ -151,8 +173,10 @@ def time_phaser(seconds):
         output = output + str(int(round(s, 0))) + " seconds"
     return output
 
+
 def NSFW(ctx):
     return ctx.channel.id == 780374324598145055
+
 
 def clean_code(content):
     if content.startswith("```") and content.endswith("```"):
@@ -160,13 +184,15 @@ def clean_code(content):
     else:
         return content
 
+
 def package_version(package_name: str) -> typing.Optional[str]:
     try:
         return pkg_resources.get_distribution(package_name).version
     except (pkg_resources.DistributionNotFound, AttributeError):
         return None
 
-def format_balance(balance):
+
+def format_balance(balance: int):
     cBalance = "{:,}".format(balance)
     sBalance = cBalance.split(",")
     if len(sBalance) == 1:
@@ -184,15 +210,16 @@ def format_balance(balance):
     fBalance = sBalance[0] + "." + sBalance[1][0:2] + sign
     return fBalance
 
+
 async def reraise(ctx, error):
     if isinstance(error, commands.NotOwner):
         error = disnake.Embed(title="ERROR", description="Command Error: You do not own this bot!")
         error.set_footer(text='This is an owner only command')
-        
+
         await ctx.send(embed=error, delete_after=8)
         await asyncio.sleep(7.5)
         await ctx.message.delete()
-    
+
     elif (
         isinstance(error, commands.TooManyArguments) or
         isinstance(error, commands.BadArgument) or
@@ -225,17 +252,22 @@ async def reraise(ctx, error):
         em = disnake.Embed(description=f'```py\n{get_error}\n```')
         if ctx.guild.id == 750160850077089853:
             await ctx.bot._owner.send(content=f"**An error occured with the command `{ctx.command}`, here is the error:**", embed=em)
-            em = disnake.Embed(title='Oops... An error has occured.', description='An error has occured while invoking this command and has been sent to my master for a fix.', color=color.red)
+            em = disnake.Embed(
+                title='Oops... An error has occured.',
+                description='An error has occured while invoking this command and has been sent to my master for a fix.',
+                color=color.red
+            )
             await ctx.send(embed=em)
         else:
             await ctx.send(embed=em)
+
 
 async def slash_reraise(inter: disnake.ApplicationCommandInteraction, error):
     if isinstance(error, commands.NotOwner):
         error = disnake.Embed(title="ERROR", description="Command Error: You do not own this bot!")
         error.set_footer(text='This is an owner only command')
         return await inter.response.send_message(embed=error, ephemeral=True)
-    
+
     elif (
         isinstance(error, commands.TooManyArguments) or
         isinstance(error, commands.BadArgument) or
@@ -251,10 +283,15 @@ async def slash_reraise(inter: disnake.ApplicationCommandInteraction, error):
         em = disnake.Embed(description=f'```py\n{get_error}\n```')
         if inter.guild.id == 750160850077089853:
             await inter.bot._owner.send(content=f"**An error occured with the slash_command `{inter}`, here is the error:**", embed=em)
-            em = disnake.Embed(title='Oops... An error has occured.', description='An error has occured while invoking this command and has been sent to my master for a fix.', color=color.red)
-            await inter.response.send_message(embed=em)
+            em = disnake.Embed(
+                title='Oops... An error has occured.',
+                description='An error has occured while invoking this command and has been sent to my master for a fix.',
+                color=color.red
+            )
+            await inter.response.send_message(embed=em, ephemeral=True)
         else:
-            await inter.response.send_message(embed=em)
+            await inter.response.send_message(embed=em, ephemeral=True)
+
 
 def replace_many(
     sentence: str, replacements: dict, *, ignore_case: bool = False, match_case: bool = False
@@ -306,18 +343,20 @@ def replace_many(
 
     return regex.sub(_repl, sentence)
 
+
 def suppress_links(message: str) -> str:
     """Accepts a message that may contain links, suppresses them, and returns them."""
     for link in set(re.findall(r"https?://[^\s]+", message, re.IGNORECASE)):
         message = message.replace(link, f"<{link}>")
     return message
 
+
 class ConfirmView(disnake.ui.View):
     """
     This class is a view with yes and no buttons, this checks which button the user has pressed and returns True via the self.response if the button they clicked was Yes else  False if the button they clicked is No
-    """
+    """  # noqa
 
-    def __init__(self, ctx, new_message: str = 'Time Expired.', react_user: disnake.Member = None, *, timeout = 180.0):
+    def __init__(self, ctx, new_message: str = 'Time Expired.', react_user: disnake.Member = None, *, timeout=180.0):
         super().__init__(timeout=timeout)
         self.ctx = ctx
         self.new_message = new_message
@@ -327,13 +366,16 @@ class ConfirmView(disnake.ui.View):
     async def interaction_check(self, interaction: disnake.MessageInteraction):
         check_for = self.ctx.author.id if self.member is None else self.member.id
         if interaction.author.id != check_for:
-            await interaction.response.send_message(f'Only {self.ctx.author.display_name if self.member is None else self.member.display_name} can use the buttons on this message!', ephemeral=True)
+            await interaction.response.send_message(
+                f'Only {self.ctx.author.display_name if self.member is None else self.member.display_name} can use the buttons on this message!',
+                ephemeral=True
+            )
             return False
         return True
-    
+
     async def on_error(self, error: Exception, item, interaction):
         return await self.ctx.bot.reraise(self.ctx, error)
-    
+
     async def on_timeout(self):
         for item in self.children:
             item.disabled = True
@@ -349,7 +391,7 @@ class ConfirmView(disnake.ui.View):
             if item.label == button.label:
                 item.style = disnake.ButtonStyle.blurple
         self.stop()
-    
+
     @disnake.ui.button(label='No', style=disnake.ButtonStyle.red)
     async def no_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
         self.response = False
@@ -361,16 +403,17 @@ class ConfirmView(disnake.ui.View):
 
         self.stop()
 
+
 class ConfirmViewDMS(disnake.ui.View):
     """
     This class is a view with yes and no buttons which only works correctly in dms, this checks which button the user has pressed and returns True via the self.response if the button they clicked was Yes else  False if the button they clicked is No
-    """
+    """  # noqa
 
-    def __init__(self, ctx, *, timeout = 180.0):
+    def __init__(self, ctx, *, timeout=180.0):
         super().__init__(timeout=timeout)
         self.ctx = ctx
         self.response = None
-    
+
     async def on_error(self, error: Exception, item, interaction):
         return await self.ctx.bot.reraise(self.ctx, error)
 
@@ -383,7 +426,7 @@ class ConfirmViewDMS(disnake.ui.View):
             if item.label == button.label:
                 item.style = disnake.ButtonStyle.blurple
         self.stop()
-    
+
     @disnake.ui.button(label='No', style=disnake.ButtonStyle.red)
     async def no_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
         self.response = False

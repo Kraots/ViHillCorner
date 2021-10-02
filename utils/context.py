@@ -1,6 +1,7 @@
 from disnake.ext import commands
 import disnake
 
+
 class Context(commands.Context):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

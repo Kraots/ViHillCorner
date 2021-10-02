@@ -29,3 +29,4 @@ wolframalpha
 motor
 pymongo
 mal-api
+flake8

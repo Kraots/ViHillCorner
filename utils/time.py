@@ -10,6 +10,7 @@ units = pdt.pdtLocales['en_US'].units
 units['minutes'].append('mins')
 units['seconds'].append('secs')
 
+
 class ShortTime:
     compiled = re.compile("""(?:(?P<years>[0-9])(?:years?|y))?             # e.g. 2y
                              (?:(?P<months>[0-9]{1,2})(?:months?|mo))?     # e.g. 2months
@@ -25,13 +26,14 @@ class ShortTime:
         if match is None or not match.group(0):
             raise commands.BadArgument('invalid time provided')
 
-        data = { k: int(v) for k, v in match.groupdict(default=0).items() }
+        data = {k: int(v) for k, v in match.groupdict(default=0).items()}
         now = now or datetime.datetime.utcnow()
         self.dt = now + relativedelta(**data)
 
     @classmethod
     async def convert(cls, ctx, argument):
         return cls(argument, now=ctx.message.created_at.replace(tzinfo=None))
+
 
 class HumanTime:
     calendar = pdt.Calendar(version=pdt.VERSION_CONTEXT_STYLE)
@@ -53,15 +55,17 @@ class HumanTime:
     async def convert(cls, ctx, argument):
         return cls(argument, now=ctx.message.created_at.replace(tzinfo=None))
 
+
 class Time(HumanTime):
     def __init__(self, argument, *, now=None):
         try:
             o = ShortTime(argument, now=now)
-        except Exception as e:
+        except Exception as e:  # noqa
             super().__init__(argument)
         else:
             self.dt = o.dt
             self._past = False
+
 
 class FutureTime(Time):
     def __init__(self, argument, *, now=None):
@@ -69,6 +73,7 @@ class FutureTime(Time):
 
         if self._past:
             raise commands.BadArgument('this time is in the past')
+
 
 class UserFriendlyTime(commands.Converter):
     """That way quotes aren't absolutely necessary."""
@@ -113,7 +118,7 @@ class UserFriendlyTime(commands.Converter):
 
             match = regex.match(argument)
             if match is not None and match.group(0):
-                data = { k: int(v) for k, v in match.groupdict(default=0).items() }
+                data = {k: int(v) for k, v in match.groupdict(default=0).items()}
                 remaining = argument[match.end():].strip()
                 result.dt = now + relativedelta(**data)
                 return await result.check_constraints(ctx, now, remaining)
@@ -135,8 +140,8 @@ class UserFriendlyTime(commands.Converter):
                 raise commands.BadArgument('Invalid time provided, try e.g. "tomorrow" or "3 days".')
 
             if begin not in (0, 1) and end != len(argument):
-                raise commands.BadArgument('Time is either in an inappropriate location, which ' \
-                                           'must be either at the end or beginning of your input, ' \
+                raise commands.BadArgument('Time is either in an inappropriate location, which '
+                                           'must be either at the end or beginning of your input, '
                                            'or I just flat out did not understand what you meant. Sorry.')
 
             if not status.hasTime:
@@ -147,7 +152,7 @@ class UserFriendlyTime(commands.Converter):
             if status.accuracy == pdt.pdtContext.ACU_HALFDAY:
                 dt = dt.replace(day=now.day + 1)
 
-            result.dt =  dt
+            result.dt = dt
 
             if begin in (0, 1):
                 if begin == 1:
@@ -165,10 +170,11 @@ class UserFriendlyTime(commands.Converter):
                 remaining = argument[:begin].strip()
 
             return await result.check_constraints(ctx, now, remaining)
-        except:
+        except Exception:
             import traceback
             traceback.print_exc()
             raise
+
 
 def human_timedelta(dt, *, source=None, accuracy=3, brief=False, suffix=True):
     now = source or datetime.datetime.utcnow()

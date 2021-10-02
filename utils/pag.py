@@ -223,17 +223,21 @@ class Paginator(Session):
         Only available when embed=True. The thumbnail URL to set for the embeded pages.
     """
 
-    def __init__(self, *, title: str = '', length: int = 10, entries: list = None,
-                extra_pages: list = None, prefix: str = '', suffix: str = '', format: str = '',
-                colour: Union[int, disnake.Colour] = disnake.Embed.Empty,
-                color: Union[int, disnake.Colour] = disnake.Embed.Empty, use_defaults: bool = True, embed: bool = True,
-                joiner: str = '\n', timeout: int = 180, thumbnail: str = None):
+    def __init__(
+        self, *, title: str = '', length: int = 10, entries: list = None,
+            extra_pages: list = None, prefix: str = '', suffix: str = '', format: str = '',
+            colour: Union[int, disnake.Colour] = disnake.Embed.Empty,
+            color: Union[int, disnake.Colour] = disnake.Embed.Empty, use_defaults: bool = True, embed: bool = True,
+            joiner: str = '\n', timeout: int = 180, thumbnail: str = None
+    ):
         super().__init__()
-        self._defaults = {(0, '⏮'): Button(emoji='⏮', position=0, callback=partial(self._default_indexer, 'start')),
-                        (1, '◀'): Button(emoji='◀', position=1, callback=partial(self._default_indexer, -1)),
-                        (2, '⏹'): Button(emoji='⏹', position=2, callback=partial(self._default_indexer, 'stop')),
-                        (3, '▶'): Button(emoji='▶', position=3, callback=partial(self._default_indexer, +1)),
-                        (4, '⏭'): Button(emoji='⏭', position=4, callback=partial(self._default_indexer, 'end'))}
+        self._defaults = {
+            (0, '⏮'): Button(emoji='⏮', position=0, callback=partial(self._default_indexer, 'start')),
+            (1, '◀'): Button(emoji='◀', position=1, callback=partial(self._default_indexer, -1)),
+            (2, '⏹'): Button(emoji='⏹', position=2, callback=partial(self._default_indexer, 'stop')),
+            (3, '▶'): Button(emoji='▶', position=3, callback=partial(self._default_indexer, +1)),
+            (4, '⏭'): Button(emoji='⏭', position=4, callback=partial(self._default_indexer, 'end'))
+        }
         self._default_stop = {(0, '⏹'): Button(emoji='⏹', position=0, callback=partial(self._default_indexer, 'stop'))}
 
         self.buttons = {}

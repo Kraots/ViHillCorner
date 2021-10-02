@@ -1,12 +1,12 @@
 from disnake.ext import commands
 import disnake
 from . import menus
-import asyncio
 from utils.paginator import RoboPages
 import utils.colors as color
 from typing import Any, Dict, List, Optional, Union
 import itertools
 import inspect
+
 
 class GroupHelpPageSource(menus.ListPageSource):
     def __init__(self, group: Union[commands.Group, commands.Cog], commands: List[commands.Command], *, prefix: str):
@@ -50,7 +50,7 @@ class HelpSelectMenu(disnake.ui.Select['HelpMenu']):
             value='__index',
             description='The help page showing how to use the bot.',
         )
-        for cog, commands in self.commands.items():
+        for cog, commands in self.commands.items():  # noqa
             if not commands:
                 continue
             description = cog.description.split('\n', 1)[0] or None
@@ -76,6 +76,7 @@ class HelpSelectMenu(disnake.ui.Select['HelpMenu']):
             source = GroupHelpPageSource(cog, commands, prefix=self.view.ctx.clean_prefix)
             await self.view.rebind(source, interaction)
 
+
 class HelpMenu(RoboPages):
     def __init__(self, source: menus.PageSource, ctx: commands.Context):
         super().__init__(source, ctx=ctx, compact=True)
@@ -94,6 +95,7 @@ class HelpMenu(RoboPages):
         kwargs = await self._get_kwargs_from_page(page)
         self._update_labels(0)
         await interaction.response.edit_message(**kwargs, view=self)
+
 
 class FrontPageSource(menus.PageSource):
     def is_paginating(self) -> bool:
@@ -140,6 +142,7 @@ class FrontPageSource(menus.PageSource):
                 embed.add_field(name=name, value=value, inline=False)
 
         return embed
+
 
 class PaginatedHelpCommand(commands.HelpCommand):
     def __init__(self):

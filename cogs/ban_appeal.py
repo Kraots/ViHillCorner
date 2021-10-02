@@ -1,7 +1,7 @@
 import disnake
 from disnake.ext import commands
-
 import asyncio
+
 
 class OnBanAppealJoin(commands.Cog):
     def __init__(self, bot):
@@ -20,26 +20,29 @@ class OnBanAppealJoin(commands.Cog):
                     moderator = _ban_reason[0].rstrip()
                     found = True
                     break
-                
-            if found == False:
+
+            if found is False:
                 await member.send("You are not banned. Cannot join this guild.")
                 await member.kick()
                 return
-            
+
             g = self.bot.get_guild(788384492175884299)
             overwrites = {
-                    g.default_role: disnake.PermissionOverwrite(read_messages = False)
+                    g.default_role: disnake.PermissionOverwrite(read_messages=False)
                         }
             channel = await g.create_text_channel(f"{member.name}-ban-appeal", overwrites=overwrites)
             await channel.edit(topic=member.id)
             em = disnake.Embed(title="Ban Reason", description=ban_reason)
-            m = await channel.send(f"Hello {member.name}! You have been banned by moderator: `{moderator}`\nSend your unban appeal here. {member.mention}", embed=em)
+            m = await channel.send(
+                f"Hello {member.name}! You have been banned by moderator: `{moderator}`\nSend your unban appeal here. {member.mention}",
+                embed=em
+            )
             await m.pin()
             await channel.purge(limit=1)
-            await channel.set_permissions(member, read_messages = True)
+            await channel.set_permissions(member, read_messages=True)
             ch = member.guild.get_channel(788488359306592316)
             await ch.send('A new member has joined the ban appeal. <@!374622847672254466> <@!747329236695777340>')
-    
+
     @commands.Cog.listener('on_member_remove')
     async def on_member_remove(self, member):
         g = member.guild
@@ -47,9 +50,8 @@ class OnBanAppealJoin(commands.Cog):
             try:
                 if member.id == int(ch.topic):
                     await ch.delete()
-            except:
+            except disnake.HTTPException:
                 pass
-
 
     @commands.Cog.listener('on_message')
     async def on_message(self, message: disnake.Message):
@@ -63,8 +65,9 @@ class OnBanAppealJoin(commands.Cog):
                                 found = True
                                 mem = message.guild.get_member(obj.id)
                                 break
-                        if found == False:
+                        if found is False:
                             return
+
                         def check(reaction, user):
                             return str(reaction.emoji) in ('<:agree:797537027469082627>', '<:disagree:797537030980239411>') and user.id == message.author.id
                         await message.add_reaction('<:agree:797537027469082627>')
@@ -75,12 +78,12 @@ class OnBanAppealJoin(commands.Cog):
                         except asyncio.TimeoutError:
                             await message.clear_reactions()
                             return
-                        
+
                         else:
                             if str(reaction.emoji) == '<:agree:797537027469082627>':
                                 await mem.ban(reason=f"Denied unbanning (by {message.author})")
                                 await message.channel.delete()
-                            
+
                             elif str(reaction.emoji) == '<:disagree:797537030980239411>':
                                 await message.clear_reactions()
                                 return

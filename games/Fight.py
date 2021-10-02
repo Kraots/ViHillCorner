@@ -1,9 +1,11 @@
 import random
 import disnake
 import inspect
+from utils.context import Context
+
 
 class Fight(disnake.ui.View):
-    def __init__(self, pl1: disnake.Member, pl2: disnake.Member, ctx, *, timeout=30.0):
+    def __init__(self, pl1: disnake.Member, pl2: disnake.Member, ctx: Context, *, timeout=30.0):
         super().__init__(timeout=timeout)
         self.p1 = pl1
         self.p2 = pl2
@@ -12,11 +14,14 @@ class Fight(disnake.ui.View):
         self.hp = {self.p1: 100, self.p2: 100}
         self.turn = pl1
         self.ended = False
-    
+
     async def interaction_check(self, interaction: disnake.MessageInteraction):
         if interaction.author.id != self.turn.id:
             if interaction.author.id not in (self.p1.id, self.p2.id):
-                await interaction.response.send_message('You are not playing in this game! To start a game with someone you must type `!fight <member>`', ephemeral=True)
+                await interaction.response.send_message(
+                    'You are not playing in this game! To start a game with someone you must type `!fight <member>`',
+                    ephemeral=True
+                )
                 return False
             await interaction.response.send_message(f'Not your turn, it\'s {self.turn.display_name}\'s turn', ephemeral=True)
             return False
@@ -44,10 +49,10 @@ class Fight(disnake.ui.View):
     @property
     def _data(self) -> str:
         data = inspect.cleandoc(
-        f'''
-        `{self.p1.display_name}` **==> {self.hp[self.p1]} hp**
-        `{self.p2.display_name}` **==> {self.hp[self.p2]} hp**
-        '''
+            f'''
+            `{self.p1.display_name}` **==> {self.hp[self.p1]} hp**
+            `{self.p2.display_name}` **==> {self.hp[self.p2]} hp**
+            '''
         )
         return data
 
@@ -74,7 +79,7 @@ class Fight(disnake.ui.View):
         new_hp = curr_hp - dmg
         self.hp[self.turn] = new_hp
         await self.check_health()
-        if self.ended == False:
+        if self.ended is False:
             await self.message.edit(f'{self._data}\n\n**{p.display_name}** chose to fight and dealt `{dmg}` damage. Your turn now: {self.turn.mention}')
 
     @disnake.ui.button(label='Health', style=disnake.ButtonStyle.green)

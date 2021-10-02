@@ -5,6 +5,7 @@ from disnake.ext import commands
 from disnake.ext.commands import Paginator as CommandPaginator
 from . import menus
 
+
 class RoboPages(disnake.ui.View):
     def __init__(
         self,
@@ -158,7 +159,6 @@ class RoboPages(disnake.ui.View):
         # The call here is safe because it's guarded by skip_if
         await self.show_page(interaction, self.source.get_max_pages() - 1)
 
-
     @disnake.ui.button(label='Skip to page...', style=disnake.ButtonStyle.grey)
     async def numbered_page(self, button: disnake.ui.Button, interaction: disnake.Interaction):
         """lets you type a page number to go to"""
@@ -194,6 +194,7 @@ class RoboPages(disnake.ui.View):
         await interaction.delete_original_message()
         self.stop()
 
+
 class FieldPageSource(menus.ListPageSource):
     """A page source that requires (field_name, field_value) tuple items."""
     def __init__(self, entries, *, per_page=12):
@@ -214,6 +215,7 @@ class FieldPageSource(menus.ListPageSource):
 
         return self.embed
 
+
 class TextPageSource(menus.ListPageSource):
     def __init__(self, text, *, prefix='```', suffix='```', max_size=2000):
         pages = CommandPaginator(prefix=prefix, suffix=suffix, max_size=max_size - 200)
@@ -227,6 +229,7 @@ class TextPageSource(menus.ListPageSource):
         if maximum > 1:
             return f'{content}\nPage {menu.current_page + 1}/{maximum}'
         return content
+
 
 class SimplePageSource(menus.ListPageSource):
     def __init__(self, entries, *, per_page=12):
@@ -246,6 +249,7 @@ class SimplePageSource(menus.ListPageSource):
         menu.embed.description = '\n'.join(pages)
         return menu.embed
 
+
 class SimplePages(RoboPages):
     """A simple pagination session reminiscent of the old Pages interface.
 
@@ -254,31 +258,33 @@ class SimplePages(RoboPages):
 
     def __init__(self, ctx, entries, *, per_page=12, color=None):
         super().__init__(SimplePageSource(entries, per_page=per_page), ctx=ctx)
-        if color == None:
+        if color is None:
             color = disnake.Color.blurple()
         self.embed = disnake.Embed(colour=color)
+
 
 class NewToDoMenus(menus.ListPageSource):
     def __init__(self, entries, *, per_page=12):
         super().__init__(entries, per_page=per_page)
-        
+
     async def format_page(self, menu, entries):
         pages = []
         for index, entry in enumerate(entries, start=menu.current_page * self.per_page):
             pages.append(f'{entry}')
-        
+
         maximum = self.get_max_pages()
         if maximum > 1:
             footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} todos)'
             menu.embed.set_footer(text=footer)
-    
+
         menu.embed.description = "\n".join(pages)
         return menu.embed
+
 
 class NewCustomMenus(menus.ListPageSource):
     def __init__(self, entries, *, per_page=12):
         super().__init__(entries, per_page=per_page)
-        
+
     async def format_page(self, menu, entries):
         pages = []
         for index, entry in enumerate(entries, start=menu.current_page * self.per_page):
@@ -288,22 +294,24 @@ class NewCustomMenus(menus.ListPageSource):
         if maximum > 1:
             footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} entries)'
             menu.embed.set_footer(text=footer)
-    
+
         menu.embed.description = "\n".join(pages)
         return menu.embed
+
 
 class CustomMenu(RoboPages):
     def __init__(self, ctx, entries, *, per_page=12, title="", color=None):
         super().__init__(NewCustomMenus(entries, per_page=per_page), ctx=ctx)
-        if color == None:
+        if color is None:
             color = disnake.Color.blurple()
         self.embed = disnake.Embed(colour=color, title=title)
+
 
 class ToDoMenu(RoboPages):
     def __init__(self, ctx, entries, *, per_page=12, title="", color=None, author_name=None, author_icon_url=None):
         super().__init__(NewToDoMenus(entries, per_page=per_page), ctx=ctx)
-        if color == None:
+        if color is None:
             color = disnake.Color.blurple()
         self.embed = disnake.Embed(colour=color, title=title)
-        if author_name != None:
+        if author_name is not None:
             self.embed.set_author(name=author_name, url=author_icon_url, icon_url=author_icon_url)

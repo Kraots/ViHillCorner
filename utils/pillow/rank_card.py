@@ -9,20 +9,22 @@ BLUE = (22, 160, 245)
 BLACK = (0, 0, 0)
 TTF_FONT = ".heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf"
 
+
 def drawProgressBar(d, x, y, w, h, progress, bg="white", fg="black"):
     # draw background
-    d.ellipse((x+w, y, x+h+w, y+h), fill=bg)
-    d.ellipse((x, y, x+h, y+h), fill=bg)
-    d.rectangle((x+(h/2), y, x+w+(h/2), y+h), fill=bg)
+    d.ellipse((x + w, y, x + h + w, y + h), fill=bg)
+    d.ellipse((x, y, x + h, y + h), fill=bg)
+    d.rectangle((x + (h / 2), y, x + w + (h / 2), y + h), fill=bg)
 
     # draw progress bar
     w *= progress
     if w != 0.0:
-        d.ellipse((x+w, y, x+h+w, y+h),fill=fg)
-        d.ellipse((x, y, x+h, y+h),fill=fg)
-        d.rectangle((x+(h/2), y, x+w+(h/2), y+h),fill=fg)
+        d.ellipse((x + w, y, x + h + w, y + h), fill=fg)
+        d.ellipse((x, y, x + h, y + h), fill=fg)
+        d.rectangle((x + (h / 2), y, x + w + (h / 2), y + h), fill=fg)
 
     return d
+
 
 def get_font(text, image):
     fontsize = 1
@@ -37,13 +39,14 @@ def get_font(text, image):
     font = ImageFont.truetype(TTF_FONT, fontsize)
     return font
 
+
 async def rank_card(user, level: int, rank: int, members_count: int, current_xp: int, needed_xp: int, percentage: float):
     max_lvl = False
     if level == 500:
         max_lvl = True
-    
+
     img = Image.new("RGBA", (1000, 350), GRAY)
-    
+
     await user.avatar.with_static_format('jpg').save(fp='avatar.png')
     av = Image.open('avatar.png')
     av = av.resize((250, 250))
@@ -60,7 +63,7 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
     av = Image.open('avatar.png').convert('RGBA')
 
     orange_line = Image.new("RGBA", (500, 10), ORANGE)
-    
+
     _user = Image.new("RGBA", (500, 50), TRANSPARENT)
     draw = ImageDraw.Draw(_user)
     txt = str(user.display_name) + '#' + str(user.discriminator)
@@ -75,10 +78,10 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
     percent = Image.new("RGBA", (130, 40), TRANSPARENT)
     draw = ImageDraw.Draw(percent)
     font = ImageFont.truetype(TTF_FONT, 35)
-    if max_lvl != True:
+    if max_lvl is not True:
         draw.text((10, 0), f"{percentage}%", font=font, fill=BLACK)
     else:
-        draw.text((10, 0), f"MAX", font=font, fill=BLACK)
+        draw.text((10, 0), "MAX", font=font, fill=BLACK)
 
     next_xp = Image.new("RGBA", (200, 40), TRANSPARENT)
     draw = ImageDraw.Draw(next_xp)
@@ -91,7 +94,7 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
 
     progressbar = Image.new("RGBA", (750, 50), (0, 0, 0, 0))
     d = ImageDraw.Draw(progressbar)
-    d = drawProgressBar(d, 0, 0, 650, 45, percentage/100, fg=BLUE)
+    d = drawProgressBar(d, 0, 0, 650, 45, percentage / 100, fg=BLUE)
 
     _rank = Image.new("RGBA", (235, 100))
     draw = ImageDraw.Draw(_rank)
@@ -101,23 +104,23 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
     _level = Image.new("RGBA", (235, 100))
     draw = ImageDraw.Draw(_level)
     font = ImageFont.truetype(TTF_FONT, 35)
-    if max_lvl != True:
+    if max_lvl is not True:
         draw.text((0, 0), f"     Level:\n        {level}", font=font)
     else:
-        draw.text((0, 0), f"     Level:\n       500(Max)", font=font)
+        draw.text((0, 0), "     Level:\n       500(Max)", font=font)
 
     img.paste(im=av, mask=av, box=(10, 50))
     img.paste(im=orange_line, box=(350, 100))
     img.paste(im=_user, mask=_user, box=(350, 50))
     img.paste(im=progressbar, mask=progressbar, box=(275, 250))
-    if max_lvl != True:
+    if max_lvl is not True:
         img.paste(im=has_xp, mask=has_xp, box=(285, 255))
         img.paste(im=next_xp, mask=next_xp, box=(820, 255))
     img.paste(im=percent, mask=percent, box=(552, 255))
     img.paste(im=_rank, mask=_rank, box=(325, 125))
     img.paste(im=_level, mask=_level, box=(600, 125))
     img.save('rank_card.png')
-    
+
     f = disnake.File(fp='rank_card.png', filename='rank_card.png')
-    
+
     return f

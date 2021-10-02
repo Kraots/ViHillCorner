@@ -2,38 +2,39 @@ import disnake
 from disnake.ext import commands
 import os
 import utils.colors as color
+from utils.context import Context
+
 
 class Cogs(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.prefix = '!'
-    async def cog_check(self, ctx):
+
+    async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
     @commands.is_owner()
-    async def load(self, ctx, extension):
-            self.bot.load_extension(extension)
-            await ctx.reply(f":inbox_tray: `{extension}`")
+    async def load(self, ctx: Context, extension):
+        self.bot.load_extension(extension)
+        await ctx.reply(f":inbox_tray: `{extension}`")
 
     @commands.group(name='reload', invoke_without_command=True, case_insensitive=True)
     @commands.is_owner()
-    async def _reload(self, ctx, extension):
-            self.bot.unload_extension(extension)
-            self.bot.load_extension(extension)
-            await ctx.reply(f":repeat: `{extension}`")
+    async def _reload(self, ctx: Context, extension):
+        self.bot.unload_extension(extension)
+        self.bot.load_extension(extension)
+        await ctx.reply(f":repeat: `{extension}`")
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
     @commands.is_owner()
-    async def unload(self, ctx, extension):
-            self.bot.unload_extension(extension)
-            await ctx.reply(f":outbox_tray: `{extension}`")
-
-
+    async def unload(self, ctx: Context, extension):
+        self.bot.unload_extension(extension)
+        await ctx.reply(f":outbox_tray: `{extension}`")
 
     @_reload.command(aliases=["all"])
     @commands.is_owner()
-    async def reload_all(self, ctx):
+    async def reload_all(self, ctx: Context):
         cogs_list = []
         em = disnake.Embed(color=color.inviscolor, title="Reloaded the next cogs:")
 
@@ -46,7 +47,7 @@ class Cogs(commands.Cog):
                     cogs_list.append(a)
 
                     final_Cogs = "".join(cogs_list)
-                except:
+                except Exception:
                     b = f"❌ `cogs.{filename[:-3]}`\n"
                     cogs_list.append(b)
 
@@ -56,10 +57,9 @@ class Cogs(commands.Cog):
         em.set_footer(text="If the cog has an ❌, then it means it failed to load, or was never loaded.")
         await ctx.reply(embed=em)
 
-
     @load.command(aliases=["all"])
     @commands.is_owner()
-    async def load_all(self, ctx):
+    async def load_all(self, ctx: Context):
         cogs_list = []
         em = disnake.Embed(color=color.inviscolor, title="Loaded the next cogs:")
 
@@ -71,7 +71,7 @@ class Cogs(commands.Cog):
                     cogs_list.append(a)
 
                     final_Cogs = "".join(cogs_list)
-                except:
+                except Exception:
                     b = f"❌ `cogs.{filename[:-3]}`\n"
                     cogs_list.append(b)
 
@@ -83,7 +83,7 @@ class Cogs(commands.Cog):
 
     @unload.command(aliases=["all"])
     @commands.is_owner()
-    async def unload_all(self, ctx):
+    async def unload_all(self, ctx: Context):
         cogs_list = []
         em = disnake.Embed(color=color.inviscolor, title="Unloaded the next cogs:")
 
@@ -95,7 +95,7 @@ class Cogs(commands.Cog):
                     cogs_list.append(a)
 
                     final_Cogs = "".join(cogs_list)
-                except:
+                except Exception:
                     b = f"❌ `cogs.{filename[:-3]}`\n"
                     cogs_list.append(b)
 
@@ -104,6 +104,7 @@ class Cogs(commands.Cog):
         em.description = final_Cogs
         em.set_footer(text="If the cog has an ❌, then it means it failed to unload, or was never loaded.")
         await ctx.reply(embed=em)
+
 
 def setup(bot):
     bot.add_cog(Cogs(bot))

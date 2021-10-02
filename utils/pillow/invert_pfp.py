@@ -1,6 +1,7 @@
 from PIL import Image, ImageOps
 import disnake
 
+
 async def invert_pfp(user):
     await user.avatar.with_static_format('jpg').save(fp='inverted_avatar.png')
     img = Image.open('inverted_avatar.png')

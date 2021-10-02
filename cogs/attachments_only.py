@@ -1,20 +1,21 @@
 import disnake
 from disnake.ext import commands
 
+
 class ImagesChannel(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message : disnake.Message):
+    async def on_message(self, message: disnake.Message):
         if message.author.bot:
             return
         guild = self.bot.get_guild(750160850077089853)
         staff = guild.get_role(754676705741766757)
         if staff in message.author.roles:
             return
-            
+
         if message.channel.id == 790310516266500098:
             try:
                 allow_this = message.attachments[0].url
@@ -31,7 +32,7 @@ class ImagesChannel(commands.Cog):
                         return
                 except UnboundLocalError:
                     pass
-        
+
         elif message.channel.id == 790309304422629386:
             try:
                 allow_this = message.attachments[0].url
@@ -47,7 +48,7 @@ class ImagesChannel(commands.Cog):
                     else:
                         return
                 except UnboundLocalError:
-                                pass
+                    pass
 
         elif message.channel.id == 750160852006469810:
             try:
@@ -59,7 +60,7 @@ class ImagesChannel(commands.Cog):
                 pass
 
             else:
-                try:	
+                try:
                     if message.content == allow_this:
                         return
                     else:
@@ -100,6 +101,7 @@ class ImagesChannel(commands.Cog):
 
         else:
             return
+
 
 def setup(bot):
     bot.remove_cog(ImagesChannel(bot))

@@ -19,11 +19,22 @@ key2 = os.getenv('MONGODBLVLKEY')
 cluster2 = motor.motor_asyncio.AsyncIOMotorClient(key2)
 database2 = cluster2['ViHillCornerDB']
 
+
 class ViHillCorner(commands.Bot):
     def __init__(self):
         allowed_mentions = disnake.AllowedMentions(roles=False, everyone=False, users=True)
         intents = disnake.Intents.all()
-        super().__init__(help_command=PaginatedHelpCommand(), command_prefix=('!', ';'), allowed_mentions=allowed_mentions, intents=intents, case_insensitive=True, test_guilds=[750160850077089853, 787357561116426258])
+        super().__init__(
+            help_command=PaginatedHelpCommand(),
+            command_prefix=('!', ';'),
+            allowed_mentions=allowed_mentions,
+            intents=intents,
+            case_insensitive=True,
+            test_guilds=[
+                750160850077089853,
+                787357561116426258
+            ]
+        )
         self.add_check(self.check_dms)
         self.db1 = database1
         self.db2 = database2
@@ -58,20 +69,20 @@ class ViHillCorner(commands.Bot):
     async def on_ready(self):
         if not hasattr(self, 'uptime'):
             self.uptime = datetime.datetime.utcnow()
-        
+
         if not hasattr(self, '_session'):
             self._session = aiohttp.ClientSession(loop=self.loop)
-        
+
         if not hasattr(self, '_presence_changed'):
             activity = disnake.Activity(type=disnake.ActivityType.watching, name='you | !help')
             await self.change_presence(status=disnake.Status.dnd, activity=activity)
             self._presence_changed = True
-        
+
         if not hasattr(self, '_owner_id'):
             app = await self.application_info()
             self._owner_id = app.owner.id
 
-        if self.added_views == False:
+        if self.added_views is False:
             self.add_view(view=ButtonRoles(), message_id=886686657842135100)
             self.add_view(view=ButtonRoles(), message_id=886686816634277928)
             self.add_view(view=ButtonRoles(), message_id=886686899371139143)
@@ -89,5 +100,6 @@ class ViHillCorner(commands.Bot):
             await ctx.send('Commands do not work in dm channels. Please use commands in <#750160851822182486>')
             return False
         return True
+
 
 ViHillCorner().run(token)
