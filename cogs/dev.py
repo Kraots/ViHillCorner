@@ -6,7 +6,7 @@ from disnake.ext.commands import Greedy
 from disnake import Member
 import os
 import sys
-from utils.helpers import clean_code, Pag  # noqa
+from utils.helpers import clean_code
 import contextlib
 import io
 import textwrap
