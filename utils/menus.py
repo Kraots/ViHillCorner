@@ -648,7 +648,7 @@ class Menu(metaclass=_MenuMeta):
         """
         # some users may wish to take other actions during or beyond logging
         # which would require awaiting, such as stopping an erroring menu.
-        log.exception("Unhandled exception during menu update.", exc_info=exc)  # noqa
+        pass
 
     async def start(self, ctx, *, channel=None, wait=False):
         """|coro|
@@ -1091,7 +1091,7 @@ class GroupByPageSource(ListPageSource):
             size = len(g)
 
             # Chunk the nested pages
-            nested.extend(_GroupByEntry(key=k, items=g[i:i+per_page]) for i in range(0, size, per_page))
+            nested.extend(_GroupByEntry(key=k, items=g[i:i + per_page]) for i in range(0, size, per_page))
 
         super().__init__(nested, per_page=1)
 

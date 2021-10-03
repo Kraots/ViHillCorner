@@ -1,6 +1,7 @@
 from disnake.ext import commands, tasks
 import json
 
+
 class WarnsRemove(commands.Cog):
 
     def __init__(self, bot):
@@ -14,7 +15,7 @@ class WarnsRemove(commands.Cog):
     async def clear_caps_warns(self):
         users = await get_caps_warns_data()
         users.clear()
-        
+
         with open("caps-warns.json", "w") as f:
             json.dump(users, f)
 
@@ -22,7 +23,7 @@ class WarnsRemove(commands.Cog):
     async def clear_words_warns(self):
         users = await get_words_warns_data()
         users.clear()
-        
+
         with open("words-warns.json", "w") as f:
             json.dump(users, f)
 
@@ -34,7 +35,7 @@ class WarnsRemove(commands.Cog):
         with open("spam-warns.json", "w") as f:
             json.dump(users, f)
 
-    @tasks.loop(seconds = 360)
+    @tasks.loop(seconds=360)
     async def clear_repeated_text_warns(self):
         users = await get_repeated_text_warns_data()
         users.clear()
@@ -49,23 +50,27 @@ async def get_caps_warns_data():
 
     return users
 
+
 async def get_words_warns_data():
     with open("words-warns.json", "r") as f:
         users = json.load(f)
 
     return users
 
+
 async def get_spam_warns_data():
     with open("spam-warns.json", "r") as f:
         users = json.load(f)
-    
+
     return users
+
 
 async def get_repeated_text_warns_data():
     with open("repeated-text-filter.json", "r") as f:
         users = json.load(f)
 
     return users
+
 
 def setup(bot):
     bot.add_cog(WarnsRemove(bot))

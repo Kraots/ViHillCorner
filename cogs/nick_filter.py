@@ -1,18 +1,22 @@
 import disnake
 from disnake.ext import commands
 import re
+from .name_filter import allowed_letters
+
 
 def remove_emoji(string):
-    emoji_pattern = re.compile("["
-                        u"\U0001F600-\U0001F64F"  # emoticons
-                        u"\U0001F300"
-                        u"\U0001F251"  # symbols & pictographs
-                        u"\U0001F680"  # transport & map symbols
-                        u"\U00002702-\U000027B0"
-                        "]+", flags=re.UNICODE)
+    emoji_pattern = re.compile(
+        "["
+        u"\U0001F600-\U0001F64F"  # emoticons
+        u"\U0001F300"
+        u"\U0001F251"  # symbols & pictographs
+        u"\U0001F680"  # transport & map symbols
+        u"\U00002702-\U000027B0"
+        "]+",
+        flags=re.UNICODE
+    )
     return emoji_pattern.sub(r'', string)
 
-allowed_letters = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "", "]", "^", "_", "`", "{", "|", "}", "~", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "♡", " ", "\\")
 
 class NickFilter(commands.Cog):
 
@@ -21,7 +25,7 @@ class NickFilter(commands.Cog):
         self.db = bot.db2['InvalidName Filter']
 
     @commands.Cog.listener()
-    async def on_message(self, message : disnake.Message):
+    async def on_message(self, message: disnake.Message):
         if message.author.bot:
             return
         elif message.author.id == 374622847672254466:
@@ -43,15 +47,18 @@ class NickFilter(commands.Cog):
                             'InvalidNameIndex': new_index
                         }
                         await self.db.insert_one(post)
-                        await self.db.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+                        await self.db.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
                         new_nick = f'UnpingableName{new_index}'
                     else:
                         new_nick = f"UnpingableName{user['InvalidNameIndex']}"
-                        
-                    await message.author.edit(nick=new_nick)
-                    await message.author.send(f"Hello! Your `nickname` doesn't follow our naming policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-                    return
 
+                    await message.author.edit(nick=new_nick)
+                    await message.author.send(
+                        f"Hello! Your `nickname` doesn't follow our naming policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n "  # noqa
+                        "If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡"
+                        "\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
+                    )
+                    return
 
 
 def setup(bot):

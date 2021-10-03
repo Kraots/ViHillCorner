@@ -1,7 +1,9 @@
-import disnake 
+import disnake
 from disnake.ext import commands
 import asyncio
 from utils.helpers import time_phaser
+from utils.context import Context
+
 
 class Intros(commands.Cog):
 
@@ -9,19 +11,20 @@ class Intros(commands.Cog):
         self.bot = bot
         self.db = bot.db1['Intros']
         self.prefix = "!"
-    async def cog_check(self, ctx):
+
+    async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
 
     @commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
     @commands.cooldown(1, 360, commands.BucketType.user)
-    async def intro(self, ctx):
+    async def intro(self, ctx: Context):
         """Create a new intro if you don't have one or edit an existing one."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
-        
+
         await ctx.message.delete()
 
         channel = ctx.message.channel
@@ -30,17 +33,17 @@ class Intros(commands.Cog):
         guild = self.bot.get_guild(750160850077089853)
 
         introchannel = guild.get_channel(750160850593251449)
-        
+
         def check(message):
             return message.author.id == usercheck and message.channel.id == channel.id
 
-        if results != None:
+        if results is not None:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
             view.message = msg = await ctx.send("You already have intro set, would you like to edit your intro? %s" % (ctx.author.mention), view=view)
             await view.wait()
             if view.response is None:
                 return ctx.command.reset_cooldown(ctx)
-            
+
             elif view.response is False:
                 e = "Canceled. %s" % (ctx.author.mention)
                 ctx.command.reset_cooldown(ctx)
@@ -50,13 +53,13 @@ class Intros(commands.Cog):
                 await msg.delete()
                 try:
                     intro_id = results['intro_id']
-                except:
+                except KeyError:
                     pass
 
                 await channel.send("What's your name? {}\n\n*To cancel type `!cancel`*".format(ctx.author.mention))
 
                 try:
-                    name = await self.bot.wait_for('message', timeout= 180, check=check)
+                    name = await self.bot.wait_for('message', timeout=180, check=check)
                     if name.content.lower() == '!cancel':
                         await channel.send("Canceled. %s" % (ctx.author.mention))
                         ctx.command.reset_cooldown(ctx)
@@ -69,9 +72,9 @@ class Intros(commands.Cog):
 
                 else:
                     await channel.send("Where are you from? {}".format(ctx.author.mention))
-                    
+
                     try:
-                        location = await self.bot.wait_for('message', timeout= 180, check=check)
+                        location = await self.bot.wait_for('message', timeout=180, check=check)
                         if location.content.lower() == '!cancel':
                             await channel.send("Canceled. %s" % (ctx.author.mention))
                             ctx.command.reset_cooldown(ctx)
@@ -87,7 +90,7 @@ class Intros(commands.Cog):
 
                         try:
                             while True:
-                                age = await self.bot.wait_for('message', timeout= 180, check=check)
+                                age = await self.bot.wait_for('message', timeout=180, check=check)
                                 if age.content.lower() == '!cancel':
                                     await channel.send("Canceled. %s" % (ctx.author.mention))
                                     ctx.command.reset_cooldown(ctx)
@@ -108,9 +111,9 @@ class Intros(commands.Cog):
 
                         else:
                             await channel.send("What's your gender? {}".format(ctx.author.mention))
-                            
+
                             try:
-                                gender = await self.bot.wait_for('message', timeout= 180, check=check)
+                                gender = await self.bot.wait_for('message', timeout=180, check=check)
                                 if gender.content.lower() == '!cancel':
                                     await channel.send("Canceled. %s" % (ctx.author.mention))
                                     ctx.command.reset_cooldown(ctx)
@@ -123,10 +126,10 @@ class Intros(commands.Cog):
 
                             else:
                                 await channel.send("Relationship status? `single` | `taken` | `complicated` {}".format(ctx.author.mention))
-                                
+
                                 try:
                                     while True:
-                                        prestatuss = await self.bot.wait_for('message', timeout= 180, check=check)
+                                        prestatuss = await self.bot.wait_for('message', timeout=180, check=check)
                                         status = prestatuss.content.lower()
                                         if status == '!cancel':
                                             await channel.send("Canceled. %s" % (ctx.author.mention))
@@ -136,7 +139,7 @@ class Intros(commands.Cog):
                                             break
                                         else:
                                             await channel.send("Please only choose from `single` | `taken` | `complicated`")
-                                    
+
                                 except asyncio.TimeoutError:
                                     await ctx.send("Ran out of time. %s" % (ctx.author.mention))
                                     ctx.command.reset_cooldown(ctx)
@@ -146,7 +149,7 @@ class Intros(commands.Cog):
                                     await channel.send("What are u interested to? {}".format(ctx.author.mention))
 
                                     try:
-                                        interests = await self.bot.wait_for('message', timeout= 360, check=check)
+                                        interests = await self.bot.wait_for('message', timeout=360, check=check)
                                         if interests.content.lower() == '!cancel':
                                             await channel.send("Canceled. %s" % (ctx.author.mention))
                                             ctx.command.reset_cooldown(ctx)
@@ -169,12 +172,27 @@ class Intros(commands.Cog):
                                         em.add_field(name="Interests", value=interests.content, inline=False)
                                         intro_message = await introchannel.send(embed=em)
 
-                                        await self.db.update_one({"_id": ctx.author.id}, {"$set": {"name": name.content, "location": location.content, "age": agenumber, "gender": gender.content, "status": status, "interests": interests.content, "intro_id": intro_message.id}})
-                                        
+                                        await self.db.update_one(
+                                            {
+                                                "_id": ctx.author.id
+                                            },
+                                            {
+                                                "$set": {
+                                                    "name": name.content,
+                                                    "location": location.content,
+                                                    "age": agenumber,
+                                                    "gender": gender.content,
+                                                    "status": status,
+                                                    "interests": interests.content,
+                                                    "intro_id": intro_message.id
+                                                }
+                                            }
+                                        )
+
                                         try:
                                             intro_message = await introchannel.fetch_message(intro_id)
                                             await intro_message.delete()
-                                        except:
+                                        except Exception:
                                             pass
 
                                         await ctx.send("Intro edited successfully. You can see in <#750160850593251449> %s" % (ctx.author.mention))
@@ -182,11 +200,11 @@ class Intros(commands.Cog):
                                         return
 
         else:
-            
+
             await channel.send("What's your name? {}\n\n*To cancel type `!cancel`*".format(ctx.author.mention))
 
             try:
-                name = await self.bot.wait_for('message', timeout= 180, check=check)
+                name = await self.bot.wait_for('message', timeout=180, check=check)
                 if name.content.lower() == '!cancel':
                     await channel.send("Canceled. %s" % (ctx.author.mention))
                     ctx.command.reset_cooldown(ctx)
@@ -199,9 +217,9 @@ class Intros(commands.Cog):
 
             else:
                 await channel.send("Where are you from? {}".format(ctx.author.mention))
-                
+
                 try:
-                    location = await self.bot.wait_for('message', timeout= 180, check=check)
+                    location = await self.bot.wait_for('message', timeout=180, check=check)
                     if location.content.lower() == '!cancel':
                         await channel.send("Canceled. %s" % (ctx.author.mention))
                         ctx.command.reset_cooldown(ctx)
@@ -217,7 +235,7 @@ class Intros(commands.Cog):
 
                     try:
                         while True:
-                            age = await self.bot.wait_for('message', timeout= 180, check=check)
+                            age = await self.bot.wait_for('message', timeout=180, check=check)
                             if age.content.lower() == '!cancel':
                                 await channel.send("Canceled. %s" % (ctx.author.mention))
                                 ctx.command.reset_cooldown(ctx)
@@ -238,9 +256,9 @@ class Intros(commands.Cog):
 
                     else:
                         await channel.send("What's your gender? {}".format(ctx.author.mention))
-                        
+
                         try:
-                            gender = await self.bot.wait_for('message', timeout= 180, check=check)
+                            gender = await self.bot.wait_for('message', timeout=180, check=check)
                             if gender.content.lower() == '!cancel':
                                 await channel.send("Canceled. %s" % (ctx.author.mention))
                                 ctx.command.reset_cooldown(ctx)
@@ -253,10 +271,10 @@ class Intros(commands.Cog):
 
                         else:
                             await channel.send("Relationship status? `single` | `taken` | `complicated` {}".format(ctx.author.mention))
-                            
+
                             try:
                                 while True:
-                                    prestatuss = await self.bot.wait_for('message', timeout= 180, check=check)
+                                    prestatuss = await self.bot.wait_for('message', timeout=180, check=check)
                                     status = prestatuss.content.lower()
                                     if status == '!cancel':
                                         await channel.send("Canceled. %s" % (ctx.author.mention))
@@ -266,7 +284,7 @@ class Intros(commands.Cog):
                                         break
                                     else:
                                         await channel.send("Please only choose from `single` | `taken` | `complicated`")
-                            
+
                             except asyncio.TimeoutError:
                                 await ctx.send("Ran out of time. %s" % (ctx.author.mention))
                                 ctx.command.reset_cooldown(ctx)
@@ -276,7 +294,7 @@ class Intros(commands.Cog):
                                 await channel.send("What are u interested to? {}".format(ctx.author.mention))
 
                                 try:
-                                    interests = await self.bot.wait_for('message', timeout= 360, check=check)
+                                    interests = await self.bot.wait_for('message', timeout=360, check=check)
                                     if interests.content.lower() == '!cancel':
                                         await channel.send("Canceled. %s" % (ctx.author.mention))
                                         ctx.command.reset_cooldown(ctx)
@@ -301,24 +319,23 @@ class Intros(commands.Cog):
                                     intro_msg = await introchannel.send(embed=em)
                                     await ctx.send("Intro added successfully. You can see in <#750160850593251449>")
 
-                                    post = {"_id": ctx.author.id, 
-                                            "name": name.content,
-                                            "location": location.content,
-                                            "age": agenumber,
-                                            "gender": gender.content,
-                                            "status": status,
-                                            "interests": interests.content,
-                                            "intro_id": intro_msg.id
-                                            }
-                                            
+                                    post = {
+                                        "_id": ctx.author.id,
+                                        "name": name.content,
+                                        "location": location.content,
+                                        "age": agenumber,
+                                        "gender": gender.content,
+                                        "status": status,
+                                        "interests": interests.content,
+                                        "intro_id": intro_msg.id
+                                    }
+
                                     await self.db.insert_one(post)
 
                                     return
 
-
-
     @intro.command(name='delete', aliases=["remove"])
-    async def intro_delete(self, ctx):
+    async def intro_delete(self, ctx: Context):
         """
         Delete your intro.
         This will also delete your intro message in the intros channel.
@@ -326,13 +343,13 @@ class Intros(commands.Cog):
 
         results = await self.db.find_one({"_id": ctx.author.id})
 
-        if results != None:
+        if results is not None:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
             view.message = msg = await ctx.send("Are you sure you want to delete your intro? %s" % (ctx.author.mention), view=view)
             await view.wait()
             if view.response is None:
                 return ctx.command.reset_cooldown(ctx)
-            
+
             elif view.response is True:
                 await self.db.delete_one({"_id": ctx.author.id})
                 try:
@@ -341,11 +358,11 @@ class Intros(commands.Cog):
                     channel = guild.get_channel(750160850593251449)
                     intro_message = await channel.fetch_message(intro_id)
                     await intro_message.delete()
-                except:
+                except Exception:
                     pass
                 e = "Intro deleted. %s" % (ctx.author.mention)
                 return await msg.edit(content=e, view=view)
-            
+
             elif view.response is False:
                 e = "Intro has not been deleted. %s" % (ctx.author.mention)
                 return await msg.edit(content=e, view=view)
@@ -354,19 +371,18 @@ class Intros(commands.Cog):
             await ctx.send("You do not have an intro!")
             return
 
-
     @commands.command(aliases=['wi'])
     @commands.cooldown(1, 20, commands.BucketType.user)
-    async def whois(self, ctx, member: disnake.Member= None):
+    async def whois(self, ctx: Context, member: disnake.Member = None):
         """Check the member's intro if they have one."""
-    
+
         member = member or ctx.author
 
         results = await self.db.find_one({"_id": member.id})
-        
+
         user = member
 
-        if results != None:
+        if results is not None:
             introname = results['name']
             introlocation = results['location']
             introage = results['age']
@@ -385,30 +401,26 @@ class Intros(commands.Cog):
             em.add_field(name="Relationship Status", value=relationshipstatus, inline=True)
             em.add_field(name="Interests", value=introinterests, inline=False)
             await ctx.send(embed=em)
-        
+
         else:
             if ctx.author.id == user.id:
                 await ctx.send("You do not have an intro!")
                 ctx.command.reset_cooldown(ctx)
                 return
-                
+
             else:
                 await ctx.send("User does not have an intro!")
                 ctx.command.reset_cooldown(ctx)
                 return
 
-
     @commands.Cog.listener()
-    async def on_member_remove(self, member):
+    async def on_member_remove(self, member: disnake.Member):
         if member.id == 374622847672254466:
             return
         await self.db.delete_one({"_id": member.id})
 
-
-
-
     @whois.error
-    async def wi_error(self, ctx, error):
+    async def wi_error(self, ctx: Context, error):
         if isinstance(error, commands.CommandOnCooldown):
             msg = f'Please wait {time_phaser(error.retry_after)}.'
             await ctx.send(msg)
@@ -416,7 +428,7 @@ class Intros(commands.Cog):
             await self.bot.reraise(ctx, error)
 
     @intro.error
-    async def intro_error(self, ctx, error):
+    async def intro_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.CommandInvokeError):
             ctx.command.reset_cooldown(ctx)
             await self.bot.reraise(ctx, error)

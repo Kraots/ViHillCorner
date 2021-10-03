@@ -10,11 +10,13 @@ from dateutil.relativedelta import relativedelta
 from utils import time, menus
 from utils.paginator import RoboPages, FieldPageSource
 from utils.helpers import format_balance
+from utils.context import Context
+
 
 class ShopEcoMenus(menus.ListPageSource):
     def __init__(self, entries, *, per_page=12):
         super().__init__(entries, per_page=per_page)
-        
+
     async def format_page(self, menu, entries):
         pages = []
         for index, entry in enumerate(entries, start=menu.current_page * self.per_page):
@@ -24,16 +26,18 @@ class ShopEcoMenus(menus.ListPageSource):
         if maximum > 1:
             footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} items)'
             menu.embed.set_footer(text=footer)
-    
-        menu.embed.description = 'Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.\n\n{}'.format("\n\n".join(pages))
+
+        menu.embed.description = 'Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.\n\n{}'.format("\n\n".join(pages))  # noqa
         return menu.embed
 
+
 class ShopEcoMenu(RoboPages):
-    def __init__(self, ctx, entries, *, per_page=12, color=None):
+    def __init__(self, ctx: Context, entries, *, per_page=12, color=None):
         super().__init__(ShopEcoMenus(entries, per_page=per_page), ctx=ctx)
         if color is None:
             color = disnake.Embed.Empty
         self.embed = disnake.Embed(colour=color, title='Shop Items')
+
 
 class ShopPageEntry:
     def __init__(self, entry):
@@ -46,53 +50,93 @@ class ShopPageEntry:
     def __str__(self):
         return f'**{self.emoji} {self.name.title()} — {self.price}**\n{self.desc}'
 
+
 class ShopMenu(ShopEcoMenu):
-    def __init__(self, ctx, entries, *, per_page = 5, color=None):
+    def __init__(self, ctx: Context, entries, *, per_page=5, color=None):
         converted = [ShopPageEntry(entry) for entry in entries]
         super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color)
 
+
 _shop = [
-    {'item_type': 'Collectable', 'item_name': 'golden carrot', 'price': 100000000, 'sells_for': 'This item cannot be sold.', 'description': 'Show off to your friends with this item that costs 100M', 'item_emoji': '<:goldencarrot:885075068797984808>'},
-    {'item_type': 'Usable', 'item_name': 'clock', 'price': 25000, 'sells_for': 1200, 'description': 'Increases luck by 5% for 2h', 'expires_in': {'hours': 2}},
-    {'item_type': 'Usable', 'item_name': 'alcohol', 'price': 50000, 'sells_for': 3500, 'description': 'Increases luck by 10% for 1h', 'expires_in': {'hours': 1}},
-    {'item_type': 'Tool', 'item_name': 'fishing pole', 'price': 65000, 'sells_for': 5000, 'description': 'Use this to fish', 'uses': 13},
-    {'item_type': 'Tool', 'item_name': 'hunting rifle', 'price': 75000, 'sells_for': 6300, 'description': 'Use this to go hunting', 'uses': 14},
-    {'item_type': 'Sellable', 'item_name': 'common fish', 'price': 'This item cannot be bought.', 'sells_for': 10000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-    {'item_type': 'Sellable', 'item_name': 'uncommon fish', 'price': 'This item cannot be bought.', 'sells_for': 25000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-    {'item_type': 'Sellable', 'item_name': 'rare fish', 'price': 'This item cannot be bought.', 'sells_for': 50000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-    {'item_type': 'Sellable', 'item_name': 'epic fish', 'price': 'This item cannot be bought.', 'sells_for': 225000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-    {'item_type': 'Sellable', 'item_name': 'legendary fish', 'price': 'This item cannot be bought.', 'sells_for': 500000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-    {'item_type': 'Sellable', 'item_name': 'mythic fish', 'price': 'This item cannot be bought.', 'sells_for': 1000000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-    {'item_type': 'Sellable', 'item_name': 'skunk', 'price': 'This item cannot be bought.', 'sells_for': 10000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-    {'item_type': 'Sellable', 'item_name': 'boar', 'price': 'This item cannot be bought.', 'sells_for': 30000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-    {'item_type': 'Sellable', 'item_name': 'bear', 'price': 'This item cannot be bought.', 'sells_for': 63000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-    {'item_type': 'Sellable', 'item_name': 'crocodile', 'price': 'This item cannot be bought.', 'sells_for': 230000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-    {'item_type': 'Sellable', 'item_name': 'lion', 'price': 'This item cannot be bought.', 'sells_for': 560000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-    {'item_type': 'Sellable', 'item_name': 'dragon', 'price': 'This item cannot be bought.', 'sells_for': 1250000, 'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
-        ]
+    {'item_type': 'Collectable', 'item_name': 'golden carrot', 'price': 100000000,
+        'sells_for': 'This item cannot be sold.', 'description': 'Show off to your friends with this item that costs 100M',
+        'item_emoji': '<:goldencarrot:885075068797984808>'},
+    {'item_type': 'Usable', 'item_name': 'clock', 'price': 25000, 'sells_for': 1200,
+        'description': 'Increases luck by 5% for 2h', 'expires_in': {'hours': 2}},
+    {'item_type': 'Usable', 'item_name': 'alcohol', 'price': 50000, 'sells_for': 3500,
+        'description': 'Increases luck by 10% for 1h', 'expires_in': {'hours': 1}},
+    {'item_type': 'Tool', 'item_name': 'fishing pole', 'price': 65000, 'sells_for': 5000,
+        'description': 'Use this to fish', 'uses': 13},
+    {'item_type': 'Tool', 'item_name': 'hunting rifle', 'price': 75000, 'sells_for': 6300,
+        'description': 'Use this to go hunting', 'uses': 14},
+    {'item_type': 'Sellable', 'item_name': 'common fish', 'price': 'This item cannot be bought.', 'sells_for': 10000,
+        'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+    {'item_type': 'Sellable', 'item_name': 'uncommon fish', 'price': 'This item cannot be bought.', 'sells_for': 25000,
+        'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+    {'item_type': 'Sellable', 'item_name': 'rare fish', 'price': 'This item cannot be bought.', 'sells_for': 50000,
+        'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+    {'item_type': 'Sellable', 'item_name': 'epic fish', 'price': 'This item cannot be bought.', 'sells_for': 225000,
+        'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+    {'item_type': 'Sellable', 'item_name': 'legendary fish', 'price': 'This item cannot be bought.', 'sells_for': 500000,
+        'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+    {'item_type': 'Sellable', 'item_name': 'mythic fish', 'price': 'This item cannot be bought.', 'sells_for': 1000000,
+        'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+    {'item_type': 'Sellable', 'item_name': 'skunk', 'price': 'This item cannot be bought.', 'sells_for': 10000,
+        'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+    {'item_type': 'Sellable', 'item_name': 'boar', 'price': 'This item cannot be bought.', 'sells_for': 30000,
+        'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+    {'item_type': 'Sellable', 'item_name': 'bear', 'price': 'This item cannot be bought.', 'sells_for': 63000,
+        'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+    {'item_type': 'Sellable', 'item_name': 'crocodile', 'price': 'This item cannot be bought.', 'sells_for': 230000,
+        'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+    {'item_type': 'Sellable', 'item_name': 'lion', 'price': 'This item cannot be bought.', 'sells_for': 560000,
+        'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+    {'item_type': 'Sellable', 'item_name': 'dragon', 'price': 'This item cannot be bought.', 'sells_for': 1250000,
+        'description': 'This item\'s purpose is to be collected or sold. Nothing more, nothing less.'},
+]
 
 _fishes = [
-    {'fish': 'common fish', 'chances': (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 155, 160, 154, 136, 137, 116, 117)},
-    {'fish': 'uncommon fish', 'chances': (45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 132, 133, 122)},
-    {'fish': 'rare fish', 'chances': (75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89)},
-    {'fish': 'epic fish', 'chances': (90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101)},
-    {'fish': 'legendary fish', 'chances': (102, 103, 104, 105, 106, 107)},
-    {'fish': 'mythic fish', 'chances': (108, 109, 110)}
-            ]
+    {'fish': 'common fish',
+        'chances': (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+                    24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 155, 160, 154, 136, 137, 116, 117)},
+    {'fish': 'uncommon fish',
+        'chances': (45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65,
+                    66, 67, 68, 69, 70, 71, 72, 73, 74, 132, 133, 122)},
+    {'fish': 'rare fish',
+        'chances': (75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89)},
+    {'fish': 'epic fish',
+        'chances': (90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101)},
+    {'fish': 'legendary fish',
+        'chances': (102, 103, 104, 105, 106, 107)},
+    {'fish': 'mythic fish',
+        'chances': (108, 109, 110)}
+]
 
 _animals = [
-    {'animal': 'skunk', 'chances': (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 155, 160, 154, 136, 137, 116, 117)},
-    {'animal': 'boar', 'chances': (45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 132, 133, 122)},
-    {'animal': 'bear', 'chances': (75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89)},
-    {'animal': 'crocodile', 'chances': (90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101)},
-    {'animal': 'lion', 'chances': (102, 103, 104, 105, 106, 107)},
-    {'animal': 'dragon', 'chances': (108, 109, 110)}
-            ]
+    {'animal': 'skunk',
+        'chances': (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+                    36, 37, 38, 39, 40, 41, 42, 43, 44, 155, 160, 154, 136, 137, 116, 117)},
+    {'animal': 'boar',
+        'chances': (45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 132, 133, 122)},
+    {'animal': 'bear',
+        'chances': (75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89)},
+    {'animal': 'crocodile',
+        'chances': (90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101)},
+    {'animal': 'lion',
+        'chances': (102, 103, 104, 105, 106, 107)},
+    {'animal': 'dragon',
+        'chances': (108, 109, 110)}
+]
 
-all_search_choices = ('purse', 'discord', 'pocket', 'street', 'dog', 'uber', 'canals', 'washer', 'sink', 'fridge', 'area51', 'dumpster', 'couch', 'dress', 'tree', 'glovebox')
+all_search_choices = (
+    'purse', 'discord', 'pocket', 'street', 'dog', 'uber',
+    'canals', 'washer', 'sink', 'fridge', 'area51', 'dumpster',
+    'couch', 'dress', 'tree', 'glovebox'
+)
+
 
 class EcoSearchView(disnake.ui.View):
-    def __init__(self, ctx, *, timeout=10.0):
+    def __init__(self, ctx: Context, *, timeout=10.0):
         super().__init__(timeout=timeout)
         self.ctx = ctx
 
@@ -101,7 +145,7 @@ class EcoSearchView(disnake.ui.View):
             await interaction.response.send_message(f'Only {self.ctx.author.display_name} can use the buttons on this message!', ephemeral=True)
             return False
         return True
-        
+
     async def on_error(self, error: Exception, item, interaction):
         return await self.ctx.bot.reraise(self.ctx, error)
 
@@ -110,7 +154,7 @@ class EcoSearchView(disnake.ui.View):
             item.disabled = True
             item.style = disnake.ButtonStyle.grey
         await self.message.edit('Guess you didn\'t want to search anywhere 🙄', view=self)
-        
+
     @disnake.ui.button(label='1', style=disnake.ButtonStyle.blurple)
     async def search_1_result(self, button: disnake.ui.Button, inter: disnake.Interaction):
         for item in self.children:
@@ -131,7 +175,7 @@ class EcoSearchView(disnake.ui.View):
             em.description = f'You searched `{button.label}` and lost **{amt}** <:carrots:822122757654577183>'
         await inter.response.edit_message(content=None, embed=em, view=self)
         self.stop()
-    
+
     @disnake.ui.button(label='2', style=disnake.ButtonStyle.blurple)
     async def search_2_result(self, button: disnake.ui.Button, inter: disnake.Interaction):
         for item in self.children:
@@ -152,7 +196,7 @@ class EcoSearchView(disnake.ui.View):
             em.description = f'You searched `{button.label}` and lost **{amt}** <:carrots:822122757654577183>'
         await inter.response.edit_message(content=None, embed=em, view=self)
         self.stop()
-    
+
     @disnake.ui.button(label='3', style=disnake.ButtonStyle.blurple)
     async def search_3_result(self, button: disnake.ui.Button, inter: disnake.Interaction):
         for item in self.children:
@@ -174,8 +218,9 @@ class EcoSearchView(disnake.ui.View):
         await inter.response.edit_message(content=None, embed=em, view=self)
         self.stop()
 
+
 class RPSView(disnake.ui.View):
-    def __init__(self, db, ctx, *, timeout = 180):
+    def __init__(self, db, ctx, *, timeout=180):
         super().__init__(timeout=timeout)
         self.db = db
         self.ctx = ctx
@@ -191,7 +236,7 @@ class RPSView(disnake.ui.View):
             item.disabled = True
             item.style = disnake.ButtonStyle.gray
         await self.message.edit('Timed Out.', view=self)
-    
+
     def disable_buttons(self, button):
         for item in self.children:
             if item.label != button.style:
@@ -204,11 +249,11 @@ class RPSView(disnake.ui.View):
         won_amt = randint(5000, 35000)
         lost_amt = randint(1000, 7001)
         won_message = f'**__You won__** and got **{won_amt:,}** <:carrots:822122757654577183>\nYou chose `{choice}` while the bot chose `{bot_choice}`'
-        lost_message = f'**__The bot won__** and you lost **{lost_amt:,}** <:carrots:822122757654577183>\nYou chose `{choice}` while the bot chose `{bot_choice}`'
+        lost_message = f'**__The bot won__** and you lost **{lost_amt:,}** <:carrots:822122757654577183>\nYou chose `{choice}` while the bot chose `{bot_choice}`'  # noqa
         self.disable_buttons(button)
         if (
-            (choice == 'rock' and bot_choice == 'paper') or 
-            (choice == 'paper' and bot_choice == 'scissors') or 
+            (choice == 'rock' and bot_choice == 'paper') or
+            (choice == 'paper' and bot_choice == 'scissors') or
             (choice == 'scissors' and bot_choice == 'rock')
         ):
             await self.message.edit(lost_message, view=self)
@@ -218,11 +263,11 @@ class RPSView(disnake.ui.View):
         else:
             await self.message.edit(won_message, view=self)
             won = True
-        
-        if won == True:
-            await self.db.update_one({'_id': self.ctx.author.id}, {'$inc':{'wallet': won_amt}})
-        elif won == False:
-            await self.db.update_one({'_id': self.ctx.author.id}, {'$inc':{'wallet': -lost_amt}})
+
+        if won is True:
+            await self.db.update_one({'_id': self.ctx.author.id}, {'$inc': {'wallet': won_amt}})
+        elif won is False:
+            await self.db.update_one({'_id': self.ctx.author.id}, {'$inc': {'wallet': -lost_amt}})
         self.stop()
 
     @disnake.ui.button(label='Rock', style=disnake.ButtonStyle.blurple)
@@ -232,10 +277,11 @@ class RPSView(disnake.ui.View):
     @disnake.ui.button(label='Paper', style=disnake.ButtonStyle.blurple)
     async def paper(self, button: disnake.Button, inter: disnake.MessageInteraction):
         await self.check_result(button)
-    
+
     @disnake.ui.button(label='Scissors', style=disnake.ButtonStyle.blurple)
     async def scissors(self, button: disnake.Button, inter: disnake.MessageInteraction):
         await self.check_result(button)
+
 
 class Economy(commands.Cog):
 
@@ -244,7 +290,8 @@ class Economy(commands.Cog):
         self.db = bot.db1['Economy']
         self.check_items_in_use.start()
         self.prefix = "!"
-    async def cog_check(self, ctx):
+
+    async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
 
     @tasks.loop(minutes=1.0)
@@ -261,77 +308,79 @@ class Economy(commands.Cog):
                     new_in_use.append(item_in_use)
             await self.db.update_one({'_id': user['_id']}, {'$set': {'items_in_use': new_in_use}})
 
-    @commands.group(invoke_without_command = True, case_insensitive = True)
-    async def daily(self, ctx):
+    @commands.group(invoke_without_command=True, case_insensitive=True)
+    async def daily(self, ctx: Context):
         """Get your daily 75.00K <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         user = ctx.author
         results = await self.db.find_one({"_id": user.id})
 
-        if results == None:
+        if results is None:
             ctx.command.reset_cooldown(ctx)
             await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
             return
         else:
             dateNow = datetime.datetime.utcnow()
-            next_daily = datetime.datetime.utcnow() + relativedelta(days = 1)
+            next_daily = datetime.datetime.utcnow() + relativedelta(days=1)
 
             try:
                 daily = results['daily']
-                
+
                 if ctx.author.id != 374622847672254466:
                     if dateNow < daily:
                         def format_date(dt):
                             return f"{time.human_timedelta(dt, accuracy=3)}"
-                        return await ctx.send("{} You already claimed your daily for today! Please try again in `{}`.".format(ctx.author.mention, format_date(daily)))
+                        return await ctx.send(f"{ctx.author.mention} You already claimed your daily for today! Please try again in `{format_date(daily)}`.")
 
                     elif dateNow >= daily:
-                        await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
-                        await self.db.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})	
+                        await self.db.update_one({"_id": user.id}, {"$inc": {"wallet": 75000}})
+                        await self.db.update_one({"_id": user.id}, {"$set": {"daily": next_daily}})
                 else:
-                    await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
-                    await self.db.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})
+                    await self.db.update_one({"_id": user.id}, {"$inc": {"wallet": 75000}})
+                    await self.db.update_one({"_id": user.id}, {"$set": {"daily": next_daily}})
 
             except KeyError:
-                await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": 75000}})
-                await self.db.update_one({"_id": user.id}, {"$set":{"daily": next_daily}})	
-            
-            
-            await ctx.send("Daily successfully claimed, `75,000` <:carrots:822122757654577183>  have been put into your wallet. Come back in **24 hours** for the next one. %s" % (ctx.author.mention))	
+                await self.db.update_one({"_id": user.id}, {"$inc": {"wallet": 75000}})
+                await self.db.update_one({"_id": user.id}, {"$set": {"daily": next_daily}})
 
-    @daily.group(name='reset', invoke_without_command = True, case_insensitive = True)
+            await ctx.send(
+                "Daily successfully claimed, `75,000` <:carrots:822122757654577183>  have been put into your wallet. "
+                f"Come back in **24 hours** for the next one. {ctx.author.mention}"
+            )
+
+    @daily.group(name='reset', invoke_without_command=True, case_insensitive=True)
     @commands.is_owner()
-    async def daily_reset(self, ctx, member: disnake.Member = None):
+    async def daily_reset(self, ctx: Context, member: disnake.Member = None):
         """Reset the daily for a user. This means that the amount of time that they have to wait until they can get their daily will be reset."""
 
         member = member or ctx.author
-        
+
         results = await self.db.find_one({"_id": member.id})
-        if results == None:
+        if results is None:
             await ctx.send("User not registered!")
             return
 
         NewDaily = datetime.datetime.utcnow()
-        await self.db.update_one({"_id": member.id}, {"$set":{"daily": NewDaily}})
+        await self.db.update_one({"_id": member.id}, {"$set": {"daily": NewDaily}})
         await ctx.send("Cooldown for the daily command has been reset for user `{}`.".format(member))
 
     @daily_reset.command(name='everyone', aliases=['all'])
     @commands.is_owner()
-    async def daily_reset_everyone(self, ctx):
+    async def daily_reset_everyone(self, ctx: Context):
         """Reset the daily cooldown for `everyone`"""
 
         NewDaily = datetime.datetime.utcnow()
-        await self.db.update_many({}, {"$set":{"daily": NewDaily}})
+        await self.db.update_many({}, {"$set": {"daily": NewDaily}})
         await ctx.send("Cooldown for the daily command has been reset for everyone.")
 
     @commands.command(name='register')
-    async def eco_register(self, ctx):
+    async def eco_register(self, ctx: Context):
         """Register yourself to be able to use the economy commands."""
-        
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         user = ctx.author
@@ -343,7 +392,16 @@ class Economy(commands.Cog):
             except KeyError:
                 shop.append({'item_name': item['item_name'], 'owned': 0})
 
-        post = {"_id": user.id, "wallet": 0, "bank": 0, 'passive': False, 'passive_cooldown': datetime.datetime.utcnow(), "items": shop, "items_in_use": [], "daily": datetime.datetime.utcnow()}
+        post = {
+            '_id': user.id,
+            'wallet': 0,
+            'bank': 0,
+            'passive': False,
+            'passive_cooldown': datetime.datetime.utcnow(),
+            'items': shop,
+            'items_in_use': [],
+            'daily': datetime.datetime.utcnow()
+        }
 
         try:
             await self.db.insert_one(post)
@@ -351,17 +409,17 @@ class Economy(commands.Cog):
 
         except pymongo.errors.DuplicateKeyError:
             await ctx.send("You are already registered! %s" % (ctx.author.mention))
-    
+
     @commands.command(name='unregister')
-    async def eco_unregister(self, ctx):
+    async def eco_unregister(self, ctx: Context):
         """Unregister yourself, you won't be able to use the economy commands anymore."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         user = ctx.author
         results = await self.db.find_one({"_id": user.id})
-        if results == None:
+        if results is None:
             ctx.command.reset_cooldown(ctx)
             await ctx.send("You are not registered! %s" % (ctx.author.mention))
             return
@@ -370,10 +428,10 @@ class Economy(commands.Cog):
         await ctx.send("Succesfully unregistered! %s" % (ctx.author.mention))
 
     @commands.command(aliases=['bag'])
-    async def inventory(self, ctx, member: disnake.Member = None):
+    async def inventory(self, ctx: Context, member: disnake.Member = None):
         """Check your or someone else's inventory."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         member = member or ctx.author
@@ -401,12 +459,21 @@ class Economy(commands.Cog):
                     item_durr = item['uses']
                 except KeyError:
                     item_durr = None
+                name = item['item_name'].title
+                if item_durr is not None:
+                    uses_left = f"{item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
+                else:
+                    uses_left = ''
+                owned = ''.join([i['owned'] for i in _shop if i['item_name'] == item['item_name']])
                 try:
-                    to_append = f"— {''.join([i['item_emoji'] for i in _shop if i['item_name'] == item['item_name']])} {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
+                    emoji = ''.join([i['item_emoji'] for i in _shop if i['item_name'] == item['item_name']])
+                    to_append = f"— {emoji} {name} {owned} {uses_left}"
                 except KeyError:
-                    to_append = f"— {item['item_name'].title()} ({item['owned']} owned)" if item_durr is None else f"— {item['item_name'].title()} ({item['owned']} owned) ({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
+                    to_append = f"— {name} {owned} {uses_left}"
                 try:
-                    item_worth = item['owned'] * int(''.join([str(i['sells_for']) for i in _shop if isinstance(i['sells_for'], int) and i['item_name'] == item['item_name']]))
+                    item_worth = item['owned'] * int(
+                        ''.join([str(i['sells_for']) for i in _shop if isinstance(i['sells_for'], int) and i['item_name'] == item['item_name']])
+                    )
                     inv_worth += item_worth
                 except ValueError:
                     pass
@@ -422,13 +489,13 @@ class Economy(commands.Cog):
         await ctx.send(embed=em)
 
     @commands.group(name='shop', invoke_without_command=True, case_insensitive=True)
-    async def eco_shop(self, ctx, *, item: str = None):
+    async def eco_shop(self, ctx: Context, *, item: str = None):
         """
         See what items there are in the shop.
         These items provide different perks such as luck multipliers, tools to get more <:carrots:822122757654577183>, etc...
         """
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         if item is None:
@@ -452,26 +519,38 @@ class Economy(commands.Cog):
                         owned = user_db['items'][index]['owned']
                         item_found = True
                         try:
-                            em = disnake.Embed(title=f"{_item['item_emoji']} {_item['item_name'].title()} ({owned} owned)", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
+                            em = disnake.Embed(
+                                title=f"{_item['item_emoji']} {_item['item_name'].title()} ({owned} owned)",
+                                description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}"
+                            )
                         except KeyError:
-                            em = disnake.Embed(title=f"{_item['item_name'].title()} ({owned} owned)", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
+                            em = disnake.Embed(
+                                title=f"{_item['item_name'].title()} ({owned} owned)",
+                                description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}"
+                            )
                         em.set_footer(text=f"Item Type: {_item['item_type']}")
                         return await ctx.send(embed=em)
                     else:
                         item_found = True
                         try:
-                            em = disnake.Embed(title=f"{_item['item_emoji']} {_item['item_name'].title()}", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
+                            em = disnake.Embed(
+                                title=f"{_item['item_emoji']} {_item['item_name'].title()}",
+                                description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}"
+                            )
                         except KeyError:
-                            em = disnake.Embed(title=f"{_item['item_name'].title()}", description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}")
+                            em = disnake.Embed(
+                                title=f"{_item['item_name'].title()}",
+                                description=f"*{_item['description']}*\n\n**BUY** - {buy_price}\n**SELL** - {sell_price}"
+                            )
                         em.set_footer(text=f"Item Type: {_item['item_type']}")
                         return await ctx.send(embed=em)
                 index += 1
-            if item_found == False:
+            if item_found is False:
                 return await ctx.reply(f'Item `{item}` does not exist!')
-    
+
     @eco_shop.command(name='update')
     @commands.is_owner()
-    async def eco_shop_update(self, ctx):
+    async def eco_shop_update(self, ctx: Context):
         """Update everyone's inventory to corespond with the updated shop."""
 
         for user in await self.db.find().to_list(100000):
@@ -484,7 +563,13 @@ class Economy(commands.Cog):
                         items.append(user['items'][index])
                 except IndexError:
                     try:
-                        items.append({'item_name': names[index], 'owned': 0, 'uses': int(''.join([str(i['uses']) for i in _shop if i['item_name'] == names[index]]))})
+                        items.append(
+                            {
+                                'item_name': names[index],
+                                'owned': 0,
+                                'uses': int(''.join([str(i['uses']) for i in _shop if i['item_name'] == names[index]]))
+                            }
+                        )
                     except KeyError:
                         items.append({'item_name': names[index], 'owned': 0})
                 index += 1
@@ -492,10 +577,10 @@ class Economy(commands.Cog):
         await ctx.reply('Successfully updated everyone\'s shop.')
 
     @eco_shop.command(name='buy')
-    async def eco_shop_buy(self, ctx, *, item):
+    async def eco_shop_buy(self, ctx: Context, *, item):
         """Buy an item from the shop."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         item_ = item.lower()
@@ -526,14 +611,14 @@ class Economy(commands.Cog):
                 else:
                     return await ctx.reply('Insufficient wallet funds.')
 
-        if item_found == False:
+        if item_found is False:
             return await ctx.reply(f'Item `{item}` does not exist!')
 
     @eco_shop.command(name='sell')
-    async def eco_shop_sell(self, ctx, *, item):
+    async def eco_shop_sell(self, ctx: Context, *, item):
         """Sell an item that you own."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         user_db = await self.db.find_one({'_id': ctx.author.id})
@@ -563,14 +648,14 @@ class Economy(commands.Cog):
                 return await msg.edit(f'Successfully sold all your sellables for `{total_sold_for:,}` <:carrots:822122757654577183>', view=view)
             elif view.response is False:
                 return await msg.edit('Your items have not been sold.', view=view)
-                    
+
         def check(m):
             return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
         await ctx.send('What\'s the amount of this item that you wish to sell?')
         try:
             amt = await self.bot.wait_for('message', check=check, timeout=7)
         except asyncio.TimeoutError:
-            amount = None
+            amount: str = None
         else:
             amount = amt.content.lower()
 
@@ -610,14 +695,14 @@ class Economy(commands.Cog):
                 sold_for = '{:,}'.format(_item['sells_for'] * amount)
                 return await ctx.reply(f"Sold *{str(amount) + 'x'}* of `{_item['item_name']}` for **{sold_for}** <:carrots:822122757654577183>")
 
-        if item_found == False:
+        if item_found is False:
             return await ctx.reply(f'Item `{item}` does not exist!')
 
     @eco_shop.command(name='use')
-    async def eco_shop_use(self, ctx, *, item: str):
+    async def eco_shop_use(self, ctx: Context, *, item: str):
         """Use an item that you have."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         usable_items = (i['item_name'] for i in _shop if i['item_type'] == 'Usable')
@@ -649,24 +734,24 @@ class Economy(commands.Cog):
         await ctx.send(f'Now using the item `{_item_name}`')
 
     @eco_shop.command(name='using')
-    async def eco_shop_using(self, ctx):
+    async def eco_shop_using(self, ctx: Context):
         """See what items you have in use."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         user_db = await self.db.find_one({'_id': ctx.author.id})
-        if user_db == None:
+        if user_db is None:
             ctx.command.reset_cooldown(ctx)
             return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
         if len(user_db['items_in_use']) == 0:
             return await ctx.reply('You do not have any items in use currently.')
-        
+
         in_use = []
         for item in user_db['items_in_use']:
             expires_in = time.human_timedelta(item['expires_in'])
             in_use.append({'name': item['name'], 'expires_in': f'Expires in: `{expires_in}`'})
-        
+
         em = disnake.Embed(title='Here are your in-use items:')
         for i in in_use:
             em.add_field(name=i['name'].title(), value=i['expires_in'], inline=False)
@@ -674,20 +759,20 @@ class Economy(commands.Cog):
 
     @commands.command(name='fish')
     @commands.cooldown(1, 30.0, commands.BucketType.member)
-    async def eco_fish(self, ctx):
+    async def eco_fish(self, ctx: Context):
         """
         Go fishing and sell the fish that you get, if you get any.
         ***Requires 1x fishing pool.***
         """
-        
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         user_db = await self.db.find_one({'_id': ctx.author.id})
-        if user_db == None:
+        if user_db is None:
             ctx.command.reset_cooldown(ctx)
             return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
-        
+
         for item in user_db['items']:
             if item['item_name'] == 'fishing pole':
                 if item['owned'] == 0:
@@ -695,7 +780,7 @@ class Economy(commands.Cog):
                     return await ctx.reply('You do not own a fishing pole.')
                 break
         rn = random.randrange(-10, 161)
-        
+
         items_ = []
         item_broke = False
         for item in user_db['items']:
@@ -704,7 +789,7 @@ class Economy(commands.Cog):
                 uses = item['uses']
                 if uses == 0:
                     item['owned'] -= 1
-                    item['uses'] = int(''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])) 
+                    item['uses'] = int(''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']]))
                     item_broke = True
             items_.append(item)
         await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items_}})
@@ -733,21 +818,21 @@ class Economy(commands.Cog):
 
     @commands.command(name='hunt')
     @commands.cooldown(1, 33.0, commands.BucketType.member)
-    async def eco_hunt(self, ctx):
+    async def eco_hunt(self, ctx: Context):
         """
         Go hunting and sell the animals that you get, if you get any.
         ***Requires 1x hunting rifle.***
         """
-        
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             ctx.command.reset_cooldown(ctx)
             return
 
         user_db = await self.db.find_one({'_id': ctx.author.id})
-        if user_db == None:
+        if user_db is None:
             ctx.command.reset_cooldown(ctx)
             return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
-        
+
         for item in user_db['items']:
             if item['item_name'] == 'hunting rifle':
                 if item['owned'] == 0:
@@ -790,13 +875,13 @@ class Economy(commands.Cog):
                 await self.db.update_one({'_id': ctx.author.id}, {'$set': {'items': items}})
                 return await ctx.send(f"You found `{animal['animal']}`")
         await ctx.send('You didn\'t find any animals.')
-        
+
     @commands.command(name='search')
     @commands.cooldown(1, 25.0, commands.BucketType.member)
-    async def eco_search(self, ctx):
+    async def eco_search(self, ctx: Context):
         """Search and get or lose carrots."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         user_db = await self.db.find_one({'_id': ctx.author.id})
@@ -824,20 +909,20 @@ class Economy(commands.Cog):
             return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
 
     @commands.command(name='passive')
-    async def eco_passive(self, ctx, *, option: str = None):
+    async def eco_passive(self, ctx: Context, *, option: str = None):
         """
         Turn passive `on` or `off`.
         If passive is on, people won't be able to rob you, but you won't be able to rob anyone as well, additionally, you cannot give or receive carrots from other people.
-        
+
         *Note: There's a cooldown of 1 day between each change.*
-        """
+        """  # noqa
 
         user_db = await self.db.find_one({'_id': ctx.author.id})
-        if user_db == None:
+        if user_db is None:
             ctx.command.reset_cooldown(ctx)
             return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
         elif option is None:
-            return await ctx.send(f"Your current passive is {'**enabled.**' if user_db['passive'] == True else '**disabled.**'}")
+            return await ctx.send(f"Your current passive is {'**enabled.**' if user_db['passive'] is True else '**disabled.**'}")
         option = option.lower()
         options = {'on': True, 'off': False}
 
@@ -862,16 +947,16 @@ class Economy(commands.Cog):
             await ctx.reply(f"Passive has been {'**enabled.**' if option == 'on' else '**disabled.**'}")
 
     @commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bal'])
-    async def balance(self, ctx, member: disnake.Member = None):
+    async def balance(self, ctx: Context, member: disnake.Member = None):
         """Check your or another member's balance."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         member = member or ctx.author
-        
+
         user_db = await self.db.find_one({"_id": member.id})
-        if user_db == None:
+        if user_db is None:
             if member.id == member.id:
                 ctx.command.reset_cooldown(ctx)
                 await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
@@ -882,10 +967,8 @@ class Economy(commands.Cog):
 
         results = await self.db.find().sort([('wallet', -1)]).to_list(100000)
         index = 1
-        found = False
         for i in results:
             if i['_id'] == member.id:
-                found = True
                 break
             index += 1
 
@@ -899,17 +982,17 @@ class Economy(commands.Cog):
         await ctx.send(embed=em)
 
     @balance.command(name='leaderboard', aliases=['lb', 'top'])
-    async def eco_bal_leaderboard(self, ctx):
+    async def eco_bal_leaderboard(self, ctx: Context):
         """See top richest people."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         index = 0
         data = []
         top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
         guild = self.bot.get_guild(750160850077089853)
-        
+
         results = await self.db.find().sort([("wallet", -1)]).to_list(100000)
         for result in results:
             if not result['wallet'] in (0, 0.0):
@@ -932,13 +1015,13 @@ class Economy(commands.Cog):
 
     @balance.command(name='add-bank')
     @commands.is_owner()
-    async def add_bank(self, ctx, amount = None, member: disnake.Member = None):
+    async def add_bank(self, ctx: Context, amount: str = None, member: disnake.Member = None):
         """Add <:carrots:822122757654577183> in the member's bank."""
 
         member = member or ctx.author
 
         results = await self.db.find_one({"_id": member.id})
-        if results == None:
+        if results is None:
             await ctx.send("User not registered!")
             return
 
@@ -952,20 +1035,19 @@ class Economy(commands.Cog):
 
         amount = int(amount)
 
-        await self.db.update_one({"_id": user.id}, {"$inc":{"bank": amount}})
-        
-            
+        await self.db.update_one({"_id": user.id}, {"$inc": {"bank": amount}})
+
         await ctx.send("Successfully added **{:,}** <:carrots:822122757654577183> , and deposited them into the bank for `{}`!".format(amount, member))
 
     @balance.command(name='add-wallet')
     @commands.is_owner()
-    async def add_wallet(self, ctx, amount = None, member: disnake.Member = None):
+    async def add_wallet(self, ctx: Context, amount: str = None, member: disnake.Member = None):
         """Add <:carrots:822122757654577183> in the member's wallet."""
 
         member = member or ctx.author
 
         results = await self.db.find_one({"_id": member.id})
-        if results == None:
+        if results is None:
             await ctx.send("User not registered!")
             return
 
@@ -979,20 +1061,19 @@ class Economy(commands.Cog):
 
         amount = int(amount)
 
-        await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
-        
-            
+        await self.db.update_one({"_id": user.id}, {"$inc": {"wallet": amount}})
+
         await ctx.send("Successfully added **{:,}** <:carrots:822122757654577183>  to the wallet for `{}`!".format(amount, member))
 
     @balance.command(name='set-bank')
     @commands.is_owner()
-    async def set_bank(self, ctx, amount = None, member: disnake.Member = None):
+    async def set_bank(self, ctx: Context, amount: str = None, member: disnake.Member = None):
         """Set the amount of <:carrots:822122757654577183> in the member's bank."""
 
         member = member or ctx.author
 
         results = await self.db.find_one({"_id": member.id})
-        if results == None:
+        if results is None:
             await ctx.send("User not registered!")
             return
 
@@ -1004,40 +1085,38 @@ class Economy(commands.Cog):
         amount = amount.replace(",", "")
         amount = int(amount)
 
-
-        await self.db.update_one({"_id": user.id}, {"$set":{"bank": amount}})
+        await self.db.update_one({"_id": user.id}, {"$set": {"bank": amount}})
 
         await ctx.send("Balance successfully set to **{:,}** <:carrots:822122757654577183>  in the bank for `{}`!".format(amount, member))
 
     @balance.command(name='reset')
     @commands.is_owner()
-    async def eco_bal_reset(self, ctx, member: disnake.Member = None):
+    async def eco_bal_reset(self, ctx: Context, member: disnake.Member = None):
         """Reset the member's <:carrots:822122757654577183>."""
 
         member = member or ctx.author
 
         results = await self.db.find_one({"_id": member.id})
-        if results == None:
+        if results is None:
             await ctx.send("User not registered!")
             return
 
-
         user = member
 
-        await self.db.update_one({"_id": user.id}, {"$set":{"wallet": 0}})
-        await self.db.update_one({"_id": user.id}, {"$set":{"bank": 0}})
+        await self.db.update_one({"_id": user.id}, {"$set": {"wallet": 0}})
+        await self.db.update_one({"_id": user.id}, {"$set": {"bank": 0}})
 
         await ctx.send(f"Reseted balance for `{member}`.")
 
     @balance.command(name='set-wallet')
     @commands.is_owner()
-    async def set_wallet(self, ctx, amount = None, member: disnake.Member = None):
+    async def set_wallet(self, ctx: Context, amount: str = None, member: disnake.Member = None):
         """Set the amount of <:carrots:822122757654577183> in the member's wallet."""
 
         member = member or ctx.author
 
         results = await self.db.find_one({"_id": member.id})
-        if results == None:
+        if results is None:
             await ctx.send("User not registered!")
             return
 
@@ -1046,29 +1125,29 @@ class Economy(commands.Cog):
             return
 
         user = member
-        
+
         amount = amount.replace(",", "")
         amount = int(amount)
 
-        await self.db.update_one({"_id": user.id}, {"$set":{"wallet": amount}})
+        await self.db.update_one({"_id": user.id}, {"$set": {"wallet": amount}})
 
         await ctx.send("Balance successfully set to **{:,}** <:carrots:822122757654577183>  in the wallet for `{}`!".format(amount, member))
 
     @commands.command(aliases=['with'])
-    async def withdraw(self, ctx, amount = None):
+    async def withdraw(self, ctx: Context, amount: str = None):
         """Withdraw the amount of <:carrots:822122757654577183> from your bank."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         results = await self.db.find_one({"_id": ctx.author.id})
 
-        if results != None:
-        
+        if results is not None:
+
             if amount is None:
                 await ctx.send('Please enter the amount you want to withdraw. %s' % (ctx.author.mention))
                 return
-            
+
             bal = results["bank"]
 
             if amount.lower() == "all":
@@ -1076,7 +1155,7 @@ class Economy(commands.Cog):
 
             try:
                 amount = amount.replace(",", "")
-            except:
+            except AttributeError:
                 pass
             try:
                 amount = int(amount)
@@ -1095,8 +1174,8 @@ class Economy(commands.Cog):
                 await ctx.send('Invalid amount. %s' % (ctx.author.mention))
                 return
 
-            await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": amount}})
-            await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"bank": -amount}})
+            await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": amount}})
+            await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"bank": -amount}})
 
             await ctx.send("Successfully withdrew **{:,}** <:carrots:822122757654577183> ! {}".format(amount, ctx.author.mention))
 
@@ -1106,27 +1185,27 @@ class Economy(commands.Cog):
             return
 
     @commands.command(aliases=['dep'])
-    async def deposit(self, ctx, amount = None):
+    async def deposit(self, ctx: Context, amount: str = None):
         """Deposit the amount of <:carrots:822122757654577183> in your bank."""
-        
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         results = await self.db.find_one({"_id": ctx.author.id})
 
-        if results != None:
-        
+        if results is not None:
+
             if amount is None:
                 await ctx.send('Please enter the amount you want to deposit. %s' % (ctx.author.mention))
                 return
-            
+
             bal = results["wallet"]
 
             if amount.lower() == "all":
                 amount = bal
             try:
                 amount = amount.replace(",", "")
-            except:
+            except AttributeError:
                 pass
             try:
                 amount = int(amount)
@@ -1142,11 +1221,11 @@ class Economy(commands.Cog):
                 return
 
             elif amount < 1:
-                await ctx.send('Invalid amount. You cannot deposit **0** or **negative number** amount of <:carrots:822122757654577183>. %s' % (ctx.author.mention))
+                await ctx.send(f'Invalid amount. You cannot deposit **0** or **negative number** amount of <:carrots:822122757654577183>. {ctx.author.mention}')
                 return
 
-            await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -amount}})
-            await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"bank": amount}})
+            await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": -amount}})
+            await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"bank": amount}})
 
             await ctx.send("Successfully deposited **{:,}** <:carrots:822122757654577183> ! {}".format(amount, ctx.author.mention))
 
@@ -1156,35 +1235,35 @@ class Economy(commands.Cog):
             return
 
     @commands.command(name='gift', aliases=['give'])
-    async def bal_eco_give(self, ctx, member : disnake.Member, amount = None):
+    async def bal_eco_give(self, ctx: Context, member: disnake.Member, amount: str = None):
         """Be a kind person and give some of your <:carrots:822122757654577183> from your **bank** to someone else's."""
-        
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
         results = await self.db.find_one({"_id": ctx.author.id})
         member_db = await self.db.find_one({'_id': member.id})
 
-        if results != None:
+        if results is not None:
             user = member
             author = ctx.author
-            
-            if results['passive'] == True:
+
+            if results['passive'] is True:
                 return await ctx.reply('You cannot gift/give carrots because you have passive **enabled.**')
-            elif member_db['passive'] == True:
+            elif member_db['passive'] is True:
                 return await ctx.reply('That user cannot receive carrots because they have passive **enabled.**')
 
             if amount is None:
                 await ctx.send('Please enter the amount you want to withdraw. %s' % (ctx.author.mention))
                 return
-            
+
             bal = results["wallet"]
 
             if amount.lower() == "all":
                 amount = bal
             try:
                 amount = amount.replace(",", "")
-            except:
+            except AttributeError:
                 pass
             try:
                 amount = int(amount)
@@ -1207,14 +1286,14 @@ class Economy(commands.Cog):
             view.message = msg = await ctx.send(f"{ctx.author.mention} wants to give you some carrots. Do you accept them {member.mention}?", view=view)
             await view.wait()
             if view.response is True:
-                await self.db.update_one({"_id": author.id}, {"$inc":{"wallet": -amount}})
-                await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": amount}})
+                await self.db.update_one({"_id": author.id}, {"$inc": {"wallet": -amount}})
+                await self.db.update_one({"_id": user.id}, {"$inc": {"wallet": amount}})
                 e = f"{member.mention} accepted and got **{amount:,}** <:carrots:822122757654577183> from {ctx.author.mention}."
                 return await msg.edit(content=e, view=view)
-            
+
             elif view.response is False:
                 e = f"{member.mention} did not accept your <:carrots:822122757654577183>. {ctx.author.mention}"
-                return  await msg.edit(content=e, view=view)
+                return await msg.edit(content=e, view=view)
 
         else:
             ctx.command.reset_cooldown(ctx)
@@ -1223,10 +1302,10 @@ class Economy(commands.Cog):
 
     @commands.command(aliases=["steal"])
     @commands.cooldown(1, 20, commands.BucketType.user)
-    async def rob(self, ctx, member : disnake.Member = None):
+    async def rob(self, ctx: Context, member: disnake.Member = None):
         """Rob someone of their <:carrots:822122757654577183> from their wallet."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         if member is None:
@@ -1235,7 +1314,7 @@ class Economy(commands.Cog):
             return
         results = await self.db.find_one({"_id": ctx.author.id})
 
-        if results != None:
+        if results is not None:
             if member is ctx.author:
                 await ctx.send("You cannot rob yourself. %s" % (ctx.author.mention))
                 ctx.command.reset_cooldown(ctx)
@@ -1243,14 +1322,14 @@ class Economy(commands.Cog):
 
             user = member
             author = ctx.author
-            
+
             user_db = await self.db.find_one({"_id": user.id})
             if user_db is None:
                 return await ctx.reply('That member is not registered.')
-            if results['passive'] == True:
+            if results['passive'] is True:
                 ctx.command.reset_cooldown(ctx)
                 return await ctx.reply('You cannot rob because you have passive **enabled.**')
-            elif user_db['passive'] == True:
+            elif user_db['passive'] is True:
                 ctx.command.reset_cooldown(ctx)
                 return await ctx.reply('You cannot rob that user because they have passive **enabled.**')
 
@@ -1272,33 +1351,14 @@ class Economy(commands.Cog):
 
             chance = randint(1, 10)
 
+            if chance in (1, 3, 7, 10):
+                await self.db.update_one({"_id": author.id}, {"$inc": {"wallet": earnings}})
+                await self.db.update_one({"_id": user.id}, {"$inc": {"wallet": -earnings}})
 
-            if chance == 1:
-                await self.db.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
-                await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
-
-                await ctx.send("You robbed **{}** and got **{:,}** <:carrots:822122757654577183> ! {}".format(member.display_name, earnings, ctx.author.mention))
-
-            elif chance == 3:
-                await self.db.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
-                await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
-
-                await ctx.send("You robbed **{}** and got **{:,}** <:carrots:822122757654577183> ! {}".format(member.display_name, earnings, ctx.author.mention))
-
-            elif chance == 7:
-                await self.db.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
-                await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
-
-                await ctx.send("You robbed **{}** and got **{:,}** <:carrots:822122757654577183> ! {}".format(member.display_name, earnings, ctx.author.mention))
-
-            elif chance == 10:
-                await self.db.update_one({"_id": author.id}, {"$inc":{"wallet": earnings}})
-                await self.db.update_one({"_id": user.id}, {"$inc":{"wallet": -earnings}})
-
-                await ctx.send("You robbed **{}** and got **{:,}** <:carrots:822122757654577183> ! {}".format(member.display_name, earnings, ctx.author.mention))
+                await ctx.send("You robbed **{}** and got **{:,}** <:carrots:822122757654577183> ! {}".format(member.display_name, earnings, ctx.author.mention))  # noqa
 
             else:
-                await self.db.update_one({"_id": author.id}, {"$inc":{"wallet": -350}})
+                await self.db.update_one({"_id": author.id}, {"$inc": {"wallet": -350}})
 
                 await ctx.send("You failed in stealing from that person and you lost `350` <:carrots:822122757654577183> %s" % (ctx.author.mention))
 
@@ -1309,15 +1369,15 @@ class Economy(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 7, commands.BucketType.user)
-    async def slots(self, ctx, amount = None):
+    async def slots(self, ctx: Context, amount: str = None):
         """Gamble your <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
 
-        if results != None:
+        if results is not None:
 
             if amount is None:
                 await ctx.send('Please enter the amount. %s' % (ctx.author.mention))
@@ -1330,7 +1390,7 @@ class Economy(commands.Cog):
                 amount = bal
             try:
                 amount = amount.replace(",", "")
-            except:
+            except AttributeError:
                 pass
             try:
                 amount = int(amount)
@@ -1355,73 +1415,106 @@ class Economy(commands.Cog):
 
                 final = "\u2800┃\u2800".join(prefinal)
 
-            embed = disnake.Embed(color=color.lightpink, title="Slots!", description="<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+            embed = disnake.Embed(
+                color=color.lightpink,
+                title="Slots!",
+                description="<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>"
+            )
             msg = await ctx.send(embed=embed)
 
             line1 = prefinal[0]
             line2 = prefinal[1]
             line3 = prefinal[2]
 
-
-
             if prefinal[0] == prefinal[1] == prefinal[2]:
-                earned = 2.5*amount
+                earned = 2.5 * amount
 
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earned}})
 
                 wallet_amt = bal + earned
 
-                em = disnake.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+                em = disnake.Embed(
+                    color=color.lightpink,
+                    title="Slots!",
+                    description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>"
+                )
                 await asyncio.sleep(0.7)
                 await msg.edit(embed=em)
 
-                em = disnake.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
+                em = disnake.Embed(
+                    color=color.lightpink,
+                    title="Slots!",
+                    description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>"
+                )
                 await asyncio.sleep(0.7)
                 await msg.edit(embed=em)
-                
-                print("Reached final edit")
-                winembed = disnake.Embed(color=disnake.Color.green(), title="WIN!", description="{}\u2800┃\u2800{}\u2800┃\u2800{}\n\nYou bet a total of **{:,}** <:carrots:822122757654577183>  and won **{:,}** <:carrots:822122757654577183>. \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(line1, line2, line3, amount, earned, wallet_amt))
+                winembed = disnake.Embed(
+                    color=disnake.Color.green(),
+                    title="WIN!",
+                    description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800{line3}\n\n"
+                    f"You bet a total of **{amount:,}** <:carrots:822122757654577183>  and won **{earned:,}** <:carrots:822122757654577183>. \n"
+                    f"Now in wallet: **{wallet_amt:,}** <:carrots:822122757654577183>."
+                )
                 await asyncio.sleep(0.7)
                 await msg.edit(embed=winembed)
-
-
 
             elif prefinal[0] == prefinal[1] or prefinal[0] == prefinal[2] or prefinal[2] == prefinal[1]:
                 earned = amount
 
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earned}})
 
                 wallet_amt = bal + earned
 
-                em = disnake.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+                em = disnake.Embed(
+                    color=color.lightpink,
+                    title="Slots!",
+                    description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>"
+                )
                 await asyncio.sleep(0.7)
                 await msg.edit(embed=em)
 
-                em = disnake.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
+                em = disnake.Embed(
+                    color=color.lightpink,
+                    title="Slots!",
+                    description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>"
+                )
                 await asyncio.sleep(0.7)
                 await msg.edit(embed=em)
 
-                winembed = disnake.Embed(color=disnake.Color.green(), title="WIN!", description="{}\n\nYou won **{:,}** <:carrots:822122757654577183>. \nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(final, amount, wallet_amt))
+                winembed = disnake.Embed(
+                    color=disnake.Color.green(),
+                    title="WIN!",
+                    description=f"{final}\n\nYou won **{amount:,}** <:carrots:822122757654577183>. \n"
+                    f"Now in wallet: **{wallet_amt:,}** <:carrots:822122757654577183>."
+                )
                 await asyncio.sleep(0.7)
                 await msg.edit(embed=winembed)
 
-
-
             else:
-
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -amount}})
-                
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": -amount}})
                 wallet_amt = bal - amount
-            
-                em = disnake.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>")
+
+                em = disnake.Embed(
+                    color=color.lightpink,
+                    title="Slots!",
+                    description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>"
+                )
                 await asyncio.sleep(0.7)
                 await msg.edit(embed=em)
 
-                em = disnake.Embed(color=color.lightpink, title="Slots!", description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>")
+                em = disnake.Embed(
+                    color=color.lightpink,
+                    title="Slots!",
+                    description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>"
+                )
                 await asyncio.sleep(0.7)
                 await msg.edit(embed=em)
 
-                lostembed = disnake.Embed(color=color.red, title="LOST!", description="{}\n\nYou bet a total amount of **{:,}** <:carrots:822122757654577183>  but you lost them! :c\nNow in wallet: **{:,}** <:carrots:822122757654577183>.".format(final, amount, wallet_amt))
+                lostembed = disnake.Embed(
+                    color=color.red, title="LOST!",
+                    description=f"{final}\n\nYou bet a total amount of **{amount:,}** <:carrots:822122757654577183> but you lost them! :c\n"
+                    f"Now in wallet: **{wallet_amt:,}** <:carrots:822122757654577183>."
+                )
                 await asyncio.sleep(0.7)
                 await msg.edit(embed=lostembed)
 
@@ -1432,20 +1525,20 @@ class Economy(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def beg(self, ctx):
+    async def beg(self, ctx: Context):
         """Beg for some <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
 
-        if results != None:
+        if results is not None:
             earnings = randint(100, 500)
 
             await ctx.send(f"Someone gave you **{earnings}** <:carrots:822122757654577183> !!")
 
-            await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
+            await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earnings}})
 
         else:
             await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
@@ -1454,20 +1547,20 @@ class Economy(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 3600, commands.BucketType.user)
-    async def work(self, ctx):
+    async def work(self, ctx: Context):
         """Work and get <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
 
-        if results != None:
+        if results is not None:
 
             await ctx.send("You worked and got **5,000** <:carrots:822122757654577183>. The carrots have been deposited into your bank!")
 
-            await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"bank": 5000}})
-        
+            await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"bank": 5000}})
+
         else:
             await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
             ctx.command.reset_cooldown(ctx)
@@ -1475,15 +1568,15 @@ class Economy(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 15, commands.BucketType.user)
-    async def crime(self, ctx):
-        """Commit crimes that range between `small-medium-big`, and depending on which one you get, the more <:carrots:822122757654577183> you get, but be careful! You can lose the carrots as well."""
+    async def crime(self, ctx: Context):
+        """Commit crimes that range between `small-medium-big`, and depending on which one you get, the more <:carrots:822122757654577183> you get, but be careful! You can lose the carrots as well."""  # noqa
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
 
-        if results != None:
+        if results is not None:
 
             aaaa = randint(1, 7)
             earnings = randint(500, 1500)
@@ -1493,31 +1586,31 @@ class Economy(commands.Cog):
             losts = randint(300, 700)
 
             if aaaa == 2:
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earnings}})
 
                 await ctx.send("<:weird:773538796087803934> you commited a bigger crime and got **{:,}** <:carrots:822122757654577183>.".format(earnings))
                 return
 
             if aaaa == 4:
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earningss}})
                 await ctx.send("<:weird:773538796087803934> you commited a smaller crime and got **{:,}** <:carrots:822122757654577183>.".format(earningss))
                 return
 
             if aaaa == 6:
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earningsss}})
                 await ctx.send("<:weird:773538796087803934> you commited a medium crime and got **{:,}** <:carrots:822122757654577183>.".format(earningsss))
                 return
 
             if aaaa == 7:
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earningssss}})
                 await ctx.send("<:weird:773538796087803934> you commited a large crime and got **{:,}** <:carrots:822122757654577183>.".format(earningssss))
                 return
 
             else:
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": -losts}})
                 await ctx.send("You lost **{:,}** <:carrots:822122757654577183>  from your wallet.".format(losts))
                 return
-        
+
         else:
             await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
             ctx.command.reset_cooldown(ctx)
@@ -1525,15 +1618,15 @@ class Economy(commands.Cog):
 
     @commands.command(name='guess-the-number', aliases=['gtn', 'guess'])
     @commands.cooldown(1, 3, commands.BucketType.user)
-    async def eco_gtn(self, ctx):
+    async def eco_gtn(self, ctx: Context):
         """Play a guess the number game and earn <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
 
-        if results != None:
+        if results is not None:
             usercheck = ctx.author.id
             await ctx.send('Pick a number between 1 and 10.')
 
@@ -1543,13 +1636,12 @@ class Economy(commands.Cog):
 
             def check(message):
                 return message.author.id == usercheck and message.channel.id == ctx.channel.id
-            
             index = 0
-            
-            for guess in range(0,3):
+
+            for guess in range(0, 3):
                 while True:
                     try:
-                        msg = await self.bot.wait_for('message', timeout= 30 , check=check)
+                        msg = await self.bot.wait_for('message', timeout=30, check=check)
                         attempt = int(msg.content)
                         break
                     except ValueError:
@@ -1557,42 +1649,39 @@ class Economy(commands.Cog):
                 if attempt > number:
                     index += 1
                     if index == 3:
-                        await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -lost_amt}})
+                        await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": -lost_amt}})
                         await msg.reply(content=f"You didn't get it and lost **{lost_amt}** <:carrots:822122757654577183>. The number was **{number}**.")
                         return
                     await msg.reply('Try going lower.')
 
-
                 elif attempt < number:
                     index += 1
                     if index == 3:
-                        await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -lost_amt}})
+                        await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": -lost_amt}})
                         await msg.reply(content=f"You didn't get it and lost **{lost_amt}** <:carrots:822122757654577183>. The number was **{number}**.")
                         return
                     await msg.reply('Try going higher.')
 
-                    
-
                 else:
-                    await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": win_amt}})
+                    await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": win_amt}})
                     await msg.reply(f'You guessed it! Good job! You got **{win_amt}** <:carrots:822122757654577183>. The number was **{number}**.')
                     return
         else:
             await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
             ctx.command.reset_cooldown(ctx)
             return
-    
+
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def ppsuck(self, ctx):
+    async def ppsuck(self, ctx: Context):
         """Suck some pp 😳 for some quick <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
 
-        if results != None:
+        if results is not None:
             aaaa = randint(1, 7)
             bbbb = randint(1, 100)
             earnings = randint(800, 2500)
@@ -1604,44 +1693,52 @@ class Economy(commands.Cog):
 
             try:
                 if bbbb == 1:
-                    earned = earningssssss	
-                    await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})	
+                    earned = earningssssss
+                    await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earned}})
 
-                    await ctx.send(":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got **{:,}** <:carrots:822122757654577183>.".format(earned))
+                    await ctx.send(
+                        f":smirk: :smirk: :yum: you sucked your crush and they loved it, you ended up dating and got **{earned:,}** <:carrots:822122757654577183>."  # noqa
+                    )
                     return
-                        
+
                 elif aaaa == 1:
-                    earned = earnings	
-                    await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+                    earned = earnings
+                    await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earned}})
 
                     await ctx.send(":yum: you sucked ur dad's pp and got **{:,}** <:carrots:822122757654577183>.".format(earned))
                     return
 
                 elif aaaa == 4:
-                    earned = earningss	
-                    await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
+                    earned = earningss
+                    await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earned}})
 
-                    await ctx.send("<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got **{:,}** <:carrots:822122757654577183>.".format(earned))
+                    await ctx.send(
+                        f"<:weird:773538796087803934> you didn't do too good of a job at sucking but it wasn't too bad either and got **{earned:,}** <:carrots:822122757654577183>."  # noqa
+                    )
                     return
-                
+
                 elif aaaa == 6:
-                    earned = earningsss	
-                    await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
-                
-                    await ctx.send("<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got **{:,}** <:carrots:822122757654577183>.".format(earned))
+                    earned = earningsss
+                    await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earned}})
+
+                    await ctx.send(
+                        f"<:weird:773538796087803934> you didn't do too bad, but u didn't do too good either at sucking ur dog's pp and got **{earned:,}** <:carrots:822122757654577183>."  # noqa
+                    )
                     return
-                
+
                 elif aaaa == 7:
-                    earned = earningssss	
-                    await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earned}})
-                    await ctx.send(":smirk: You sucked your best friend and they liked it very much and decided to gave you **{:,}** <:carrots:822122757654577183>".format(earned))
+                    earned = earningssss
+                    await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earned}})
+                    await ctx.send(
+                        f":smirk: You sucked your best friend and they liked it very much and decided to gave you **{earned:,}** <:carrots:822122757654577183>"
+                    )
                     return
 
                 else:
-                    await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
+                    await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": -losts}})
                     await ctx.send("You did a fucking bad job at sucking and lost **{:,}** <:carrots:822122757654577183>  from your wallet.".format(losts))
-                    
-            except:
+
+            except Exception:
                 ctx.command.reset_cooldown(ctx)
                 return
         else:
@@ -1651,15 +1748,15 @@ class Economy(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def race(self, ctx):
+    async def race(self, ctx: Context):
         """Participate in a race and earn <:carrots:822122757654577183>."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
 
-        if results != None:
+        if results is not None:
 
             aaaa = randint(1, 7)
             bbbb = randint(1, 100)
@@ -1671,32 +1768,36 @@ class Economy(commands.Cog):
             losts = randint(1000, 1200)
 
             if aaaa == 1:
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earnings}})
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earnings}})
                 await ctx.send(":third_place: you won the race 3rd place an won: **{:,}** <:carrots:822122757654577183>.".format(earnings))
                 return
 
             elif aaaa == 4:
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningss}})
-                await ctx.send("U were close to lose the race by getting 5th place. You got a total of: **{:,}** <:carrots:822122757654577183>.".format(earningss))
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earningss}})
+                await ctx.send(
+                    f"U were close to lose the race by getting 5th place. You got a total of: **{earningss:,}** <:carrots:822122757654577183>."
+                )
                 return
 
             elif aaaa == 6:
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningsss}})
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earningsss}})
                 await ctx.send("After winning on 4th place you got: **{:,}** <:carrots:822122757654577183>.".format(earningsss))
                 return
 
             elif aaaa == 7:
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssss}})
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earningssss}})
                 await ctx.send(":sparkles: :second_place: after winning on the 2nd place, you won: **{:,}** <:carrots:822122757654577183>.".format(earningssss))
                 return
 
             elif bbbb == 1:
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": earningssssss}})
-                await ctx.send(":sparkles: :first_place: :medal: :sparkles: after winning the race on the first place you won a total of: **{:,}** <:carrots:822122757654577183>.".format(earningssssss))
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earningssssss}})
+                await ctx.send(
+                    f":sparkles: :first_place: :medal: :sparkles: after winning the race on the first place you won a total of: **{earningssssss:,}** <:carrots:822122757654577183>."  # noqa
+                )
                 return
 
             else:
-                await self.db.update_one({"_id": ctx.author.id}, {"$inc":{"wallet": -losts}})
+                await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": -losts}})
                 await ctx.send("Sadly you lost the race, your lost consists of **{:,}** <:carrots:822122757654577183>  from your wallet.".format(losts))
                 return
 
@@ -1705,37 +1806,37 @@ class Economy(commands.Cog):
             ctx.command.reset_cooldown(ctx)
             return
 
-
     @commands.command(name='rock-paper-scissors', aliases=['rps'])
     @commands.cooldown(1, 15, commands.BucketType.user)
-    async def eco_rps(self, ctx):
+    async def eco_rps(self, ctx: Context):
         """Play a game of rock-paper-scissors with the bot and earn <:carrots:822122757654577183> if you win or lose some if you lose the game."""
 
-        if not ctx.channel.id in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})
-        if results == None:
+        if results is None:
             ctx.command.reset_cooldown(ctx)
             return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
-        
+
         view = RPSView(self.db, ctx)
         view.message = await ctx.send('Please choose by clicking one of the buttons below.', view=view)
 
     @slots.error
-    async def slots_error(self, ctx, error):
+    async def slots_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.MissingRequiredArgument):
             ctx.command.reset_cooldown(ctx)
             await self.bot.reraise(ctx, error)
-        
+
         else:
             await self.bot.reraise(ctx, error)
 
     @commands.Cog.listener()
-    async def on_member_remove(self, member):
+    async def on_member_remove(self, member: disnake.Member):
         if member.id == 374622847672254466:
             return
         await self.db.delete_one({"_id": member.id})
+
 
 def setup(bot):
     bot.add_cog(Economy(bot))

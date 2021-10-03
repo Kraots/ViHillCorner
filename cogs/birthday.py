@@ -210,11 +210,11 @@ class Birthdays(commands.Cog):
 
             else:
                 post = {
-                        "_id": user.id,
-                        "birthdaydate": birthday,
-                        "region": region,
-                        "region_birthday": region_birthday
-                        }
+                    "_id": user.id,
+                    "birthdaydate": birthday,
+                    "region": region,
+                    "region_birthday": region_birthday
+                }
                 await self.db.insert_one(post)
 
                 await ctx.message.delete()
@@ -248,7 +248,7 @@ class Birthdays(commands.Cog):
             await ctx.send("You did not set your birthday, therefore you don't have what to delete! Type: `!birthday set <day | month>` to set your birthday.")
 
     @commands.Cog.listener()
-    async def on_member_remove(self, member):
+    async def on_member_remove(self, member: disnake.Member):
         if member.id == 374622847672254466:
             return
         await self.db.delete_one({"_id": member.id})

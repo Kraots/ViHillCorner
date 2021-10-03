@@ -1,10 +1,8 @@
 import disnake
 import asyncio
-import random
 import utils.colors as color
 from typing import Union
-from utils import time, formats
-import os, datetime
+from utils import time
 from disnake.ext import commands
 from traceback import format_exception
 import re

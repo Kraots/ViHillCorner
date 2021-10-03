@@ -54,10 +54,8 @@ zalgo_vars = (
     '\u0355', '\u0356', '\u0359', '\u035A', '\u0323'
 )
 
-
-alphabet_list = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "", "]", "^", "_", "`", "{", "|", "}", "~")
-
 ok_words = ("shoe", "whoever")
+
 
 class FilterCog(commands.Cog):
 
@@ -80,7 +78,7 @@ class FilterCog(commands.Cog):
                 words = bad_words
                 zalgos = zalgo_vars
                 wordss = bad_words_names_edition
-            except	:
+            except Exception:
                 words = words or []
                 zalgos = zalgos or []
                 wordss = wordss or []
@@ -102,48 +100,47 @@ class FilterCog(commands.Cog):
                             await message.delete()
 
                             users = await get_warns_data()
-                            
+
                             if str(user.id) in users:
                                 users[str(user.id)]["warns"] += 1
 
                                 with open("words-warns.json", "w", encoding="utf-8") as f:
-                                    json.dump(users, f, ensure_ascii = False, indent = 4)
+                                    json.dump(users, f, ensure_ascii=False, indent=4)
 
                             else:
                                 users[str(user.id)] = {}
                                 users[str(user.id)]["warns"] = 0
                                 with open("words-warns.json", "w", encoding="utf-8") as f:
-                                    json.dump(users, f, ensure_ascii = False, indent = 4)
+                                    json.dump(users, f, ensure_ascii=False, indent=4)
 
                             total_warns = users[str(user.id)]["warns"]
-
 
                             if total_warns > 1:
                                 del users[str(user.id)]
                                 with open("words-warns.json", "w", encoding="utf-8") as f:
-                                    json.dump(users, f, ensure_ascii = False, indent = 4)
+                                    json.dump(users, f, ensure_ascii=False, indent=4)
 
                                 isStaff = False
                                 if 754676705741766757 in (role.id for role in message.author.roles):
                                     isStaff = True
-                                
+
                                 mute_time = get_mute_time(user.id)
 
                                 post = {
-                                        '_id': user.id,
-                                        'mutedAt': datetime.datetime.now(),
-                                        'muteDuration': mute_time,
-                                        'guildId': message.guild.id,
-                                        'staff': isStaff
-                                        }
+                                    '_id': user.id,
+                                    'mutedAt': datetime.datetime.now(),
+                                    'muteDuration': mute_time,
+                                    'guildId': message.guild.id,
+                                    'staff': isStaff
+                                }
                                 try:
                                     await self.db.insert_one(post)
-                                except:
+                                except Exception:
                                     return
                                 guild = self.bot.get_guild(750160850077089853)
                                 muted = guild.get_role(750465726069997658)
-                                if isStaff == True:
-                                    new_roles = [role for role in message.author.roles if not role.id in (754676705741766757, 750162714407600228)] + [muted]
+                                if isStaff is True:
+                                    new_roles = [role for role in message.author.roles if role.id not in (754676705741766757, 750162714407600228)] + [muted]
                                 else:
                                     new_roles = [role for role in message.author.roles] + [muted]
                                 await message.author.edit(roles=new_roles, reason='Filter Mute (bad words)')
@@ -153,12 +150,17 @@ class FilterCog(commands.Cog):
                                 msg2 = f"**{message.author}** has been muted."
                                 ju = await message.channel.send(msg2, embed=em)
                                 staff_channel = guild.get_channel(752164200222163016)
-                                log = disnake.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{message.author}`\nReason: [`Bad Words`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`", timestamp=datetime.datetime.utcnow())
+                                log = disnake.Embed(
+                                    color=color.red,
+                                    title="___Filter Mute___",
+                                    description=f"User: `{message.author}`\nReason: [`Bad Words`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`",
+                                    timestamp=datetime.datetime.utcnow()
+                                )
                                 em.set_footer(text=f"User ID: {message.author.id}")
                                 await staff_channel.send(embed=log)
                             else:
                                 return
-                        except:
+                        except Exception:
                             pass
             for zalgo in zalgos:
                 try:
@@ -175,7 +177,7 @@ class FilterCog(commands.Cog):
                                     'InvalidNameIndex': new_index
                                 }
                                 await self.db2.insert_one(post)
-                                await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+                                await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
                                 new_nick = f'UnpingableName{new_index}'
                                 new_nick_again = new_nick
                             else:
@@ -183,15 +185,21 @@ class FilterCog(commands.Cog):
                                 new_nick_again = new_nick
 
                             await message.author.edit(nick=new_nick_again)
-                            await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-                        except:
+                            await message.author.send(
+                                "Hello! Your username/nickname doesn't follow our nickname policy. "
+                                f"A random nickname has been assigned to you temporarily. (`{new_nick_again}`). "
+                                "\n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>."
+                                "\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n"
+                                "**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
+                            )
+                        except Exception:
                             pass
 
                     elif re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', message.author.name):
                         check = True
-                        if message.author.nick != None:
+                        if message.author.nick is not None:
                             check = False
-                        if check != False:
+                        if check is not False:
                             try:
                                 _user = await self.db2.find_one({'_id': message.author.id})
                                 if _user is None:
@@ -204,7 +212,7 @@ class FilterCog(commands.Cog):
                                         'InvalidNameIndex': new_index
                                     }
                                     await self.db2.insert_one(post)
-                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
                                     new_nick = f'UnpingableName{new_index}'
                                     new_nick_again = new_nick
                                 else:
@@ -212,17 +220,23 @@ class FilterCog(commands.Cog):
                                     new_nick_again = new_nick
 
                                 await message.author.edit(nick=new_nick_again)
-                                await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-                            except:
+                                await message.author.send(
+                                    "Hello! Your username/nickname doesn't follow our nickname policy. "
+                                    f"A random nickname has been assigned to you temporarily. (`{new_nick_again}`). "
+                                    "\n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>."
+                                    "\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n"
+                                    "**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
+                                )
+                            except Exception:
                                 pass
-                        
+
                     if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', message.content):
                         try:
                             await message.delete()
                             await message.author.send("Zalgo not allowed.")
-                        except:
+                        except Exception:
                             pass
-                except:
+                except Exception:
                     pass
             for wordd in wordss:
                 try:
@@ -240,7 +254,7 @@ class FilterCog(commands.Cog):
                                         'InvalidNameIndex': new_index
                                     }
                                     await self.db2.insert_one(post)
-                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
                                     new_nick = f'UnpingableName{new_index}'
                                     new_nick_again = new_nick
                                 else:
@@ -248,15 +262,21 @@ class FilterCog(commands.Cog):
                                     new_nick_again = new_nick
 
                                 await message.author.edit(nick=new_nick)
-                                await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-                            except:
+                                await message.author.send(
+                                    "Hello! Your username/nickname doesn't follow our nickname policy. "
+                                    f"A random nickname has been assigned to you temporarily. (`{new_nick}`). "
+                                    "\n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>."
+                                    "\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n"
+                                    "**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
+                                )
+                            except Exception:
                                 pass
-                
+
                     elif re.search(r'(?i)(\b' + r'+\W*'.join(wordd) + f'|{wordd})', message.author.name):
                         check = True
-                        if message.author.nick != None:
+                        if message.author.nick is not None:
                             check = False
-                        if check != False:
+                        if check is not False:
                             try:
                                 _user = await self.db2.find_one({'_id': message.author.id})
                                 if _user is None:
@@ -269,7 +289,7 @@ class FilterCog(commands.Cog):
                                         'InvalidNameIndex': new_index
                                     }
                                     await self.db2.insert_one(post)
-                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
                                     new_nick = f'UnpingableName{new_index}'
                                     new_nick_again = new_nick
                                 else:
@@ -277,12 +297,17 @@ class FilterCog(commands.Cog):
                                     new_nick_again = new_nick
 
                                 await message.author.edit(nick=new_nick)
-                                await message.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-                            except:
+                                await message.author.send(
+                                    "Hello! Your username/nickname doesn't follow our nickname policy. "
+                                    f"A random nickname has been assigned to you temporarily. (`{new_nick}`). "
+                                    "\n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n"
+                                    "**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n"
+                                    "**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
+                                )
+                            except Exception:
                                 pass
-                except:
+                except Exception:
                     pass
-            
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
@@ -298,7 +323,7 @@ class FilterCog(commands.Cog):
                 words = bad_words
                 zalgos = zalgo_vars
                 wordss = bad_words_names_edition
-            except:
+            except Exception:
                 words = words or []
                 zalgos = zalgos or []
                 wordss = wordss or []
@@ -319,48 +344,47 @@ class FilterCog(commands.Cog):
                             await after.delete()
 
                             users = await get_warns_data()
-                            
+
                             if str(user.id) in users:
                                 users[str(user.id)]["warns"] += 1
 
                                 with open("words-warns.json", "w", encoding="utf-8") as f:
-                                    json.dump(users, f, ensure_ascii = False, indent = 4)
+                                    json.dump(users, f, ensure_ascii=False, indent=4)
 
                             else:
                                 users[str(user.id)] = {}
                                 users[str(user.id)]["warns"] = 0
                                 with open("words-warns.json", "w", encoding="utf-8") as f:
-                                    json.dump(users, f, ensure_ascii = False, indent = 4)
+                                    json.dump(users, f, ensure_ascii=False, indent=4)
 
                             total_warns = users[str(user.id)]["warns"]
-
 
                             if total_warns > 2:
                                 del users[str(user.id)]
                                 with open("words-warns.json", "w", encoding="utf-8") as f:
-                                    json.dump(users, f, ensure_ascii = False, indent = 4)
+                                    json.dump(users, f, ensure_ascii=False, indent=4)
 
                                 isStaff = False
                                 if 754676705741766757 in (role.id for role in after.author.roles):
                                     isStaff = True
-                                
+
                                 mute_time = get_mute_time(user.id)
 
                                 post = {
-                                        '_id': user.id,
-                                        'mutedAt': datetime.datetime.now(),
-                                        'muteDuration': mute_time,
-                                        'guildId': after.guild.id,
-                                        'staff': isStaff
-                                        }
+                                    '_id': user.id,
+                                    'mutedAt': datetime.datetime.now(),
+                                    'muteDuration': mute_time,
+                                    'guildId': after.guild.id,
+                                    'staff': isStaff
+                                }
                                 try:
                                     await self.db.insert_one(post)
-                                except:
+                                except Exception:
                                     return
                                 guild = self.bot.get_guild(750160850077089853)
                                 muted = guild.get_role(750465726069997658)
-                                if isStaff == True:
-                                    new_roles = [role for role in after.author.roles if not role.id in (754676705741766757, 750162714407600228)] + [muted]
+                                if isStaff is True:
+                                    new_roles = [role for role in after.author.roles if role.id not in (754676705741766757, 750162714407600228)] + [muted]
                                 else:
                                     new_roles = [role for role in after.author.roles] + [muted]
                                 await after.author.edit(roles=new_roles, reason='Filter Mute (bad words)')
@@ -370,12 +394,17 @@ class FilterCog(commands.Cog):
                                 msg2 = f"**{after.author}** has been muted."
                                 ju = await after.channel.send(msg2, embed=em)
                                 staff_channel = guild.get_channel(752164200222163016)
-                                log = disnake.Embed(color=color.red, title="___Filter Mute___", description=f"User: `{after.author}`\nReason: [`Zalgo`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`", timestamp=datetime.datetime.utcnow())
+                                log = disnake.Embed(
+                                    color=color.red,
+                                    title="___Filter Mute___",
+                                    description=f"User: `{after.author}`\nReason: [`Zalgo`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`",
+                                    timestamp=datetime.datetime.utcnow()
+                                )
                                 em.set_footer(text=f"User ID: {after.author.id}")
                                 await staff_channel.send(embed=log)
                             else:
                                 return
-                        except:
+                        except Exception:
                             pass
             for zalgo in zalgos:
                 try:
@@ -392,22 +421,28 @@ class FilterCog(commands.Cog):
                                     'InvalidNameIndex': new_index
                                 }
                                 await self.db2.insert_one(post)
-                                await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+                                await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
                                 new_nick = f'UnpingableName{new_index}'
                                 new_nick_again = new_nick
                             else:
                                 new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
                                 new_nick_again = new_nick
                             await after.author.edit(nick=new_nick_again)
-                            await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-                        except:
+                            await after.author.send(
+                                "Hello! Your username/nickname doesn't follow our nickname policy. "
+                                f"A random nickname has been assigned to you temporarily. (`{new_nick_again}`). "
+                                "\n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>."
+                                "\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n"
+                                "**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
+                            )
+                        except Exception:
                             pass
 
                     elif re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', after.author.name):
                         check = True
-                        if after.author.nick != None:
+                        if after.author.nick is not None:
                             check = False
-                        if check != False:
+                        if check is not False:
                             try:
                                 _user = await self.db2.find_one({'_id': after.author.id})
                                 if _user is None:
@@ -420,7 +455,7 @@ class FilterCog(commands.Cog):
                                         'InvalidNameIndex': new_index
                                     }
                                     await self.db2.insert_one(post)
-                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
                                     new_nick = f'UnpingableName{new_index}'
                                     new_nick_again = new_nick
                                 else:
@@ -428,17 +463,23 @@ class FilterCog(commands.Cog):
                                     new_nick_again = new_nick
 
                                 await after.author.edit(nick=new_nick_again)
-                                await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick_again}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-                            except:
+                                await after.author.send(
+                                    "Hello! Your username/nickname doesn't follow our nickname policy. "
+                                    f"A random nickname has been assigned to you temporarily. (`{new_nick_again}`). "
+                                    "\n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>."
+                                    "\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n"
+                                    "**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
+                                )
+                            except Exception:
                                 pass
-                        
+
                     if re.search(r'(?i)(\b' + r'+\W*'.join(zalgo) + f'|{zalgo})', after.content):
                         try:
                             await after.delete()
                             await after.author.send("Zalgo not allowed.")
-                        except:
+                        except Exception:
                             pass
-                except:
+                except Exception:
                     pass
             for wordd in wordss:
                 try:
@@ -455,22 +496,28 @@ class FilterCog(commands.Cog):
                                     'InvalidNameIndex': new_index
                                 }
                                 await self.db2.insert_one(post)
-                                await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+                                await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
                                 new_nick = f'UnpingableName{new_index}'
                                 new_nick_again = new_nick
                             else:
                                 new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
                                 new_nick_again = new_nick
                             await after.author.edit(nick=new_nick)
-                            await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-                        except:
+                            await after.author.send(
+                                "Hello! Your username/nickname doesn't follow our nickname policy. "
+                                f"A random nickname has been assigned to you temporarily. (`{new_nick}`). "
+                                "\n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>."
+                                "\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n"
+                                "**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
+                            )
+                        except Exception:
                             pass
 
                     elif re.search(r'(?i)(\b' + r'+\W*'.join(wordd) + f'|{wordd})', after.author.name):
                         check = True
-                        if after.author.nick != None:
+                        if after.author.nick is not None:
                             check = False
-                        if check != False:
+                        if check is not False:
                             try:
                                 _user = await self.db2.find_one({'_id': after.author.id})
                                 if _user is None:
@@ -483,20 +530,24 @@ class FilterCog(commands.Cog):
                                         'InvalidNameIndex': new_index
                                     }
                                     await self.db2.insert_one(post)
-                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set':{'TotalInvalidNames': new_list}})
+                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
                                     new_nick = f'UnpingableName{new_index}'
                                     new_nick_again = new_nick
                                 else:
                                     new_nick = f"UnpingableName{_user['InvalidNameIndex']}"
                                     new_nick_again = new_nick
                                 await after.author.edit(nick=new_nick)
-                                await after.author.send(f"Hello! Your username/nickname doesn't follow our nickname policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner")
-                            except:
+                                await after.author.send(
+                                    "Hello! Your username/nickname doesn't follow our nickname policy. "
+                                    f"A random nickname has been assigned to you temporarily. (`{new_nick}`). "
+                                    "\n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n"
+                                    "**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡\n\n"
+                                    "**Unacceptable nicknames:**\nnZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
+                                )
+                            except Exception:
                                 pass
-                except:
+                except Exception:
                     pass
-
-
 
 
 async def get_warns_data():

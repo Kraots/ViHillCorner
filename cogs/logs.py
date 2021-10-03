@@ -5,6 +5,7 @@ from utils import time
 import asyncio
 from typing import Union, Sequence
 
+
 # Webhook that sends a message in logs channel
 async def send_webhook(em, bot):
     webhook = await bot.get_channel(750160852380024895).webhooks()
@@ -24,6 +25,7 @@ async def send_webhook(em, bot):
                 await webhook[0].send(embeds=embeds)
                 embeds = []
 
+
 class Logs(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -42,14 +44,14 @@ class Logs(commands.Cog):
         em.set_author(name=before, url=before.display_avatar, icon_url=before.display_avatar)
         em.set_thumbnail(url=after.display_avatar)
         em.set_footer(text=f'User ID: {after.id}')
-        
+
         if before.name != after.name:
             em.add_field(name='Username', value=f'`{before.name}` **->** `{after.name}`', inline=False)
         if before.discriminator != after.discriminator:
             em.add_field(name='Discriminator', value=f'`#{before.discriminator}` **->** `#{after.discriminator}`', inline=False)
         if before.avatar != after.avatar:
             em.add_field(name='Avatar', value=f'[`Before`]({before.display_avatar}) -> [`After`]({after.display_avatar})', inline=False)
-        
+
         if len(em.fields) != 0:
             self.embeds.append(em)
 
@@ -75,10 +77,10 @@ class Logs(commands.Cog):
                 if role not in before.roles:
                     added_roles.append(role)
             if len(added_roles) != 0:
-                em.add_field(name='\✅ Added Roles', value=', '.join([role.name for role in added_roles]), inline=False)
+                em.add_field(name=r'\✅ Added Roles', value=', '.join([role.name for role in added_roles]), inline=False)
             if len(removed_roles) != 0:
-                em.add_field(name='\❌ Removed Roles', value=', '.join([role.name for role in removed_roles]), inline=False)
-            
+                em.add_field(name=r'\❌ Removed Roles', value=', '.join([role.name for role in removed_roles]), inline=False)
+
         if len(em.fields) != 0:
             self.embeds.append(em)
 
@@ -92,7 +94,7 @@ class Logs(commands.Cog):
         em.set_thumbnail(url=member.display_avatar)
         em.set_footer(text=f'Member ID: {member.id}')
         em.add_field(name='Account Creation', value=str(time.human_timedelta(member.created_at.replace(tzinfo=None))))
-        
+
         self.embeds.append(em)
 
     @commands.Cog.listener()
@@ -148,7 +150,7 @@ class Logs(commands.Cog):
             return
 
         em = disnake.Embed(title=f'Role Created: {role.name}', color=disnake.Color.green(), timestamp=datetime.datetime.utcnow())
-        em.add_field(name='Permissions', value=', '.join((perm[0].replace('_', ' ') for perm in (p for p in role.permissions) if perm[1] == True)))
+        em.add_field(name='Permissions', value=', '.join((perm[0].replace('_', ' ') for perm in (p for p in role.permissions) if perm[1] is True)))
 
         self.embeds.append(em)
 
@@ -157,13 +159,13 @@ class Logs(commands.Cog):
         if role.guild.id != 750160850077089853:
             return
 
-        em = disnake.Embed(title=f'Role Deleted: {role.name}',  color=disnake.Color.red(), timestamp=datetime.datetime.utcnow())
+        em = disnake.Embed(title=f'Role Deleted: {role.name}', color=disnake.Color.red(), timestamp=datetime.datetime.utcnow())
         em.add_field(name='Colour', value=f'[`{role.colour}`](https://www.color-hex.com/color/{str(role.colour).replace("#", "")})')
         em.add_field(name='Hoisted', value='No' if role.hoist is False else 'Yes')
         em.add_field(name='Mentionable', value='No' if role.mentionable is False else True)
-        em.add_field(name='Permissions', value=', '.join((perm[0].replace('_', ' ') for perm in (p for p in role.permissions) if perm[1] == True)))
+        em.add_field(name='Permissions', value=', '.join((perm[0].replace('_', ' ') for perm in (p for p in role.permissions) if perm[1] is True)))
         em.set_footer(text=f'Role ID: {role.id}')
-        
+
         self.embeds.append(em)
 
     @commands.Cog.listener()
@@ -171,7 +173,12 @@ class Logs(commands.Cog):
         if before.guild.id != 750160850077089853:
             return
 
-        em = disnake.Embed(title=f'Role Updated: {after.name}', description=f'`{before.name}` has been updated', color=disnake.Color.yellow(), timestamp=datetime.datetime.utcnow())
+        em = disnake.Embed(
+            title=f'Role Updated: {after.name}',
+            description=f'`{before.name}` has been updated',
+            color=disnake.Color.yellow(),
+            timestamp=datetime.datetime.utcnow()
+        )
         em.set_footer(text=f'Role ID: {after.id}')
         em.set_thumbnail(url=before.guild.icon.url)
 
@@ -186,22 +193,22 @@ class Logs(commands.Cog):
         if before.permissions != after.permissions:
             added_perms = []
             removed_perms = []
-            
+
             old_perms = {}
             for perm in before.permissions:
                 old_perms[perm[0]] = perm[1]
-            
+
             for perm in after.permissions:
                 if perm[1] != old_perms[perm[0]]:
-                    if perm[1] == False:
+                    if perm[1] is False:
                         removed_perms.append(perm[0].replace('_', ' ').title())
-                    elif perm[1] == True:
+                    elif perm[1] is True:
                         added_perms.append(perm[0].replace('_', ' ').title())
-            
+
             if len(added_perms) != 0:
-                em.add_field(name='\✅ Added Permissions', value=f'`{"`, `".join(added_perms)}`', inline=False)
+                em.add_field(name=r'\✅ Added Permissions', value=f'`{"`, `".join(added_perms)}`', inline=False)
             if len(removed_perms) != 0:
-                em.add_field(name='\❌ Removed Permissions', value=f'`{"`, `".join(removed_perms)}`', inline=False)
+                em.add_field(name=r'\❌ Removed Permissions', value=f'`{"`, `".join(removed_perms)}`', inline=False)
 
         if len(em.fields) != 0:
             self.embeds.append(em)
@@ -249,7 +256,7 @@ class Logs(commands.Cog):
         em.set_footer(text=f'Channel ID: {channel.id}')
         em.add_field(name='Name', value=f'`{channel.name}`', inline=False)
         em.add_field(name='Type', value=f'`{str(channel.type).title()} Channel`', inline=False)
-        
+
         self.embeds.append(em)
 
     @commands.Cog.listener()
@@ -260,7 +267,7 @@ class Logs(commands.Cog):
         em = disnake.Embed(title='Channel Deleted', color=disnake.Color.red(), timestamp=datetime.datetime.utcnow())
         em.add_field(name='Name', value=f'`{channel.name}`', inline=False)
         em.add_field(name='Type', value=f'`{str(channel.type).title()} Channel`', inline=False)
-        
+
         self.embeds.append(em)
 
     @commands.Cog.listener('on_guild_channel_update')
@@ -317,24 +324,25 @@ class Logs(commands.Cog):
                     try:
                         if v[1] != old_perms[k.id][v[0]]:
                             em.description = f'Edited permissions for `{k}`'
-                            if v[1] == False:
+                            if v[1] is False:
                                 denied_perms.append(v[0])
-                            elif v[1] == None:
+                            elif v[1] is None:
                                 neutral_perms.append(v[0])
-                            elif v[1] == True:
+                            elif v[1] is True:
                                 allowed_perms.append(v[0])
                     except KeyError:
                         pass
 
             if len(allowed_perms) != 0:
-                em.add_field(name='\✅ Allowed Perms', value=', '.join(allowed_perms), inline=False)
+                em.add_field(name=r'\✅ Allowed Perms', value=', '.join(allowed_perms), inline=False)
             if len(neutral_perms) != 0:
                 em.add_field(name='⧄ Neutral Perms', value=', '.join(neutral_perms), inline=False)
             if len(denied_perms) != 0:
-                em.add_field(name='\❌ Denied Perms', value=', '.join(denied_perms), inline=False)
+                em.add_field(name=r'\❌ Denied Perms', value=', '.join(denied_perms), inline=False)
 
         if len(em.fields) != 0:
             self.embeds.append(em)
+
 
 def setup(bot):
     bot.add_cog(Logs(bot))

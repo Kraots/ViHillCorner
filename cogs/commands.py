@@ -17,14 +17,14 @@ ss_key = os.getenv("SS_KEY")
 
 def take_ss(url):
     options = {
-                'url': str(url),
-                'dimension': '1920x1080',
-                'format': 'png',
-                'hide': '.cookie-banner',
-                'click': '.button-close',
-                'delay': '600',
-                'cacheLimit': '0.041666'
-                }
+        'url': str(url),
+        'dimension': '1920x1080',
+        'format': 'png',
+        'hide': '.cookie-banner',
+        'click': '.button-close',
+        'delay': '600',
+        'cacheLimit': '0.041666'
+    }
     api_url = 'https://api.screenshotmachine.com/?key=' + ss_key
     api_url = api_url + '&' + urllib.parse.urlencode(options)
     opener = urllib.request.build_opener()

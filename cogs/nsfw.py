@@ -3,17 +3,19 @@ from disnake.ext import commands
 import utils.colors as color
 from utils.helpers import NSFW
 from disnake.ext.commands import Greedy
-from disnake import Member 
+from disnake import Member
 from utils.paginator import SimplePages
 import pymongo
 import hmtai
 import aiohttp
+from utils.context import Context
 
 nsfw_url = 'https://nekobot.xyz/api/image?type='
-nsfw_categs = ('hentai', 'ass', 'thigh', 'hass', 'hboobs', 'pgif', 'paizuri', 'boobs', 'pussy', 'hyuri', 'hthigh', 'lewdneko', 'anal', 'hmidriff', 'feet', 'gonewild', 'hkitsune', '4k', 'blowjob', 'tentacle', 'hentai_anal')
+nsfw_categs = ('hentai', 'ass', 'thigh', 'hass', 'hboobs', 'pgif', 'paizuri', 'boobs', 'pussy', 'hyuri', 'hthigh', 'lewdneko', 'anal', 'hmidriff', 'feet', 'gonewild', 'hkitsune', '4k', 'blowjob', 'tentacle', 'hentai_anal')  # noqa
 real_categs = ('ass', 'thigh', 'pgif', 'boobs', 'pussy', 'anal', 'feet', 'gonewild', '4k', 'blowjob')
 hentai_categs_1 = ('hentai', 'hass', 'hboobs', 'paizuri', 'hyuri', 'hthigh', 'lewdneko', 'hmidriff', 'hkitsune', 'tentacle', 'hentai_anal')
 hentai_categs_2 = ('ass', 'ecchi', 'ero', 'hentai', 'maid', 'milf', 'oppai', 'oral', 'paizuri', 'selfies', 'uniform')
+
 
 class NSFWPageEntry:
     def __init__(self, entry):
@@ -23,48 +25,56 @@ class NSFWPageEntry:
     def __str__(self):
         return f'<@!{self.id}>\u2800•\u2800(`UserID:` {self.id})'
 
+
 class NSFWPages(SimplePages):
-    def __init__(self, ctx, entries, *, per_page=12):
+    def __init__(self, ctx: Context, entries, *, per_page=12):
         converted = [NSFWPageEntry(entry) for entry in entries]
         super().__init__(ctx=ctx, entries=converted, per_page=per_page)
 
-class NSFW(commands.Cog):
 
+class NSFW(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.db1['NSFW blocks']
         self.prefix = "!"
-    async def cog_check(self, ctx):
+
+    async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
-    async def nsfw(self, ctx):
+    async def nsfw(self, ctx: Context):
         """See the types of nsfw 😏"""
 
-        await ctx.send("There are only 2 types: `real`, `hentai`\nType `!nsfw <type>` to see all the categories of a type.\n***Keep in mind that these only work in the nsfw channel.***")
+        await ctx.send(
+            "There are only 2 types: `real`, `hentai`\nType `!nsfw <type>` to see all the categories of a type.\n"
+            "***Keep in mind that these only work in the nsfw channel.***"
+        )
 
-    async def nsfw_hentai_0(self, ctx, category):
+    async def nsfw_hentai_0(self, ctx: Context, category):
         """The old nsfw."""
 
         if category is None:
-            categs = "foot **•** mW **•** elves **•** hentai **•** nsfwNeko **•** ero **•** lick **•** glasses **•** blowjob **•** pussy **•** cum **•** femdom **•** cuckold **•** slap **•** ass **•** ahegao **•** incest **•** manga **•** uniform **•** public **•** jahy **•** panties **•** creampie **•** boobjob **•** orgy **•** masturbation **•** yuri **•** bdsm **•** thighs **•** nsfwMW **•** gangbang **•** tentacles **•** hnt_gifs"
+            categs = "foot **•** mW **•** elves **•** hentai **•** nsfwNeko **•** ero **•** lick **•** glasses **•** blowjob **•** pussy **•** cum " \
+                "**•** femdom **•** cuckold **•** slap **•** ass **•** ahegao **•** incest **•** manga **•** uniform **•** public **•** jahy " \
+                "**•** panties **•** creampie **•** boobjob **•** orgy **•** masturbation **•** yuri **•** bdsm **•** thighs **•** nsfwMW " \
+                "**•** gangbang **•** tentacles **•** hnt_gifs"
             em = disnake.Embed(title="Here are all the categories for hentai 0", description=categs, color=color.blue)
             em.set_footer(text='They are all case sensitive!')
             return await ctx.send(embed=em)
 
         try:
             result = hmtai.useHM(version='2_9', category=category)
-        
+
             em = disnake.Embed(color=color.pastel)
             em.set_image(url=result)
             em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
             await ctx.send(embed=em)
-        except:
+        except Exception:
             return await ctx.send('Category does not exist.')
 
-    async def nsfw_hentai_1(self, ctx, category):
+    async def nsfw_hentai_1(self, ctx: Context, category):
         """The slightly new nsfw."""
-        
+
         if category is None:
             categs = "hentai **•** paizuri **•** yuri **•** thighs **•** neko **•** anal **•** hmidriff **•** kitsune **•** tentacle"
             em = disnake.Embed(color=color.blue, title="Here are all the categories for hentai 1:", description=categs)
@@ -72,7 +82,7 @@ class NSFW(commands.Cog):
             return await ctx.send(embed=em)
 
         categ = category.lower()
-        if not categ in hentai_categs_1:
+        if categ not in hentai_categs_1:
             if categ == 'ass':
                 categ = 'hass'
             elif categ in ('boob', 'boobs'):
@@ -105,7 +115,7 @@ class NSFW(commands.Cog):
         except aiohttp.ClientConnectorError:
             await ctx.send('Error connecting to this nsfw API. There is no ETA until it will be fixed so please use the others available APIs for nsfw hentai.')
 
-    async def nsfw_hentai_2(self, ctx, gif, category):
+    async def nsfw_hentai_2(self, ctx: Context, gif, category):
         """The new nsfw."""
 
         if category is None:
@@ -130,7 +140,7 @@ class NSFW(commands.Cog):
                     await self.bot.owner.send(f"`{ctx.command} {categ}` returned\n**{err}**")
                     return await ctx.send("There has been an error from the **API**, please try again later.")
                 content = await resp.json()
-                url= content['url']
+                url = content['url']
             em = disnake.Embed(color=color.pastel)
             em.set_image(url=url)
             em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
@@ -140,7 +150,7 @@ class NSFW(commands.Cog):
 
     @nsfw.command(name='hentai')
     @commands.check(NSFW)
-    async def nsfw_hentai(self, ctx, API: int = None, category: str = None, gif: str = None):
+    async def nsfw_hentai(self, ctx: Context, API: int = None, category: str = None, gif: str = None):
         """Get the categories from one of the hentai APIs
         APIs:
         \u2800 • **0**
@@ -164,7 +174,7 @@ class NSFW(commands.Cog):
             em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=em)
 
-        if gif == None:
+        if gif is None:
             gif = ''
         else:
             if gif.lower() in ('gif', 'true', '1'):
@@ -181,9 +191,9 @@ class NSFW(commands.Cog):
 
     @nsfw.command(name='real')
     @commands.check(NSFW)
-    async def nsfw_real(self, ctx, category: str = None):
+    async def nsfw_real(self, ctx: Context, category: str = None):
         """Get a real porn random image based on the chosen category 😏"""
-        
+
         if category is None:
             categs = "ass **•** thigh **•** gif **•** boobs **•** pussy **•** anal **•** feet **•** wild **•** 4k **•** bj/blowjob"
             em = disnake.Embed(color=color.blue, title="Here are all the categories for real porn:", description=categs)
@@ -191,7 +201,7 @@ class NSFW(commands.Cog):
             return await ctx.send(embed=em)
 
         categ = category.lower()
-        if not categ in real_categs:
+        if categ not in real_categs:
             if categ == 'thighs':
                 categ = 'thigh'
             elif categ == 'bj':
@@ -204,7 +214,7 @@ class NSFW(commands.Cog):
                 categ = 'boobs'
             else:
                 return await ctx.reply("Not in the existing real nsfw categories.")
-        
+
         try:
             async with self.bot.session.get(nsfw_url + categ) as resp:
                 if resp.status != 200:
@@ -219,9 +229,8 @@ class NSFW(commands.Cog):
         except aiohttp.ClientConnectorError:
             await ctx.send('Error connecting to this nsfw API. There is no ETA until it will be fixed so please use the nsfw hentai APIs or try again later.')
 
-
     @nsfw.command()
-    async def me(self, ctx, choice : str):
+    async def me(self, ctx: Context, choice: str):
         """
         The choice must be either `add` or `remove`.
         If you're blocked you won't be able to use any.
@@ -235,26 +244,25 @@ class NSFW(commands.Cog):
 
         if choice == "remove":
             try:
-                await nsfwchannel.set_permissions(user, overwrite = None)
+                await nsfwchannel.set_permissions(user, overwrite=None)
                 await user.send("You cannot see the nsfw channel anymore. <:weird:773538796087803934>")
                 await ctx.message.delete()
-            except:
+            except Exception:
                 return
 
         elif choice == "add":
-            if result != None:
+            if result is not None:
                 await ctx.send("You are restricted from using that command, therefore your permissions have not been changed! {}".format(user.mention))
                 return
 
             else:
-                await nsfwchannel.set_permissions(user, read_messages = True, reason = "The user requested by himself the permission using `!nsfw me`")
+                await nsfwchannel.set_permissions(user, read_messages=True, reason="The user requested by himself the permission using `!nsfw me`")
                 await user.send('You can now see the nsfw channel! <#780374324598145055> <:peepo_yay:773535977624698890>')
                 await ctx.message.delete()
 
-
     @nsfw.group(name='block')
     @commands.has_role(754676705741766757)
-    async def nsfw_block(self, ctx, members : Greedy[Member]):
+    async def nsfw_block(self, ctx: Context, members: Greedy[Member]):
         """Blocks the members from accessing the nsfw channel."""
 
         guild = self.bot.get_guild(750160850077089853)
@@ -263,10 +271,10 @@ class NSFW(commands.Cog):
         blocked_list = []
         for member in members:
             try:
-                await nsfwchannel.set_permissions(member, overwrite = None)
-            except:
+                await nsfwchannel.set_permissions(member, overwrite=None)
+            except Exception:
                 pass
-            
+
             a = f"{member.name}#{member.discriminator}"
             blocked_list.append(a)
 
@@ -281,37 +289,35 @@ class NSFW(commands.Cog):
 
     @nsfw.command(name='blocks')
     @commands.has_role(754676705741766757)
-    async def nsfw_blocks(self, ctx):
+    async def nsfw_blocks(self, ctx: Context):
         """Sends a list with the blocked users for the nsfw channel."""
 
         try:
             entries = await self.db.find().to_list(100000)
-            p = NSFWPages(ctx=ctx, entries = entries, per_page = 7)
+            p = NSFWPages(ctx=ctx, entries=entries, per_page=7)
             await p.start()
-        except:
+        except Exception:
             await ctx.send("There are no members whose acces has been restricted.")
 
     @nsfw.command(name='unblock')
     @commands.has_role(754676705741766757)
-    async def nsfw_unblock(self, ctx, members : Greedy[Member]):
+    async def nsfw_unblock(self, ctx: Context, members: Greedy[Member]):
         """Unblock the members from accessing the nsfw channel."""
 
         blocked_list = []
         for member in members:
-            
+
             a = f"{member.name}#{member.discriminator}"
             blocked_list.append(a)
 
             await self.db.delete_one({'_id': member.id})
             await member.send("Your acces for using the `!nsfw me` command has ben re-approved.")
-            
+
         blocked_members = " | ".join(blocked_list)
         await ctx.send(f"`{blocked_members}` have been unblocked from seeing the nsfw channel.")
 
-
-
     @nsfw.error
-    async def nsfw_error(self, ctx, error):
+    async def nsfw_error(self, ctx: Context, error):
         if isinstance(error, commands.CheckFailure):
             if not isinstance(ctx.channel, disnake.DMChannel):
                 if 754676705741766757 in (role.id for role in ctx.author.roles):
@@ -320,7 +326,7 @@ class NSFW(commands.Cog):
             await self.bot.reraise(ctx, error)
 
     @nsfw_real.error
-    async def nsfw_real_error(self, ctx, error):
+    async def nsfw_real_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.CheckFailure):
             if not isinstance(ctx.channel, disnake.DMChannel):
                 await ctx.reply('This command is only usable in a nsfw marked channel.')
@@ -328,19 +334,20 @@ class NSFW(commands.Cog):
             await self.bot.reraise(ctx, error)
 
     @nsfw_hentai.error
-    async def nsfw_hentai_error(self, ctx, error):
+    async def nsfw_hentai_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.CheckFailure):
             if not isinstance(ctx.channel, disnake.DMChannel):
                 await ctx.reply('This command is only usable in a nsfw marked channel.')
         else:
             await self.bot.reraise(ctx, error)
-            
+
     @commands.Cog.listener()
-    async def on_member_remove(self, member):
+    async def on_member_remove(self, member: disnake.Member):
         if member.id == 374622847672254466:
             return
-            
+
         await self.db.delete_one({'_id': member.id})
+
 
 def setup(bot):
     bot.add_cog(NSFW(bot))

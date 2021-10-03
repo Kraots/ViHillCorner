@@ -118,7 +118,7 @@ class Bdsm(commands.Cog):
         await ctx.send("Click the link below to take your bdsm test: \nhttps://bdsmtest.org")
 
     @commands.Cog.listener()
-    async def on_member_remove(self, member):
+    async def on_member_remove(self, member: disnake.Member):
         if member.id == 374622847672254466:
             return
         await self.db1.delete_one({'_id': member.id})

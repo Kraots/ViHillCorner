@@ -8,7 +8,7 @@ class OnBanAppealJoin(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener('on_member_join')
-    async def on_member_join(self, member):
+    async def on_member_join(self, member: disnake.Member):
         found = False
         if member.guild.id == 788384492175884299:
             vhc = self.bot.get_guild(750160850077089853)
@@ -28,8 +28,8 @@ class OnBanAppealJoin(commands.Cog):
 
             g = self.bot.get_guild(788384492175884299)
             overwrites = {
-                    g.default_role: disnake.PermissionOverwrite(read_messages=False)
-                        }
+                g.default_role: disnake.PermissionOverwrite(read_messages=False)
+            }
             channel = await g.create_text_channel(f"{member.name}-ban-appeal", overwrites=overwrites)
             await channel.edit(topic=member.id)
             em = disnake.Embed(title="Ban Reason", description=ban_reason)
@@ -44,7 +44,7 @@ class OnBanAppealJoin(commands.Cog):
             await ch.send('A new member has joined the ban appeal. <@!374622847672254466> <@!747329236695777340>')
 
     @commands.Cog.listener('on_member_remove')
-    async def on_member_remove(self, member):
+    async def on_member_remove(self, member: disnake.Member):
         g = member.guild
         for ch in g.text_channels:
             try:
