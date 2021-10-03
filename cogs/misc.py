@@ -775,8 +775,8 @@ class Misc(commands.Cog):
             suggest.set_author(name=f'{ctx.author.name} suggested:', icon_url=ctx.author.display_avatar)
             suggestions = self.bot.get_channel(750160850593251454)
             msg = await suggestions.send(embed=suggest)
-            await msg.add_reaction('<:agree:797537027469082627>')
-            await msg.add_reaction('<:disagree:797537030980239411>')
+            await msg.add_reaction(ctx.agree)
+            await msg.add_reaction(ctx.disagree)
             em = disnake.Embed(color=color.inviscolor, title="Suggestion successfully added!", url=msg.jump_url)
             return await msg1.edit(content=ctx.author.mention, embed=em, view=view)
 

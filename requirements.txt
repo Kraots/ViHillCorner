@@ -30,3 +30,4 @@ motor
 pymongo
 mal-api
 flake8
+asyncdagpi

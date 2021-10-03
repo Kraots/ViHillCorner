@@ -8,6 +8,7 @@ import motor.motor_asyncio
 from utils.HelpCommand import PaginatedHelpCommand
 from utils.helpers import reraise, slash_reraise, ConfirmView
 from utils.ButtonRoles import ButtonRoles
+import asyncdagpi as dagpi
 
 token = os.environ.get('DISCORD_BOT_SECRET')
 
@@ -43,6 +44,7 @@ class ViHillCorner(commands.Bot):
         self.confirm_view = ConfirmView
         self.snipes = {}
         self.added_views = False
+        self.dagpi_client = dagpi.Client(os.getenv('DAGPI_TOKEN'))
 
         self.load_extension('jishaku')
         os.environ['JISHAKU_FORCE_PAGINATOR'] = '1'

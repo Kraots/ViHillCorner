@@ -712,10 +712,149 @@ class Fun(commands.Cog):
             return await msg.edit(content=e, view=view)
 
     @commands.command()
-    async def reverse(self, ctx: Context, *, text: str):
-        """Reverses the text."""
+    async def reverse(self, ctx: Context, *, text: str = None):
+        """Reverses the text if provided, otherwise reverses your pfp."""
 
-        await ctx.send(f'> {text[::-1]}')
+        if text is not None:
+            return await ctx.send(f'> {text[::-1]}')
+
+        await ctx.message.add_reaction(ctx.thumb)
+        avatar = ctx.author.display_avatar.with_static_format('jpg').url
+        file = await (await self.bot.loop.run_in_executor(None, ctx.mirror, avatar))
+        em = disnake.Embed(title=f'Here\'s the modified avatar for `{ctx.author.display_name}`:', color=disnake.Color.blurple())
+        em.set_image(url=f'attachment://{file.filename}')
+        em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=em, file=file)
+
+    @commands.command()
+    async def pixel(self, ctx: Context, member: disnake.Member = None):
+        """Pixelates the member's avatar."""
+
+        member = member or ctx.author
+        await ctx.message.add_reaction(ctx.thumb)
+        avatar = member.display_avatar.with_static_format('jpg').url
+        file = await (await self.bot.loop.run_in_executor(None, ctx.pixel, avatar))
+        em = disnake.Embed(title=f'Here\'s the modified avatar for `{member.display_name}`:', color=disnake.Color.blurple())
+        em.set_image(url=f'attachment://{file.filename}')
+        em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=em, file=file)
+
+    @commands.command()
+    async def ascii(self, ctx: Context, member: disnake.Member = None):
+        """Turns the member's avatar into ascii."""
+
+        member = member or ctx.author
+        await ctx.message.add_reaction(ctx.thumb)
+        avatar = member.display_avatar.with_static_format('jpg').url
+        file = await (await self.bot.loop.run_in_executor(None, ctx.ascii, avatar))
+        em = disnake.Embed(title=f'Here\'s the modified avatar for `{member.display_name}`:', color=disnake.Color.blurple())
+        em.set_image(url=f'attachment://{file.filename}')
+        em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=em, file=file)
+
+    @commands.command()
+    async def blur(self, ctx: Context, member: disnake.Member = None):
+        """Blurs the member's avatar."""
+
+        member = member or ctx.author
+        await ctx.message.add_reaction(ctx.thumb)
+        avatar = member.display_avatar.with_static_format('jpg').url
+        file = await (await self.bot.loop.run_in_executor(None, ctx.blur, avatar))
+        em = disnake.Embed(title='Here\'s the result', color=disnake.Color.blurple())
+        em.set_image(url=f'attachment://{file.filename}')
+        em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=em, file=file)
+
+    @commands.command()
+    async def bonk(self, ctx: Context, member: disnake.Member = None):
+        """Bonk someone."""
+
+        member = member or ctx.author
+        await ctx.message.add_reaction(ctx.thumb)
+        avatar = member.display_avatar.with_static_format('jpg').url
+        file = await (await self.bot.loop.run_in_executor(None, ctx.bonk, avatar))
+        em = disnake.Embed(title=f'`{ctx.author.display_name}` is bonking `{member.display_name}`!', color=disnake.Color.blurple())
+        em.set_image(url=f'attachment://{file.filename}')
+        em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=em, file=file)
+
+    @commands.command(aliases=['colour'])
+    async def color(self, ctx: Context, member: disnake.Member = None):
+        """Get the avatar's top 5 colours."""
+
+        member = member or ctx.author
+        await ctx.message.add_reaction(ctx.thumb)
+        avatar = member.display_avatar.with_static_format('jpg').url
+        file = await (await self.bot.loop.run_in_executor(None, ctx.colors, avatar))
+        em = disnake.Embed(title=f'Here\'s the result for `{member.display_name}`:', color=disnake.Color.blurple())
+        em.set_image(url=f'attachment://{file.filename}')
+        em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=em, file=file)
+
+    @commands.command()
+    async def burn(self, ctx: Context, member: disnake.Member = None):
+        """Burn the avatar until there's molten remains."""
+
+        member = member or ctx.author
+        await ctx.message.add_reaction(ctx.thumb)
+        avatar = member.display_avatar.with_static_format('jpg').url
+        file = await (await self.bot.loop.run_in_executor(None, ctx.burn, avatar))
+        em = disnake.Embed(title=f'Here\'s the result for `{member.display_name}`:', color=disnake.Color.blurple())
+        em.set_image(url=f'attachment://{file.filename}')
+        em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=em, file=file)
+
+    @commands.command()
+    async def deepfry(self, ctx: Context, member: disnake.Member = None):
+        """Deepfry someone."""
+
+        member = member or ctx.author
+        await ctx.message.add_reaction(ctx.thumb)
+        avatar = member.display_avatar.with_static_format('jpg').url
+        file = await (await self.bot.loop.run_in_executor(None, ctx.deepfry, avatar))
+        em = disnake.Embed(title=f'Here\'s the result for `{member.display_name}`:', color=disnake.Color.blurple())
+        em.set_image(url=f'attachment://{file.filename}')
+        em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=em, file=file)
+
+    @commands.command()
+    async def gay(self, ctx: Context, member: disnake.Member = None):
+        """Turn someone's image gay."""
+
+        member = member or ctx.author
+        await ctx.message.add_reaction(ctx.thumb)
+        avatar = member.display_avatar.with_static_format('jpg').url
+        file = await (await self.bot.loop.run_in_executor(None, ctx.gay, avatar))
+        em = disnake.Embed(title=f'Here\'s the result for `{member.display_name}`:', color=disnake.Color.blurple())
+        em.set_image(url=f'attachment://{file.filename}')
+        em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=em, file=file)
+
+    @commands.command()
+    async def lego(self, ctx: Context, member: disnake.Member = None):
+        """Turn someone's image into lego pieces."""
+
+        member = member or ctx.author
+        await ctx.message.add_reaction(ctx.thumb)
+        avatar = member.display_avatar.with_static_format('jpg').url
+        file = await (await self.bot.loop.run_in_executor(None, ctx.lego, avatar))
+        em = disnake.Embed(title=f'Here\'s the result for `{member.display_name}`:', color=disnake.Color.blurple())
+        em.set_image(url=f'attachment://{file.filename}')
+        em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=em, file=file)
+
+    @commands.command()
+    async def flip(self, ctx: Context, member: disnake.Member = None):
+        """Flips someone's avatar upside down."""
+
+        member = member or ctx.author
+        await ctx.message.add_reaction(ctx.thumb)
+        avatar = member.display_avatar.with_static_format('jpg').url
+        file = await (await self.bot.loop.run_in_executor(None, ctx.flip, avatar))
+        em = disnake.Embed(title=f'Here\'s the result for `{member.display_name}`:', color=disnake.Color.blurple())
+        em.set_image(url=f'attachment://{file.filename}')
+        em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
+        await ctx.send(embed=em, file=file)
 
     @commands.command()
     async def uwu(self, ctx: Context, *, text: commands.clean_content(fix_channel_mentions=True)):
@@ -730,6 +869,7 @@ class Fun(commands.Cog):
     async def invert(self, ctx: Context, member: disnake.Member = None):
         """Inverts the colors of the member's pfp."""
 
+        await ctx.message.add_reaction(ctx.thumb)
         member = member or ctx.author
         pfp = await invert_pfp(member)
         em = disnake.Embed(color=color.lightpink, title='Here\'s your inverted avatar image:')
