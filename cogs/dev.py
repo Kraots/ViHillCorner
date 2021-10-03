@@ -26,6 +26,15 @@ class QuitButton(disnake.ui.View):
         super().__init__(timeout=180.0)
         self.ctx = ctx
 
+    async def interaction_check(self, interaction: disnake.MessageInteraction):
+        if interaction.author.id != self.ctx.author.id:
+            await interaction.response.send_message(
+                f'Only {self.ctx.author.display_name} can use the buttons on this message!',
+                ephemeral=True
+            )
+            return False
+        return True
+
     async def on_error(self, error, item, interaction):
         return await self.ctx.bot.reraise(self.ctx, error)
 
