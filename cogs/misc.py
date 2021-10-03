@@ -305,6 +305,7 @@ class SphinxObjectFileReader:
 
 
 class Misc(commands.Cog):
+    """Miscellaneous commands."""
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.db1['Updates']
@@ -313,6 +314,10 @@ class Misc(commands.Cog):
 
     def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '🔧'
 
     def parse_object_inv(self, stream, url):
         result = {}

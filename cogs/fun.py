@@ -111,6 +111,8 @@ class BagelsView(disnake.ui.View):
 
 
 class Fun(commands.Cog):
+    """Fun related commands."""
+
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.db1['Economy']
@@ -118,6 +120,10 @@ class Fun(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '🤡'
 
     @commands.command()
     async def ppsize(self, ctx: Context, member: disnake.Member = None):

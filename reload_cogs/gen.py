@@ -6,12 +6,17 @@ from utils.context import Context
 
 
 class Cogs(commands.Cog):
+    """Commands to reload cogs."""
     def __init__(self, bot):
         self.bot = bot
         self.prefix = '!'
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '⚒️'
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
     @commands.is_owner()

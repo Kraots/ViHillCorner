@@ -47,6 +47,7 @@ class TimeConverter(commands.Converter):
 
 
 class Moderator(commands.Cog):
+    """Moderator related commands."""
     def __init__(self, bot):
         self.bot = bot
         self.db1 = bot.db1['Moderation Mutes']
@@ -61,6 +62,10 @@ class Moderator(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '⚙️'
 
     @tasks.loop(seconds=30)
     async def check_current_mutes(self):

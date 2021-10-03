@@ -29,6 +29,7 @@ class SnippetPages(SimplePages):
 
 
 class Snippets(commands.Cog):
+    """Snippet related commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -37,6 +38,10 @@ class Snippets(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '✂️'
 
     @commands.group(invoke_without_command=True, case_insensitive=True, aliases=['snippets'], ignore_extra=False)
     async def snippet(self, ctx: Context):

@@ -27,6 +27,7 @@ class TagPages(SimplePages):
 
 
 class Tags(commands.Cog):
+    """Tag related commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -35,6 +36,10 @@ class Tags(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '🏷️'
 
     @commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False, aliases=['tags'])
     async def tag(self, ctx: Context, *, tag_name: str = None):

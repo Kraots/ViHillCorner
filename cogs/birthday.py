@@ -8,6 +8,7 @@ from utils.context import Context
 
 
 class Birthdays(commands.Cog):
+    """Birthday related commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -17,6 +18,10 @@ class Birthdays(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '🍰'
 
     @tasks.loop(minutes=30)
     async def check_bdays(self):

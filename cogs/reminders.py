@@ -8,6 +8,7 @@ from utils.context import Context
 
 
 class Reminders(commands.Cog):
+    """Reminder related commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -17,6 +18,10 @@ class Reminders(commands.Cog):
 
     def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '⏰'
 
     @commands.group(invoke_without_command=True, case_insensitive=True, aliases=['reminder'])
     async def remind(self, ctx: Context, *, when: time.UserFriendlyTime(commands.clean_content, default='\u2026')):  # noqa

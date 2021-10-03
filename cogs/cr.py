@@ -18,6 +18,7 @@ all_roles = (
 
 
 class CustomRoles(commands.Cog):
+    """Custom roles related commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -26,6 +27,10 @@ class CustomRoles(commands.Cog):
 
     def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '⭐'
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
     @commands.has_any_role(*all_roles)

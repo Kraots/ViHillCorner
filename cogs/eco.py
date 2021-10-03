@@ -284,6 +284,7 @@ class RPSView(disnake.ui.View):
 
 
 class Economy(commands.Cog):
+    """Economy related commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -293,6 +294,10 @@ class Economy(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> disnake.PartialEmoji:
+        return disnake.PartialEmoji(name='carrots', id=822122757654577183)
 
     @tasks.loop(minutes=1.0)
     async def check_items_in_use(self):

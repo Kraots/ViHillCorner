@@ -6,6 +6,7 @@ from utils.context import Context
 
 
 class Trivia(commands.Cog):
+    """Trivia commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -14,6 +15,10 @@ class Trivia(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '🎟️'
 
     @commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
     async def trivia(self, ctx: Context):

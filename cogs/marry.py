@@ -7,6 +7,8 @@ from utils.context import Context
 
 
 class Marriage(commands.Cog):
+    """Marriage related commands."""
+
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.db1['Marry Data']
@@ -14,6 +16,10 @@ class Marriage(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '❤️'
 
     @commands.command()
     async def marry(self, ctx: Context, member: disnake.Member = None):

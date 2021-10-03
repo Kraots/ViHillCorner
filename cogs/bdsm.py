@@ -6,6 +6,7 @@ from utils.context import Context
 
 
 class Bdsm(commands.Cog):
+    """Bdsm related commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -15,6 +16,10 @@ class Bdsm(commands.Cog):
 
     def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '⛓️'
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
     async def bdsm(self, ctx: Context):

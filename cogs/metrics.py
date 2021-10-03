@@ -8,6 +8,8 @@ from utils.context import Context
 
 
 class Metrics(commands.Cog):
+    """Metrics command."""
+
     def __init__(self, bot):
         self.bot = bot
         self.prefix = "!"
@@ -15,6 +17,10 @@ class Metrics(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '⚒️'
 
     @commands.command()
     @commands.is_owner()

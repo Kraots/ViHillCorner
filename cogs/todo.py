@@ -21,6 +21,8 @@ class ToDoPages(ToDoMenu):
 
 
 class ToDo(commands.Cog):
+    """Todo related commands."""
+
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.db2['Todo Data']
@@ -28,6 +30,10 @@ class ToDo(commands.Cog):
 
     def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '📋'
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
     async def todo(self, ctx: Context, *, todo: str):

@@ -58,6 +58,7 @@ nono_list = (
 
 
 class General(commands.Cog):
+    """General commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -66,6 +67,10 @@ class General(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '❔'
 
     @commands.command(aliases=["ss"])
     async def scrs(self, ctx: Context, url):

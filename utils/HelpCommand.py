@@ -55,7 +55,12 @@ class HelpSelectMenu(disnake.ui.Select['HelpMenu']):
                 continue
             description = cog.description.split('\n', 1)[0] or None
             emoji = getattr(cog, 'display_emoji', None)
-            self.add_option(label=cog.qualified_name, value=cog.qualified_name, description=description, emoji=emoji)
+            self.add_option(
+                label=cog.qualified_name + ' (' + str(len(cog.get_commands())) + ')',
+                value=cog.qualified_name,
+                description=description,
+                emoji=emoji
+            )
 
     async def callback(self, interaction: disnake.Interaction):
         assert self.view is not None
@@ -187,7 +192,7 @@ class PaginatedHelpCommand(commands.HelpCommand):
             if name == '\U0010ffff':
                 continue
 
-            cog = bot.get_cog(name)
+            cog: commands.Cog = bot.get_cog(name)
             all_commands[cog] = sorted(children, key=lambda c: c.qualified_name)
 
         menu = HelpMenu(FrontPageSource(), ctx=self.context)

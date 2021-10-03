@@ -7,12 +7,17 @@ from utils.context import Context
 
 
 class Ping(commands.Cog):
+    """Ping related commands."""
     def __init__(self, bot):
         self.bot = bot
         self.prefix = "!"
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '❕'
 
     @commands.command()
     async def ping(self, ctx: Context):

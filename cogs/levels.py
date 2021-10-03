@@ -33,6 +33,8 @@ levels = {
 
 
 class Levels(commands.Cog):
+    """Level related commands."""
+
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.db2['Levels']
@@ -40,6 +42,10 @@ class Levels(commands.Cog):
 
     def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '📈'
 
     @commands.Cog.listener()
     async def on_message(self, message: disnake.Message):

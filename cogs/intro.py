@@ -6,6 +6,7 @@ from utils.context import Context
 
 
 class Intros(commands.Cog):
+    """Intro related commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -14,6 +15,10 @@ class Intros(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return '🙌'
 
     @commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
     @commands.cooldown(1, 360, commands.BucketType.user)

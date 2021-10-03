@@ -33,6 +33,8 @@ class NSFWPages(SimplePages):
 
 
 class NSFW(commands.Cog):
+    """Nsfw related commands."""
+
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.db1['NSFW blocks']
@@ -40,6 +42,10 @@ class NSFW(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> disnake.PartialEmoji:
+        return disnake.PartialEmoji(name='yamete', id=857163308427902987)
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
     async def nsfw(self, ctx: Context):

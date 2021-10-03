@@ -25,6 +25,7 @@ class AlistPages(CustomMenu):
 
 
 class Anime(commands.Cog):
+    """Anime related commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -33,6 +34,10 @@ class Anime(commands.Cog):
 
     def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> disnake.PartialEmoji:
+        return disnake.PartialEmoji(name='YellowHeartLove', id=787370201297453087)
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
     async def alist(self, ctx: Context, member: disnake.Member = None):
