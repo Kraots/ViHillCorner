@@ -31,3 +31,4 @@ pymongo
 mal-api
 flake8
 asyncdagpi
+yarl

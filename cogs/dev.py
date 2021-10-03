@@ -14,6 +14,7 @@ from traceback import format_exception
 import time
 from utils.context import Context
 from utils.paginator import TextPage
+from .token_invalidation import TokenInvalidation, GistContent
 
 
 def restart_program():
@@ -56,10 +57,11 @@ class Developer(commands.Cog):
         self.prefix = '!'
 
     async def cog_check(self, ctx: Context):
+        if ctx.author.id != self.bot._owner_id:
+            raise commands.NotOwner
         return ctx.prefix == self.prefix
 
     @commands.command(name='eval', aliases=['e'])
-    @commands.is_owner()
     async def _eval(self, ctx: Context, *, content=None):
         """Evaluate code."""
 
@@ -110,7 +112,18 @@ class Developer(commands.Cog):
         view.message = await ctx.send(embed=em, view=view)
 
     @commands.command()
-    @commands.is_owner()
+    async def gist(self, ctx: Context, *, content: GistContent):
+        """Posts a gist to the `ViHillCorner` github account with the provided **content**."""
+
+        gs = TokenInvalidation(self.bot)
+        if content.language is None:
+            url = await gs.create_gist(content.source, filename='input.md', public=False)
+        else:
+            url = await gs.create_gist(content.source, filename=f'input.{content.language}', public=False)
+
+        await ctx.send(f'<{url}>')
+
+    @commands.command()
     async def rules(self, ctx: Context):
         """This sends an embed of the rules, the exact ones like in <#750160850303582236>."""
 
@@ -149,7 +162,6 @@ class Developer(commands.Cog):
         await ctx.send(embed=em)
 
     @commands.command()
-    @commands.is_owner()
     async def mail(self, ctx: Context, members: Greedy[Member] = None, *, args=None):
         """Sends a dm to the memeber(s)."""
 
@@ -166,7 +178,6 @@ class Developer(commands.Cog):
             await ctx.message.add_reaction('<:agree:797537027469082627>')
 
     @commands.command()
-    @commands.is_owner()
     async def makemod(self, ctx: Context, members: Greedy[Member]):
         """Adds mod/staff roles to the member."""
 
@@ -182,7 +193,6 @@ class Developer(commands.Cog):
             await ctx.send(embed=makemod)
 
     @commands.command()
-    @commands.is_owner()
     async def removemod(self, ctx: Context, members: Greedy[Member]):
         """Removes the mod/staff roles from a member."""
 
@@ -194,7 +204,6 @@ class Developer(commands.Cog):
             await ctx.send(embed=removemod)
 
     @commands.command()
-    @commands.is_owner()
     async def shutdown(self, ctx: Context):
         """Closes the bot."""
 
@@ -202,7 +211,6 @@ class Developer(commands.Cog):
         await self.bot.close()
 
     @commands.command()
-    @commands.is_owner()
     async def restart(self, ctx: Context):
         """Restarts the bot."""
 
@@ -210,7 +218,6 @@ class Developer(commands.Cog):
         restart_program()
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
-    @commands.is_owner()
     async def status(self, ctx: Context):
         """Change the bot's presence status."""
 
@@ -235,7 +242,6 @@ class Developer(commands.Cog):
         await ctx.message.delete()
 
     @status.group(invoke_without_command=True, case_insensitive=True)
-    @commands.is_owner()
     async def online(self, ctx: Context):
         """
         Set the presence status to online.
@@ -247,7 +253,6 @@ class Developer(commands.Cog):
         await ctx.send("**[ONLINE]** Status succesfully changed.", delete_after=5)
 
     @online.command(name='playing')
-    @commands.is_owner()
     async def online_playing(self, ctx: Context, *, args=None):
         """
         Set the presence status to online playing.
@@ -266,7 +271,6 @@ class Developer(commands.Cog):
             await ctx.send("**[ONLINE] [PLAYING]** Status succesfully changed.", delete_after=5)
 
     @online.command(name='listening')
-    @commands.is_owner()
     async def online_listening(self, ctx: Context, *, args=None):
         """
         Set the presence status to online listening.
@@ -285,7 +289,6 @@ class Developer(commands.Cog):
             await ctx.send("**[ONLINE] [LISTENING]** Status succesfully changed.", delete_after=5)
 
     @online.command(name='watching')
-    @commands.is_owner()
     async def online_watching(self, ctx: Context, *, args=None):
         """
         Set the presence status to online watching.
@@ -304,7 +307,6 @@ class Developer(commands.Cog):
             await ctx.send("**[ONLINE] [WATCHING]** Status succesfully changed.", delete_after=5)
 
     @status.group(invoke_without_command=True, case_insensitive=True)
-    @commands.is_owner()
     async def idle(self, ctx: Context):
         """
         Set the presence status to idle.
@@ -316,7 +318,6 @@ class Developer(commands.Cog):
         await ctx.send("**[IDLE]** Status succesfully changed.", delete_after=5)
 
     @idle.command(name='playing')
-    @commands.is_owner()
     async def idle_playing(self, ctx: Context, *, args=None):
         """
         Set the presence status to idle playing.
@@ -335,7 +336,6 @@ class Developer(commands.Cog):
             await ctx.send("**[IDLE] [PLAYING]** Status succesfully changed.", delete_after=5)
 
     @idle.command(name='listening')
-    @commands.is_owner()
     async def idle_listening(self, ctx: Context, *, args=None):
         """
         Set the presence status to idle listening.
@@ -354,7 +354,6 @@ class Developer(commands.Cog):
             await ctx.send("**[IDLE] [LISTENING]** Status succesfully changed.", delete_after=5)
 
     @idle.command(name='watching')
-    @commands.is_owner()
     async def idle_watching(self, ctx: Context, *, args=None):
         """
         Set the presence status to idle watching.
@@ -373,7 +372,6 @@ class Developer(commands.Cog):
             await ctx.send("**[IDLE] [WATCHING]** Status succesfully changed.", delete_after=5)
 
     @status.group(invoke_without_command=True, case_insensitive=True)
-    @commands.is_owner()
     async def dnd(self, ctx: Context):
         """
         Set the presence status to dnd.
@@ -385,7 +383,6 @@ class Developer(commands.Cog):
         await ctx.send("**[DND]** Status succesfully changed.", delete_after=5)
 
     @dnd.command(name='playing')
-    @commands.is_owner()
     async def dnd_playing(self, ctx: Context, *, args=None):
         """
         Set the presence status to dnd playing.
@@ -404,7 +401,6 @@ class Developer(commands.Cog):
             await ctx.send("**[DND] [PLAYING]** Status succesfully changed.", delete_after=5)
 
     @dnd.command(name='listening')
-    @commands.is_owner()
     async def dnd_listening(self, ctx: Context, *, args=None):
         """
         Set the presence status to dnd listening.
@@ -423,7 +419,6 @@ class Developer(commands.Cog):
             await ctx.send("**[DND] [LISTENING]** Status succesfully changed.", delete_after=5)
 
     @dnd.command(name='watching')
-    @commands.is_owner()
     async def dnd_watching(self, ctx: Context, *, args=None):
         """
         Set the presence status to dnd watching.
@@ -442,7 +437,6 @@ class Developer(commands.Cog):
             await ctx.send("**[DND] [WATCHING]** Status succesfully changed.", delete_after=5)
 
     @status.command()
-    @commands.is_owner()
     async def offline(self, ctx: Context):
         """
         Set the presence status to offline.
