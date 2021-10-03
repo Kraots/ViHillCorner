@@ -770,6 +770,8 @@ class Fun(commands.Cog):
         """Bonk someone."""
 
         member = member or ctx.author
+        if member.id == self.bot._owner_id:
+            member = ctx.author
         await ctx.message.add_reaction(ctx.thumb)
         avatar = member.display_avatar.with_static_format('jpg').url
         file = await (await self.bot.loop.run_in_executor(None, ctx.bonk, avatar))
