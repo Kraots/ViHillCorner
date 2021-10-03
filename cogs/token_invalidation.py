@@ -49,7 +49,7 @@ class TokenInvalidation(commands.Cog):
     async def github_request(self, method, url, *, params=None, data=None, headers=None):
         hdrs = {
             'Accept': 'application/vnd.github.inertia-preview+json',
-            'User-Agent': 'RoboDanny DPYExclusive Cog',
+            'User-Agent': 'ViHillCorner\'s token invalidation',
             'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'
         }
 
