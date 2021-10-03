@@ -6,18 +6,38 @@ from disnake.ext.commands import Greedy
 from disnake import Member
 import os
 import sys
-from utils.helpers import clean_code, Pag
+from utils.helpers import clean_code, Pag  # noqa
 import contextlib
 import io
 import textwrap
 from traceback import format_exception
 import time
 from utils.context import Context
+from utils.paginator import TextPage
 
 
 def restart_program():
     python = sys.executable
     os.execl(python, python, * sys.argv)
+
+
+class QuitButton(disnake.ui.View):
+    def __init__(self, ctx):
+        super().__init__(timeout=180.0)
+        self.ctx = ctx
+
+    async def on_error(self, error, item, interaction):
+        return await self.ctx.bot.reraise(self.ctx, error)
+
+    async def on_timeout(self):
+        await self.message.edit(view=None)
+
+    @disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red)
+    async def stop_pages(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+        """Deletes the user's message along with the bot's message."""
+        await self.message.delete()
+        await self.ctx.message.delete()
+        self.stop()
 
 
 class Developer(commands.Cog):
@@ -67,17 +87,18 @@ class Developer(commands.Cog):
         took = f"{end-start:.3f}"
         if took == "0.000":
             took = f"{end-start:.7f}"
-        pager = Pag(
-            ctx=ctx,
-            timeout=180,
-            entries=[result[i: i + 4000] for i in range(0, len(result), 4000)],
-            length=1,
-            prefix="```py\n",
-            suffix="```",
-            footer=f"Took {took}s"
-        )
 
-        await pager.start(ctx)
+        if len(result) >= 4000:
+            pager = TextPage(
+                ctx,
+                [result[i: i + 4000] for i in range(0, len(result), 4000)],
+                footer=f'Took {took}s'
+            )
+            return await pager.start()
+        em = disnake.Embed(description=f'```py\n{result}\n```')
+        em.set_footer(text=f'Took {took}s')
+        view = QuitButton(ctx)
+        view.message = await ctx.send(embed=em, view=view)
 
     @commands.command()
     @commands.is_owner()

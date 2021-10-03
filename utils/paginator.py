@@ -2,7 +2,6 @@ from typing import Any, Dict, Optional
 import asyncio
 import disnake
 from disnake.ext import commands
-from disnake.ext.commands import Paginator as CommandPaginator
 from . import menus
 
 
@@ -35,16 +34,16 @@ class RoboPages(disnake.ui.View):
             max_pages = self.source.get_max_pages()
             use_last_and_first = max_pages is not None and max_pages >= 2
             if use_last_and_first:
-                self.add_item(self.go_to_first_page)  # type: ignore
-            self.add_item(self.go_to_previous_page)  # type: ignore
+                self.add_item(self.go_to_first_page)
+            self.add_item(self.go_to_previous_page)
             if not self.compact:
-                self.add_item(self.go_to_current_page)  # type: ignore
-            self.add_item(self.go_to_next_page)  # type: ignore
+                self.add_item(self.go_to_current_page)
+            self.add_item(self.go_to_next_page)
             if use_last_and_first:
-                self.add_item(self.go_to_last_page)  # type: ignore
+                self.add_item(self.go_to_last_page)
             if not self.compact:
-                self.add_item(self.numbered_page)  # type: ignore
-            self.add_item(self.stop_pages)  # type: ignore
+                self.add_item(self.numbered_page)
+            self.add_item(self.stop_pages)
 
     async def _get_kwargs_from_page(self, page: int) -> Dict[str, Any]:
         value = await disnake.utils.maybe_coroutine(self.source.format_page, self, page)
@@ -217,18 +216,26 @@ class FieldPageSource(menus.ListPageSource):
 
 
 class TextPageSource(menus.ListPageSource):
-    def __init__(self, text, *, prefix='```', suffix='```', max_size=2000):
-        pages = CommandPaginator(prefix=prefix, suffix=suffix, max_size=max_size - 200)
-        for line in text.split('\n'):
-            pages.add_line(line)
+    def __init__(self, entries):
+        super().__init__(entries, per_page=1)
+        self.initial_page = True
 
-        super().__init__(entries=pages, per_page=1)
-
-    async def format_page(self, menu, content):
+    async def format_page(self, menu, entries):
         maximum = self.get_max_pages()
         if maximum > 1:
-            return f'{content}\nPage {menu.current_page + 1}/{maximum}'
-        return content
+            title = f'Page {menu.current_page + 1}/{maximum}'
+            menu.embed.title = title
+
+        menu.embed.description = f'```py\n{entries}\n```'
+        return menu.embed
+
+
+class TextPage(RoboPages):
+    def __init__(self, ctx, entries, *, footer: str = None):
+        super().__init__(TextPageSource(entries), ctx=ctx, compact=True)
+        self.embed = disnake.Embed()
+        if footer is not None:
+            self.embed.set_footer(text=footer)
 
 
 class SimplePageSource(menus.ListPageSource):
