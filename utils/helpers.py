@@ -297,13 +297,16 @@ def replace_many(
     """
     Replaces multiple substrings in a string given a mapping of strings.
     By default replaces long strings before short strings, and lowercase before uppercase.
+
     Example:
         var = replace_many("This is a sentence", {"is": "was", "This": "That"})
         assert var == "That was a sentence"
+
     If `ignore_case` is given, does a case insensitive match.
     Example:
         var = replace_many("THIS is a sentence", {"IS": "was", "tHiS": "That"}, ignore_case=True)
         assert var == "That was a sentence"
+
     If `match_case` is given, matches the case of the replacement with the replaced word.
     Example:
         var = replace_many(
