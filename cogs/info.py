@@ -7,6 +7,7 @@ from .actions import all_roles
 
 
 class Info(commands.Cog):
+    """Information/warn commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -14,6 +15,10 @@ class Info(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> disnake.PartialEmoji:
+        return disnake.PartialEmoji(name='pink_warning', id=851505721127862302)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
@@ -222,6 +227,7 @@ class Info(commands.Cog):
             await ctx.send(mentions, embed=em, reference=ctx.replied_reference)
 
     @commands.command()
+    @commands.has_any_role(*all_roles)
     async def age(self, ctx: Context, members: Greedy[Member] = None):
         """Warn the member that they're under disnake's TOS minimal age and/or to not joke about their age."""
 

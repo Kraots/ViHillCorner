@@ -46,6 +46,8 @@ all_roles = (
 
 
 class Actions(commands.Cog):
+    """Action commands. e.g: ;huggles | ;pat | etc..."""
+
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.db1['Marry Data']
@@ -53,6 +55,10 @@ class Actions(commands.Cog):
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> disnake.PartialEmoji:
+        return disnake.PartialEmoji(name='speachless', id=789189473686257674)
 
     @commands.command()
     async def rape(self, ctx: Context):
