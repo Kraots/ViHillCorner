@@ -45,8 +45,9 @@ class OnBanAppealJoin(commands.Cog):
 
     @commands.Cog.listener('on_member_remove')
     async def on_member_remove(self, member: disnake.Member):
-        g = member.guild
-        for ch in g.text_channels:
+        if member.guild.id != 788384492175884299:
+            return
+        for ch in member.guild.text_channels:
             try:
                 if member.id == int(ch.topic):
                     await ch.delete()
