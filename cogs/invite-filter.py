@@ -3,13 +3,14 @@ from disnake.ext import commands
 import re
 import asyncio
 import utils.colors as color
+from main import ViHillCorner
 no_mute_these = (374622847672254466,)
 
 filter_invite = re.compile(r"(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 
 
 class InviteFilter(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
 
     @commands.Cog.listener()

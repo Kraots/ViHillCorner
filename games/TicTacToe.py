@@ -1,5 +1,6 @@
 import disnake
 from utils.context import Context
+from main import ViHillCorner
 
 
 class TicTacToe(disnake.ui.View):
@@ -8,8 +9,8 @@ class TicTacToe(disnake.ui.View):
         self.p1 = p1
         self.p2 = p2
         self.ctx = ctx
-        self.bot = ctx.bot
-        self.db = ctx.bot.db1['Economy']
+        self.bot: ViHillCorner = ctx.bot
+        self.db = self.bot.db1['Economy']
         self.turn = p1
         self.new_label = {self.p1: 'X', self.p2: 'O'}
         self.new_style = {self.p1: disnake.ButtonStyle.red, self.p2: disnake.ButtonStyle.green}

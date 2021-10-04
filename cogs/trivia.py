@@ -3,12 +3,13 @@ from disnake.ext import commands
 import disnake
 import games
 from utils.context import Context
+from main import ViHillCorner
 
 
 class Trivia(commands.Cog):
     """Trivia commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db2['Trivia']
         self.prefix = "!"

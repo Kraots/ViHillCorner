@@ -3,11 +3,13 @@ from disnake.ext import commands
 import os
 import utils.colors as color
 from utils.context import Context
+from main import ViHillCorner
 
 
 class Cogs(commands.Cog):
     """Commands to reload cogs."""
-    def __init__(self, bot):
+
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.prefix = '!'
 

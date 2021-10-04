@@ -5,6 +5,7 @@ import utils.colors as color
 import json
 import datetime
 from .spam_filter import get_mute_time, time_convert
+from main import ViHillCorner
 
 no_mute_these = (374622847672254466, 751724369683677275)
 
@@ -59,7 +60,7 @@ ok_words = ("shoe", "whoever")
 
 class FilterCog(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Filter Mutes']
         self.db2 = bot.db2['InvalidName Filter']

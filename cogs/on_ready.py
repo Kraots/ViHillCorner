@@ -1,9 +1,10 @@
 from disnake.ext import commands
+from main import ViHillCorner
 
 
 class on_ready(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
 
     @commands.Cog.listener()

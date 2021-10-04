@@ -2,6 +2,7 @@ import disnake
 from disnake.ext import commands
 import re
 import string
+from main import ViHillCorner
 
 
 def remove_emoji(string):
@@ -22,7 +23,7 @@ allowed_letters = tuple(list(string.ascii_lowercase) + list(string.digits) + lis
 
 
 class NameFilter(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db2['InvalidName Filter']
 

@@ -5,12 +5,13 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import asyncio
 from utils.context import Context
+from main import ViHillCorner
 
 
 class Birthdays(commands.Cog):
     """Birthday related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Birthdays']
         self.prefix = "!"

@@ -7,6 +7,7 @@ from mal import AnimeSearch
 import textwrap
 from utils.context import Context
 from typing import List
+from main import ViHillCorner
 
 
 class AlistPageEntry:
@@ -27,7 +28,7 @@ class AlistPages(CustomMenu):
 class Anime(commands.Cog):
     """Anime related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Alist']
         self.prefix = '!'

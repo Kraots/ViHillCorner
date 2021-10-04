@@ -4,6 +4,7 @@ import os
 from disnake import Member
 from disnake.ext.commands import Greedy
 from utils.context import Context
+from main import ViHillCorner
 
 huggless = os.environ.get("HUGGLES")
 grouphugg = os.environ.get("GROUPHUG")
@@ -48,7 +49,7 @@ all_roles = (
 class Actions(commands.Cog):
     """Action commands. e.g: ;huggles | ;pat | etc..."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Marry Data']
         self.prefix = ";"

@@ -4,12 +4,13 @@ import datetime
 import utils.colors as color
 from utils import time
 from utils.context import Context
+from main import ViHillCorner
 
 
 class Marriage(commands.Cog):
     """Marriage related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Marry Data']
         self.prefix = "!"

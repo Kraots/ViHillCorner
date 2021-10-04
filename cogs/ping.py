@@ -4,11 +4,12 @@ import time
 import utils.colors as color
 from utils import time as t
 from utils.context import Context
+from main import ViHillCorner
 
 
 class Ping(commands.Cog):
     """Ping related commands."""
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.prefix = "!"
 

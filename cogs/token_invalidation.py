@@ -6,6 +6,7 @@ import asyncio
 import base64
 import binascii
 import os
+from main import ViHillCorner
 
 TOKEN_REGEX = re.compile(r'[a-zA-Z0-9_-]{23,28}\.[a-zA-Z0-9_-]{6,7}\.[a-zA-Z0-9_-]{27}')
 
@@ -42,7 +43,7 @@ class GistContent:
 
 
 class TokenInvalidation(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.lock = asyncio.Lock(loop=bot.loop)
 

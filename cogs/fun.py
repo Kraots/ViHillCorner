@@ -12,6 +12,7 @@ from utils.helpers import replace_many, suppress_links
 from utils.pillow import invert_pfp
 import akinator
 from utils.context import Context
+from main import ViHillCorner
 
 UWU_WORDS = {
     "fi": "fwi",
@@ -113,7 +114,7 @@ class BagelsView(disnake.ui.View):
 class Fun(commands.Cog):
     """Fun related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Economy']
         self.prefix = "!"

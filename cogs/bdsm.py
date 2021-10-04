@@ -3,12 +3,13 @@ from disnake.ext import commands
 import asyncio
 import datetime
 from utils.context import Context
+from main import ViHillCorner
 
 
 class Bdsm(commands.Cog):
     """Bdsm related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db1 = bot.db2['bdsm results']
         self.db2 = bot.db2['Confesscord Restrictions']

@@ -5,6 +5,7 @@ from utils.pillow import rank_card
 from utils.paginator import RoboPages, FieldPageSource
 import pymongo
 from utils.context import Context
+from main import ViHillCorner
 
 bot_channel = (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787357561116426258)
 no_talk_channels = (750160852006469807, 780374324598145055)
@@ -35,7 +36,7 @@ levels = {
 class Levels(commands.Cog):
     """Level related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db2['Levels']
         self.prefix = "!"

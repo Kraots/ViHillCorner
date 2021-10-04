@@ -2,6 +2,7 @@ import random
 import disnake
 import inspect
 from utils.context import Context
+from main import ViHillCorner
 
 
 class Fight(disnake.ui.View):
@@ -10,7 +11,7 @@ class Fight(disnake.ui.View):
         self.p1 = pl1
         self.p2 = pl2
         self.ctx = ctx
-        self.bot = ctx.bot
+        self.bot: ViHillCorner = ctx.bot
         self.hp = {self.p1: 100, self.p2: 100}
         self.turn = pl1
         self.ended = False

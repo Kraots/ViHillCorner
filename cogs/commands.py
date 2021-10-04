@@ -11,6 +11,7 @@ import urllib.request
 import urllib.parse
 import inspect
 from utils.context import Context
+from main import ViHillCorner
 
 ss_key = os.getenv("SS_KEY")
 
@@ -60,7 +61,7 @@ nono_list = (
 class General(commands.Cog):
     """General commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.process = psutil.Process(os.getpid())
         self.prefix = "!"

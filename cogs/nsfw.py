@@ -9,12 +9,29 @@ import pymongo
 import hmtai
 import aiohttp
 from utils.context import Context
+from main import ViHillCorner
 
 nsfw_url = 'https://nekobot.xyz/api/image?type='
-nsfw_categs = ('hentai', 'ass', 'thigh', 'hass', 'hboobs', 'pgif', 'paizuri', 'boobs', 'pussy', 'hyuri', 'hthigh', 'lewdneko', 'anal', 'hmidriff', 'feet', 'gonewild', 'hkitsune', '4k', 'blowjob', 'tentacle', 'hentai_anal')  # noqa
-real_categs = ('ass', 'thigh', 'pgif', 'boobs', 'pussy', 'anal', 'feet', 'gonewild', '4k', 'blowjob')
-hentai_categs_1 = ('hentai', 'hass', 'hboobs', 'paizuri', 'hyuri', 'hthigh', 'lewdneko', 'hmidriff', 'hkitsune', 'tentacle', 'hentai_anal')
-hentai_categs_2 = ('ass', 'ecchi', 'ero', 'hentai', 'maid', 'milf', 'oppai', 'oral', 'paizuri', 'selfies', 'uniform')
+nsfw_categs = (
+    'hentai', 'ass', 'thigh', 'hass', 'hboobs',
+    'pgif', 'paizuri', 'boobs', 'pussy', 'hyuri',
+    'hthigh', 'lewdneko', 'anal', 'hmidriff', 'feet',
+    'gonewild', 'hkitsune', '4k', 'blowjob', 'tentacle',
+    'hentai_anal'
+)
+real_categs = (
+    'ass', 'thigh', 'pgif', 'boobs', 'pussy', 'anal',
+    'feet', 'gonewild', '4k', 'blowjob'
+)
+hentai_categs_1 = (
+    'hentai', 'hass', 'hboobs', 'paizuri', 'hyuri',
+    'hthigh', 'lewdneko', 'hmidriff', 'hkitsune',
+    'tentacle', 'hentai_anal'
+)
+hentai_categs_2 = (
+    'ass', 'ecchi', 'ero', 'hentai', 'maid', 'milf',
+    'oppai', 'oral', 'paizuri', 'selfies', 'uniform'
+)
 
 
 class NSFWPageEntry:
@@ -35,7 +52,7 @@ class NSFWPages(SimplePages):
 class NSFW(commands.Cog):
     """Nsfw related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['NSFW blocks']
         self.prefix = "!"

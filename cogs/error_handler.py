@@ -1,10 +1,11 @@
 from disnake.ext import commands
 import disnake
 from utils.context import Context
+from main import ViHillCorner
 
 
 class GlobalErrorHandler(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
 
     @commands.Cog.listener()

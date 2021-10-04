@@ -7,6 +7,7 @@ from utils import time
 from utils.paginator import RoboPages, FieldPageSource
 import pymongo
 from utils.context import Context
+from main import ViHillCorner
 
 
 class MessagesTopButtons(disnake.ui.View):
@@ -96,7 +97,7 @@ class MessagesTopButtons(disnake.ui.View):
 class Messages(commands.Cog):
     """Messages related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db2['Levels']
         self.weekly_reset.start()

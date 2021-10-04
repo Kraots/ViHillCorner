@@ -4,12 +4,13 @@ import utils.colors as color
 import disnake
 import random
 from utils.context import Context
+from main import ViHillCorner
 
 
 class Trivia:
     def __init__(self, ctx: Context):
         self.db = ctx.bot.db2['Trivia']
-        self.bot = ctx.bot
+        self.bot: ViHillCorner = ctx.bot
         self.player = ctx.author
         self.ctx = ctx
         self.points = 0

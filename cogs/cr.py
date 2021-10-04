@@ -4,6 +4,7 @@ import asyncio
 import datetime
 from utils import time
 from utils.context import Context
+from main import ViHillCorner
 
 nono_list = ('staff', 'mod')
 all_roles = (
@@ -20,7 +21,7 @@ all_roles = (
 class CustomRoles(commands.Cog):
     """Custom roles related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Custom Roles']
         self.prefix = '!'

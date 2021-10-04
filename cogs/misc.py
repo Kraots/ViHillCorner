@@ -19,6 +19,7 @@ from disnake import Member
 from utils import menus
 from utils.CommandButtonRoles import ButtonRoleView, ButtonRoleViewOwner
 from utils.context import Context
+from main import ViHillCorner
 
 filter_invite = re.compile(r"(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 
@@ -306,7 +307,7 @@ class SphinxObjectFileReader:
 
 class Misc(commands.Cog):
     """Miscellaneous commands."""
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Updates']
         self.db2 = bot.db2['Suggestion blocks']

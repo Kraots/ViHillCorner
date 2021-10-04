@@ -7,6 +7,7 @@ from utils import time
 import re
 from utils.helpers import ConfirmViewDMS
 from .name_filter import allowed_letters
+from main import ViHillCorner
 
 
 def remove_emoji(string):
@@ -23,8 +24,8 @@ def remove_emoji(string):
     return emoji_pattern.sub(r'', string)
 
 
-class on_join(commands.Cog):
-    def __init__(self, bot):
+class Welcome(commands.Cog):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db1 = bot.db1['Intros']
         self.db2 = bot.db1['Moderation Mutes']
@@ -259,4 +260,4 @@ class on_join(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(on_join(bot))
+    bot.add_cog(Welcome(bot))

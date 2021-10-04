@@ -11,6 +11,7 @@ from utils import time, menus
 from utils.paginator import RoboPages, FieldPageSource
 from utils.helpers import format_balance
 from utils.context import Context
+from main import ViHillCorner
 
 
 class ShopEcoMenus(menus.ListPageSource):
@@ -286,7 +287,7 @@ class RPSView(disnake.ui.View):
 class Economy(commands.Cog):
     """Economy related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Economy']
         self.check_items_in_use.start()

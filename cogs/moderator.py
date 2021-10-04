@@ -9,6 +9,7 @@ from dateutil.relativedelta import relativedelta
 from utils import time
 from utils.paginator import CustomMenu
 from utils.context import Context
+from main import ViHillCorner
 
 
 class MutePageEntry:
@@ -48,7 +49,7 @@ class TimeConverter(commands.Converter):
 
 class Moderator(commands.Cog):
     """Moderator related commands."""
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db1 = bot.db1['Moderation Mutes']
         self.db2 = bot.db1['Filter Mutes']

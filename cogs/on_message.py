@@ -4,6 +4,7 @@ import asyncio
 import utils.colors as color
 import datetime
 import string
+from main import ViHillCorner
 
 invalid_names_list = tuple(list(string.digits) + list(string.punctuation))
 
@@ -37,7 +38,7 @@ async def send_webhook(em, bot):
 
 
 class on_message(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db2['InvalidName Filter']
 

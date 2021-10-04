@@ -4,6 +4,7 @@ import datetime
 from utils import time
 import asyncio
 from typing import Union, Sequence
+from main import ViHillCorner
 
 
 # Webhook that sends a message in logs channel
@@ -27,7 +28,7 @@ async def send_webhook(em, bot):
 
 
 class Logs(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.send_embeds.start()
         self.embeds = []

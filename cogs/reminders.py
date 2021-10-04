@@ -5,12 +5,13 @@ import utils.colors as color
 import textwrap
 import datetime
 from utils.context import Context
+from main import ViHillCorner
 
 
 class Reminders(commands.Cog):
     """Reminder related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Reminders']
         self.prefix = "!"

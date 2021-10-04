@@ -3,6 +3,7 @@ import utils.colors as color
 from utils.paginator import ToDoMenu
 from utils.context import Context
 import disnake
+from main import ViHillCorner
 
 
 class ToDoPageEntry:
@@ -23,7 +24,7 @@ class ToDoPages(ToDoMenu):
 class ToDo(commands.Cog):
     """Todo related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db2['Todo Data']
         self.prefix = "!"

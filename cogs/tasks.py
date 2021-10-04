@@ -1,10 +1,11 @@
 from disnake.ext import commands, tasks
 import json
+from main import ViHillCorner
 
 
 class WarnsRemove(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.clear_caps_warns.start()
         self.clear_words_warns.start()

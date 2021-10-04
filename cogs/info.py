@@ -4,12 +4,13 @@ from disnake import Member
 from disnake.ext.commands import Greedy
 from utils.context import Context
 from .actions import all_roles
+from main import ViHillCorner
 
 
 class Info(commands.Cog):
     """Information/warn commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.prefix = ";"
 

@@ -7,6 +7,8 @@ from utils.paginator import SimplePages
 import re
 from utils.context import Context
 from .actions import all_roles
+from main import ViHillCorner
+
 filter_invite = re.compile(r"(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 
 
@@ -29,7 +31,7 @@ class TagPages(SimplePages):
 class Tags(commands.Cog):
     """Tag related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Tags']
         self.prefix = "!"

@@ -3,6 +3,7 @@ from disnake.ext import commands
 import json
 import utils.colors as color
 import datetime
+from main import ViHillCorner
 
 no_mute_these = (374622847672254466,)
 ignored_channels = (
@@ -39,7 +40,7 @@ def get_mute_time(user_id) -> int:
 
 class RepeatedTextFilter(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Filter Mutes']
 
@@ -136,7 +137,7 @@ class RepeatedTextFilter(commands.Cog):
 
 class SpamFilter(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Filter Mutes']
 

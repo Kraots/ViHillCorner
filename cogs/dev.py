@@ -15,6 +15,7 @@ import time
 from utils.context import Context
 from utils.paginator import TextPage
 from .token_invalidation import TokenInvalidation, GistContent
+from main import ViHillCorner
 
 
 def restart_program():
@@ -53,7 +54,7 @@ class QuitButton(disnake.ui.View):
 class Developer(commands.Cog):
     """Dev only commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.prefix = '!'
 

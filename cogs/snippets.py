@@ -5,6 +5,8 @@ from utils.paginator import SimplePages
 import datetime
 import utils.colors as color
 from utils.context import Context
+from main import ViHillCorner
+
 nono_names = (
     "huggles", "grouphug", "eat", "chew", "sip", "clap", "cry", "rofl", "lol", "kill",
     "pat", "rub", "nom", "catpat", "hug", "pillow", "spray", "hype", "specialkiss",
@@ -31,7 +33,7 @@ class SnippetPages(SimplePages):
 class Snippets(commands.Cog):
     """Snippet related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Snippets']
         self.prefix = "!"

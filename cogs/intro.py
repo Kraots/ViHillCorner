@@ -3,12 +3,13 @@ from disnake.ext import commands
 import asyncio
 from utils.helpers import time_phaser
 from utils.context import Context
+from main import ViHillCorner
 
 
 class Intros(commands.Cog):
     """Intro related commands."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db1['Intros']
         self.prefix = "!"
