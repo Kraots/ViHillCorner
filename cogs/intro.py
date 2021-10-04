@@ -25,7 +25,7 @@ class Intros(commands.Cog):
     async def intro(self, ctx: Context):
         """Create a new intro if you don't have one or edit an existing one."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016):
             return ctx.command.reset_cooldown(ctx)
 
         results = await self.db.find_one({"_id": ctx.author.id})

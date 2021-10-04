@@ -35,6 +35,26 @@ class Info(commands.Cog):
 
             await ctx.send(mentions, embed=sfw, reference=ctx.replied_reference)
 
+    @commands.command()
+    @commands.has_any_role(*all_roles)
+    async def intros(self, ctx: Context, members: Greedy[Member] = None):
+        """Warn someone that the chat needs to be sfw."""
+
+        sfw = disnake.Embed(title="How do I create/edit my introduction?", description="Send `!intro` in <#750160851822182486>", color=disnake.Color.red())
+        mention_list = []
+
+        if members is None:
+            await ctx.send(embed=sfw, reference=ctx.replied_reference)
+
+        else:
+            for member in members:
+                a = member.mention
+
+                mention_list.append(a)
+                mentions = " ".join(mention_list)
+
+            await ctx.send(mentions, embed=sfw, reference=ctx.replied_reference)
+
     @commands.command(name='howtolvl', aliases=['lvlinfo', 'levelinfo', 'lvl-info', 'level-info', 'howtolevel'])
     @commands.has_any_role(*all_roles)
     async def level_info(self, ctx: Context, members: Greedy[Member] = None):
@@ -43,7 +63,7 @@ class Info(commands.Cog):
         lvl = disnake.Embed(
             title="How to lvl up",
             description="You can level up in this server by chatting in any channel. Spamming or `XP farming` would result in level reset. "
-                        "\n\nTo check your rank, send `!rank` in <#750160851822182486>.",
+                        "\n\nTo check your rank, send `!rank` in <#750160851822182486>",
             color=disnake.Color.red()
         )
         mention_list = []
