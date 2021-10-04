@@ -35,6 +35,8 @@ bearhugg = os.environ.get("BEARHUG")
 moann = os.environ.get("MOAN")
 cuddles = os.getenv("CUDDLE")
 specialkiss = os.getenv("SPECIALKISS")
+slapp = os.getenv("SLAP")
+spankk = os.getenv("SPANK")
 
 all_roles = (
     'Staff', 'lvl 15+', 'lvl 20+', 'lvl 25+', 'lvl 30+', 'lvl 40+', 'lvl 45+', 'lvl 50+', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', 'lvl 75+', 'lvl 80+',
@@ -84,12 +86,13 @@ class Actions(commands.Cog):
         em = disnake.Embed(color=disnake.Color.red())
         em.set_image(url=url)
         mention_list = []
+        owner_ignore = ('pillow', 'kill', 'spray', 'slap', 'spank')
 
         if members is None:
             return await ctx.send(embed=em)
 
         for member in members:
-            if member.id == self.bot._owner_id and ctx.command.name in ('pillow', 'kill', 'spray'):
+            if member.id == self.bot._owner_id and ctx.command.name in owner_ignore:
                 member = ctx.author
             mention = member.mention
 
@@ -105,6 +108,20 @@ class Actions(commands.Cog):
         await ctx.send(
             "https://cdn.discordapp.com/attachments/745298904832278530/782729248623427614/video0-1_1.mp4"
         )
+
+    @commands.command()
+    @commands.has_any_role(*all_roles)
+    async def slap(self, ctx: Context, members: Greedy[Member] = None):
+        """Give someone a slap <:smort:750751866454802484>"""
+
+        await self.send_action(ctx, slapp, members)
+
+    @commands.command()
+    @commands.has_any_role(*all_roles)
+    async def spank(self, ctx: Context, members: Greedy[Member] = None):
+        """Spank your bae 😏"""
+
+        await self.send_action(ctx, spankk, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
