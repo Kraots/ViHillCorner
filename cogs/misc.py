@@ -387,7 +387,10 @@ class Misc(commands.Cog):
             return
 
         if not hasattr(self, '_rtfm_cache'):
-            await ctx.trigger_typing()
+            try:
+                await ctx.trigger_typing()
+            except disnake.Forbidden:
+                pass
             await self.build_rtfm_lookup_table(page_types)
 
         obj = re.sub(r'^(?:disnake\.(?:ext\.)?)?(?:commands\.)?(.+)', r'\1', obj)
