@@ -118,6 +118,7 @@ class FrontPageSource(menus.PageSource):
         return self
 
     def format_page(self, menu: HelpMenu, page):
+        prfx = ';' if menu.ctx.clean_prefix == '!' else '!'
         embed = disnake.Embed(title='Bot Help', colour=color.lightpink)
         embed.description = inspect.cleandoc(
             f"""
@@ -125,6 +126,9 @@ class FrontPageSource(menus.PageSource):
             Use "{menu.ctx.clean_prefix}help command" for more info on a command.
             Use "{menu.ctx.clean_prefix}help category" for more info on a category.
             Use the dropdown menu below to select a category.
+
+            **NOTE:** *typing `{prfx}help` will send another help command with
+            completely different commands who's prefix is `{prfx}`*
         """
         )
 
