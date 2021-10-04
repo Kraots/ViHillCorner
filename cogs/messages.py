@@ -133,7 +133,7 @@ class Messages(commands.Cog):
             await self.db.update_one({'_id': _3rdplace.id}, {'$inc': {'xp': 20000}})
             await _1stplace.send(
                 "Congrats. You placed `1st` in the weekly top! Your reward is **50,000** XP.\n"
-                "The others placed:\n\u2800• **{_2ndplace}** -> `2nd`\n\u2800• **{_3rdplace}** -> `3rd`"
+                f"The others placed:\n\u2800• **{_2ndplace}** -> `2nd`\n\u2800• **{_3rdplace}** -> `3rd`"
             )
             await _2ndplace.send(
                 "Congrats. You placed `2nd` in the weekly top! Your reward is **30,000** XP.\n"
