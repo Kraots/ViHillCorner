@@ -234,3 +234,10 @@ class Context(commands.Context):
         img = await self.dagpi.image_process(ImageFeatures.flip(), url=img_url)
         file = File(fp=img.image, filename=f'lego.{img.format}')
         return file
+
+    async def trigger_typing(self):
+        try:
+            channel = await self._get_channel()
+            await self._state.http.send_typing(channel.id)
+        except disnake.Forbidden:
+            pass
