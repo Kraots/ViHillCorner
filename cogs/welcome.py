@@ -36,6 +36,9 @@ class on_join(commands.Cog):
 
         VHguild: disnake.Guild = self.bot.get_guild(750160850077089853)
         welcomechannel = VHguild.get_channel(750160850303582237)
+        if member.bot:
+            role = VHguild.get_role(750160850290999327)
+            return await member.add_roles(role, reason='Bot Account.')
         member_count = len([m for m in VHguild.members if not m.bot])
 
         if member.guild == VHguild:
