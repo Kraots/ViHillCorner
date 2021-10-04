@@ -63,10 +63,10 @@ class Anime(commands.Cog):
                 await ctx.send("User does not have an anime list!")
 
     @alist.command(name='set')
-    async def alist_set(self, ctx: Context, *, rec: str):
+    async def alist_set(self, ctx: Context, *, animes: str):
         """Set your anime list."""
 
-        args = rec
+        args = animes
         user = ctx.author
         results = await self.db.find_one({"_id": user.id})
         alist = list(filter(bool, args.splitlines()))
