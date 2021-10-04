@@ -66,7 +66,7 @@ class FilterCog(commands.Cog):
         self.db2 = bot.db2['InvalidName Filter']
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: disnake.Message):
         if message.author.id in no_mute_these:
             return
 
@@ -311,7 +311,7 @@ class FilterCog(commands.Cog):
                     pass
 
     @commands.Cog.listener()
-    async def on_message_edit(self, before, after):
+    async def on_message_edit(self, before: disnake.Message, after: disnake.Message):
         if after.author.id in no_mute_these:
             return
 
