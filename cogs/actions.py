@@ -5,6 +5,7 @@ from disnake import Member
 from disnake.ext.commands import Greedy
 from utils.context import Context
 from main import ViHillCorner
+from typing import List, Union
 
 huggless = os.environ.get("HUGGLES")
 grouphugg = os.environ.get("GROUPHUG")
@@ -61,6 +62,42 @@ class Actions(commands.Cog):
     def display_emoji(self) -> disnake.PartialEmoji:
         return disnake.PartialEmoji(name='speachless', id=789189473686257674)
 
+    async def send_action(self, ctx: Context, url: str, members: Union[List[Member], None]) -> None:
+        """|coro|
+
+        Sends the action.
+
+        Parameters
+        ----------
+            ctx: [`:class:Context`]
+                The Context object.
+            url: [`:class:str`]
+                The url of the action to set the image to.
+            members: [`List[disnake.Member]`]
+                The members list to mention, if None is returned then no mentions are applied.
+
+        Return
+        ------
+            `None`
+        """
+
+        em = disnake.Embed(color=disnake.Color.red())
+        em.set_image(url=url)
+        mention_list = []
+
+        if members is None:
+            return await ctx.send(embed=em)
+
+        for member in members:
+            if member.id == self.bot._owner_id and ctx.command.name in ('pillow', 'kill', 'spray'):
+                member = ctx.author
+            mention = member.mention
+
+            mention_list.append(mention)
+
+        mentions = ' '.join(mention_list)
+        await ctx.send(mentions, embed=em)
+
     @commands.command()
     async def rape(self, ctx: Context):
         """😳 😳 😳"""
@@ -74,105 +111,35 @@ class Actions(commands.Cog):
     async def cuddle(self, ctx: Context, members: Greedy[Member] = None):
         """Cuddle with someone ❤️"""
 
-        em = disnake.Embed(color=disnake.Color.red())
-        em.set_image(url=cuddles)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=em)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=em)
+        await self.send_resp(ctx, cuddles, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def huggles(self, ctx: Context, members: Greedy[Member] = None):
         """Have a hug with someone ❤️"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=huggless)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, huggless, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def grouphug(self, ctx: Context, members: Greedy[Member] = None):
         """Have a group hug with someone ❤️"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=grouphugg)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, grouphugg, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def eat(self, ctx: Context, members: Greedy[Member] = None):
         """Eat someone 😈"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=eatt)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, eatt, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def chew(self, ctx: Context, members: Greedy[Member] = None):
         """Chew on someone 😈"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=cheww)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, cheww, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
@@ -229,195 +196,63 @@ class Actions(commands.Cog):
     async def kill(self, ctx: Context, members: Greedy[Member] = None):
         """Kill someone 🔪"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=killl)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                if member.id == 374622847672254466:
-                    member = ctx.author
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, killl, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def pat(self, ctx: Context, members: Greedy[Member] = None):
         """Give someone a pat ❤️"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=patt)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, patt, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def rub(self, ctx: Context, members: Greedy[Member] = None):
         """Rub on someone 😳"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=rubb)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, rubb, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def nom(self, ctx: Context, members: Greedy[Member] = None):
         """Nom someone 😳"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=nomm)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, nomm, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def catpat(self, ctx: Context, members: Greedy[Member] = None):
         """Give someone a cat pat ❤️"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=catpatt)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, catpatt, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def dogpat(self, ctx: Context, members: Greedy[Member] = None):
         """Give someone a dog pat ❤️"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=dogpatt)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, dogpatt, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def hug(self, ctx: Context, members: Greedy[Member] = None):
         """Hug someone 🤗"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=hugg)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, hugg, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def pillow(self, ctx: Context, members: Greedy[Member] = None):
         """Throw a pillow at someone"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=pilloww)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                if member.id == 374622847672254466:
-                    member = ctx.author
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, pilloww, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def spray(self, ctx: Context, members: Greedy[Member] = None):
         """Spray someone"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=sprayy)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                if member.id == 374622847672254466:
-                    member = ctx.author
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, sprayy, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
@@ -434,63 +269,21 @@ class Actions(commands.Cog):
     async def kiss(self, ctx: Context, members: Greedy[Member] = None):
         """Give someone a kiss 😳"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=kisss)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, kisss, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def ily(self, ctx: Context, members: Greedy[Member] = None):
         """Let someone know that you love them ❤️"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=ilyy)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, ilyy, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def nocry(self, ctx: Context, members: Greedy[Member] = None):
         """Don't let them cry 💔"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=nocryy)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, nocryy, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
@@ -517,21 +310,7 @@ class Actions(commands.Cog):
     async def bearhug(self, ctx: Context, members: Greedy[Member] = None):
         """Give someone a cute bear hug ❤️"""
 
-        version = disnake.Embed(color=disnake.Color.red())
-        version.set_image(url=bearhugg)
-        mention_list = []
-
-        if members is None:
-            await ctx.send(embed=version)
-
-        else:
-            for member in members:
-                a = member.mention
-
-                mention_list.append(a)
-                mentions = " ".join(mention_list)
-
-            await ctx.send(mentions, embed=version)
+        await self.send_resp(ctx, bearhugg, members)
 
     @commands.command()
     async def moan(self, ctx: Context):
