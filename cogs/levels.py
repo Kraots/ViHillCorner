@@ -45,8 +45,8 @@ class Levels(commands.Cog):
         return ctx.prefix == self.prefix
 
     @property
-    def display_emoji(self) -> str:
-        return '📈'
+    def display_emoji(self) -> disnake.PartialEmoji:
+        return disnake.PartialEmoji(name='super_mario_green_shroom', id=894627264162045962)
 
     @commands.Cog.listener()
     async def on_message(self, message: disnake.Message):
