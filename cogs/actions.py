@@ -111,35 +111,35 @@ class Actions(commands.Cog):
     async def cuddle(self, ctx: Context, members: Greedy[Member] = None):
         """Cuddle with someone ❤️"""
 
-        await self.send_resp(ctx, cuddles, members)
+        await self.send_action(ctx, cuddles, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def huggles(self, ctx: Context, members: Greedy[Member] = None):
         """Have a hug with someone ❤️"""
 
-        await self.send_resp(ctx, huggless, members)
+        await self.send_action(ctx, huggless, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def grouphug(self, ctx: Context, members: Greedy[Member] = None):
         """Have a group hug with someone ❤️"""
 
-        await self.send_resp(ctx, grouphugg, members)
+        await self.send_action(ctx, grouphugg, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def eat(self, ctx: Context, members: Greedy[Member] = None):
         """Eat someone 😈"""
 
-        await self.send_resp(ctx, eatt, members)
+        await self.send_action(ctx, eatt, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def chew(self, ctx: Context, members: Greedy[Member] = None):
         """Chew on someone 😈"""
 
-        await self.send_resp(ctx, cheww, members)
+        await self.send_action(ctx, cheww, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
@@ -196,63 +196,63 @@ class Actions(commands.Cog):
     async def kill(self, ctx: Context, members: Greedy[Member] = None):
         """Kill someone 🔪"""
 
-        await self.send_resp(ctx, killl, members)
+        await self.send_action(ctx, killl, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def pat(self, ctx: Context, members: Greedy[Member] = None):
         """Give someone a pat ❤️"""
 
-        await self.send_resp(ctx, patt, members)
+        await self.send_action(ctx, patt, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def rub(self, ctx: Context, members: Greedy[Member] = None):
         """Rub on someone 😳"""
 
-        await self.send_resp(ctx, rubb, members)
+        await self.send_action(ctx, rubb, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def nom(self, ctx: Context, members: Greedy[Member] = None):
         """Nom someone 😳"""
 
-        await self.send_resp(ctx, nomm, members)
+        await self.send_action(ctx, nomm, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def catpat(self, ctx: Context, members: Greedy[Member] = None):
         """Give someone a cat pat ❤️"""
 
-        await self.send_resp(ctx, catpatt, members)
+        await self.send_action(ctx, catpatt, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def dogpat(self, ctx: Context, members: Greedy[Member] = None):
         """Give someone a dog pat ❤️"""
 
-        await self.send_resp(ctx, dogpatt, members)
+        await self.send_action(ctx, dogpatt, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def hug(self, ctx: Context, members: Greedy[Member] = None):
         """Hug someone 🤗"""
 
-        await self.send_resp(ctx, hugg, members)
+        await self.send_action(ctx, hugg, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def pillow(self, ctx: Context, members: Greedy[Member] = None):
         """Throw a pillow at someone"""
 
-        await self.send_resp(ctx, pilloww, members)
+        await self.send_action(ctx, pilloww, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def spray(self, ctx: Context, members: Greedy[Member] = None):
         """Spray someone"""
 
-        await self.send_resp(ctx, sprayy, members)
+        await self.send_action(ctx, sprayy, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
@@ -269,21 +269,21 @@ class Actions(commands.Cog):
     async def kiss(self, ctx: Context, members: Greedy[Member] = None):
         """Give someone a kiss 😳"""
 
-        await self.send_resp(ctx, kisss, members)
+        await self.send_action(ctx, kisss, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def ily(self, ctx: Context, members: Greedy[Member] = None):
         """Let someone know that you love them ❤️"""
 
-        await self.send_resp(ctx, ilyy, members)
+        await self.send_action(ctx, ilyy, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def nocry(self, ctx: Context, members: Greedy[Member] = None):
         """Don't let them cry 💔"""
 
-        await self.send_resp(ctx, nocryy, members)
+        await self.send_action(ctx, nocryy, members)
 
     @commands.command()
     @commands.has_any_role(*all_roles)
@@ -310,7 +310,7 @@ class Actions(commands.Cog):
     async def bearhug(self, ctx: Context, members: Greedy[Member] = None):
         """Give someone a cute bear hug ❤️"""
 
-        await self.send_resp(ctx, bearhugg, members)
+        await self.send_action(ctx, bearhugg, members)
 
     @commands.command()
     async def moan(self, ctx: Context):
