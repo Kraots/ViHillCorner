@@ -15,7 +15,8 @@ from disnake.ext import commands
 from ._converters import Inventory, PackageName, ValidURL
 from ._pagination import LinePaginator
 from ._lock import SharedEvent, lock
-from ._messages import send_denial, wait_for_deletion
+from ._messages import send_denial
+from cogs.dev import QuitButton
 from ._utils import create_task
 from ._utils import Scheduler
 from . import NAMESPACE, PRIORITY_PACKAGES, _batch_parser
@@ -315,6 +316,7 @@ class DocCog(commands.Cog):
         """
         if ctx.channel.id == 750160852006469802:  # bump channel
             return
+
         if not symbol_name:
             inventory_embed = disnake.Embed(
                 title=f"All inventories (`{len(self.base_urls)}` total)",
@@ -335,8 +337,8 @@ class DocCog(commands.Cog):
                 doc_embed = await self.create_symbol_embed(symbol)
 
             if doc_embed is None:
-                error_message = await send_denial(ctx, "No documentation found for the requested symbol.")
-                await wait_for_deletion(self.bot, error_message, (ctx.author.id,), timeout=NOT_FOUND_DELETE_DELAY)
+                view = QuitButton(ctx, timeout=NOT_FOUND_DELETE_DELAY)
+                error_message = await send_denial(ctx, "No documentation found for the requested symbol.", view=view)
 
                 # Make sure that we won't cause a ghost-ping by deleting the message
                 if not (ctx.message.mentions or ctx.message.role_mentions):
@@ -345,8 +347,8 @@ class DocCog(commands.Cog):
                         await error_message.delete()
 
             else:
-                msg = await ctx.send(embed=doc_embed)
-                await wait_for_deletion(self.bot, msg, (ctx.author.id,))
+                view = QuitButton(ctx)
+                await ctx.send(embed=doc_embed, view=view)
 
     @staticmethod
     def base_url_from_inventory_url(inventory_url: str) -> str:
