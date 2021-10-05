@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 import asyncio
 import disnake
 from disnake.ext import commands
@@ -319,8 +319,27 @@ class CustomMenu(RoboPages):
 
 
 class ToDoMenu(RoboPages):
-    def __init__(self, ctx, entries, *, per_page=12, title="", color=None, author_name=None, author_icon_url=None, todo_footer=True):
-        super().__init__(NewToDoMenus(entries, per_page=per_page, todo_footer=todo_footer), ctx=ctx)
+    def __init__(
+        self,
+        ctx,
+        entries: List[str],
+        *,
+        per_page: int = 12,
+        title: str = "",
+        color=None,
+        author_name: str = None,
+        author_icon_url: str = None,
+        todo_footer: bool = True,
+        compact: bool = True
+    ):
+        super().__init__(
+            NewToDoMenus(
+                entries,
+                per_page=per_page,
+                todo_footer=todo_footer),
+            ctx=ctx,
+            compact=compact
+        )
         if color is None:
             color = disnake.Color.blurple()
         self.embed = disnake.Embed(colour=color, title=title)
