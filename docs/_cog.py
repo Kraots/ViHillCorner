@@ -325,6 +325,7 @@ class DocCog(commands.Cog):
                     ctx,
                     lines,
                     per_page=5,
+                    todo_footer=False,
                     title=f'All inventories (`{len(self.base_urls)}` total)'
                 )
                 await paginator.start()
