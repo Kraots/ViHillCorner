@@ -24,9 +24,16 @@ def restart_program():
 
 
 class QuitButton(disnake.ui.View):
-    def __init__(self, ctx, *, timeout=180.0):
+    def __init__(
+        self,
+        ctx,
+        *,
+        timeout: float = 180.0,
+        delete_after: bool = False
+    ):
         super().__init__(timeout=timeout)
         self.ctx = ctx
+        self.delete_after = delete_after
 
     async def interaction_check(self, interaction: disnake.MessageInteraction):
         if interaction.author.id != self.ctx.author.id:
@@ -41,7 +48,11 @@ class QuitButton(disnake.ui.View):
         return await self.ctx.bot.reraise(self.ctx, error)
 
     async def on_timeout(self):
-        await self.message.edit(view=None)
+        if self.delete_after is False:
+            return await self.message.edit(view=None)
+        
+        await self.message.delete()
+        await self.ctx.message.delete()
 
     @disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red)
     async def quit(self, button: disnake.ui.Button, interaction: disnake.Interaction):
