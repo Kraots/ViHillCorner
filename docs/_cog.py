@@ -340,7 +340,7 @@ class DocCog(commands.Cog):
                 doc_embed = await self.create_symbol_embed(symbol)
 
             if doc_embed is None:
-                view = QuitButton(ctx, timeout=NOT_FOUND_DELETE_DELAY)
+                view = QuitButton(ctx, timeout=NOT_FOUND_DELETE_DELAY, delete_after=True)
                 view.message = await send_denial(ctx, "No documentation found for the requested symbol.", view=view)
 
             else:
