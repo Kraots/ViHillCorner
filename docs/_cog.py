@@ -17,6 +17,7 @@ from ._pagination import LinePaginator
 from ._lock import SharedEvent, lock
 from ._messages import send_denial
 from cogs.dev import QuitButton
+from utils.paginator import ToDoMenu
 from ._utils import create_task
 from ._utils import Scheduler
 from . import NAMESPACE, PRIORITY_PACKAGES, _batch_parser
@@ -318,14 +319,15 @@ class DocCog(commands.Cog):
             return
 
         if not symbol_name:
-            inventory_embed = disnake.Embed(
-                title=f"All inventories (`{len(self.base_urls)}` total)",
-                colour=disnake.Colour.blurple()
-            )
-
             lines = sorted(f"• [`{name}`]({url})" for name, url in self.base_urls.items())
             if self.base_urls:
-                await LinePaginator.paginate(lines, ctx, inventory_embed, max_size=400, empty=False)
+                paginator = ToDoMenu(
+                    ctx,
+                    lines,
+                    per_page=5
+                    title=f'All inventories (`{len(self.base_urls)}` total)'
+                )
+                await paginator.start()
 
             else:
                 inventory_embed.description = "Hmmm, seems like there's nothing here yet."
