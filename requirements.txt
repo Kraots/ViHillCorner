@@ -32,3 +32,5 @@ mal-api
 flake8
 asyncdagpi
 yarl
+beautifulsoup4
+markdownify

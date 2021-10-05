@@ -46,6 +46,7 @@ class ViHillCorner(commands.Bot):
         self.added_views = False
         self.dagpi_client = dagpi.Client(os.getenv('DAGPI_TOKEN'))
 
+        self.load_extension('docs')
         self.load_extension('jishaku')
         os.environ['JISHAKU_FORCE_PAGINATOR'] = '1'
         os.environ['JISHAKU_EMBEDDED_JSK'] = '1'
