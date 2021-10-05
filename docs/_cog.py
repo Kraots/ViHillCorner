@@ -324,7 +324,7 @@ class DocCog(commands.Cog):
                 paginator = ToDoMenu(
                     ctx,
                     lines,
-                    per_page=5
+                    per_page=5,
                     title=f'All inventories (`{len(self.base_urls)}` total)'
                 )
                 await paginator.start()
