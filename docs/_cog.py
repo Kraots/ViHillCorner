@@ -313,6 +313,8 @@ class DocCog(commands.Cog):
             !docs aiohttp.ClientSession
             !docs getdoc aiohttp.ClientSession
         """
+        if ctx.channel.id == 750160852006469802:  # bump channel
+            return
         if not symbol_name:
             inventory_embed = disnake.Embed(
                 title=f"All inventories (`{len(self.base_urls)}` total)",
