@@ -316,7 +316,7 @@ class DocCog(commands.Cog):
         if not symbol_name:
             inventory_embed = disnake.Embed(
                 title=f"All inventories (`{len(self.base_urls)}` total)",
-                colour=disnake.Colour.blue()
+                colour=disnake.Colour.blurple()
             )
 
             lines = sorted(f"• [`{name}`]({url})" for name, url in self.base_urls.items())
