@@ -24,8 +24,8 @@ def restart_program():
 
 
 class QuitButton(disnake.ui.View):
-    def __init__(self, ctx):
-        super().__init__(timeout=180.0)
+    def __init__(self, ctx, *, timeout=180.0):
+        super().__init__(timeout=timeout)
         self.ctx = ctx
 
     async def interaction_check(self, interaction: disnake.MessageInteraction):
@@ -44,7 +44,7 @@ class QuitButton(disnake.ui.View):
         await self.message.edit(view=None)
 
     @disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red)
-    async def stop_pages(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def quit(self, button: disnake.ui.Button, interaction: disnake.Interaction):
         """Deletes the user's message along with the bot's message."""
         await self.message.delete()
         await self.ctx.message.delete()
