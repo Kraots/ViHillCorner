@@ -96,9 +96,9 @@ class DocCog(commands.Cog):
     async def init_set_inventory(self) -> None:
         """Sets the docs for `items` on cog initialization."""
         items = (
-            ('disnake', 'https://disnake.readthedocs.io/en/latest'),
-            ('python', 'https://docs.python.org/3'),
-            ('aiohttp', 'https://aiohttp.readthedocs.io/en/stable'),
+            ('disnake', 'https://disnake.readthedocs.io/en/latest/'),
+            ('python', 'https://docs.python.org/3/'),
+            ('aiohttp', 'https://aiohttp.readthedocs.io/en/stable/'),
         )
         for item in items:
             package_name, base_url = item
