@@ -237,14 +237,14 @@ def sub_clyde(username: Optional[str]) -> Optional[str]:
         return username  # Empty string or None
 
 
-async def send_denial(ctx: Context, reason: str) -> disnake.Message:
+async def send_denial(ctx: Context, reason: str, *, view: disnake.ui.View = None) -> disnake.Message:
     """Send an embed denying the user with the given reason."""
     embed = disnake.Embed()
     embed.colour = disnake.Colour.red()
     embed.title = random.choice(NEGATIVE_REPLIES)
     embed.description = reason
 
-    return await ctx.send(embed=embed)
+    return await ctx.send(embed=embed, view=view)
 
 
 def format_user(user: disnake.abc.User) -> str:
