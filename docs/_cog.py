@@ -338,17 +338,11 @@ class DocCog(commands.Cog):
 
             if doc_embed is None:
                 view = QuitButton(ctx, timeout=NOT_FOUND_DELETE_DELAY)
-                error_message = await send_denial(ctx, "No documentation found for the requested symbol.", view=view)
-
-                # Make sure that we won't cause a ghost-ping by deleting the message
-                if not (ctx.message.mentions or ctx.message.role_mentions):
-                    with suppress(disnake.NotFound):
-                        await ctx.message.delete()
-                        await error_message.delete()
+                view.message = await send_denial(ctx, "No documentation found for the requested symbol.", view=view)
 
             else:
                 view = QuitButton(ctx)
-                await ctx.send(embed=doc_embed, view=view)
+                view.message = await ctx.send(embed=doc_embed, view=view)
 
     @staticmethod
     def base_url_from_inventory_url(inventory_url: str) -> str:
