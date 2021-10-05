@@ -271,8 +271,9 @@ class SimplePages(RoboPages):
 
 
 class NewToDoMenus(menus.ListPageSource):
-    def __init__(self, entries, *, per_page=12):
+    def __init__(self, entries, *, per_page=12, todo_footer):
         super().__init__(entries, per_page=per_page)
+        self.todo_footer = todo_footer
 
     async def format_page(self, menu, entries):
         pages = []
@@ -281,7 +282,10 @@ class NewToDoMenus(menus.ListPageSource):
 
         maximum = self.get_max_pages()
         if maximum > 1:
-            footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} todos)'
+            if self.todo_footer:
+                 footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} todos)'
+            else:
+                 footer = f'Page {menu.current_page + 1}/{maximum}'
             menu.embed.set_footer(text=footer)
 
         menu.embed.description = "\n".join(pages)
@@ -315,8 +319,8 @@ class CustomMenu(RoboPages):
 
 
 class ToDoMenu(RoboPages):
-    def __init__(self, ctx, entries, *, per_page=12, title="", color=None, author_name=None, author_icon_url=None):
-        super().__init__(NewToDoMenus(entries, per_page=per_page), ctx=ctx)
+    def __init__(self, ctx, entries, *, per_page=12, title="", color=None, author_name=None, author_icon_url=None, todo_footer=True):
+        super().__init__(NewToDoMenus(entries, per_page=per_page, todo_footer=todo_footer), ctx=ctx)
         if color is None:
             color = disnake.Color.blurple()
         self.embed = disnake.Embed(colour=color, title=title)
