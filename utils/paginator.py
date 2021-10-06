@@ -283,9 +283,9 @@ class NewToDoMenus(menus.ListPageSource):
         maximum = self.get_max_pages()
         if maximum > 1:
             if self.todo_footer:
-                 footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} todos)'
+                footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} todos)'
             else:
-                 footer = f'Page {menu.current_page + 1}/{maximum}'
+                footer = f'Page {menu.current_page + 1}/{maximum}'
             menu.embed.set_footer(text=footer)
 
         menu.embed.description = "\n".join(pages)
