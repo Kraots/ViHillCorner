@@ -4,7 +4,6 @@ import asyncio
 import sys
 import textwrap
 from collections import defaultdict
-from contextlib import suppress
 from types import SimpleNamespace
 from typing import Dict, NamedTuple, Optional, Tuple
 
@@ -12,16 +11,14 @@ import aiohttp
 import disnake
 from disnake.ext import commands
 
-from ._converters import Inventory, PackageName, ValidURL
-from ._pagination import LinePaginator
-from ._lock import SharedEvent, lock
-from ._messages import send_denial
+from .converters import Inventory, PackageName, ValidURL
+from .lock import SharedEvent, lock
+from .messages import send_denial
 from cogs.dev import QuitButton
 from utils.paginator import ToDoMenu
-from ._utils import create_task
-from ._utils import Scheduler
+from .utils import create_task, Scheduler
 from . import NAMESPACE, PRIORITY_PACKAGES, _batch_parser
-from ._inventory_parser import InventoryDict, fetch_inventory
+from .inventory_parser import InventoryDict, fetch_inventory
 try:
     from bot import ViHillCorner
 except Exception:
@@ -63,7 +60,7 @@ class DocItem(NamedTuple):
         return self.base_url + self.relative_url_path
 
 
-class DocCog(commands.Cog):
+class Docs(commands.Cog):
     """A set of commands for querying & displaying documentation."""
 
     def __init__(self, bot: ViHillCorner):
@@ -331,6 +328,7 @@ class DocCog(commands.Cog):
                 await paginator.start()
 
             else:
+                inventory_embed = disnake.Embed(title=f'All inventories (`{len(self.base_urls)}` total)', color=disnake.Color.blurple())
                 inventory_embed.description = "Hmmm, seems like there's nothing here yet."
                 await ctx.send(embed=inventory_embed)
 

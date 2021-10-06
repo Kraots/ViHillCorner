@@ -9,12 +9,12 @@ from typing import Collection, Iterable, Iterator, List, Optional, TYPE_CHECKING
 from bs4 import BeautifulSoup
 from bs4.element import NavigableString, Tag
 
-from ._helpers import find_nth_occurrence
+from .helpers import find_nth_occurrence
 from . import MAX_SIGNATURE_AMOUNT
-from ._html import get_dd_description, get_general_description, get_signatures
-from ._markdown import DocMarkdownConverter
+from .html import get_dd_description, get_general_description, get_signatures
+from .markdown import DocMarkdownConverter
 if TYPE_CHECKING:
-    from ._cog import DocItem
+    from .cog import DocItem
 
 _WHITESPACE_AFTER_NEWLINES_RE = re.compile(r"(?<=\n\n)(\s+)")
 _PARAMETERS_RE = re.compile(r"\((.+)\)")

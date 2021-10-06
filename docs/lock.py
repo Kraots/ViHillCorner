@@ -6,8 +6,13 @@ from functools import partial
 from typing import Any, Awaitable, Callable, Hashable, Union
 from weakref import WeakValueDictionary
 
-from ._function import BoundArgs, get_arg_value_wrapper, get_bound_args, Argument
-from ._function import command_wraps
+from .function import (
+    BoundArgs,
+    get_arg_value_wrapper,
+    get_bound_args,
+    Argument,
+    command_wraps
+)
 
 __lock_dicts = defaultdict(WeakValueDictionary)
 

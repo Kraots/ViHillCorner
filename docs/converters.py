@@ -1,10 +1,10 @@
 from utils.context import Context  # Custom Context, use from disnake.ext.commands import Context in your case
 from disnake.ext.commands import Converter, BadArgument
-from ._inventory_parser import InventoryDict, fetch_inventory, FAILED_REQUEST_ATTEMPTS
 import typing as t
 import re
 from ssl import CertificateError
 from aiohttp import ClientConnectorError
+from .inventory_parser import InventoryDict, fetch_inventory, FAILED_REQUEST_ATTEMPTS
 
 
 def allowed_strings(*values, preserve_case: bool = False) -> t.Callable[[str], str]:

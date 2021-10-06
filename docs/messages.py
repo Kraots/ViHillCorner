@@ -8,7 +8,7 @@ import random
 import disnake
 from utils.context import Context  # Custom Context, use from disnake.ext.commands import Context in your case
 
-from ._utils import create_task
+from .utils import create_task
 
 try:
     from bot import ViHillCorner

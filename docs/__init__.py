@@ -12,5 +12,5 @@ NAMESPACE = "doc"
 
 def setup(bot: ViHillCorner) -> None:
     """Load the Doc cog."""
-    from ._cog import DocCog
-    bot.add_cog(DocCog(bot))
+    from .cog import Docs
+    bot.add_cog(Docs(bot))

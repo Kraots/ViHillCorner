@@ -10,9 +10,9 @@ from typing import Deque, Dict, List, NamedTuple, Optional, Union
 from bs4 import BeautifulSoup
 import aiohttp
 
-from ._utils import create_task
+from .utils import create_task
 from . import _cog
-from ._parsing import get_symbol_markdown
+from .parsing import get_symbol_markdown
 
 
 class QueueItem(NamedTuple):
