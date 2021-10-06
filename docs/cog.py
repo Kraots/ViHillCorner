@@ -17,7 +17,7 @@ from .messages import send_denial
 from cogs.dev import QuitButton
 from utils.paginator import ToDoMenu
 from .utils import create_task, Scheduler
-from . import NAMESPACE, PRIORITY_PACKAGES, _batch_parser
+from . import NAMESPACE, PRIORITY_PACKAGES, batch_parser
 from .inventory_parser import InventoryDict, fetch_inventory
 try:
     from bot import ViHillCorner
@@ -69,7 +69,7 @@ class Docs(commands.Cog):
         self.base_urls = {}
         self.bot = bot
         self.doc_symbols: Dict[str, DocItem] = {}  # Maps symbol names to objects containing their metadata.
-        self.item_fetcher = _batch_parser.BatchParser()
+        self.item_fetcher = batch_parser.BatchParser()
         # Maps a conflicting symbol name to a list of the new, disambiguated names created from conflicts with the name.
         self.renamed_symbols = defaultdict(list)
 

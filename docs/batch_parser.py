@@ -11,18 +11,18 @@ from bs4 import BeautifulSoup
 import aiohttp
 
 from .utils import create_task
-from . import _cog
+from . import cog
 from .parsing import get_symbol_markdown
 
 
 class QueueItem(NamedTuple):
     """Contains a `DocItem` and the `BeautifulSoup` object needed to parse it."""
 
-    doc_item: _cog.DocItem
+    doc_item: cog.DocItem
     soup: BeautifulSoup
 
-    def __eq__(self, other: Union[QueueItem, _cog.DocItem]):
-        if isinstance(other, _cog.DocItem):
+    def __eq__(self, other: Union[QueueItem, cog.DocItem]):
+        if isinstance(other, cog.DocItem):
             return self.doc_item == other
         return NamedTuple.__eq__(self, other)
 
@@ -48,12 +48,12 @@ class BatchParser:
 
     def __init__(self):
         self._queue: Deque[QueueItem] = collections.deque()
-        self._page_doc_items: Dict[str, List[_cog.DocItem]] = defaultdict(list)
-        self._item_futures: Dict[_cog.DocItem, ParseResultFuture] = defaultdict(ParseResultFuture)
+        self._page_doc_items: Dict[str, List[cog.DocItem]] = defaultdict(list)
+        self._item_futures: Dict[cog.DocItem, ParseResultFuture] = defaultdict(ParseResultFuture)
         self._parse_task = None
         self._loop = asyncio.get_event_loop()
 
-    async def get_markdown(self, doc_item: _cog.DocItem) -> Optional[str]:
+    async def get_markdown(self, doc_item: cog.DocItem) -> Optional[str]:
         """
         Get the result Markdown of `doc_item`.
         If no symbols were fetched from `doc_item`s page before,
@@ -108,7 +108,7 @@ class BatchParser:
         finally:
             self._parse_task = None
 
-    def _move_to_front(self, item: Union[QueueItem, _cog.DocItem]) -> None:
+    def _move_to_front(self, item: Union[QueueItem, cog.DocItem]) -> None:
         """Move `item` to the front of the parse queue."""
         # The parse queue stores soups along with the doc symbols in QueueItem objects,
         # in case we're moving a DocItem we have to get the associated QueueItem first and then move it.
@@ -118,7 +118,7 @@ class BatchParser:
 
         self._queue.append(queue_item)
 
-    def add_item(self, doc_item: _cog.DocItem) -> None:
+    def add_item(self, doc_item: cog.DocItem) -> None:
         """Map a DocItem to its page so that the symbol will be parsed once the page is requested."""
         self._page_doc_items[doc_item.url].append(doc_item)
 
