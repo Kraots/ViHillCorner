@@ -38,11 +38,6 @@ NOT_FOUND_DELETE_DELAY = 30.0
 FETCH_RESCHEDULE_DELAY = SimpleNamespace(first=2, repeated=5)
 
 COMMAND_LOCK_SINGLETON = "inventory refresh"
-MODERATION_ROLES = (
-    754676705741766757,
-    788845429797814282,
-    859060865813839892
-)
 
 
 class DocItem(NamedTuple):
@@ -333,7 +328,7 @@ class Docs(commands.Cog):
         return inventory_url.removesuffix("/").rsplit("/", maxsplit=1)[0] + "/"
 
     @docs_group.command(name="setdoc", aliases=("s",))
-    @commands.has_any_role(*MODERATION_ROLES)
+    @commands.is_owner()
     @lock(NAMESPACE, COMMAND_LOCK_SINGLETON, raise_error=True)
     async def set_command(
         self,
@@ -371,7 +366,7 @@ class Docs(commands.Cog):
         await ctx.send(f"Added the package `{package_name}` to the database and updated the inventories.")
 
     @docs_group.command(name="deletedoc", aliases=("removedoc", "rm", "d"))
-    @commands.has_any_role(*MODERATION_ROLES)
+    @commands.is_owner()
     @lock(NAMESPACE, COMMAND_LOCK_SINGLETON, raise_error=True)
     async def delete_command(self, ctx: commands.Context, package_name: PackageName) -> None:
         """
@@ -390,7 +385,7 @@ class Docs(commands.Cog):
         await ctx.send(f"Successfully deleted `{package_name}` and refreshed the inventories.")
 
     @docs_group.command(name="refreshdoc", aliases=("refresh", "r"))
-    @commands.has_any_role(*MODERATION_ROLES)
+    @commands.is_owner()
     @lock(NAMESPACE, COMMAND_LOCK_SINGLETON, raise_error=True)
     async def refresh_command(self, ctx: commands.Context) -> None:
         """Refresh inventories and show the difference."""
