@@ -50,7 +50,7 @@ class QuitButton(disnake.ui.View):
     async def on_timeout(self):
         if self.delete_after is False:
             return await self.message.edit(view=None)
-        
+
         await self.message.delete()
         await self.ctx.message.delete()
 

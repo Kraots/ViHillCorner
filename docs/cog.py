@@ -2,10 +2,8 @@ from __future__ import annotations
 
 import asyncio
 import sys
-import textwrap
-from collections import defaultdict
 from types import SimpleNamespace
-from typing import Dict, NamedTuple, Optional, Tuple
+from typing import Dict, NamedTuple, Optional, List
 
 import aiohttp
 import disnake
@@ -16,6 +14,8 @@ from .lock import SharedEvent, lock
 from .messages import send_denial
 from cogs.dev import QuitButton
 from utils.paginator import ToDoMenu
+from .pagination import EmbedPaginator
+from utils import fuzzy
 from .utils import create_task, Scheduler
 from . import NAMESPACE, PRIORITY_PACKAGES, batch_parser
 from .inventory_parser import InventoryDict, fetch_inventory
@@ -70,8 +70,6 @@ class Docs(commands.Cog):
         self.bot = bot
         self.doc_symbols: Dict[str, DocItem] = {}  # Maps symbol names to objects containing their metadata.
         self.item_fetcher = batch_parser.BatchParser()
-        # Maps a conflicting symbol name to a list of the new, disambiguated names created from conflicts with the name.
-        self.renamed_symbols = defaultdict(list)
 
         self.inventory_scheduler = Scheduler(self.__class__.__name__)
 
@@ -191,8 +189,6 @@ class Docs(commands.Cog):
                 else:
                     new_name = f"{package_name}.{group_name}.{symbol_name}"
 
-            self.renamed_symbols[symbol_name].append(new_name)
-
             if rename_extant:
                 # Instead of renaming the current symbol, rename the symbol with which it conflicts.
                 self.doc_symbols[new_name] = self.doc_symbols[symbol_name]
@@ -229,23 +225,17 @@ class Docs(commands.Cog):
 
         self.base_urls.clear()
         self.doc_symbols.clear()
-        self.renamed_symbols.clear()
         await self.item_fetcher.clear()
 
         self.refresh_event.set()
 
-    def get_symbol_item(self, symbol_name: str) -> Tuple[str, Optional[DocItem]]:
+    def get_symbol_item(self, symbol_name: str) -> List[str, Optional[DocItem]]:
         """
         Get the `DocItem` and the symbol name used to fetch it from the `doc_symbols` dict.
-        If the doc item is not found directly from the passed in name and the name contains a space,
-        the first word of the name will be attempted to be used to get the item.
         """
-        doc_item = self.doc_symbols.get(symbol_name)
-        if doc_item is None and " " in symbol_name:
-            symbol_name = symbol_name.split(" ", maxsplit=1)[0]
-            doc_item = self.doc_symbols.get(symbol_name)
-
-        return symbol_name, doc_item
+        doc_symbols = list(self.doc_symbols.items())
+        matches = fuzzy.finder(symbol_name, doc_symbols, key=lambda t: t[0], lazy=False)[:8]
+        return matches
 
     async def get_symbol_markdown(self, doc_item: DocItem) -> str:
         """
@@ -267,7 +257,7 @@ class Docs(commands.Cog):
 
         return markdown
 
-    async def create_symbol_embed(self, symbol_name: str) -> Optional[disnake.Embed]:
+    async def create_symbol_embed(self, symbol_name: str) -> Optional[List[disnake.Embed]]:
         """
         Attempt to scrape and fetch the data for the given `symbol_name`, and build an embed from its contents.
         If the symbol is known, an Embed with documentation about it is returned.
@@ -276,25 +266,20 @@ class Docs(commands.Cog):
             await self.refresh_event.wait()
         # Ensure a refresh can't run in case of a context switch until the with block is exited
         with self.symbol_get_event:
-            symbol_name, doc_item = self.get_symbol_item(symbol_name)
-            if doc_item is None:
+            data = self.get_symbol_item(symbol_name)
+            if len(data) == 0:
                 return None
+            embeds = []
+            for i in data:
+                symbol_name, doc_item = i
 
-            # Show all symbols with the same name that were renamed in the footer,
-            # with a max of 200 chars.
-            if symbol_name in self.renamed_symbols:
-                renamed_symbols = ", ".join(self.renamed_symbols[symbol_name])
-                footer_text = textwrap.shorten("Similar names: " + renamed_symbols, 200, placeholder=" ...")
-            else:
-                footer_text = ""
-
-            embed = disnake.Embed(
-                title=disnake.utils.escape_markdown(symbol_name),
-                url=f"{doc_item.url}#{doc_item.symbol_id}",
-                description=await self.get_symbol_markdown(doc_item)
-            )
-            embed.set_footer(text=footer_text)
-            return embed
+                embed = disnake.Embed(
+                    title=disnake.utils.escape_markdown(symbol_name),
+                    url=f"{doc_item.url}#{doc_item.symbol_id}",
+                    description=await self.get_symbol_markdown(doc_item)
+                )
+                embeds.append(embed)
+            return embeds
 
     @commands.group(name="docs", aliases=("doc", "d"), invoke_without_command=True)
     async def docs_group(self, ctx: commands.Context, *, symbol_name: Optional[str]) -> None:
@@ -335,15 +320,20 @@ class Docs(commands.Cog):
         else:
             symbol = symbol_name.strip("`")
             async with ctx.typing():
-                doc_embed = await self.create_symbol_embed(symbol)
+                doc_embeds = await self.create_symbol_embed(symbol)
 
-            if doc_embed is None:
+            if doc_embeds is None:
                 view = QuitButton(ctx, timeout=NOT_FOUND_DELETE_DELAY, delete_after=True)
                 view.message = await send_denial(ctx, "No documentation found for the requested symbol.", view=view)
 
             else:
-                view = QuitButton(ctx)
-                view.message = await ctx.send(embed=doc_embed, view=view)
+                if len(doc_embeds) == 1:
+                    view = QuitButton(ctx)
+                    view.message = await ctx.send(embed=doc_embeds[0], view=view)
+                    return
+
+                paginator = EmbedPaginator(ctx, doc_embeds)
+                await paginator.start()
 
     @staticmethod
     def base_url_from_inventory_url(inventory_url: str) -> str:
