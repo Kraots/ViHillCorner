@@ -402,10 +402,6 @@ class Misc(commands.Cog):
                     break
 
         cache = list(self._rtfm_cache[key].items())
-
-        def transform(tup):
-            return tup[0]
-
         matches = fuzzy.finder(obj, cache, key=lambda t: t[0], lazy=False)[:8]
 
         e = disnake.Embed(colour=disnake.Colour.blurple())
