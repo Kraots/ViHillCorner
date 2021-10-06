@@ -68,6 +68,7 @@ class Docs(commands.Cog):
         # Used to calculate inventory diffs on refreshes and to display all currently stored inventories.
         self.base_urls = {}
         self.bot = bot
+        self.db = self.bot.db1['Docs']
         self.doc_symbols: Dict[str, DocItem] = {}  # Maps symbol names to objects containing their metadata.
         self.item_fetcher = batch_parser.BatchParser()
 
@@ -76,31 +77,15 @@ class Docs(commands.Cog):
         self.refresh_event = asyncio.Event()
         self.refresh_event.set()
         self.symbol_get_event = SharedEvent()
-        self.items = (
-            ('disnake', 'https://disnake.readthedocs.io/en/latest/'),
-            ('python', 'https://docs.python.org/3/'),
-            ('aiohttp', 'https://aiohttp.readthedocs.io/en/stable/'),
-        )
         self.init_refresh_task = create_task(
             self.init_refresh_inventory(),
             name="Doc inventory init",
-            event_loop=self.bot.loop
-        )
-        create_task(
-            self.init_set_inventory(),
             event_loop=self.bot.loop
         )
 
     @property
     def display_emoji(self) -> str:
         return '📚'
-
-    async def init_set_inventory(self) -> None:
-        """Sets the docs for `items` on cog initialization."""
-        for item in self.items:
-            package_name, base_url = item
-            inventory = await fetch_inventory(base_url + '/objects.inv')
-            self.update_single(package_name, base_url, inventory)
 
     @lock(NAMESPACE, COMMAND_LOCK_SINGLETON, raise_error=True)
     async def init_refresh_inventory(self) -> None:
@@ -229,8 +214,8 @@ class Docs(commands.Cog):
 
         coros = [
             self.update_or_reschedule_inventory(
-                item[0], item[1], item[1] + '/objects.inv'
-            ) for item in self.items
+                item['package'], item['base_url'], item['inventory_url']
+            ) for item in await self.db.find().to_list(100000)
         ]
         asyncio.gather(*coros)
 
@@ -371,8 +356,38 @@ class Docs(commands.Cog):
 
         if not base_url:
             base_url = self.base_url_from_inventory_url(inventory_url)
+
+        doc = await self.db.find_one({'package': package_name})
+        if doc is not None:
+            return await ctx.reply(f'A doc with the name `{package_name}` already exists in the database.')
+        body = {
+            'package': package_name,
+            'base_url': base_url,
+            'inventory_url': inventory_url
+        }
+
+        await self.db.insert_one(body)
         self.update_single(package_name, base_url, inventory_dict)
-        await ctx.send(f"Added `{package_name}` and updated the inventories.")
+        await ctx.send(f"Added the package `{package_name}` to the database and updated the inventories.")
+
+    @docs_group.command(name="deletedoc", aliases=("removedoc", "rm", "d"))
+    @commands.has_any_role(*MODERATION_ROLES)
+    @lock(NAMESPACE, COMMAND_LOCK_SINGLETON, raise_error=True)
+    async def delete_command(self, ctx: commands.Context, package_name: PackageName) -> None:
+        """
+        Removes the specified package from the database.
+        Example:
+            !docs deletedoc aiohttp
+        """
+
+        doc = await self.db.find_one({'package': package_name})
+        if doc is None:
+            return await ctx.reply(f'Doc `{package_name}` doesn\'t exist in the database.')
+
+        async with ctx.typing():
+            await self.db.delete_one({'package': package_name})
+            await self.refresh_inventories()
+        await ctx.send(f"Successfully deleted `{package_name}` and refreshed the inventories.")
 
     @docs_group.command(name="refreshdoc", aliases=("refresh", "r"))
     @commands.has_any_role(*MODERATION_ROLES)
