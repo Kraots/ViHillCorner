@@ -69,7 +69,7 @@ class BatchParser:
                         None,
                         BeautifulSoup,
                         await response.text(encoding="utf8"),
-                        'html.parser'
+                        'lxml'
                     )
 
             self._queue.extendleft(QueueItem(item, soup) for item in self._page_doc_items[doc_item.url])

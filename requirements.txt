@@ -34,3 +34,4 @@ asyncdagpi
 yarl
 beautifulsoup4
 markdownify
+lxml
