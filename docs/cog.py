@@ -76,6 +76,11 @@ class Docs(commands.Cog):
         self.refresh_event = asyncio.Event()
         self.refresh_event.set()
         self.symbol_get_event = SharedEvent()
+        self.items = (
+            ('disnake', 'https://disnake.readthedocs.io/en/latest/'),
+            ('python', 'https://docs.python.org/3/'),
+            ('aiohttp', 'https://aiohttp.readthedocs.io/en/stable/'),
+        )
         self.init_refresh_task = create_task(
             self.init_refresh_inventory(),
             name="Doc inventory init",
@@ -92,12 +97,7 @@ class Docs(commands.Cog):
 
     async def init_set_inventory(self) -> None:
         """Sets the docs for `items` on cog initialization."""
-        items = (
-            ('disnake', 'https://disnake.readthedocs.io/en/latest/'),
-            ('python', 'https://docs.python.org/3/'),
-            ('aiohttp', 'https://aiohttp.readthedocs.io/en/stable/'),
-        )
-        for item in items:
+        for item in self.items:
             package_name, base_url = item
             inventory = await fetch_inventory(base_url + '/objects.inv')
             self.update_single(package_name, base_url, inventory)
@@ -226,6 +226,13 @@ class Docs(commands.Cog):
         self.base_urls.clear()
         self.doc_symbols.clear()
         await self.item_fetcher.clear()
+
+        coros = [
+            self.update_or_reschedule_inventory(
+                item[0], item[1], item[1] + '/objects.inv'
+            ) for item in self.items
+        ]
+        asyncio.gather(*coros)
 
         self.refresh_event.set()
 
@@ -367,21 +374,7 @@ class Docs(commands.Cog):
         self.update_single(package_name, base_url, inventory_dict)
         await ctx.send(f"Added `{package_name}` and updated the inventories.")
 
-    @docs_group.command(name="deletedoc", aliases=("removedoc", "rm", "d"))
-    @commands.has_any_role(*MODERATION_ROLES)
-    @lock(NAMESPACE, COMMAND_LOCK_SINGLETON, raise_error=True)
-    async def delete_command(self, ctx: commands.Context, package_name: PackageName) -> None:
-        """
-        Removes the specified package from the database.
-        Example:
-            !docs deletedoc aiohttp
-        """
-
-        async with ctx.typing():
-            await self.refresh_inventories()
-        await ctx.send(f"Successfully deleted `{package_name}` and refreshed the inventories.")
-
-    @docs_group.command(name="refreshdoc", aliases=("rfsh", "r"))
+    @docs_group.command(name="refreshdoc", aliases=("refresh", "r"))
     @commands.has_any_role(*MODERATION_ROLES)
     @lock(NAMESPACE, COMMAND_LOCK_SINGLETON, raise_error=True)
     async def refresh_command(self, ctx: commands.Context) -> None:
