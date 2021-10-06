@@ -24,15 +24,6 @@ from main import ViHillCorner
 filter_invite = re.compile(r"(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 
 
-class BotInfoView(disnake.ui.View):
-    def __init__(self, *, timeout=180):
-        super().__init__(timeout=timeout)
-        self.add_item(disnake.ui.Button(label='Bot\'s Source', url='https://github.com/Kraots/ViHillCorner'))
-
-    async def on_timeout(self):
-        await self.message.edit(view=None)
-
-
 class SpotifyView(disnake.ui.View):
     def __init__(self, song_url: str, *, timeout=180):
         super().__init__(timeout=timeout)
@@ -432,11 +423,10 @@ class Misc(commands.Cog):
         botinfo.add_field(name="Python Versions:", value=f"`{py_version}`", inline=False)
         botinfo.add_field(name="Wrapper Version:", value=f"`disnake {package_version('disnake')}`", inline=False)
         botinfo.add_field(name="Commands loaded:", value=f"{len([x.name for x in self.bot.commands])}", inline=False)
-        botinfo.add_field(name="About:", value="*This bot is a private bot made only for ViHill Corner, so do not ask to host it or to add it to your server!*", inline=True)  # noqa
+        botinfo.add_field(name="About:", value="*This bot is a private bot made only to be used in ViHill Corner.*", inline=True)  # noqa
         botinfo.add_field(name="Last Update:", value=updatedMsg, inline=False)
         botinfo.set_thumbnail(url=self.bot.user.display_avatar)
-        view = BotInfoView()
-        view.message = await ctx.send(embed=botinfo, view=view)
+        await ctx.send(embed=botinfo)
 
     @commands.command(aliases=['calculator', 'calculate'])
     async def calc(self, ctx: Context):
