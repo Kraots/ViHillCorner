@@ -13,6 +13,7 @@ class RoboPages(disnake.ui.View):
         ctx: commands.Context,
         check_embeds: bool = True,
         compact: bool = False,
+        quit_delete: bool = False,
     ):
         super().__init__()
         self.source: menus.PageSource = source
@@ -21,6 +22,7 @@ class RoboPages(disnake.ui.View):
         self.message: Optional[disnake.Message] = None
         self.current_page: int = 0
         self.compact: bool = compact
+        self.quit_delete: bool = quit_delete
         self.input_lock = asyncio.Lock()
         self.clear_items()
         self.fill_items()
@@ -191,6 +193,8 @@ class RoboPages(disnake.ui.View):
         """stops the pagination session."""
         await interaction.response.defer()
         await interaction.delete_original_message()
+        if self.quit_delete:
+            await self.message.delete()
         self.stop()
 
 
@@ -231,8 +235,8 @@ class TextPageSource(menus.ListPageSource):
 
 
 class TextPage(RoboPages):
-    def __init__(self, ctx, entries, *, footer: str = None):
-        super().__init__(TextPageSource(entries), ctx=ctx, compact=True)
+    def __init__(self, ctx, entries, *, footer: str = None, quit_delete: bool = False):
+        super().__init__(TextPageSource(entries), ctx=ctx, compact=True, quit_delete=quit_delete)
         self.embed = disnake.Embed()
         if footer is not None:
             self.embed.set_footer(text=footer)

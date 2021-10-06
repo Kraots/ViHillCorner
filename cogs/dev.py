@@ -120,7 +120,8 @@ class Developer(commands.Cog):
             pager = TextPage(
                 ctx,
                 [result[i: i + 4000] for i in range(0, len(result), 4000)],
-                footer=f'Took {took}s'
+                footer=f'Took {took}s',
+                quit_delete=True
             )
             return await pager.start()
         em = disnake.Embed(description=f'```py\n{result}\n```')
