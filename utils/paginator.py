@@ -194,7 +194,7 @@ class RoboPages(disnake.ui.View):
         await interaction.response.defer()
         await interaction.delete_original_message()
         if self.quit_delete:
-            await self.message.delete()
+            await self.ctx.message.delete()
         self.stop()
 
 
