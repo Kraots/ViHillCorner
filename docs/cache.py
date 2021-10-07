@@ -38,7 +38,6 @@ class DocCache:
         if key is not None:
             result = key.get(item.symbol_id)
             if result is not None:
-                print('took from local cache')
                 return result
 
         k: Union[Dict, None] = self._cache.get(item.package)
@@ -47,7 +46,6 @@ class DocCache:
             if res is not None:
                 v = res
                 self._add_to_local_cache(item, v)
-                print('local cache didn\'t work')
             return res
         return None
 
