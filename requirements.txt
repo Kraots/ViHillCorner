@@ -33,5 +33,5 @@ flake8
 asyncdagpi
 yarl
 beautifulsoup4
-markdownify
 lxml
+markdownify==0.6.1
