@@ -2,12 +2,14 @@ try:
     from bot import ViHillCorner
 except Exception:
     from main import ViHillCorner
+from .cache import DocCache
 
 MAX_SIGNATURE_AMOUNT = 3
 PRIORITY_PACKAGES = (
     "python",
 )
 NAMESPACE = "doc"
+doc_cache = DocCache()
 
 
 def setup(bot: ViHillCorner) -> None:

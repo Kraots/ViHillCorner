@@ -17,7 +17,7 @@ from utils.paginator import ToDoMenu
 from .pagination import EmbedPaginator
 from utils import fuzzy
 from .utils import create_task, Scheduler
-from . import NAMESPACE, PRIORITY_PACKAGES, batch_parser
+from . import NAMESPACE, PRIORITY_PACKAGES, batch_parser, doc_cache
 from .inventory_parser import InventoryDict, fetch_inventory
 try:
     from bot import ViHillCorner
@@ -89,7 +89,7 @@ class Docs(commands.Cog):
 
     def update_single(self, package_name: str, base_url: str, inventory: InventoryDict) -> None:
         """
-        Build the inventory for a single package.
+        Build the inventory for a single package and adds its items to the cache.
         Where:
             * `package_name` is the package name to use in logs and when qualifying symbols
             * `base_url` is the root documentation URL for the specified package, used to build
@@ -230,17 +230,19 @@ class Docs(commands.Cog):
         `item_fetcher` is used to fetch the page and parse the
         HTML from it into Markdown.
         """
-        try:
-            markdown = await self.item_fetcher.get_markdown(doc_item)
-
-        except aiohttp.ClientError:
-            return "Unable to parse the requested symbol due to a network error."
-
-        except Exception:
-            return "Unable to parse the requested symbol due to an error."
-
+        markdown = doc_cache.get(doc_item)
         if markdown is None:
-            return "Unable to parse the requested symbol."
+            try:
+                markdown = await self.item_fetcher.get_markdown(doc_item)
+
+            except aiohttp.ClientError:
+                return "Unable to parse the requested symbol due to a network error."
+
+            except Exception:
+                return "Unable to parse the requested symbol due to an error."
+
+            if markdown is None:
+                return "Unable to parse the requested symbol."
 
         return markdown
 
@@ -381,6 +383,7 @@ class Docs(commands.Cog):
 
         async with ctx.typing():
             await self.db.delete_one({'package': package_name})
+            doc_cache.delete(package_name)
             await self.refresh_inventories()
         await ctx.send(f"Successfully deleted `{package_name}` and refreshed the inventories.")
 
@@ -405,6 +408,18 @@ class Docs(commands.Cog):
             description=f"```diff\n{added}\n{removed}```" if added or removed else ""
         )
         await ctx.send(embed=embed)
+
+    @docs_group.command(name="cleardoccache", aliases=("deletedoccache", "c",))
+    @commands.is_owner()
+    async def clear_cache_command(
+        self,
+        ctx: commands.Context
+    ) -> None:
+        """Clears the cache while refreshing the inventories like `!docs refreshdoc` does."""
+
+        doc_cache.delete()
+        await self.refresh_inventories()
+        await ctx.send("Successfully cleared the cache and refreshed the inventories.")
 
     def cog_unload(self) -> None:
         """Clear scheduled inventories, queued symbols and cleanup task on cog unload."""
