@@ -413,13 +413,14 @@ class Docs(commands.Cog):
     @commands.is_owner()
     async def clear_cache_command(
         self,
-        ctx: commands.Context
+        ctx: commands.Context,
+        package_name: PackageName
     ) -> None:
-        """Clears the cache while refreshing the inventories like `!docs refreshdoc` does."""
-
-        doc_cache.delete()
-        await self.refresh_inventories()
-        await ctx.send("Successfully cleared the cache and refreshed the inventories.")
+        """Clear the persistent deta cache for `package`."""
+        if doc_cache.delete(package_name):
+            await ctx.send(f"Successfully cleared the cache for `{package_name}`.")
+        else:
+            await ctx.send("No keys matching the package found.")
 
     def cog_unload(self) -> None:
         """Clear scheduled inventories, queued symbols and cleanup task on cog unload."""
