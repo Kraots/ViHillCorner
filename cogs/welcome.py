@@ -254,7 +254,7 @@ class Welcome(commands.Cog):
                                             "intro_id": intro_msg.id
                                         }
 
-                                        self.db1.insert(post, member.id)
+                                        self.db1.insert(post, str(member.id))
 
                                         return
 
