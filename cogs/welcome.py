@@ -238,7 +238,11 @@ class Welcome(commands.Cog):
                                         em.add_field(name="Relationship Status", value=status, inline=True)
                                         em.add_field(name="Interests", value=interests.content, inline=False)
                                         intro_msg = await introchannel.send(embed=em)
-                                        await member.send("Intro added successfully. You can see it in <#750160850593251449>")
+                                        await member.send(
+                                            f"Intro added successfully. You can see in <#750160850593251449> or in the link below.\n"
+                                            f"{self.bot.url}intros/"
+                                            f"{str(member.id)}?usr={str(member).replace(' ', '_').removesuffix('_')}"
+                                        )
 
                                         post = {
                                             "name": name.content,
