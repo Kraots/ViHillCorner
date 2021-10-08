@@ -11,7 +11,7 @@ class Intros(commands.Cog):
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db = bot.db1['Intros']
+        self.db = bot.base('Intros')
         self.prefix = "!"
 
     async def cog_check(self, ctx: Context):
@@ -29,7 +29,7 @@ class Intros(commands.Cog):
         if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016):
             return ctx.command.reset_cooldown(ctx)
 
-        results = await self.db.find_one({"_id": ctx.author.id})
+        results = self.db.get(str(ctx.author.id))
 
         await ctx.message.delete()
 
@@ -178,21 +178,16 @@ class Intros(commands.Cog):
                                         em.add_field(name="Interests", value=interests.content, inline=False)
                                         intro_message = await introchannel.send(embed=em)
 
-                                        await self.db.update_one(
+                                        self.db.update(
                                             {
-                                                "_id": ctx.author.id
-                                            },
-                                            {
-                                                "$set": {
-                                                    "name": name.content,
-                                                    "location": location.content,
-                                                    "age": agenumber,
-                                                    "gender": gender.content,
-                                                    "status": status,
-                                                    "interests": interests.content,
-                                                    "intro_id": intro_message.id
-                                                }
-                                            }
+                                                "name": name.content,
+                                                "location": location.content,
+                                                "age": agenumber,
+                                                "gender": gender.content,
+                                                "status": status,
+                                                "interests": interests.content,
+                                                "intro_id": intro_message.id
+                                            }, str(ctx.author.id)
                                         )
 
                                         try:
@@ -326,7 +321,6 @@ class Intros(commands.Cog):
                                     await ctx.send("Intro added successfully. You can see in <#750160850593251449>")
 
                                     post = {
-                                        "_id": ctx.author.id,
                                         "name": name.content,
                                         "location": location.content,
                                         "age": agenumber,
@@ -336,7 +330,7 @@ class Intros(commands.Cog):
                                         "intro_id": intro_msg.id
                                     }
 
-                                    await self.db.insert_one(post)
+                                    self.db.insert(post, str(ctx.author.id))
 
                                     return
 
@@ -347,7 +341,7 @@ class Intros(commands.Cog):
         This will also delete your intro message in the intros channel.
         """
 
-        results = await self.db.find_one({"_id": ctx.author.id})
+        results = self.db.get(str(ctx.author.id))
 
         if results is not None:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
@@ -357,7 +351,7 @@ class Intros(commands.Cog):
                 return ctx.command.reset_cooldown(ctx)
 
             elif view.response is True:
-                await self.db.delete_one({"_id": ctx.author.id})
+                self.db.delete(str(ctx.author.id))
                 try:
                     guild = self.bot.get_guild(750160850077089853)
                     intro_id = results['intro_id']
@@ -384,29 +378,12 @@ class Intros(commands.Cog):
 
         member = member or ctx.author
 
-        results = await self.db.find_one({"_id": member.id})
+        results = self.db.get(str(member.id))
 
         user = member
 
         if results is not None:
-            introname = results['name']
-            introlocation = results['location']
-            introage = results['age']
-            introgender = results['gender']
-            relationshipstatus = results['status']
-            introinterests = results['interests']
-
-            await ctx.message.delete()
-            em = disnake.Embed(color=member.color)
-            em.set_author(name=member, url=member.display_avatar, icon_url=member.display_avatar)
-            em.set_thumbnail(url=member.display_avatar)
-            em.add_field(name="Name", value=introname, inline=True)
-            em.add_field(name="Location", value=introlocation, inline=True)
-            em.add_field(name="Age", value=introage, inline=True)
-            em.add_field(name="Gender", value=introgender, inline=False)
-            em.add_field(name="Relationship Status", value=relationshipstatus, inline=True)
-            em.add_field(name="Interests", value=introinterests, inline=False)
-            await ctx.send(embed=em)
+            await ctx.send(f'https://vihillcorner.deta.dev/users/{str(member.id)}?usr={member}')
 
         else:
             if ctx.author.id == user.id:
@@ -423,7 +400,7 @@ class Intros(commands.Cog):
     async def on_member_remove(self, member: disnake.Member):
         if member.id == 374622847672254466:
             return
-        await self.db.delete_one({"_id": member.id})
+        self.db.delete(str(member.id))
 
     @whois.error
     async def wi_error(self, ctx: Context, error):

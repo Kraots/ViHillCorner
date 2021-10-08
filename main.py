@@ -9,6 +9,7 @@ from utils.HelpCommand import PaginatedHelpCommand
 from utils.helpers import reraise, slash_reraise, ConfirmView
 from utils.ButtonRoles import ButtonRoles
 import asyncdagpi as dagpi
+from deta import Deta
 
 token = os.environ.get('DISCORD_BOT_SECRET')
 
@@ -23,6 +24,9 @@ database2 = cluster2['ViHillCornerDB']
 key3 = os.getenv('EXTRA_DB_KEY')
 cluster3 = motor.motor_asyncio.AsyncIOMotorClient(key3)
 database3 = cluster3['ViHillCornerDB']
+
+deta_key = os.getenv('DETA_KEY')
+deta = Deta(deta_key)
 
 
 class ViHillCorner(commands.Bot):
@@ -44,6 +48,7 @@ class ViHillCorner(commands.Bot):
         self.db1 = database1
         self.db2 = database2
         self.db3 = database3
+        self.base = deta.Base
         self.reraise = reraise
         self.slash_reraise = slash_reraise
         self.confirm_view = ConfirmView
