@@ -202,7 +202,7 @@ class Intros(commands.Cog):
                                             pass
 
                                         await ctx.send(
-                                            f"Intro edited successfully. You can see in <#750160850593251449> or in the link below {ctx.author.id}\n"
+                                            f"Intro edited successfully. You can see in <#750160850593251449> or in the link below {ctx.author.mention}\n"
                                             f"{self.bot.url}users/"
                                             f"{str(ctx.author.id)}?usr={str(ctx.author).replace(' ', '_').removesuffix('_')}"
                                         )
@@ -328,7 +328,7 @@ class Intros(commands.Cog):
                                     em.add_field(name="Interests", value=interests.content, inline=False)
                                     intro_msg = await introchannel.send(embed=em)
                                     await ctx.send(
-                                        f"Intro added successfully. You can see in <#750160850593251449> or in the link below {ctx.author.id}\n"
+                                        f"Intro added successfully. You can see in <#750160850593251449> or in the link below {ctx.author.mention}\n"
                                         f"{self.bot.url}users/"
                                         f"{str(ctx.author.id)}?usr={str(ctx.author).replace(' ', '_').removesuffix('_')}"
                                     )
