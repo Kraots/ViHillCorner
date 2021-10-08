@@ -20,6 +20,10 @@ key2 = os.getenv('MONGODBLVLKEY')
 cluster2 = motor.motor_asyncio.AsyncIOMotorClient(key2)
 database2 = cluster2['ViHillCornerDB']
 
+key3 = os.getenv('EXTRA_DB_KEY')
+cluster3 = motor.motor_asyncio.AsyncIOMotorClient(key3)
+database3 = cluster3['ViHillCornerDB']
+
 
 class ViHillCorner(commands.Bot):
     def __init__(self):
@@ -39,6 +43,7 @@ class ViHillCorner(commands.Bot):
         self.add_check(self.check_dms)
         self.db1 = database1
         self.db2 = database2
+        self.db3 = database3
         self.reraise = reraise
         self.slash_reraise = slash_reraise
         self.confirm_view = ConfirmView
