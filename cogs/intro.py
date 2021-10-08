@@ -21,6 +21,11 @@ class Intros(commands.Cog):
     def display_emoji(self) -> str:
         return '🙌'
 
+    @commands.command(name='vhc')
+    async def _vhc(self, ctx: Context):
+        """Sends the link to the server's page."""
+        await ctx.send(self.bot.url)
+
     @commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
     @commands.cooldown(1, 360, commands.BucketType.user)
     async def intro(self, ctx: Context):
@@ -198,7 +203,7 @@ class Intros(commands.Cog):
 
                                         await ctx.send(
                                             f"Intro edited successfully. You can see in <#750160850593251449> or in the link below {ctx.author.id}\n"
-                                            "https://vihillcorner.deta.dev/users/"
+                                            f"{self.bot.url}/users/"
                                             f"{str(ctx.author.id)}?usr={str(ctx.author).replace(' ', '_').removesuffix('_')}"
                                         )
 
@@ -324,7 +329,7 @@ class Intros(commands.Cog):
                                     intro_msg = await introchannel.send(embed=em)
                                     await ctx.send(
                                         f"Intro added successfully. You can see in <#750160850593251449> or in the link below {ctx.author.id}\n"
-                                        "https://vihillcorner.deta.dev/users/"
+                                        f"{self.bot.url}/users/"
                                         f"{str(ctx.author.id)}?usr={str(ctx.author).replace(' ', '_').removesuffix('_')}"
                                     )
 
@@ -392,7 +397,7 @@ class Intros(commands.Cog):
 
         if results is not None:
             await ctx.send(
-                f'https://vihillcorner.deta.dev/users/{str(member.id)}?usr={str(member).replace(" ", "_").removesuffix("_")}'
+                f'{self.bot.url}/users/{str(member.id)}?usr={str(member).replace(" ", "_").removesuffix("_")}'
             )
 
         else:
