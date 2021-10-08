@@ -1,6 +1,6 @@
 from typing import Optional, Union, Dict
 
-from bot import database3
+from main import database3
 
 
 class DocCache:
