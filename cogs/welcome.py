@@ -27,7 +27,7 @@ def remove_emoji(string):
 class Welcome(commands.Cog):
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db1 = bot.db1['Intros']
+        self.db1 = bot.base('Intros')
         self.db2 = bot.db1['Moderation Mutes']
         self.db3 = bot.db1['Filter Mutes']
         self.db4 = bot.db2['InvalidName Filter']
@@ -241,7 +241,6 @@ class Welcome(commands.Cog):
                                         await member.send("Intro added successfully. You can see it in <#750160850593251449>")
 
                                         post = {
-                                            "_id": member.id,
                                             "name": name.content,
                                             "location": location.content,
                                             "age": agenumber,
@@ -251,7 +250,7 @@ class Welcome(commands.Cog):
                                             "intro_id": intro_msg.id
                                         }
 
-                                        await self.db1.insert_one(post)
+                                        self.db1.insert(post, member.id)
 
                                         return
 
