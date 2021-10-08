@@ -100,7 +100,7 @@ class BatchParser:
                 try:
                     markdown = await self._loop.run_in_executor(None, get_symbol_markdown, soup, item)
                     if markdown is not None:
-                        doc_cache.set(item, markdown)
+                        await doc_cache.set(item, markdown)
                 except Exception:
                     pass
 

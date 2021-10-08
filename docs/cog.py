@@ -63,7 +63,7 @@ class Docs(commands.Cog):
         # Used to calculate inventory diffs on refreshes and to display all currently stored inventories.
         self.base_urls = {}
         self.bot = bot
-        self.db = self.bot.db1['Docs']
+        self.db = self.bot.db3['Docs']
         self.doc_symbols: Dict[str, DocItem] = {}  # Maps symbol names to objects containing their metadata.
         self.item_fetcher = batch_parser.BatchParser()
 
@@ -221,7 +221,7 @@ class Docs(commands.Cog):
         Get the `DocItem` and the symbol name used to fetch it from the `doc_symbols` dict.
         """
         doc_symbols = list(self.doc_symbols.items())
-        matches = fuzzy.finder(symbol_name, doc_symbols, key=lambda t: t[0], lazy=False)[:8]
+        matches = fuzzy.finder(symbol_name, doc_symbols, key=lambda t: t[0], lazy=False)[:3]
         return matches
 
     async def get_symbol_markdown(self, doc_item: DocItem) -> str:
@@ -230,7 +230,7 @@ class Docs(commands.Cog):
         `item_fetcher` is used to fetch the page and parse the
         HTML from it into Markdown.
         """
-        markdown = doc_cache.get(doc_item)
+        markdown = await doc_cache.get(doc_item)
         if markdown is None:
             try:
                 markdown = await self.item_fetcher.get_markdown(doc_item)
@@ -383,7 +383,7 @@ class Docs(commands.Cog):
 
         async with ctx.typing():
             await self.db.delete_one({'package': package_name})
-            doc_cache.delete(package_name)
+            await doc_cache.delete(package_name)
             await self.refresh_inventories()
         await ctx.send(f"Successfully deleted `{package_name}` and refreshed the inventories.")
 
@@ -417,7 +417,7 @@ class Docs(commands.Cog):
         package_name: PackageName
     ) -> None:
         """Clear the persistent deta cache for `package`."""
-        if doc_cache.delete(package_name):
+        if await doc_cache.delete(package_name):
             await ctx.send(f"Successfully cleared the cache for `{package_name}`.")
         else:
             await ctx.send("No keys matching the package found.")

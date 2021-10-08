@@ -1,13 +1,11 @@
 from typing import Optional, Union, Dict
-import os
 
-from deta import Deta
+from bot import database3
 
 
 class DocCache:
     def __init__(self) -> None:
-        self._db = Deta(os.getenv('DETA_KEY'))
-        self._cache = self._db.Base('DocsCache')
+        self._cache = database3['DocsCache']
         self.cache = {}
 
     def _add_to_local_cache(self, item, value: str) -> None:
@@ -17,21 +15,21 @@ class DocCache:
             self.cache[item.package] = {}
         self.cache[item.package][item.symbol_id] = value
 
-    def set(self, item, value: str) -> None:
+    async def set(self, item, value: str) -> None:
         """
         Set the Markdown `value` for the symbol `item`.
         All keys from a single page are stored together.
         """
         self._add_to_local_cache(item, value)
 
-        k: Union[Dict, None] = self._cache.get(item.package)
+        k: Union[Dict, None] = await self._cache.find_one({'_id': item.package})
         if k is None:
-            self._cache.insert({'data': {item.symbol_id: value}}, item.package)
+            await self._cache.insert_one({'_id': item.package, 'data': {item.symbol_id: value}})
             return
         k['data'][item.symbol_id] = value
-        self._cache.put(k, item.package)
+        await self._cache.update_one({'_id': item.package}, {'$set': {'data': k}})
 
-    def get(self, item) -> Optional[str]:
+    async def get(self, item) -> Optional[str]:
         """Return the Markdown content of the symbol `item` if it exists."""
 
         key: Union[Dict, None] = self.cache.get(item.package)
@@ -39,22 +37,21 @@ class DocCache:
             result = key.get(item.symbol_id)
             if result is not None:
                 return result
-
-        k: Union[Dict, None] = self._cache.get(item.package)
+        k: Union[Dict, None] = await self._cache.find_one({'_id': item.package})
         if k is not None:
             res = k['data'].get(item.symbol_id)
             if res is not None:
                 v = res
                 self._add_to_local_cache(item, v)
-            return res
+                return res
         return None
 
-    def delete(self, package: str) -> bool:
+    async def delete(self, package: str) -> bool:
         """Remove all values for `package`; return True if at least one key was deleted, False otherwise."""
-        v = self._cache.get(package)
+        v = await self._cache.find_one({'_id': package})
         if v is None:
             return None
-        self._cache.delete(package)
+        await self._cache.delete_one({'_id': package})
         try:
             self.cache.pop(package)
         except KeyError:
