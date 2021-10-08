@@ -196,7 +196,10 @@ class Intros(commands.Cog):
                                         except Exception:
                                             pass
 
-                                        await ctx.send("Intro edited successfully. You can see in <#750160850593251449> %s" % (ctx.author.mention))
+                                        await ctx.send(
+                                            "Intro edited successfully. You can see in <#750160850593251449> or in the link below "
+                                            f"{ctx.author.id}\nhttps://vihillcorner.deta.dev/users/{str(ctx.author.id)}?usr={str(ctx.author).replace(' ', '_')}"
+                                        )
 
                                         return
 
@@ -318,7 +321,10 @@ class Intros(commands.Cog):
                                     em.add_field(name="Relationship Status", value=status, inline=True)
                                     em.add_field(name="Interests", value=interests.content, inline=False)
                                     intro_msg = await introchannel.send(embed=em)
-                                    await ctx.send("Intro added successfully. You can see in <#750160850593251449>")
+                                    await ctx.send(
+                                        "Intro added successfully. You can see in <#750160850593251449> or in the link below "
+                                        f"{ctx.author.id}\nhttps://vihillcorner.deta.dev/users/{str(ctx.author.id)}?usr={str(ctx.author).replace(' ', '_')}"
+                                    )
 
                                     post = {
                                         "name": name.content,
@@ -383,7 +389,7 @@ class Intros(commands.Cog):
         user = member
 
         if results is not None:
-            await ctx.send(f'https://vihillcorner.deta.dev/users/{str(member.id)}?usr={member}')
+            await ctx.send(f'https://vihillcorner.deta.dev/users/{str(member.id)}?usr={str(member).replace(" ", "_")}')
 
         else:
             if ctx.author.id == user.id:
