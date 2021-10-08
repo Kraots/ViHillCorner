@@ -204,7 +204,7 @@ class Intros(commands.Cog):
                                         await ctx.send(
                                             f"Intro edited successfully. You can see in <#750160850593251449> or in the link below {ctx.author.mention}\n"
                                             f"{self.bot.url}intros/"
-                                            f"{str(ctx.author.id)}?usr={str(ctx.author.name).replace(' ', '_').removesuffix('_')}"
+                                            f"{str(ctx.author.id)}?usr={str(ctx.author.name).replace(' ', '%20').removesuffix('_')}"
                                         )
 
                                         return
@@ -330,7 +330,7 @@ class Intros(commands.Cog):
                                     await ctx.send(
                                         f"Intro added successfully. You can see in <#750160850593251449> or in the link below {ctx.author.mention}\n"
                                         f"{self.bot.url}intros/"
-                                        f"{str(ctx.author.id)}?usr={str(ctx.author.name).replace(' ', '_').removesuffix('_')}"
+                                        f"{str(ctx.author.id)}?usr={str(ctx.author.name).replace(' ', '%20').removesuffix('_')}"
                                     )
 
                                     post = {
@@ -397,7 +397,7 @@ class Intros(commands.Cog):
 
         if results is not None:
             await ctx.send(
-                f'{self.bot.url}intros/{str(member.id)}?usr={str(member.name).replace(" ", "_").removesuffix("_")}'
+                f'{self.bot.url}intros/{str(member.id)}?usr={str(member.name).replace(" ", "%20").removesuffix("_")}'
             )
 
         else:

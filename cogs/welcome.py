@@ -241,7 +241,7 @@ class Welcome(commands.Cog):
                                         await member.send(
                                             f"Intro added successfully. You can see in <#750160850593251449> or in the link below.\n"
                                             f"{self.bot.url}intros/"
-                                            f"{str(member.id)}?usr={str(member.name).replace(' ', '_').removesuffix('_')}"
+                                            f"{str(member.id)}?usr={str(member.name).replace(' ', '%20').removesuffix('_')}"
                                         )
 
                                         post = {
