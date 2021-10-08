@@ -220,10 +220,10 @@ class Logs(commands.Cog):
             return
 
         em = disnake.Embed(title='Emoji Updated', color=disnake.Color.yellow(), timestamp=datetime.datetime.utcnow())
-        added_emoji = 'None'
-        removed_emoji = 'None'
-        old_name = 'None'
-        new_name = 'None'
+        added_emoji = None
+        removed_emoji = None
+        old_name = None
+        new_name = None
         for emoji in before:
             if emoji.id in (e.id for e in after):
                 if emoji.name != ''.join([e.name for e in after if e.id == emoji.id]):
@@ -238,11 +238,11 @@ class Logs(commands.Cog):
             if emoji.id not in (e.id for e in before):
                 added_emoji = emoji
                 break
-        if len(new_name) != 0:
+        if new_name is not None:
             em.add_field(name='Emoji Name Changed', value=f'`{old_name}` **->** `{new_name}`', inline=False)
-        if len(added_emoji) != 0:
+        if added_emoji is not None:
             em.add_field(name='Added Emoji', value=str(added_emoji), inline=False)
-        if len(removed_emoji) == 2:
+        if removed_emoji is not None:
             em.add_field(name='Removed Emoji', value=f'[`{removed_emoji[0]}`]({removed_emoji[1]})', inline=False)
 
         if len(em.fields) != 0:
