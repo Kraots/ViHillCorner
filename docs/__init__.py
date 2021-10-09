@@ -1,7 +1,4 @@
-try:
-    from bot import ViHillCorner
-except Exception:
-    from main import ViHillCorner
+from main import ViHillCorner
 from .cache import DocCache
 
 MAX_SIGNATURE_AMOUNT = 3

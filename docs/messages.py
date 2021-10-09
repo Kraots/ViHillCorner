@@ -10,10 +10,7 @@ from utils.context import Context  # Custom Context, use from disnake.ext.comman
 
 from .utils import create_task
 
-try:
-    from bot import ViHillCorner
-except Exception:
-    from main import ViHillCorner
+from main import ViHillCorner
 
 MODERATION_ROLES = (
     754676705741766757,

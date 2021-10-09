@@ -19,10 +19,7 @@ from utils import fuzzy
 from .utils import create_task, Scheduler
 from . import NAMESPACE, PRIORITY_PACKAGES, batch_parser, doc_cache
 from .inventory_parser import InventoryDict, fetch_inventory
-try:
-    from bot import ViHillCorner
-except Exception:
-    from main import ViHillCorner
+from main import ViHillCorner
 
 # symbols with a group contained here will get the group prefixed on duplicates
 FORCE_PREFIX_GROUPS = (
