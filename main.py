@@ -49,7 +49,7 @@ class ViHillCorner(commands.Bot):
         self.db2 = database2
         self.db3 = database3
         self.base = deta.Base
-        self.url = 'https://vihillcorner.deta.dev/'
+        self.url = 'https://vihillcorner.deta.dev'
         self.reraise = reraise
         self.slash_reraise = slash_reraise
         self.confirm_view = ConfirmView

@@ -240,8 +240,7 @@ class Welcome(commands.Cog):
                                         intro_msg = await introchannel.send(embed=em)
                                         await member.send(
                                             f"Intro added successfully. You can see in <#750160850593251449> or in the link below.\n"
-                                            f"{self.bot.url}intros/"
-                                            f"{str(member.id)}?usr={str(member.name).replace(' ', '%20').removesuffix('_')}"
+                                            f"{self.bot.url}/intros/{str(member.id)}"
                                         )
 
                                         post = {
