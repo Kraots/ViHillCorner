@@ -86,6 +86,10 @@ class OnBanAppealJoin(commands.Cog):
 
                         else:
                             if str(reaction.emoji) == '<:agree:797537027469082627>':
+                                await mem.send(
+                                    'Hello, unfortunately your unban appeal has been rejected '
+                                    'and you have been banned from the ban appeal server.'
+                                )
                                 await mem.ban(reason=f"Denied unbanning (by {message.author})")
                                 await message.channel.delete()
 
