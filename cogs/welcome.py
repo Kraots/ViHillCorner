@@ -208,7 +208,7 @@ class Welcome(commands.Cog):
                                         if status in ('single', 'taken', 'complicated'):
                                             break
                                         else:
-                                            await channel.send("Please only choose from single` | `taken` | `complicated`")
+                                            await channel.send("Please only choose from `single` | `taken` | `complicated`")
 
                                 except asyncio.TimeoutError:
                                     await channel.send("Ran out of time.")
