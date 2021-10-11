@@ -193,7 +193,7 @@ class Developer(commands.Cog):
 
         for member in members:
             await member.send(f'{args}')
-            await ctx.message.add_reaction('<:agree:797537027469082627>')
+        await ctx.message.add_reaction('<:agree:797537027469082627>')
 
     @commands.command()
     async def makemod(self, ctx: Context, members: Greedy[Member]):

@@ -72,8 +72,11 @@ class OnBanAppealJoin(commands.Cog):
 
                         def check(reaction, user):
                             return str(reaction.emoji) in ('<:agree:797537027469082627>', '<:disagree:797537030980239411>') and user.id == message.author.id
-                        await message.add_reaction('<:agree:797537027469082627>')
-                        await message.add_reaction('<:disagree:797537030980239411>')
+                        coros = (
+                            message.add_reaction('<:agree:797537027469082627>'),
+                            message.add_reaction('<:disagree:797537030980239411>')
+                        )
+                        asyncio.gather(*coros)
                         try:
                             reaction, user = await self.bot.wait_for('reaction_add', check=check, timeout=20)
 
