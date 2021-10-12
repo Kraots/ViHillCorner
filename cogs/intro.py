@@ -191,7 +191,7 @@ class Intros(commands.Cog):
                                                 "gender": gender.content,
                                                 "status": status,
                                                 "interests": interests.content,
-                                                "intro_id": intro_message.id
+                                                "intro_id": str(intro_message.id)
                                             }, str(ctx.author.id)
                                         )
 
@@ -338,7 +338,7 @@ class Intros(commands.Cog):
                                         "gender": gender.content,
                                         "status": status,
                                         "interests": interests.content,
-                                        "intro_id": intro_msg.id
+                                        "intro_id": str(intro_msg.id)
                                     }
 
                                     self.db.insert(post, str(ctx.author.id))
@@ -365,12 +365,13 @@ class Intros(commands.Cog):
                 self.db.delete(str(ctx.author.id))
                 try:
                     guild = self.bot.get_guild(750160850077089853)
-                    intro_id = results['intro_id']
+                    intro_id = int(results['intro_id'])
                     channel = guild.get_channel(750160850593251449)
                     intro_message = await channel.fetch_message(intro_id)
                     await intro_message.delete()
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(results['intro_id'])
+                    print(e)
                 e = "Intro deleted. %s" % (ctx.author.mention)
                 return await msg.edit(content=e, view=view)
 

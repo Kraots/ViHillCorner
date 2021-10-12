@@ -250,7 +250,7 @@ class Welcome(commands.Cog):
                                             "gender": gender.content,
                                             "status": status,
                                             "interests": interests.content,
-                                            "intro_id": intro_msg.id
+                                            "intro_id": str(intro_msg.id)
                                         }
 
                                         self.db1.insert(post, str(member.id))
