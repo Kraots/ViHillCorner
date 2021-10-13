@@ -541,23 +541,6 @@ class Misc(commands.Cog):
         topics = random.choice(topicslist.topicsList)
         await ctx.send(topics)
 
-    async def send_spotify(self, ctx: Context, member: disnake.Member, index: int):
-        diff = relativedelta(datetime.datetime.utcnow(), member.activities[index].created_at.replace(tzinfo=None))
-
-        m = disnake.Embed(title=f"{member.name} activity:")
-        m.add_field(name="Listening to:", value=member.activities[index].title, inline=False)
-        m.add_field(name="By:", value=member.activities[index].artist, inline=False)
-        m.add_field(name="On:", value=member.activities[index].album, inline=False)
-        m1, s1 = divmod(int(member.activities[index].duration.seconds), 60)
-        song_length = '{:02}:{:02}'.format(m1, s1)
-        playing_for = '{:02}:{:02}'.format(diff.minutes, diff.seconds)
-        m.add_field(name="Duration:", value=f"{playing_for} - {song_length}")
-        m.add_field(name="Total Duration:", value=song_length, inline=False)
-        m.set_thumbnail(url=member.activities[index].album_cover_url)
-        m.color = disnake.Color.green()
-        view = SpotifyView(song_url=f'https://open.spotify.com/track/{member.activities[index].track_id}?si=xrjyVAxhS1y5rNHLM_WRww')
-        view.message = await ctx.send(embed=m, view=view)
-
     @commands.command()
     async def spotify(self, ctx: Context, member: disnake.Member = None):
         """See info about the member's spotify activity."""
@@ -566,23 +549,34 @@ class Misc(commands.Cog):
 
         if member.bot:
             await ctx.message.delete()
-            await ctx.send("Cannot check for spotify activity for bots! Use on members only!", delete_after=10)
-            return
+            return await ctx.send(
+                "Cannot check for spotify activity for bots! Use on members only!",
+                delete_after=10
+            )
 
-        try:
-            if isinstance(member.activities[0], disnake.activity.Spotify):
-                await self.send_spotify(ctx, member, 0)
+        for activity in member.activities:
+            if isinstance(activity, disnake.Spotify):
+                diff = relativedelta(
+                    datetime.datetime.utcnow(),
+                    activity.created_at.replace(tzinfo=None)
+                )
 
-            elif isinstance(member.activities[1], disnake.activity.Spotify):
-                await self.send_spotify(ctx, member, 1)
+                m = disnake.Embed(title=f"{member.name} activity:")
+                m.add_field(name="Listening to:", value=activity.title, inline=False)
+                m.add_field(name="By:", value=activity.artist, inline=False)
+                m.add_field(name="On:", value=activity.album, inline=False)
+                m1, s1 = divmod(int(activity.duration.seconds), 60)
+                song_length = '{:02}:{:02}'.format(m1, s1)
+                playing_for = '{:02}:{:02}'.format(diff.minutes, diff.seconds)
+                m.add_field(name="Duration:", value=f"{playing_for} - {song_length}")
+                m.add_field(name="Total Duration:", value=song_length, inline=False)
+                m.set_thumbnail(url=activity.album_cover_url)
+                m.color = disnake.Color.green()
+                view = SpotifyView(song_url=f'https://open.spotify.com/track/{activity.track_id}?si=xrjyVAxhS1y5rNHLM_WRww')
+                view.message = await ctx.send(embed=m, view=view)
+                return
 
-            elif isinstance(member.activities[2], disnake.activity.Spotify):
-                await self.send_spotify(ctx, member, 2)
-
-            else:
-                await ctx.send("No spotify activity detected!")
-        except IndexError:
-            await ctx.send("No spotify activity detected!")
+        await ctx.send("No spotify activity detected!")
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: disnake.Message):
