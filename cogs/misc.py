@@ -541,6 +541,23 @@ class Misc(commands.Cog):
         topics = random.choice(topicslist.topicsList)
         await ctx.send(topics)
 
+    async def send_spotify(self, ctx: Context, member: disnake.Member, index: int):
+        diff = relativedelta(datetime.datetime.utcnow(), member.activities[index].created_at.replace(tzinfo=None))
+
+        m = disnake.Embed(title=f"{member.name} activity:")
+        m.add_field(name="Listening to:", value=member.activities[index].title, inline=False)
+        m.add_field(name="By:", value=member.activities[index].artist, inline=False)
+        m.add_field(name="On:", value=member.activities[index].album, inline=False)
+        m1, s1 = divmod(int(member.activities[index].duration.seconds), 60)
+        song_length = '{:02}:{:02}'.format(m1, s1)
+        playing_for = '{:02}:{:02}'.format(diff.minutes, diff.seconds)
+        m.add_field(name="Duration:", value=f"{playing_for} - {song_length}")
+        m.add_field(name="Total Duration:", value=song_length, inline=False)
+        m.set_thumbnail(url=member.activities[index].album_cover_url)
+        m.color = disnake.Color.green()
+        view = SpotifyView(song_url=f'https://open.spotify.com/track/{member.activities[index].track_id}?si=xrjyVAxhS1y5rNHLM_WRww')
+        view.message = await ctx.send(embed=m, view=view)
+
     @commands.command()
     async def spotify(self, ctx: Context, member: disnake.Member = None):
         """See info about the member's spotify activity."""
@@ -554,54 +571,13 @@ class Misc(commands.Cog):
 
         try:
             if isinstance(member.activities[0], disnake.activity.Spotify):
-                diff = relativedelta(datetime.datetime.utcnow(), member.activities[0].created_at.replace(tzinfo=None))
-                m = disnake.Embed(title=f"{member.name} activity:")
-                m.add_field(name="Listening to:", value=member.activities[0].title, inline=False)
-                m.add_field(name="By:", value=member.activities[0].artist, inline=False)
-                m.add_field(name="On:", value=member.activities[0].album, inline=False)
-                m1, s1 = divmod(int(member.activities[0].duration.seconds), 60)
-                song_length = '{:02}:{:02}'.format(m1, s1)
-                playingfor = '{:02}:{:02}'.format(diff.minutes, diff.seconds)
-                m.add_field(name="Duration:", value=f"{playingfor} - {song_length}")
-                m.add_field(name="Total Duration:", value=song_length, inline=False)
-                m.set_thumbnail(url=member.activities[0].album_cover_url)
-                m.color = disnake.Color.green()
-                view = SpotifyView(song_url=f'https://open.spotify.com/track/{member.activities[0].track_id}?si=xrjyVAxhS1y5rNHLM_WRww')
-                view.message = await ctx.send(embed=m, view=view)
+                await self.send_spotify(ctx, member, 0)
 
             elif isinstance(member.activities[1], disnake.activity.Spotify):
-                diff = relativedelta(datetime.datetime.utcnow(), member.activities[1].created_at.replace(tzinfo=None))
-
-                m = disnake.Embed(title=f"{member.name} activity:")
-                m.add_field(name="Listening to:", value=member.activities[1].title, inline=False)
-                m.add_field(name="By:", value=member.activities[1].artist, inline=False)
-                m.add_field(name="On:", value=member.activities[1].album, inline=False)
-                m2, s2 = divmod(int(member.activities[1].duration.seconds), 60)
-                song_length = '{:02}:{:02}'.format(m2, s2)
-                playingfor = '{:02}:{:02}'.format(diff.minutes, diff.seconds)
-                m.add_field(name="Duration:", value=f"{playingfor} - {song_length}")
-                m.add_field(name="Total Duration:", value=song_length, inline=False)
-                m.set_thumbnail(url=member.activities[1].album_cover_url)
-                m.color = disnake.Color.green()
-                view = SpotifyView(song_url=f'https://open.spotify.com/track/{member.activities[1].track_id}?si=xrjyVAxhS1y5rNHLM_WRww')
-                view.message = await ctx.send(embed=m, view=view)
+                await self.send_spotify(ctx, member, 1)
 
             elif isinstance(member.activities[2], disnake.activity.Spotify):
-                diff = relativedelta(datetime.datetime.utcnow(), member.activities[2].created_at.replace(tzinfo=None))
-
-                m = disnake.Embed(title=f"{member.name} activity:")
-                m.add_field(name="Listening to:", value=member.activities[2].title, inline=False)
-                m.add_field(name="By:", value=member.activities[2].artist, inline=False)
-                m.add_field(name="On:", value=member.activities[2].album, inline=False)
-                m2, s2 = divmod(int(member.activities[2].duration.seconds), 60)
-                song_length = '{:02}:{:02}'.format(m2, s2)
-                playingfor = '{:02}:{:02}'.format(diff.minutes, diff.seconds)
-                m.add_field(name="Duration:", value=f"{playingfor} - {song_length}")
-                m.add_field(name="Total Duration:", value=song_length, inline=False)
-                m.set_thumbnail(url=member.activities[2].album_cover_url)
-                m.color = disnake.Color.green()
-                view = SpotifyView(song_url=f'https://open.spotify.com/track/{member.activities[2].track_id}?si=xrjyVAxhS1y5rNHLM_WRww')
-                view.message = await ctx.send(embed=m, view=view)
+                await self.send_spotify(ctx, member, 2)
 
             else:
                 await ctx.send("No spotify activity detected!")
