@@ -110,7 +110,7 @@ class Reminders(commands.Cog):
         """Delete all of your reminders."""
 
         results = await self.db.find_one({"userID": ctx.author.id})
-        if results is None:
+        if results is not None:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
             view.message = msg = await ctx.send("Are you sure you want to clear your reminders? %s" % (ctx.author.mention), view=view)
             await view.wait()
@@ -140,8 +140,7 @@ class Reminders(commands.Cog):
             channelID = result['channel']
 
             if currentTime >= expireDate:
-                guild = self.bot.get_guild(750160850077089853)
-                remindChannel = guild.get_channel(channelID)
+                remindChannel = self.bot.get_channel(channelID)
                 msg = f"<@!{user}>, **{time.human_timedelta(remindedWhen)}**: {remindWhat}\n\n{remindUrl}"
                 await remindChannel.send(msg)
                 await self.db.delete_one({"_id": remindID})
