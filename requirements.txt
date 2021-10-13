@@ -2,9 +2,6 @@ akinator.py
 aiodns
 aiohttp
 async-cse
-async-tio
-braceexpand
-chardet
 git+https://github.com/Kraots/jishaku
 git+https://github.com/EQUENOS/disnake
 python-dateutil
