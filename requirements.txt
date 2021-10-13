@@ -1,5 +1,6 @@
 akinator.py
 aiodns
+dnspython
 aiohttp
 async-cse
 git+https://github.com/Kraots/jishaku
