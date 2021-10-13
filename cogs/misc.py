@@ -556,7 +556,7 @@ class Misc(commands.Cog):
             if isinstance(member.activities[0], disnake.activity.Spotify):
                 diff = relativedelta(datetime.datetime.utcnow(), member.activities[0].created_at.replace(tzinfo=None))
                 m = disnake.Embed(title=f"{member.name} activity:")
-                m.add_field(name="Listening to :", value=member.activities[0].title, inline=False)
+                m.add_field(name="Listening to:", value=member.activities[0].title, inline=False)
                 m.add_field(name="By:", value=member.activities[0].artist, inline=False)
                 m.add_field(name="On:", value=member.activities[0].album, inline=False)
                 m1, s1 = divmod(int(member.activities[0].duration.seconds), 60)
@@ -573,7 +573,7 @@ class Misc(commands.Cog):
                 diff = relativedelta(datetime.datetime.utcnow(), member.activities[1].created_at.replace(tzinfo=None))
 
                 m = disnake.Embed(title=f"{member.name} activity:")
-                m.add_field(name="Listening to :", value=member.activities[1].title, inline=False)
+                m.add_field(name="Listening to:", value=member.activities[1].title, inline=False)
                 m.add_field(name="By:", value=member.activities[1].artist, inline=False)
                 m.add_field(name="On:", value=member.activities[1].album, inline=False)
                 m2, s2 = divmod(int(member.activities[1].duration.seconds), 60)
@@ -590,7 +590,7 @@ class Misc(commands.Cog):
                 diff = relativedelta(datetime.datetime.utcnow(), member.activities[2].created_at.replace(tzinfo=None))
 
                 m = disnake.Embed(title=f"{member.name} activity:")
-                m.add_field(name="Listening to :", value=member.activities[2].title, inline=False)
+                m.add_field(name="Listening to:", value=member.activities[2].title, inline=False)
                 m.add_field(name="By:", value=member.activities[2].artist, inline=False)
                 m.add_field(name="On:", value=member.activities[2].album, inline=False)
                 m2, s2 = divmod(int(member.activities[2].duration.seconds), 60)
