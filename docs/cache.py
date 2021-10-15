@@ -26,8 +26,8 @@ class DocCache:
         if k is None:
             await self._cache.insert_one({'_id': item.package, 'data': {item.symbol_id: value}})
             return
-        k.pop('_id')
-        k['data'][item.symbol_id] = value
+        k = k['data']
+        k[item.symbol_id] = value
         await self._cache.update_one({'_id': item.package}, {'$set': {'data': k}})
 
     async def get(self, item) -> Optional[str]:
