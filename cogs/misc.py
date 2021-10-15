@@ -405,6 +405,11 @@ class Misc(commands.Cog):
     def transform_rtfm_language_key(self, ctx: Context, prefix):
         return prefix
 
+    @commands.command(name='vihillcorner', aliases=('vhc',))
+    async def _vhc(self, ctx: Context):
+        """Sends the link to the server's page."""
+        await ctx.send(self.bot.url)
+
     @commands.command()
     async def botinfo(self, ctx: Context):
         """Get some info of the bot"""

@@ -21,11 +21,6 @@ class Intros(commands.Cog):
     def display_emoji(self) -> str:
         return '🙌'
 
-    @commands.command(name='vhc')
-    async def _vhc(self, ctx: Context):
-        """Sends the link to the server's page."""
-        await ctx.send(self.bot.url)
-
     @commands.group(invoke_without_command=True, case_insensitive=True, ignore_extra=False)
     @commands.cooldown(1, 360, commands.BucketType.user)
     async def intro(self, ctx: Context):
