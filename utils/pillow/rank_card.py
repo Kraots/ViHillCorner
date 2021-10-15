@@ -47,7 +47,10 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
 
     img = Image.new("RGBA", (1000, 350), GRAY)
 
-    await user.avatar.with_static_format('jpg').save(fp='avatar.png')
+    if user.avatar is None:
+        await user.display_avatar.save(fp='avatar.png')
+    else:
+        await user.avatar.with_static_format('jpg').save(fp='avatar.png')
     av = Image.open('avatar.png')
     av = av.resize((250, 250))
     h, w = av.size
