@@ -572,7 +572,7 @@ class Misc(commands.Cog):
                 m.add_field(name="Total Duration:", value=song_length, inline=False)
                 m.set_thumbnail(url=activity.album_cover_url)
                 m.color = disnake.Color.green()
-                view = SpotifyView(song_url=f'https://open.spotify.com/track/{activity.track_id}?si=xrjyVAxhS1y5rNHLM_WRww')
+                view = SpotifyView(song_url=f'https://open.spotify.com/track/{activity.track_id}')
                 view.message = await ctx.send(embed=m, view=view)
                 return
 
