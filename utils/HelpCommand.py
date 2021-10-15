@@ -9,18 +9,18 @@ import inspect
 
 
 class GroupHelpPageSource(menus.ListPageSource):
-    def __init__(self, group: Union[commands.Group, commands.Cog], commands: List[commands.Command], *, prefix: str):
+    def __init__(self, group: Union[commands.Group, commands.Cog], commands: List[commands.Command], *, prefix: str, aliases: List[str] = None):
         super().__init__(entries=commands, per_page=6)
         self.group = group
         self.prefix = prefix
         self.title = f'{self.group.qualified_name} Commands'
-        self.description = self.group.description
+        self.description = ', '.join(self.group.aliases) if aliases else self.group.description
 
     async def format_page(self, menu, commands):
         embed = disnake.Embed(title=self.title, description=self.description, colour=color.lightpink)
 
         for command in commands:
-            signature = f'{command.qualified_name} {command.signature}'
+            signature = f'```{self.prefix}{command.qualified_name} {command.signature}\n```'
             embed.add_field(name=signature, value=command.short_doc or 'No help given...', inline=False)
 
         maximum = self.get_max_pages()
@@ -172,15 +172,8 @@ class PaginatedHelpCommand(commands.HelpCommand):
 
     def get_command_signature(self, command):
         parent = command.full_parent_name
-        if len(command.aliases) > 0:
-            aliases = '|'.join(command.aliases)
-            fmt = f'[{command.name}|{aliases}]'
-            if parent:
-                fmt = f'{parent} {fmt}'
-            alias = fmt
-        else:
-            alias = command.name if not parent else f'{parent} {command.name}'
-        return f'{alias} {command.signature}'
+        cmd = command.name if not parent else f'{parent} {command.name}'
+        return f'```{self.context.clean_prefix}{cmd} {command.signature}\n```'
 
     async def send_bot_help(self, mapping):
         bot = self.context.bot
@@ -210,10 +203,21 @@ class PaginatedHelpCommand(commands.HelpCommand):
 
     def common_command_formatting(self, embed_like, command):
         embed_like.title = self.get_command_signature(command)
+        set_aliases = False
+        alias = command.aliases
+        if alias:
+            try:
+                embed_like.add_field(name="Aliases", value=", ".join(alias), inline=False)
+                set_aliases = True
+            except AttributeError:
+                pass
         if command.description:
             embed_like.description = f'{command.description}\n\n{command.help}'
         else:
             embed_like.description = command.help or 'No help found...'
+        if set_aliases is False:
+            if alias:
+                embed_like.description += f'\n**Aliases**\n{", ".join(alias)}'
 
     async def send_command_help(self, command):
         # No pagination necessary for a single command.
