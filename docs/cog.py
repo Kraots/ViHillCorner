@@ -60,6 +60,7 @@ class Docs(commands.Cog):
         # Used to calculate inventory diffs on refreshes and to display all currently stored inventories.
         self.base_urls = {}
         self.bot = bot
+        self.prefix = '!'
         self.db = self.bot.db3['Docs']
         self.doc_symbols: Dict[str, DocItem] = {}  # Maps symbol names to objects containing their metadata.
         self.item_fetcher = batch_parser.BatchParser()
@@ -74,6 +75,9 @@ class Docs(commands.Cog):
             name="Doc inventory init",
             event_loop=self.bot.loop
         )
+
+    async def cog_check(self, ctx: commands.Context):
+        return ctx.prefix == self.prefix
 
     @property
     def display_emoji(self) -> str:
