@@ -163,7 +163,8 @@ class NSFW(commands.Cog):
                     await self.bot.owner.send(f"`{ctx.command} {categ}` returned\n**{err}**")
                     return await ctx.send("There has been an error from the **API**, please try again later.")
                 content = await resp.json()
-                url = content['url']
+                data = content['tags']
+            url = data[0]['images'][0]['url']
             em = disnake.Embed(color=color.pastel)
             em.set_image(url=url)
             em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
