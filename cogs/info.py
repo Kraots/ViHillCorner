@@ -230,12 +230,12 @@ class Info(commands.Cog):
     @commands.command()
     @commands.has_any_role(*all_roles)
     async def age(self, ctx: Context, members: Greedy[Member] = None):
-        """Warn the member that they're under disnake's TOS minimal age and/or to not joke about their age."""
+        """Warn the member that they're under discord's TOS minimal age and/or to not joke about their age."""
 
         em = disnake.Embed(
             color=disnake.Color.red(),
-            title="Warning:",
-            description="Please do not joke about being under the minimum age for disnake as per its ToS."
+            title="Warning",
+            description="Please do not joke about being under the minimum age for discord as per its ToS."
         )
         mention_list = []
 
