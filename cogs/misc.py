@@ -1,36 +1,31 @@
-from disnake.ext import commands
-import disnake
 import sys
-import async_cse as cse
-import utils.colors as color
-from utils.helpers import package_version, profile
 import os
 import re
 import zlib
 import io
-from utils import fuzzy, time, embedlinks, topicslist
 import random
 import datetime
+
 from dateutil.relativedelta import relativedelta
-from utils.paginator import SimplePages, RoboPages, CustomMenu
+import async_cse as cse
 import pymongo
-from disnake.ext.commands import Greedy
+
+import disnake
 from disnake import Member
-from utils import menus
-from utils.CommandButtonRoles import ButtonRoleView, ButtonRoleViewOwner
+from disnake.ui import View, Button
+from disnake.ext import commands
+from disnake.ext.commands import Greedy
+
+import utils.colors as color
+from utils import fuzzy, time, embedlinks, topicslist, menus
 from utils.context import Context
+from utils.helpers import package_version, profile
+from utils.paginator import SimplePages, RoboPages, CustomMenu
+from utils.CommandButtonRoles import ButtonRoleView, ButtonRoleViewOwner
+
 from main import ViHillCorner
 
 filter_invite = re.compile(r"(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
-
-
-class SpotifyView(disnake.ui.View):
-    def __init__(self, song_url: str, *, timeout=180):
-        super().__init__(timeout=timeout)
-        self.add_item(disnake.ui.Button(label='Song', url=song_url))
-
-    async def on_timeout(self):
-        await self.message.edit(view=None)
 
 
 class CalculatorView(disnake.ui.View):
@@ -577,9 +572,12 @@ class Misc(commands.Cog):
                 m.add_field(name="Total Duration:", value=song_length, inline=False)
                 m.set_thumbnail(url=activity.album_cover_url)
                 m.color = disnake.Color.green()
-                view = SpotifyView(song_url=f'https://open.spotify.com/track/{activity.track_id}')
-                view.message = await ctx.send(embed=m, view=view)
-                return
+                view = View()
+                button = Button(
+                    label='Song',
+                    url=f'https://open.spotify.com/track/{activity.track_id}')
+                view.add_item(button)
+                return await ctx.send(embed=m, view=view)
 
         await ctx.send("No spotify activity detected!")
 
