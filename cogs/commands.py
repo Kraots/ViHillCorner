@@ -1,16 +1,20 @@
-import disnake
-from disnake.ext import commands
-import psutil
 import os
-import utils.colors as color
-from utils import time
-import datetime
 import random
+import datetime
 import sys
+import psutil
+import inspect
+
 import urllib.request
 import urllib.parse
-import inspect
+
+import disnake
+from disnake.ext import commands
+
+from utils.colors import Colours
 from utils.context import Context
+from utils import time
+
 from main import ViHillCorner
 
 ss_key = os.getenv("SS_KEY")
@@ -84,7 +88,7 @@ class General(commands.Cog):
         else:
             await self.bot.loop.run_in_executor(None, take_ss, url)
             f = disnake.File(fp='ss.png', filename='ss.png')
-            em = disnake.Embed(color=color.lightpink, title="Here's your screen shot of `{}`".format(url))
+            em = disnake.Embed(color=Colours.light_pink, title="Here's your screen shot of `{}`".format(url))
             em.set_image(url='attachment://ss.png')
             em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.display_avatar)
             await ctx.send(embed=em, file=f, reference=ctx.replied_reference)
@@ -94,7 +98,7 @@ class General(commands.Cog):
         """Sends the link for the permission calculator for bots."""
 
         em = disnake.Embed(
-            color=color.lightpink,
+            color=Colours.light_pink,
             title="Here's the link to the permission calculator for bots.",
             description="https://discordapi.com/permissions.html#8589934591"
         )
@@ -104,7 +108,7 @@ class General(commands.Cog):
     async def dev_portal(self, ctx: Context):
         """Sends a link for the developer portal."""
 
-        em = disnake.Embed(color=color.lightpink, title=" Here's the link to dev portal. ", description="https://discord.com/developers/applications")
+        em = disnake.Embed(color=Colours.light_pink, title=" Here's the link to dev portal. ", description="https://discord.com/developers/applications")
         await ctx.send(embed=em, reference=ctx.replied_reference)
 
     @commands.command()
@@ -119,19 +123,19 @@ class General(commands.Cog):
         if member.id == 374622847672254466:
             x = "2020-09-01 01:11"
             kraots_joined = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
-            embed = disnake.Embed(color=color.lightpink)
+            embed = disnake.Embed(color=Colours.light_pink)
             embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(kraots_joined)}")
             await ctx.send(embed=embed, reference=ctx.replied_reference)
 
         elif member.id == 747329236695777340:
             x = "2020-09-30 12:12"
             twil_joined = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
-            embed = disnake.Embed(color=color.lightpink)
+            embed = disnake.Embed(color=Colours.light_pink)
             embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(twil_joined)}")
             await ctx.send(embed=embed, reference=ctx.replied_reference)
 
         else:
-            embed = disnake.Embed(color=color.lightpink)
+            embed = disnake.Embed(color=Colours.light_pink)
             embed.add_field(name='Join Date:', value=f"{member} **--->** {format_date(member.joined_at.replace(tzinfo=None))}")
             await ctx.send(embed=embed, reference=ctx.replied_reference)
 
@@ -145,7 +149,7 @@ class General(commands.Cog):
         def format_date(dt):
             return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-        embed = disnake.Embed(color=color.lightpink)
+        embed = disnake.Embed(color=Colours.light_pink)
         embed.add_field(name='Create Date:', value=f"{user} **--->** {format_date(user.created_at.replace(tzinfo=None))}")
         await ctx.send(embed=embed, reference=ctx.replied_reference)
 
@@ -153,7 +157,7 @@ class General(commands.Cog):
     async def invite(self, ctx: Context):
         """Get the invite for the server."""
 
-        inv = disnake.Embed(title="https://discord.gg/Uf2kA8q", color=color.lightpink)
+        inv = disnake.Embed(title="https://discord.gg/Uf2kA8q", color=Colours.light_pink)
         inv.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
 
         await ctx.send(embed=inv, reference=ctx.replied_reference)
@@ -176,7 +180,7 @@ class General(commands.Cog):
 
         member = member or ctx.author
 
-        avatar = disnake.Embed(title=f"Here's {member.display_name}'s avatar", url=member.display_avatar, color=color.blue)
+        avatar = disnake.Embed(title=f"Here's {member.display_name}'s avatar", url=member.display_avatar, color=Colours.blue)
         avatar.set_image(url=member.display_avatar)
         avatar.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
@@ -188,7 +192,7 @@ class General(commands.Cog):
 
         await ctx.message.delete()
 
-        embed = disnake.Embed(color=color.lightpink)
+        embed = disnake.Embed(color=Colours.light_pink)
         embed.set_image(url=emoji.url)
         embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar)
 
@@ -199,7 +203,7 @@ class General(commands.Cog):
         """See the server's ad."""
 
         await ctx.message.delete()
-        ad = disnake.Embed(color=color.lightpink, title="Here's the ad to the server:", description=addd)
+        ad = disnake.Embed(color=Colours.light_pink, title="Here's the ad to the server:", description=addd)
         ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
         await ctx.send(embed=ad, reference=ctx.replied_reference)
@@ -209,7 +213,7 @@ class General(commands.Cog):
         """See the server's ad but in raw format."""
 
         await ctx.message.delete()
-        ad = disnake.Embed(color=color.lightpink, title="Here's the raw ad version of the server:", description="```%s```" % (addd))
+        ad = disnake.Embed(color=Colours.light_pink, title="Here's the raw ad version of the server:", description="```%s```" % (addd))
         ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
         await ctx.send(embed=ad, reference=ctx.replied_reference)

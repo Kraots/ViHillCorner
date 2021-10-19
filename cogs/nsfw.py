@@ -1,6 +1,6 @@
 import disnake
 from disnake.ext import commands
-import utils.colors as color
+from utils.colors import Colours
 from utils.helpers import NSFW
 from disnake.ext.commands import Greedy
 from disnake import Member
@@ -81,14 +81,14 @@ class NSFW(commands.Cog):
                 "**•** femdom **•** cuckold **•** slap **•** ass **•** ahegao **•** incest **•** manga **•** uniform **•** public **•** jahy " \
                 "**•** panties **•** creampie **•** boobjob **•** orgy **•** masturbation **•** yuri **•** bdsm **•** thighs **•** nsfwMW " \
                 "**•** gangbang **•** tentacles **•** hnt_gifs"
-            em = disnake.Embed(title="Here are all the categories for hentai 0", description=categs, color=color.blue)
+            em = disnake.Embed(title="Here are all the categories for hentai 0", description=categs, color=Colours.blue)
             em.set_footer(text='They are all case sensitive!')
             return await ctx.send(embed=em)
 
         try:
             result = hmtai.useHM(version='2_9', category=category)
 
-            em = disnake.Embed(color=color.pastel)
+            em = disnake.Embed(color=Colours.pastel)
             em.set_image(url=result)
             em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
             await ctx.send(embed=em)
@@ -100,7 +100,7 @@ class NSFW(commands.Cog):
 
         if category is None:
             categs = "hentai **•** paizuri **•** yuri **•** thighs **•** neko **•** anal **•** hmidriff **•** kitsune **•** tentacle"
-            em = disnake.Embed(color=color.blue, title="Here are all the categories for hentai 1:", description=categs)
+            em = disnake.Embed(color=Colours.blue, title="Here are all the categories for hentai 1:", description=categs)
             em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=em)
 
@@ -131,7 +131,7 @@ class NSFW(commands.Cog):
                     return await ctx.send("There has been an error from the **API**, please try again later.")
                 content = await resp.json()
                 url = content['message']
-            em = disnake.Embed(color=color.pastel)
+            em = disnake.Embed(color=Colours.pastel)
             em.set_image(url=url)
             em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
             await ctx.send(embed=em)
@@ -143,7 +143,7 @@ class NSFW(commands.Cog):
 
         if category is None:
             categs = "ass **•** ecchi **•** ero **•** hentai **•** maid **•** milf **•** oppai **•** oral **•** paizuri **•** selfies **•** uniform"
-            em = disnake.Embed(color=color.blue, title="Here are all the categories for hentai 2:", description=categs)
+            em = disnake.Embed(color=Colours.blue, title="Here are all the categories for hentai 2:", description=categs)
             em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=em)
 
@@ -165,7 +165,7 @@ class NSFW(commands.Cog):
                 content = await resp.json()
                 data = content['tags']
             url = data[0]['images'][0]['url']
-            em = disnake.Embed(color=color.pastel)
+            em = disnake.Embed(color=Colours.pastel)
             em.set_image(url=url)
             em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
             await ctx.send(embed=em)
@@ -186,7 +186,7 @@ class NSFW(commands.Cog):
         """
 
         if API is None:
-            em = disnake.Embed(color=color.blue, description="""
+            em = disnake.Embed(color=Colours.blue, description="""
                 APIs:
                 \u2800 • **0**
                 \u2800 • **1**
@@ -220,7 +220,7 @@ class NSFW(commands.Cog):
 
         if category is None:
             categs = "ass **•** thigh **•** gif **•** boobs **•** pussy **•** anal **•** feet **•** wild **•** 4k **•** bj/blowjob"
-            em = disnake.Embed(color=color.blue, title="Here are all the categories for real porn:", description=categs)
+            em = disnake.Embed(color=Colours.blue, title="Here are all the categories for real porn:", description=categs)
             em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
             return await ctx.send(embed=em)
 
@@ -246,7 +246,7 @@ class NSFW(commands.Cog):
                     return await ctx.send("There has been an error from the **API**, please try again later.")
                 content = await resp.json()
                 url = content['message']
-            em = disnake.Embed(color=color.pastel)
+            em = disnake.Embed(color=Colours.pastel)
             em.set_image(url=url)
             em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
             await ctx.send(embed=em)

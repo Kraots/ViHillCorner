@@ -1,6 +1,6 @@
 import disnake
 from disnake.ext import commands
-import utils.colors as color
+from utils.colors import Colours
 from utils.pillow import rank_card
 from utils.paginator import RoboPages, FieldPageSource
 import pymongo
@@ -262,7 +262,7 @@ class Levels(commands.Cog):
         modMultiplier = float(kraotsDocument['mod xp multiplier'])
         kraotsMultiplier = float(kraotsDocument['kraots xp multiplier'])
 
-        em = disnake.Embed(color=color.lightpink, title="**Current Multipliers:**")
+        em = disnake.Embed(color=Colours.light_pink, title="**Current Multipliers:**")
         em.add_field(name="Mod/Staff", value="%sx (%s XP per message)" % (modMultiplier, 20 * modMultiplier), inline=False)
         em.add_field(name="Server Boosters", value="%sx (%s XP per message)" % (boostersMultiplier, 15 * boostersMultiplier), inline=False)
         em.add_field(name="Members", value="%sx (%s XP per message)" % (membersMultiplier, 5 * membersMultiplier), inline=False)

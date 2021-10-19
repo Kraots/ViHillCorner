@@ -1,6 +1,6 @@
 import disnake
 import asyncio
-import utils.colors as color
+from utils.colors import Colours
 from utils import time
 from disnake.ext import commands
 from traceback import format_exception
@@ -29,7 +29,7 @@ def profile(ctx, user):
             return 'N/A'
         return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-    em = disnake.Embed(timestamp=ctx.message.created_at.replace(tzinfo=None), colour=color.lightpink)
+    em = disnake.Embed(timestamp=ctx.message.created_at.replace(tzinfo=None), colour=Colours.light_pink)
     em.add_field(name='User ID', value=user.id, inline=False)
     if isinstance(user, disnake.Member):
         em.add_field(name='Nick', value=user.nick, inline=False)
@@ -151,7 +151,7 @@ async def reraise(ctx, error):
             em = disnake.Embed(
                 title='Oops... An error has occured.',
                 description='An error has occured while invoking this command and has been sent to my master for a fix.',
-                color=color.red
+                color=Colours.red
             )
             await ctx.send(embed=em)
         else:
@@ -182,7 +182,7 @@ async def slash_reraise(inter: disnake.ApplicationCommandInteraction, error):
             em = disnake.Embed(
                 title='Oops... An error has occured.',
                 description='An error has occured while invoking this command and has been sent to my master for a fix.',
-                color=color.red
+                color=Colours.red
             )
             await inter.response.send_message(embed=em, ephemeral=True)
         else:

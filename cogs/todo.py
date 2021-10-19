@@ -1,5 +1,5 @@
 from disnake.ext import commands
-import utils.colors as color
+from utils.colors import Colours
 from utils.paginator import ToDoMenu
 from utils.context import Context
 import disnake
@@ -16,7 +16,7 @@ class ToDoPageEntry:
 
 
 class ToDoPages(ToDoMenu):
-    def __init__(self, ctx: Context, entries, *, per_page=5, title="", color=color.red, author_name=None, author_icon_url=None):
+    def __init__(self, ctx: Context, entries, *, per_page=5, title="", color=Colours.red, author_name=None, author_icon_url=None):
         converted = [ToDoPageEntry(entry) for entry in entries]
         super().__init__(ctx=ctx, entries=converted, per_page=per_page, title=title, color=color, author_name=author_name, author_icon_url=author_icon_url)
 

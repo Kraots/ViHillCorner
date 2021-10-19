@@ -1,7 +1,7 @@
 import disnake
 from disnake.ext import commands
 from utils.paginator import CustomMenu
-import utils.colors as color
+from utils.colors import Colours
 from mal import Anime as AnimeSearchId
 from mal import AnimeSearch
 import textwrap
@@ -51,7 +51,7 @@ class Anime(commands.Cog):
         user = member
         if results is not None:
             entries = results['alist']
-            p = AlistPages(ctx=ctx, entries=entries, per_page=10, title=f"Here's `{member.display_name}`'s anime list:", color=color.reds)
+            p = AlistPages(ctx=ctx, entries=entries, per_page=10, title=f"Here's `{member.display_name}`'s anime list:", color=Colours.reds)
             await p.start()
 
         else:

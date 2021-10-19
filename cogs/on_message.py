@@ -1,7 +1,7 @@
 import disnake
 from disnake.ext import commands
 import asyncio
-import utils.colors as color
+from utils.colors import Colours
 import datetime
 import string
 from main import ViHillCorner
@@ -52,7 +52,7 @@ class on_message(commands.Cog):
 
         else:
             em = disnake.Embed(
-                color=color.red,
+                color=Colours.red,
                 description=f'[Message]({message.jump_url}) deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```',
                 timestamp=datetime.datetime.utcnow()
             )
@@ -76,7 +76,7 @@ class on_message(commands.Cog):
             return
         else:
             em = disnake.Embed(
-                color=color.yellow,
+                color=Colours.yellow,
                 description=f'[Message]({before.jump_url}) edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```',  # noqa
                 timestamp=datetime.datetime.utcnow()
             )
@@ -101,7 +101,7 @@ class on_message(commands.Cog):
             em = disnake.Embed(
                 title=f'{message.author}:',
                 description=f'{message.content}',
-                color=color.inviscolor,
+                color=Colours.invisible,
                 timestamp=message.created_at.replace(tzinfo=None)
             )
             em.set_footer(text=f'User ID: {message.author.id}')

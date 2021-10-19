@@ -3,7 +3,7 @@ from disnake.ext import commands
 import asyncio
 from utils.paginator import SimplePages
 import datetime
-import utils.colors as color
+from utils.colors import Colours
 from utils.context import Context
 from main import ViHillCorner
 
@@ -53,7 +53,7 @@ class Snippets(commands.Cog):
         """
 
         entries = await self.db.find().to_list(100000)
-        p = SnippetPages(ctx=ctx, entries=entries, per_page=7, color=color.reds)
+        p = SnippetPages(ctx=ctx, entries=entries, per_page=7, color=Colours.reds)
         await p.start()
 
     @snippet.command(name='search')
@@ -63,7 +63,7 @@ class Snippets(commands.Cog):
         query = str(query).lower()
         entries = await self.db.find({'_id': {'$regex': query, '$options': 'i'}}).to_list(100000)
         try:
-            p = SnippetPages(ctx=ctx, entries=entries, per_page=7, color=color.reds)
+            p = SnippetPages(ctx=ctx, entries=entries, per_page=7, color=Colours.reds)
             await p.start()
         except Exception:
             await ctx.send('No snippets found. %s' % (ctx.author.mention))
@@ -74,7 +74,7 @@ class Snippets(commands.Cog):
 
         results = await self.db.find().sort([("uses_count", -1)]).to_list(10)
         index = 0
-        em = disnake.Embed(color=color.reds)
+        em = disnake.Embed(color=Colours.reds)
         for result in results:
             snippet_name = result['_id']
             uses = result['uses_count']
@@ -92,7 +92,7 @@ class Snippets(commands.Cog):
         member = member or ctx.author
         entries = await self.db.find({'snippet_credits': member.id}).to_list(100000)
         try:
-            p = SnippetPages(ctx=ctx, entries=entries, per_page=7, color=color.reds)
+            p = SnippetPages(ctx=ctx, entries=entries, per_page=7, color=Colours.reds)
             await p.start()
         except Exception:
             await ctx.send('You do not own any snippets. %s' % (ctx.author.mention))
@@ -123,7 +123,7 @@ class Snippets(commands.Cog):
 
         snippet_owner = self.bot.get_user(snippet_owner_id)
 
-        em = disnake.Embed(color=color.reds, title=snippet_name)
+        em = disnake.Embed(color=Colours.reds, title=snippet_name)
         em.set_author(name=snippet_owner, url=snippet_owner.display_avatar, icon_url=snippet_owner.display_avatar)
         em.add_field(name="Owner", value=snippet_owner.mention)
         em.add_field(name="Uses", value=snippet_uses)
@@ -269,7 +269,7 @@ class Snippets(commands.Cog):
 
             await self.db.delete_one({"_id": data['_id']})
 
-            em = disnake.Embed(title="Snippet Removed", color=color.red)
+            em = disnake.Embed(title="Snippet Removed", color=Colours.red)
             em.add_field(name="Name", value=the_snippet_name)
             em.add_field(name="Owner", value=snippet_owner)
             em.add_field(name="Uses", value=f"`{uses}`", inline=False)

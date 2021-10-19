@@ -1,7 +1,7 @@
 import disnake
 from disnake.ext import commands
 import datetime
-import utils.colors as color
+from utils.colors import Colours
 from utils import time
 from utils.context import Context
 from main import ViHillCorner
@@ -145,7 +145,7 @@ class Marriage(commands.Cog):
                         return 'N/A'
                     return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-                em = disnake.Embed(color=color.lightpink, title="You are married to `{}` :tada: :tada:".format(the_married_to_user.display_name))
+                em = disnake.Embed(color=Colours.light_pink, title="You are married to `{}` :tada: :tada:".format(the_married_to_user.display_name))
                 em.add_field(name="_ _ \nMarried since:", value="`{}`".format(format_date(user_married_to_since)), inline=False)
                 em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
                 await ctx.send(embed=em)
@@ -156,7 +156,7 @@ class Marriage(commands.Cog):
                     return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
                 em = disnake.Embed(
-                    color=color.lightpink,
+                    color=Colours.light_pink,
                     title="`{}` is married to `{}` :tada: :tada:".format(user.display_name, the_married_to_user.display_name)
                 )
                 em.add_field(name=" _ _ \nMarried since:", value="`{}`".format(format_date(user_married_to_since)), inline=False)

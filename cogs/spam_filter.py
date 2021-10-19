@@ -1,7 +1,7 @@
 import disnake
 from disnake.ext import commands
 import json
-import utils.colors as color
+from utils.colors import Colours
 import datetime
 from main import ViHillCorner
 
@@ -124,7 +124,7 @@ class RepeatedTextFilter(commands.Cog):
                     ju = await message.channel.send(msg2, embed=em)
                     staff_channel = guild.get_channel(752164200222163016)
                     log = disnake.Embed(
-                        color=color.red,
+                        color=Colours.red,
                         title="___Filter Mute___",
                         description=f"User: `{message.author}`\nReason: [`Repeated Text`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`",
                         timestamp=datetime.datetime.utcnow()
@@ -212,7 +212,7 @@ class SpamFilter(commands.Cog):
                         ju = await message.channel.send(msg2, embed=em)
                         staff_channel = guild.get_channel(752164200222163016)
                         log = disnake.Embed(
-                            color=color.red,
+                            color=Colours.red,
                             title="___Filter Mute___",
                             description=f"User: `{message.author}`\nReason: [`Spam`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`",
                             timestamp=datetime.datetime.utcnow()

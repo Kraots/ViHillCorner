@@ -6,7 +6,7 @@ from utils.helpers import time_phaser
 import asyncio
 import games
 import aiohttp
-import utils.colors as color
+from utils.colors import Colours
 import functools
 from utils.helpers import replace_many, suppress_links
 from utils.pillow import invert_pfp
@@ -633,7 +633,7 @@ class Fun(commands.Cog):
 
             imgUrl = data['file']
 
-            embed = disnake.Embed(title="Cat", url=imgUrl, color=color.orange, timestamp=ctx.message.created_at.replace(tzinfo=None))
+            embed = disnake.Embed(title="Cat", url=imgUrl, color=Colours.orange, timestamp=ctx.message.created_at.replace(tzinfo=None))
             embed.set_image(url=imgUrl)
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
             msg = await ctx.send(embed=embed)
@@ -648,7 +648,7 @@ class Fun(commands.Cog):
             async with cs.get("http://random.dog/woof.json") as r:
                 data = await r.json()
 
-            embed = disnake.Embed(title="Dog", url=data['url'], color=color.orange, timestamp=ctx.message.created_at.replace(tzinfo=None))
+            embed = disnake.Embed(title="Dog", url=data['url'], color=Colours.orange, timestamp=ctx.message.created_at.replace(tzinfo=None))
             embed.set_image(url=data['url'])
             embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
             msg = await ctx.send(embed=embed)
@@ -666,7 +666,7 @@ class Fun(commands.Cog):
                 linkUrl = imgUrl['url']
                 titleUrl = imgUrl['title']
 
-                embed = disnake.Embed(color=color.orange, title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at.replace(tzinfo=None))
+                embed = disnake.Embed(color=Colours.orange, title=titleUrl, url=linkUrl, timestamp=ctx.message.created_at.replace(tzinfo=None))
                 embed.set_image(url=linkUrl)
                 embed.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
@@ -882,7 +882,7 @@ class Fun(commands.Cog):
         await ctx.message.add_reaction(ctx.thumb)
         member = member or ctx.author
         pfp = await invert_pfp(member)
-        em = disnake.Embed(color=color.lightpink, title='Here\'s your inverted avatar image:')
+        em = disnake.Embed(color=Colours.light_pink, title='Here\'s your inverted avatar image:')
         em.set_image(url=f'attachment://{member.display_name}_inverted_avatar.png')
         em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
         await ctx.send(embed=em, file=pfp)
@@ -947,7 +947,7 @@ class Fun(commands.Cog):
         if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
             return
 
-        em = disnake.Embed(color=color.light_blue, title='Bagels, a deductive logic game', description='I am thinking of a 3-digit number with no repeated digits.')  # noqa
+        em = disnake.Embed(color=Colours.light_blue, title='Bagels, a deductive logic game', description='I am thinking of a 3-digit number with no repeated digits.')  # noqa
         em.add_field(name='When I say', value='Pico\nFermi\nBagels')
         em.add_field(name='That means', value='One digit is correct but in the wrong position.\nOne digit is correct and in the right position.\nNo digit is correct.')  # noqa
         em.add_field(name='Example', value='If the secret number was 248 and your guess was 843, the clues would be Fermi Pico.', inline=False)
@@ -956,10 +956,10 @@ class Fun(commands.Cog):
         msg = await ctx.send(embed=em, view=view)
         await view.wait()
         if view.response is None:
-            em = disnake.Embed(description='Ran out of time.', color=color.light_blue)
+            em = disnake.Embed(description='Ran out of time.', color=Colours.light_blue)
             return await msg.edit(embed=em, view=view)
         elif view.response == 'cancel':
-            em = disnake.Embed(description='Canceled.', color=color.light_blue)
+            em = disnake.Embed(description='Canceled.', color=Colours.light_blue)
             return await msg.edit(embed=em, view=view)
         else:
             await msg.edit(view=view)
@@ -1046,7 +1046,7 @@ class Fun(commands.Cog):
         else:
             title = "Here are %s's points:" % (member.display_name)
 
-        em = disnake.Embed(color=color.lightpink, title=title)
+        em = disnake.Embed(color=Colours.light_pink, title=title)
         em.set_thumbnail(url=member.display_avatar)
         em.add_field(name="Points:", value="**%s**" % (user['points']), inline=False)
         em.add_field(name="Rank:", value="`#%s`" % (rank), inline=False)
@@ -1060,7 +1060,7 @@ class Fun(commands.Cog):
             return
 
         rank = 0
-        em = disnake.Embed(color=color.lightpink, title="Here's top `5` trivia users with most points:")
+        em = disnake.Embed(color=Colours.light_pink, title="Here's top `5` trivia users with most points:")
 
         rankings = await self.db2.find().sort('points', -1).to_list(5)
         for data in rankings:

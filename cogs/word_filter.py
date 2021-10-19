@@ -1,7 +1,7 @@
 import re
 import disnake
 from disnake.ext import commands
-import utils.colors as color
+from utils.colors import Colours
 import json
 import datetime
 from .spam_filter import get_mute_time, time_convert
@@ -152,7 +152,7 @@ class FilterCog(commands.Cog):
                                 ju = await message.channel.send(msg2, embed=em)
                                 staff_channel = guild.get_channel(752164200222163016)
                                 log = disnake.Embed(
-                                    color=color.red,
+                                    color=Colours.red,
                                     title="___Filter Mute___",
                                     description=f"User: `{message.author}`\nReason: [`Bad Words`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`",
                                     timestamp=datetime.datetime.utcnow()
@@ -396,7 +396,7 @@ class FilterCog(commands.Cog):
                                 ju = await after.channel.send(msg2, embed=em)
                                 staff_channel = guild.get_channel(752164200222163016)
                                 log = disnake.Embed(
-                                    color=color.red,
+                                    color=Colours.red,
                                     title="___Filter Mute___",
                                     description=f"User: `{after.author}`\nReason: [`Zalgo`]({ju.jump_url})\nTime: `{time_convert[mute_time]}`",
                                     timestamp=datetime.datetime.utcnow()

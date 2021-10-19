@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands
 import asyncio
 import datetime
-import utils.colors as color
+from utils.colors import Colours
 from utils.paginator import SimplePages
 import re
 from utils.context import Context
@@ -144,7 +144,7 @@ class Tags(commands.Cog):
 
         tag_owner = self.bot.get_user(tag_owner_id)
 
-        em = disnake.Embed(color=color.blue, title=tag_name)
+        em = disnake.Embed(color=Colours.blue, title=tag_name)
         em.set_author(name=tag_owner, url=tag_owner.display_avatar, icon_url=tag_owner.display_avatar)
         em.add_field(name="Owner", value=tag_owner.mention)
         em.add_field(name="Uses", value=tag_uses)
@@ -493,7 +493,7 @@ class Tags(commands.Cog):
 
         await self.db.delete_one({"_id": data['_id']})
 
-        em = disnake.Embed(title="Tag Removed", color=color.red)
+        em = disnake.Embed(title="Tag Removed", color=Colours.red)
         em.add_field(name="Name", value=the_tag_name)
         em.add_field(name="Owner", value=tag_owner)
         em.add_field(name="Uses", value=f"`{uses}`", inline=False)

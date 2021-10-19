@@ -1,7 +1,7 @@
 import disnake
 from disnake.ext import commands
 import asyncio
-import utils.colors as color
+from utils.colors import Colours
 from disnake.ext.commands import Greedy
 from disnake import Member
 import os
@@ -146,7 +146,7 @@ class Developer(commands.Cog):
         """This sends an embed of the rules, the exact ones like in <#750160850303582236>."""
 
         em = disnake.Embed(
-            color=color.lightpink,
+            color=Colours.light_pink,
             title="ViHill Corner Rerver Rules",
             description="We have a small but strict set of rules on our server. Please read over them and take them on board. If you don't understand anything "
                         "or need some clarification, feel free to ask any staff member!"
@@ -207,7 +207,7 @@ class Developer(commands.Cog):
             new_roles = [role for role in member.roles] + [staff, mod]
             await member.edit(roles=new_roles, reason='Master gave them staff/mod.')
 
-            makemod = disnake.Embed(color=color.red, description=f'{member.mention} is now a mod!')
+            makemod = disnake.Embed(color=Colours.red, description=f'{member.mention} is now a mod!')
             await ctx.send(embed=makemod)
 
     @commands.command()
@@ -218,7 +218,7 @@ class Developer(commands.Cog):
             new_roles = [role for role in member.roles if role.id not in (754676705741766757, 750162714407600228)]
             await member.edit(roles=new_roles, reason='Master removed their staff/mod.')
 
-            removemod = disnake.Embed(color=color.red, description=f'{member.mention} is no longer a mod!')
+            removemod = disnake.Embed(color=Colours.red, description=f'{member.mention} is no longer a mod!')
             await ctx.send(embed=removemod)
 
     @commands.command()
@@ -239,7 +239,7 @@ class Developer(commands.Cog):
     async def status(self, ctx: Context):
         """Change the bot's presence status."""
 
-        statuses = disnake.Embed(title="Statuses:", color=color.lightpink)
+        statuses = disnake.Embed(title="Statuses:", color=Colours.light_pink)
         statuses.add_field(
             name="Online:",
             value="!status online\n!status online playing [custom status]\n  !status online listening [custom status]\n!status online watching [custom status]",

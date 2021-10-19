@@ -1,6 +1,6 @@
 import disnake
 import asyncio
-import utils.colors as color
+from utils.colors import Colours
 import re
 from utils.helpers import time_phaser
 import datetime
@@ -135,7 +135,7 @@ class Moderator(commands.Cog):
             await ctx.channel.edit(slowmode_delay=how_much)
             await ctx.author.send(f'Set slowmode for <#{ctx.channel.id}> to {time_phaser(how_much)} !')
 
-            em = disnake.Embed(color=color.reds, title="___SLOWMODE___", timestamp=ctx.message.created_at.replace(tzinfo=None))
+            em = disnake.Embed(color=Colours.reds, title="___SLOWMODE___", timestamp=ctx.message.created_at.replace(tzinfo=None))
             em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
             em.add_field(name="Action", value=f"`Set slowmode to {time_phaser(how_much)}`", inline=False)
             em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
@@ -147,7 +147,7 @@ class Moderator(commands.Cog):
             await ctx.channel.edit(slowmode_delay=0)
             await ctx.author.send(f'Disabled slowmode for <#{ctx.channel.id}> !')
 
-            em = disnake.Embed(color=color.reds, title="___SLOWMODE___", timestamp=ctx.message.created_at.replace(tzinfo=None))
+            em = disnake.Embed(color=Colours.reds, title="___SLOWMODE___", timestamp=ctx.message.created_at.replace(tzinfo=None))
             em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
             em.add_field(name="Action", value="`Disabled slowmode`", inline=False)
             em.add_field(name="Channel", value=f"<#{ctx.channel.id}>", inline=False)
@@ -180,7 +180,7 @@ class Moderator(commands.Cog):
 
         await ctx.send(embed=ban)
 
-        em = disnake.Embed(color=color.reds, title="___KICK___", timestamp=ctx.message.created_at.replace(tzinfo=None))
+        em = disnake.Embed(color=Colours.reds, title="___KICK___", timestamp=ctx.message.created_at.replace(tzinfo=None))
         em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
         em.add_field(name="Action", value="`Used the kick command.`", inline=False)
         em.add_field(name="Member", value=f"`{member}`", inline=False)
@@ -221,7 +221,7 @@ class Moderator(commands.Cog):
 
         await ctx.send(embed=ban)
 
-        em = disnake.Embed(color=color.reds, title="___BAN___", timestamp=ctx.message.created_at.replace(tzinfo=None))
+        em = disnake.Embed(color=Colours.reds, title="___BAN___", timestamp=ctx.message.created_at.replace(tzinfo=None))
         em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
         em.add_field(name="Action", value="`Used the ban command.`", inline=False)
         em.add_field(name="Member", value=f"`{user}`", inline=False)
@@ -251,7 +251,7 @@ class Moderator(commands.Cog):
 
         log_channel = guild.get_channel(788377362739494943)
 
-        em = disnake.Embed(color=color.reds, title="___UNBAN___", timestamp=ctx.message.created_at.replace(tzinfo=None))
+        em = disnake.Embed(color=Colours.reds, title="___UNBAN___", timestamp=ctx.message.created_at.replace(tzinfo=None))
         em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
         em.add_field(name="Action", value="`Used the unban command`", inline=False)
         em.add_field(name="Member", value=f"`{member}`", inline=False)
@@ -332,7 +332,7 @@ class Moderator(commands.Cog):
                 new_roles = [role for role in member.roles] + [muted]
             await member.edit(roles=new_roles, reason=f'{ctx.author}: "{reason_content}"')
             msg = "You have been muted in `ViHill Corner`"
-            em = disnake.Embed(description=f"Time: `{muted_for}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=color.inviscolor)
+            em = disnake.Embed(description=f"Time: `{muted_for}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**", color=Colours.invisible)
             try:
                 await member.send(msg, embed=em)
             except disnake.HTTPException:
@@ -340,11 +340,11 @@ class Moderator(commands.Cog):
 
             _mute = disnake.Embed(
                 description=f'{member.mention} has been muted. \n\nTime: `{muted_for}`\n**Reason: [{reason_content}]({ctx.message.jump_url})**',
-                color=color.red
+                color=Colours.red
             )
             await ctx.send(embed=_mute)
 
-            log = disnake.Embed(color=color.reds, title="___Mute___", timestamp=ctx.message.created_at.replace(tzinfo=None))
+            log = disnake.Embed(color=Colours.reds, title="___Mute___", timestamp=ctx.message.created_at.replace(tzinfo=None))
             log.add_field(name="Member", value=f"`{member}`", inline=False)
             log.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
             log.add_field(name="Time", value=f"`{muted_for}`", inline=False)
@@ -371,7 +371,7 @@ class Moderator(commands.Cog):
                 username = self.bot.get_user(result['_id'])
                 _dict = {'username': username, 'time_left': _time}
                 entries.append(_dict)
-            m = MutePages(ctx=ctx, entries=entries, per_page=5, title="Here's all the current muted members:", color=color.red)
+            m = MutePages(ctx=ctx, entries=entries, per_page=5, title="Here's all the current muted members:", color=Colours.red)
             await m.start()
 
         else:
@@ -387,7 +387,7 @@ class Moderator(commands.Cog):
             else:
                 _time = "Eternity"
 
-            em = disnake.Embed(color=color.red)
+            em = disnake.Embed(color=Colours.red)
             em.set_author(name=member, url=member.display_avatar, icon_url=member.display_avatar)
             em.description = f"Time Left: `{_time}`"
             em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
@@ -431,9 +431,9 @@ class Moderator(commands.Cog):
         except disnake.HTTPException:
             pass
         await member.edit(roles=new_roles, reason='{}: "Unmute"'.format(ctx.author))
-        await ctx.send(embed=disnake.Embed(color=color.red, description=f"`{member}` has been unmuted."))
+        await ctx.send(embed=disnake.Embed(color=Colours.red, description=f"`{member}` has been unmuted."))
 
-        em = disnake.Embed(color=color.reds, title="___UNMUTE___", timestamp=ctx.message.created_at.replace(tzinfo=None))
+        em = disnake.Embed(color=Colours.reds, title="___UNMUTE___", timestamp=ctx.message.created_at.replace(tzinfo=None))
         em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
         em.add_field(name="Action", value="`Used the unmute command.`", inline=False)
         em.add_field(name="Member", value=f"`{member}`", inline=False)
@@ -452,7 +452,7 @@ class Moderator(commands.Cog):
         guild = self.bot.get_guild(750160850077089853)
         log_channel = guild.get_channel(788377362739494943)
 
-        em = disnake.Embed(color=color.reds, title="___PURGE / CLEAR___", timestamp=ctx.message.created_at.replace(tzinfo=None))
+        em = disnake.Embed(color=Colours.reds, title="___PURGE / CLEAR___", timestamp=ctx.message.created_at.replace(tzinfo=None))
         em.add_field(name="Moderator", value=f"`{ctx.author}`", inline=False)
         em.add_field(name="Action", value="`Used the clear / purge command`", inline=False)
         em.add_field(name="Amount", value=f"`{amount}` messages", inline=False)

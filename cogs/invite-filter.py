@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands
 import re
 import asyncio
-import utils.colors as color
+from utils.colors import Colours
 from main import ViHillCorner
 no_mute_these = (374622847672254466,)
 
@@ -32,7 +32,7 @@ class InviteFilter(commands.Cog):
                     await message.delete()
                     msg = await message.channel.send('Invites not allowed!')
                     embed = disnake.Embed(
-                        color=color.inviscolor,
+                        color=Colours.invisible,
                         title="***___INVITE WARNING___***",
                         description=f'User `{message.author}` sent an [invite link]({msg.jump_url})!!',
                         timestamp=msg.created_at.replace(tzinfo=None)

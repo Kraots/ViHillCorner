@@ -3,7 +3,7 @@ from disnake.ext import commands
 import psutil
 import time
 from utils import time as t
-import utils.colors as color
+from utils.colors import Colours
 from utils.context import Context
 from main import ViHillCorner
 
@@ -31,11 +31,11 @@ class Metrics(commands.Cog):
         memory_usage = self.process.memory_full_info().uss / 1024**2
         cpu_usage = self.process.cpu_percent() / psutil.cpu_count()
         guilds = len(list(self.bot.guilds))
-        metrics = disnake.Embed(description="_ _", color=color.inviscolor)
+        metrics = disnake.Embed(description="_ _", color=Colours.invisible)
         start = time.time() * 1000
         msg = await ctx.send(embed=metrics)
         end = time.time() * 1000
-        metrics = disnake.Embed(title="Metrics", description="_ _", color=color.inviscolor)
+        metrics = disnake.Embed(title="Metrics", description="_ _", color=Colours.invisible)
         metrics.add_field(
             name="Ping:",
             value=f"Websocket Latency: `{(round(self.bot.latency * 1000, 2))}ms`\n"

@@ -16,9 +16,10 @@ from disnake.ui import View, Button
 from disnake.ext import commands
 from disnake.ext.commands import Greedy
 
-import utils.colors as color
+from utils.colors import Colours
 from utils import fuzzy, time, embedlinks, topicslist, menus
 from utils.context import Context
+from utils.calculator import Calculator
 from utils.helpers import package_version, profile
 from utils.paginator import SimplePages, RoboPages, CustomMenu
 from utils.CommandButtonRoles import ButtonRoleView, ButtonRoleViewOwner
@@ -26,160 +27,6 @@ from utils.CommandButtonRoles import ButtonRoleView, ButtonRoleViewOwner
 from main import ViHillCorner
 
 filter_invite = re.compile(r"(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
-
-
-class CalculatorView(disnake.ui.View):
-    def __init__(self, ctx: Context, *, timeout=180.0):
-        super().__init__(timeout=timeout)
-        self.ctx = ctx
-        self.to_calc = ''
-
-    async def interaction_check(self, interaction: disnake.MessageInteraction):
-        if interaction.author.id != self.ctx.author.id:
-            await interaction.response.send_message(
-                f'Only {self.ctx.author.display_name} can use this calculator! If you wish to use it too please type `!calc`',
-                ephemeral=True
-            )
-            return False
-        return True
-
-    async def on_error(self, error, item, interaction):
-        if (
-            isinstance(error, SyntaxError) or
-            isinstance(error, disnake.HTTPException)
-        ):
-            self.to_calc = ''
-            return await self.update_message()
-        return await self.ctx.bot.reraise(self.ctx, error)
-
-    async def on_timeout(self):
-        for item in self.children:
-            item.disabled = True
-            item.style = disnake.ButtonStyle.gray
-        if len(self.to_calc) != 0:
-            return await self.message.edit(
-                content='Timed Out.',
-                embed=disnake.Embed(
-                    description=f'```py\n{eval(self.to_calc)}\n```',
-                    color=color.inviscolor
-                ),
-                view=self
-            )
-        else:
-            return await self.message.edit(
-                embed=disnake.Embed(
-                    description='```\nTimed Out.\n```',
-                    color=color.inviscolor
-                ),
-                view=self
-            )
-
-    async def update_message(self):
-        if len(self.to_calc) != 0:
-            return await self.message.edit(embed=disnake.Embed(description=f'```py\n{self.to_calc}\n```', color=color.inviscolor))
-        await self.message.edit(embed=disnake.Embed(description=f'```py\n{0}\n```', color=color.inviscolor))
-
-    @disnake.ui.button(label='1')
-    async def _1(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='2')
-    async def _2(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='3')
-    async def _3(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='×', style=disnake.ButtonStyle.blurple)
-    async def _multiply(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='Exit', style=disnake.ButtonStyle.red)
-    async def _exit(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        await self.message.edit(embed=None, view=None, content=f'Quit the calculator session. {self.ctx.author.mention}')
-        self.stop()
-
-    @disnake.ui.button(label='4')
-    async def _4(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='5')
-    async def _5(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='6')
-    async def _6(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='÷', style=disnake.ButtonStyle.blurple)
-    async def _divide(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='←', style=disnake.ButtonStyle.red)
-    async def _remove_last(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc = self.to_calc[:-1]
-        await self.update_message()
-
-    @disnake.ui.button(label='7')
-    async def _7(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='8')
-    async def _8(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='9')
-    async def _9(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='+', style=disnake.ButtonStyle.blurple)
-    async def _add(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='Clear', style=disnake.ButtonStyle.red)
-    async def _clear(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc = ''
-        await self.update_message()
-
-    @disnake.ui.button(label='00')
-    async def _00(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='0')
-    async def _0(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='.')
-    async def _dot(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='-', style=disnake.ButtonStyle.blurple)
-    async def _substract(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        self.to_calc += button.label
-        await self.update_message()
-
-    @disnake.ui.button(label='=', style=disnake.ButtonStyle.green)
-    async def _result(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        if len(self.to_calc) != 0:
-            res = eval(self.to_calc.replace('÷', '/').replace('×', '*'))
-            await self.message.edit(embed=disnake.Embed(description=f'```py\n{res}\n```', color=color.inviscolor))
-            self.to_calc = str(res)
 
 
 class UrbanDictionaryPageSource(menus.ListPageSource):
@@ -201,7 +48,7 @@ class UrbanDictionaryPageSource(menus.ListPageSource):
     async def format_page(self, menu, entry):
         maximum = self.get_max_pages()
         title = f'{entry["word"]}: {menu.current_page + 1} out of {maximum}' if maximum else entry['word']
-        embed = disnake.Embed(title=title, colour=color.lightpink, url=entry['permalink'])
+        embed = disnake.Embed(title=title, colour=Colours.light_pink, url=entry['permalink'])
         embed.set_footer(text=f'by {entry["author"]}')
         embed.description = self.cleanup_definition(entry['definition'])
 
@@ -235,7 +82,7 @@ class SnipesPageEntry:
 class SnipesPages(CustomMenu):
     def __init__(self, ctx: Context, entries, *, per_page=12):
         converted = [SnipesPageEntry(entry) for entry in entries]
-        super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color.lightpink)
+        super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=Colours.light_pink)
 
 
 class SuggestPageEntry:
@@ -415,7 +262,7 @@ class Misc(commands.Cog):
         minor = sys.version_info.minor
         micro = sys.version_info.micro
         py_version = "{}.{}.{}".format(major, minor, micro)
-        botinfo = disnake.Embed(title="", color=color.lightpink, timestamp=ctx.message.created_at.replace(tzinfo=None))
+        botinfo = disnake.Embed(title="", color=Colours.light_pink, timestamp=ctx.message.created_at.replace(tzinfo=None))
         botinfo.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
         botinfo.add_field(name="Name | ID :", value=f"{self.bot.user} | {self.bot.user.id}", inline=False)
         botinfo.add_field(name="Bot Owner:", value=f"{self.bot._owner}", inline=False)
@@ -432,11 +279,11 @@ class Misc(commands.Cog):
     async def calc(self, ctx: Context):
         """Do some basic mathematics operations."""
 
-        view = CalculatorView(ctx)
+        view = Calculator(ctx)
         view.message = await ctx.send(
             embed=disnake.Embed(
                 description='```py\n0\n```',
-                color=color.inviscolor
+                color=Colours.invisible
             ),
             view=view
         )
@@ -494,7 +341,7 @@ class Misc(commands.Cog):
                 return 'N/A'
             return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-        em = disnake.Embed(color=color.lightpink)
+        em = disnake.Embed(color=Colours.light_pink)
         em.add_field(name='Name | ID', value=f"{guild.name}  |  {guild.id}")
         em.add_field(name='Owner', value=guild.owner, inline=False)
         em.add_field(name='Users', value=f"{len([m for m in guild.members if not m.bot])} members | {len([m for m in guild.members if m.bot])} bots")
@@ -517,7 +364,7 @@ class Misc(commands.Cog):
         """Get a random waifu image."""
 
         chosen_image = random.choice(embedlinks.waifuLinks)
-        embed = disnake.Embed(color=color.lightpink)
+        embed = disnake.Embed(color=Colours.light_pink)
         embed.set_image(url=chosen_image)
         embed.set_footer(text=f"Requested by {ctx.author}", icon_url=ctx.author.display_avatar)
 
@@ -699,7 +546,7 @@ class Misc(commands.Cog):
         update = await self.db.find_one({'_id': 374622847672254466})
         updatedMsg = update['update']
         updatedDate = time.human_timedelta(dt=update['date'], accuracy=3, brief=False, suffix=True)
-        em = disnake.Embed(title="Here's what's new to the bot:", description=f"{updatedMsg}\n\n*{updatedDate}*", color=color.red)
+        em = disnake.Embed(title="Here's what's new to the bot:", description=f"{updatedMsg}\n\n*{updatedDate}*", color=Colours.red)
         em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
         await ctx.send(embed=em, reference=ctx.replied_reference)
 
@@ -728,7 +575,7 @@ class Misc(commands.Cog):
             return
 
         await ctx.message.delete()
-        em1 = disnake.Embed(color=color.lightpink, title="Are you ready to post your suggestion?", description="**`%s`**" % (args))
+        em1 = disnake.Embed(color=Colours.light_pink, title="Are you ready to post your suggestion?", description="**`%s`**" % (args))
         em1.set_author(name=f'{ctx.author.name}', icon_url=ctx.author.display_avatar)
         view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
         view.message = msg1 = await ctx.send(embed=em1, view=view)
@@ -736,13 +583,13 @@ class Misc(commands.Cog):
         if view.response is None:
             return ctx.command.reset_cooldown(ctx)
         elif view.response is True:
-            suggest = disnake.Embed(color=color.inviscolor, title="", description=f"{args}", timestamp=ctx.message.created_at.replace(tzinfo=None))
+            suggest = disnake.Embed(color=Colours.invisible, title="", description=f"{args}", timestamp=ctx.message.created_at.replace(tzinfo=None))
             suggest.set_author(name=f'{ctx.author.name} suggested:', icon_url=ctx.author.display_avatar)
             suggestions = self.bot.get_channel(750160850593251454)
             msg = await suggestions.send(embed=suggest)
             await msg.add_reaction(ctx.agree)
             await msg.add_reaction(ctx.disagree)
-            em = disnake.Embed(color=color.inviscolor, title="Suggestion successfully added!", url=msg.jump_url)
+            em = disnake.Embed(color=Colours.invisible, title="Suggestion successfully added!", url=msg.jump_url)
             return await msg1.edit(content=ctx.author.mention, embed=em, view=view)
 
         elif view.response is False:

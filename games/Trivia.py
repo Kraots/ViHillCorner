@@ -1,6 +1,6 @@
 from trivia import trivia
 import asyncio
-import utils.colors as color
+from utils.colors import Colours
 import disnake
 import random
 from utils.context import Context
@@ -182,7 +182,7 @@ class Trivia:
     async def send_question(self, user, question_index, question_nr, question_type, question, rand):
         if question_type == 'boolean':
             em = disnake.Embed(
-                color=color.lightpink,
+                color=Colours.light_pink,
                 title=f"[TRUE/FALSE]\nHere is your `{question_nr}` question {user.display_name}",
                 description=f"*{question[question_index]['question']}*"
             )
@@ -217,7 +217,7 @@ class Trivia:
                     f"`C.` **{question[question_index]['incorrect_answers'][2]}**\n\u2800" \
                     f"`D.` **{question[question_index]['correct_answer']}**"
             em = disnake.Embed(
-                color=color.lightpink,
+                color=Colours.light_pink,
                 title=f"[CHOOSE THE CORRECT ANSWER]\nHere is your `{question_nr}` question {user.display_name}",
                 description=desc
             )
@@ -359,7 +359,7 @@ class Trivia:
 
         if self.points < 0:
             final_result = f"You lost **{self.points}** points. OOF"
-            final_color = color.red
+            final_color = Colours.red
         elif self.points == 0:
             final_result = "You didn't get any points but you didn't lose any either."
             final_color = disnake.Color.light_grey()
@@ -450,7 +450,7 @@ class Trivia:
             final_result = "***Draw. No one lost and no one won anything.***"
             draw = True
 
-        em = disnake.Embed(color=color.blue, title="Trivia has ended.", description=final_result)
+        em = disnake.Embed(color=Colours.blue, title="Trivia has ended.", description=final_result)
         if draw is False:
             em.add_field(name=f"**-->** `{self.player.display_name}'s` total points before:", value=f"**{before_points_user}**", inline=True)
             em.add_field(name=f"`{self.player.display_name}'s` total points after:", value=f"**{after_points_user}**", inline=False)

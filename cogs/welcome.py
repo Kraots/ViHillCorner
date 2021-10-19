@@ -1,6 +1,6 @@
 import disnake
 from disnake.ext import commands
-import utils.colors as color
+from utils.colors import Colours
 import asyncio
 from random import randint
 from utils import time
@@ -49,7 +49,7 @@ class Welcome(commands.Cog):
                 description="\n\n***Please read the rules at*** <#750160850303582236>\n***You can always get a colour from*** <#779388444304211991>\n"
                             "***For bot commands please use*** <#750160851822182486>\n\n"
                             "Enjoy your stay and don't forget to do your intro by typing `!intro` in a bots channel ^-^\n\n",
-                color=color.pastel)
+                color=Colours.pastel)
             welcome.set_thumbnail(url=member.display_avatar)
             welcome.set_footer(text=f"Created: {format_date(member.created_at.replace(tzinfo=None))}", icon_url=member.display_avatar)
             msg = f'Hey {member.mention}, welcome to **ViHill Corner!** \nYou are our **{member_count}** member.\n\n\n‎'

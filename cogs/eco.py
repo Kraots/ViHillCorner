@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands, tasks
 from random import randint
 import random
-import utils.colors as color
+from utils.colors import Colours
 import asyncio
 import pymongo
 import datetime
@@ -162,7 +162,7 @@ class EcoSearchView(disnake.ui.View):
             item.disabled = True
             if not item.label == button.label:
                 item.style = disnake.ButtonStyle.grey
-        em = disnake.Embed(color=color.lightpink, title=f'{inter.author.display_name} searched {button.label}')
+        em = disnake.Embed(color=Colours.light_pink, title=f'{inter.author.display_name} searched {button.label}')
         win_lose = random.choice(['win', 'lose', 'win', 'lose', 'win'])
         if win_lose == 'win':
             _amt = random.randrange(4600, 50001)
@@ -183,7 +183,7 @@ class EcoSearchView(disnake.ui.View):
             item.disabled = True
             if not item.label == button.label:
                 item.style = disnake.ButtonStyle.grey
-        em = disnake.Embed(color=color.lightpink, title=f'{inter.author.display_name} searched {button.label}')
+        em = disnake.Embed(color=Colours.light_pink, title=f'{inter.author.display_name} searched {button.label}')
         win_lose = random.choice(['win', 'lose', 'win', 'lose', 'win'])
         if win_lose == 'win':
             _amt = random.randrange(4600, 50001)
@@ -204,7 +204,7 @@ class EcoSearchView(disnake.ui.View):
             item.disabled = True
             if not item.label == button.label:
                 item.style = disnake.ButtonStyle.grey
-        em = disnake.Embed(color=color.lightpink, title=f'{inter.author.display_name} searched {button.label}')
+        em = disnake.Embed(color=Colours.light_pink, title=f'{inter.author.display_name} searched {button.label}')
         win_lose = random.choice(['win', 'lose', 'win', 'lose', 'win'])
         if win_lose == 'win':
             _amt = random.randrange(4600, 50001)
@@ -978,7 +978,7 @@ class Economy(commands.Cog):
                 break
             index += 1
 
-        em = disnake.Embed(title=f"{member.name}'s balance", color=color.lightpink)
+        em = disnake.Embed(title=f"{member.name}'s balance", color=Colours.light_pink)
         em.add_field(name="Wallet Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(user_db['wallet'])), inline=False)
         em.add_field(name="Bank Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(user_db['bank'])), inline=False)
         em.add_field(name="Total Balance", value="{} <:carrots:822122757654577183> ".format(format_balance(user_db['wallet'] + user_db['bank'])))
@@ -1422,7 +1422,7 @@ class Economy(commands.Cog):
                 final = "\u2800┃\u2800".join(prefinal)
 
             embed = disnake.Embed(
-                color=color.lightpink,
+                color=Colours.light_pink,
                 title="Slots!",
                 description="<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>"
             )
@@ -1440,7 +1440,7 @@ class Economy(commands.Cog):
                 wallet_amt = bal + earned
 
                 em = disnake.Embed(
-                    color=color.lightpink,
+                    color=Colours.light_pink,
                     title="Slots!",
                     description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>"
                 )
@@ -1448,7 +1448,7 @@ class Economy(commands.Cog):
                 await msg.edit(embed=em)
 
                 em = disnake.Embed(
-                    color=color.lightpink,
+                    color=Colours.light_pink,
                     title="Slots!",
                     description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>"
                 )
@@ -1472,7 +1472,7 @@ class Economy(commands.Cog):
                 wallet_amt = bal + earned
 
                 em = disnake.Embed(
-                    color=color.lightpink,
+                    color=Colours.light_pink,
                     title="Slots!",
                     description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>"
                 )
@@ -1480,7 +1480,7 @@ class Economy(commands.Cog):
                 await msg.edit(embed=em)
 
                 em = disnake.Embed(
-                    color=color.lightpink,
+                    color=Colours.light_pink,
                     title="Slots!",
                     description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>"
                 )
@@ -1501,7 +1501,7 @@ class Economy(commands.Cog):
                 wallet_amt = bal - amount
 
                 em = disnake.Embed(
-                    color=color.lightpink,
+                    color=Colours.light_pink,
                     title="Slots!",
                     description=f"{line1}\u2800┃\u2800<a:slotsshit:795232358306807868>\u2800┃\u2800<a:slotsshit:795232358306807868>"
                 )
@@ -1509,7 +1509,7 @@ class Economy(commands.Cog):
                 await msg.edit(embed=em)
 
                 em = disnake.Embed(
-                    color=color.lightpink,
+                    color=Colours.light_pink,
                     title="Slots!",
                     description=f"{line1}\u2800┃\u2800{line2}\u2800┃\u2800<a:slotsshit:795232358306807868>"
                 )
@@ -1517,7 +1517,7 @@ class Economy(commands.Cog):
                 await msg.edit(embed=em)
 
                 lostembed = disnake.Embed(
-                    color=color.red, title="LOST!",
+                    color=Colours.red, title="LOST!",
                     description=f"{final}\n\nYou bet a total amount of **{amount:,}** <:carrots:822122757654577183> but you lost them! :c\n"
                     f"Now in wallet: **{wallet_amt:,}** <:carrots:822122757654577183>."
                 )

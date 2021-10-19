@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands, tasks
 from disnake.ui import View, Button
 from utils import time
-import utils.colors as color
+from utils.colors import Colours
 import textwrap
 import datetime
 from utils.context import Context
@@ -58,7 +58,7 @@ class Reminders(commands.Cog):
         """See your list of reminders, if you have any."""
 
         results = await self.db.find({"user_id": ctx.author.id}).sort([("remind_when", 1)]).to_list(10)
-        em = disnake.Embed(color=color.lightpink, title="Reminders")
+        em = disnake.Embed(color=Colours.light_pink, title="Reminders")
         index = 0
         total_reminders = 0
         z = await self.db.find({"user_id": ctx.author.id}).sort([("remind_when", 1)]).to_list(100000)

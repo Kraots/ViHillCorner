@@ -1,6 +1,6 @@
 import disnake
 from disnake.ext import commands, tasks
-import utils.colors as color
+from utils.colors import Colours
 import datetime
 from dateutil.relativedelta import relativedelta
 from utils import time
@@ -172,7 +172,7 @@ class Messages(commands.Cog):
         user_db = await self.db.find_one({'_id': member.id})
         if user_db is None:
             return await ctx.reply(f'`{member.display_name}` sent no messages.')
-        em = disnake.Embed(color=color.lightpink)
+        em = disnake.Embed(color=Colours.light_pink)
         em.set_author(name=f'{member.display_name}\'s message stats', url=member.display_avatar, icon_url=member.display_avatar)
         em.add_field(name='Total Messages', value=f"`{user_db['messages_count']:,}`")
         em.add_field(name='Weekly Messages', value=f"`{user_db['weekly_messages_count']:,}`")
@@ -242,7 +242,7 @@ class Messages(commands.Cog):
             return
 
         view = MessagesTopButtons(self.db, ctx)
-        em = disnake.Embed(title='Please click the button of the top you wish to see.', color=color.reds)
+        em = disnake.Embed(title='Please click the button of the top you wish to see.', color=Colours.reds)
         view.message = await ctx.send(embed=em, view=view)
 
     @msg_top.command(name='time', aliases=['time-left', 'remaining', 'left'])
@@ -271,7 +271,7 @@ class Messages(commands.Cog):
     async def rewards(self, ctx: Context):
         """See what rewards you can get from the weekly messages top."""
 
-        em = disnake.Embed(color=color.lightpink, title="Here are the rewards for the weekly top:")
+        em = disnake.Embed(color=Colours.light_pink, title="Here are the rewards for the weekly top:")
         em.add_field(name="`1st Place`", value="**50k XP**", inline=False)
         em.add_field(name="`2nd Place`", value="**30k XP**", inline=False)
         em.add_field(name="`3rd Place`", value="**20k XP**", inline=False)
