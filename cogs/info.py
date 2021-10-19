@@ -240,7 +240,7 @@ class Info(commands.Cog):
         mention_list = []
 
         if members is None:
-            await ctx.send(embed=em)
+            await ctx.send(embed=em, reference=ctx.replied_reference)
 
         else:
             for member in members:
@@ -249,7 +249,7 @@ class Info(commands.Cog):
                 mention_list.append(a)
                 mentions = " ".join(mention_list)
 
-            await ctx.send(mentions, embed=em)
+            await ctx.send(mentions, embed=em, reference=ctx.replied_reference)
 
     async def cog_command_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.MissingAnyRole):
