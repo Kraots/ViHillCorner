@@ -25,7 +25,7 @@ class SnippetPageEntry:
 
 
 class SnippetPages(SimplePages):
-    def __init__(self, ctx: Context, entries, *, per_page=12, color=color):
+    def __init__(self, ctx: Context, entries, *, per_page=12, color=None):
         converted = [SnippetPageEntry(entry) for entry in entries]
         super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color)
 

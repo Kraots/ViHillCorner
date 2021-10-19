@@ -57,4 +57,5 @@ class Colours:
         return Colour(0x94feff)
 
 
+Colours = Colours()
 Colors = Colours
