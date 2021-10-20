@@ -252,8 +252,11 @@ def suppress_links(message: str) -> str:
 
 class ConfirmView(disnake.ui.View):
     """
-    This class is a view with yes and no buttons, this checks which button the user has pressed and returns True via the self.response if the button they clicked was Yes else  False if the button they clicked is No
-    """  # noqa
+    This class is a view with `Confirm` and `Cancel` buttons,
+    this checks which button the user has pressed and returns
+    True via the self.response if the button they clicked was
+    Confirm else False if the button they clicked is Cancel.
+    """
 
     def __init__(self, ctx, new_message: str = 'Time Expired.', react_user: disnake.Member = None, *, timeout=180.0):
         super().__init__(timeout=timeout)
@@ -305,8 +308,12 @@ class ConfirmView(disnake.ui.View):
 
 class ConfirmViewDMS(disnake.ui.View):
     """
-    This class is a view with yes and no buttons which only works correctly in dms, this checks which button the user has pressed and returns True via the self.response if the button they clicked was Yes else  False if the button they clicked is No
-    """  # noqa
+    This class is a view with `Confirm` and `Cancel` buttons
+    which only works in dms, this checks which button the user
+    has pressed and returns True via the self.response if the
+    button they clicked was Confirm else False if the button
+    they clicked is Cancel.
+    """
 
     def __init__(self, ctx, *, timeout=180.0):
         super().__init__(timeout=timeout)
