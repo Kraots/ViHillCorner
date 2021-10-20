@@ -281,7 +281,7 @@ class ConfirmView(disnake.ui.View):
             item.style = disnake.ButtonStyle.grey
         await self.message.edit(content=self.new_message, embed=None, view=self)
 
-    @disnake.ui.button(label='Yes', style=disnake.ButtonStyle.green)
+    @disnake.ui.button(label='Confirm', style=disnake.ButtonStyle.green)
     async def yes_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
         self.response = True
         for item in self.children:
@@ -291,7 +291,7 @@ class ConfirmView(disnake.ui.View):
                 item.style = disnake.ButtonStyle.blurple
         self.stop()
 
-    @disnake.ui.button(label='No', style=disnake.ButtonStyle.red)
+    @disnake.ui.button(label='Cancel', style=disnake.ButtonStyle.red)
     async def no_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
         self.response = False
         for item in self.children:
@@ -316,7 +316,7 @@ class ConfirmViewDMS(disnake.ui.View):
     async def on_error(self, error: Exception, item, interaction):
         return await self.ctx.bot.reraise(self.ctx, error)
 
-    @disnake.ui.button(label='Yes', style=disnake.ButtonStyle.green)
+    @disnake.ui.button(label='Confirm', style=disnake.ButtonStyle.green)
     async def yes_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
         self.response = True
         for item in self.children:
@@ -326,7 +326,7 @@ class ConfirmViewDMS(disnake.ui.View):
                 item.style = disnake.ButtonStyle.blurple
         self.stop()
 
-    @disnake.ui.button(label='No', style=disnake.ButtonStyle.red)
+    @disnake.ui.button(label='Cancel', style=disnake.ButtonStyle.red)
     async def no_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
         self.response = False
         for item in self.children:
