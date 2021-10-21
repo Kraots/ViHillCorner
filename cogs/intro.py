@@ -9,7 +9,7 @@ from main import ViHillCorner
 class IntroButton(disnake.ui.View):
     def __init__(self, url: str):
         super().__init__()
-        self.add_item(disnake.ui.Button(label='View on website', url=url))
+        self.add_item(disnake.ui.Button(label='Visit on website', url=url))
 
 
 class Intros(commands.Cog):
