@@ -1,12 +1,17 @@
+import asyncio
+import re
+from random import randint
+
+from .name_filter import allowed_letters
+from .intro import IntroButton
+
 import disnake
 from disnake.ext import commands
-from utils.colors import Colours
-import asyncio
-from random import randint
+
 from utils import time
-import re
 from utils.helpers import ConfirmViewDMS
-from .name_filter import allowed_letters
+from utils.colors import Colours
+
 from main import ViHillCorner
 
 
@@ -239,8 +244,8 @@ class Welcome(commands.Cog):
                                         em.add_field(name="Interests", value=interests.content, inline=False)
                                         intro_msg = await introchannel.send(embed=em)
                                         await member.send(
-                                            f"Intro added successfully. You can see in <#750160850593251449> or in the link below.\n"
-                                            f"{self.bot.url}/intros/{str(member.id)}"
+                                            "Intro added successfully. You can see in <#750160850593251449>.",
+                                            view=IntroButton(f"{self.bot.url}/intros/{str(member.id)}")
                                         )
 
                                         post = {

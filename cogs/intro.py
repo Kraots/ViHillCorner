@@ -6,6 +6,12 @@ from utils.context import Context
 from main import ViHillCorner
 
 
+class IntroButton(disnake.ui.View):
+    def __init__(self, url: str):
+        super().__init__()
+        self.add_item(disnake.ui.Button(label='View on website', url=url))
+
+
 class Intros(commands.Cog):
     """Intro related commands."""
 
@@ -197,8 +203,8 @@ class Intros(commands.Cog):
                                             pass
 
                                         await ctx.send(
-                                            f"Intro edited successfully. You can see in <#750160850593251449> or in the link below {ctx.author.mention}\n"
-                                            f"{self.bot.url}/intros/{str(ctx.author.id)}"
+                                            f"Intro edited successfully. You can see in <#750160850593251449> {ctx.author.mention}\n",
+                                            view=IntroButton(f"{self.bot.url}/intros/{str(ctx.author.id)}")
                                         )
 
                                         return
@@ -322,8 +328,8 @@ class Intros(commands.Cog):
                                     em.add_field(name="Interests", value=interests.content, inline=False)
                                     intro_msg = await introchannel.send(embed=em)
                                     await ctx.send(
-                                        f"Intro added successfully. You can see in <#750160850593251449> or in the link below {ctx.author.mention}\n"
-                                        f"{self.bot.url}/intros/{str(ctx.author.id)}"
+                                        f"Intro added successfully. You can see in <#750160850593251449> {ctx.author.mention}\n",
+                                        view=IntroButton(f"{self.bot.url}/intros/{str(ctx.author.id)}")
                                     )
 
                                     post = {
@@ -390,9 +396,24 @@ class Intros(commands.Cog):
         user = member
 
         if results is not None:
-            await ctx.send(
-                f'{self.bot.url}/intros/{str(member.id)}'
-            )
+            intro_name = results['name']
+            intro_location = results['location']
+            intro_age = results['age']
+            intro_gender = results['gender']
+            relationship_status = results['status']
+            intro_interests = results['interests']
+
+            await ctx.message.delete()
+            em = disnake.Embed(color=member.color)
+            em.set_author(name=member, url=member.display_avatar, icon_url=member.display_avatar)
+            em.set_thumbnail(url=member.display_avatar)
+            em.add_field(name="Name", value=intro_name, inline=True)
+            em.add_field(name="Location", value=intro_location, inline=True)
+            em.add_field(name="Age", value=intro_age, inline=True)
+            em.add_field(name="Gender", value=intro_gender, inline=False)
+            em.add_field(name="Relationship Status", value=relationship_status, inline=True)
+            em.add_field(name="Interests", value=intro_interests, inline=False)
+            await ctx.send(embed=em, view=IntroButton(f"{self.bot.url}/intros/{str(member.id)}"))
 
         else:
             if ctx.author.id == user.id:
