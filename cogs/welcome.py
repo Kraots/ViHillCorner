@@ -92,6 +92,7 @@ class Welcome(commands.Cog):
                         f"(`{new_nick}`). \n\n If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:"
                         "**\nPotato10\nTom_owo\nElieyn ♡\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
                     )
+                    await self.bot._owner.send(f'**{member}** got nick changed, letter that lead to this: `{x}`')
                     break
 
             choice = randint(1, 19)

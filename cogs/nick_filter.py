@@ -59,6 +59,7 @@ class NickFilter(commands.Cog):
                         "If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡"
                         "\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
                     )
+                    await self.bot._owner.send(f'**{message.author}** got nick changed, letter that lead to this: `{x}`')
                     return
 
 
