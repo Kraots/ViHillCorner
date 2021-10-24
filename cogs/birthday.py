@@ -41,6 +41,7 @@ class Birthdays(commands.Cog):
                 user = guild.get_member(user)
 
                 em = disnake.Embed(color=user.color, title=f"Happy birthday {user.name}!!! :tada: :tada:")
+                em.set_image(url='https://cdn.discordapp.com/attachments/787359417674498088/901940653762687037/happy_bday.gif')
 
                 msg = await bday_channel.send(user.mention, embed=em)
                 await msg.add_reaction("🍰")
