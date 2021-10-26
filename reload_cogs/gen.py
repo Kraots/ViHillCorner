@@ -20,26 +20,26 @@ class Cogs(commands.Cog):
     def display_emoji(self) -> str:
         return '⚒️'
 
-    @commands.group(invoke_without_command=True, case_insensitive=True)
+    @commands.group(invoke_without_command=True, case_insensitive=True, hidden=True)
     @commands.is_owner()
     async def load(self, ctx: Context, extension):
         self.bot.load_extension(extension)
         await ctx.reply(f":inbox_tray: `{extension}`")
 
-    @commands.group(name='reload', invoke_without_command=True, case_insensitive=True)
+    @commands.group(name='reload', invoke_without_command=True, case_insensitive=True, hidden=True)
     @commands.is_owner()
     async def _reload(self, ctx: Context, extension):
         self.bot.unload_extension(extension)
         self.bot.load_extension(extension)
         await ctx.reply(f":repeat: `{extension}`")
 
-    @commands.group(invoke_without_command=True, case_insensitive=True)
+    @commands.group(invoke_without_command=True, case_insensitive=True, hidden=True)
     @commands.is_owner()
     async def unload(self, ctx: Context, extension):
         self.bot.unload_extension(extension)
         await ctx.reply(f":outbox_tray: `{extension}`")
 
-    @_reload.command(aliases=["all"])
+    @_reload.command(aliases=["all"], hidden=True)
     @commands.is_owner()
     async def reload_all(self, ctx: Context):
         cogs_list = []
@@ -64,7 +64,7 @@ class Cogs(commands.Cog):
         em.set_footer(text="If the cog has an ❌, then it means it failed to load, or was never loaded.")
         await ctx.reply(embed=em)
 
-    @load.command(aliases=["all"])
+    @load.command(aliases=["all"], hidden=True)
     @commands.is_owner()
     async def load_all(self, ctx: Context):
         cogs_list = []
@@ -88,7 +88,7 @@ class Cogs(commands.Cog):
         em.set_footer(text="If the cog has an ❌, then it means it failed to load, or was already loaded.")
         await ctx.reply(embed=em)
 
-    @unload.command(aliases=["all"])
+    @unload.command(aliases=["all"], hidden=True)
     @commands.is_owner()
     async def unload_all(self, ctx: Context):
         cogs_list = []

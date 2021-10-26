@@ -1,8 +1,9 @@
 import sys
 import os
 import re
-import zlib
 import io
+import zlib
+import time as tm
 import random
 import datetime
 
@@ -744,6 +745,32 @@ class Misc(commands.Cog):
         else:
             view = ButtonRoleViewOwner(ctx)
             view.message = await ctx.send('**Please use me master 😩**', view=view)
+
+    @commands.command()
+    async def ping(self, ctx: Context):
+        """See the bot's ping."""
+
+        ping = disnake.Embed(title="Pong!", description="_Pinging..._", color=Colours.light_pink)
+        start = tm.time() * 1000
+        msg = await ctx.send(embed=ping)
+        end = tm.time() * 1000
+        ping = disnake.Embed(
+            title="Pong!",
+            description=f"Websocket Latency: `{(round(self.bot.latency * 1000, 2))}ms`"
+            f"\nBot Latency: `{int(round(end-start, 0))}ms`"
+            f"\nResponse Time: `{(msg.created_at.replace(tzinfo=None) - ctx.message.created_at.replace(tzinfo=None)).total_seconds()/1000}` ms",
+            color=Colours.light_pink
+        )
+        ping.set_footer(text=f"Online for {time.human_timedelta(dt=self.bot.uptime, suffix=False)}")
+        await msg.edit(embed=ping)
+
+    @commands.command()
+    async def uptime(self, ctx: Context):
+        """See how long the bot has been online for."""
+
+        uptime = disnake.Embed(description=f"Bot has been online for: `{time.human_timedelta(dt=self.bot.uptime, suffix=False)}`", color=Colours.light_pink)
+        uptime.set_footer(text=f'Bot made by: {self.bot._owner}', icon_url=self.bot.user.display_avatar)
+        await ctx.send(embed=uptime)
 
     @suggest.error
     async def suggest_error(self, ctx: Context, error):
