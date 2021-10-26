@@ -228,6 +228,9 @@ class Starboard(commands.Cog):
     async def star_who(self, ctx: Context, message: str):
         """Show who starred a message."""
 
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+            return
+
         try:
             message = int(message, base=10)
         except ValueError:
@@ -320,6 +323,9 @@ class Starboard(commands.Cog):
     async def star_stats(self, ctx: Context, *, member: disnake.Member = None):
         """Shows stats of the starboard usage of the server or of a member."""
 
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+            return
+
         if member is None:
             await self.star_guild_stats(ctx)
         else:
@@ -328,6 +334,9 @@ class Starboard(commands.Cog):
     @star.command(name='random')
     async def star_random(self, ctx: Context):
         """Sends a random starred message from the starboard."""
+
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+            return
 
         data = await self.db.find().to_list(100000000000)
         data = choice(data)
