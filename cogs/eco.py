@@ -971,7 +971,7 @@ class Economy(commands.Cog):
                 await ctx.send("User is not registered! %s" % (ctx.author.mention))
             return
 
-        results = await self.db.find().sort([('wallet', -1)]).to_list(100000)
+        results = await self.db.find().sort('wallet', -1).to_list(100000)
         index = 1
         for i in results:
             if i['_id'] == member.id:
@@ -999,7 +999,7 @@ class Economy(commands.Cog):
         top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
         guild = self.bot.get_guild(750160850077089853)
 
-        results = await self.db.find().sort([("wallet", -1)]).to_list(100000)
+        results = await self.db.find().sort("wallet", -1).to_list(100000)
         for result in results:
             if not result['wallet'] in (0, 0.0):
                 index += 1

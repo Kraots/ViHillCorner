@@ -1,5 +1,10 @@
 from disnake import Colour
 
+__all__ = (
+    'Colours',
+    'Colors',
+)
+
 
 class Colours:
     """

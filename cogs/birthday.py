@@ -87,7 +87,7 @@ class Birthdays(commands.Cog):
 
         em = disnake.Embed(color=disnake.Color.blurple(), title="***Top `5` upcoming birthdays***\n _ _ ")
 
-        results = await self.db.find().sort([("birthdaydate", 1)]).to_list(5)
+        results = await self.db.find().sort("birthdaydate", 1).to_list(5)
         for result in results:
             user = self.bot.get_user(result['_id'])
             index += 1

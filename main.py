@@ -25,6 +25,10 @@ key3 = os.getenv('EXTRA_DB_KEY')
 cluster3 = motor.motor_asyncio.AsyncIOMotorClient(key3)
 database3 = cluster3['ViHillCornerDB']
 
+key4 = os.getenv('MONGODBKEY2')
+cluster4 = motor.motor_asyncio.AsyncIOMotorClient(key4)
+database4 = cluster4['ViHillCornerDB']
+
 deta_key = os.getenv('DETA_KEY')
 deta = Deta(deta_key)
 
@@ -48,6 +52,7 @@ class ViHillCorner(commands.Bot):
         self.db1 = database1
         self.db2 = database2
         self.db3 = database3
+        self.db4 = database4
         self.base = deta.Base
         self.url = 'https://vihillcorner.deta.dev'
         self.reraise = reraise

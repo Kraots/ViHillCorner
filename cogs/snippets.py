@@ -72,7 +72,7 @@ class Snippets(commands.Cog):
     async def snippet_leaderboard(self, ctx: Context):
         """See top **10** most used snippets."""
 
-        results = await self.db.find().sort([("uses_count", -1)]).to_list(10)
+        results = await self.db.find().sort("uses_count", -1).to_list(10)
         index = 0
         em = disnake.Embed(color=Colours.reds)
         for result in results:
@@ -109,7 +109,7 @@ class Snippets(commands.Cog):
         if data is None:
             return await ctx.send("Snippet **%s** does not exist! %s" % (snippet_name, ctx.author.mention))
 
-        sortSnippets = await self.db.find().sort([('uses_count', -1)]).to_list(100000)
+        sortSnippets = await self.db.find().sort('uses_count', -1).to_list(100000)
         rank = 0
         for e in sortSnippets:
             rank += 1

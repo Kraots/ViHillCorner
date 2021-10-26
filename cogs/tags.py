@@ -98,7 +98,7 @@ class Tags(commands.Cog):
     async def tag_leaderboard(self, ctx: Context):
         """See top **10** most used tags."""
 
-        results = await self.db.find().sort([("uses_count", -1)]).to_list(10)
+        results = await self.db.find().sort("uses_count", -1).to_list(10)
         index = 0
         em = disnake.Embed(color=disnake.Color.blurple())
         for result in results:
@@ -129,7 +129,7 @@ class Tags(commands.Cog):
         if data is None:
             return await ctx.send("Tag **%s** does not exist. %s" % (tag_name, ctx.author.mention))
 
-        sortTags = await self.db.find().sort([('uses_count', -1)]).to_list(100000)
+        sortTags = await self.db.find().sort('uses_count', -1).to_list(100000)
         rank = 0
         for i in sortTags:
             rank += 1
@@ -419,7 +419,7 @@ class Tags(commands.Cog):
 
         else:
             get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-            get_sorted = await self.db.find().sort([("_id", -1)]).to_list(1)
+            get_sorted = await self.db.find().sort("_id", -1).to_list(1)
             for x in get_sorted:
                 last_id = x['_id']
 

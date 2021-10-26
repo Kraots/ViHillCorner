@@ -206,7 +206,7 @@ class Levels(commands.Cog):
         if ctx.channel.id in bot_channel:
             top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
             data = []
-            results = await self.db.find().sort([('xp', -1)]).to_list(100000)
+            results = await self.db.find().sort('xp', -1).to_list(100000)
             index = 0
             for result in results:
                 xp = result['xp']

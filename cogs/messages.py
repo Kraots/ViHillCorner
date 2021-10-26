@@ -37,7 +37,7 @@ class MessagesTopButtons(disnake.ui.View):
         top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
         guild = self.ctx.bot.get_guild(750160850077089853)
 
-        results = await self.db.find().sort([("messages_count", -1)]).to_list(100000)
+        results = await self.db.find().sort("messages_count", -1).to_list(100000)
         for result in results:
             if result['messages_count'] != 0:
                 index += 1
@@ -66,7 +66,7 @@ class MessagesTopButtons(disnake.ui.View):
         top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
         guild = self.ctx.bot.get_guild(750160850077089853)
 
-        results = await self.db.find().sort([("weekly_messages_count", -1)]).to_list(100000)
+        results = await self.db.find().sort("weekly_messages_count", -1).to_list(100000)
         for result in results:
             if result['weekly_messages_count'] != 0:
                 index += 1
@@ -121,7 +121,7 @@ class Messages(commands.Cog):
         if dateNow >= resetWhen:
             users = {}
             index = 0
-            results = await self.db.find().sort([("weekly_messages_count", -1)]).to_list(3)
+            results = await self.db.find().sort("weekly_messages_count", -1).to_list(3)
             for result in results:
                 index += 1
                 user = self.bot.get_user(result['_id'])

@@ -29,7 +29,7 @@ class Reminders(commands.Cog):
     async def remind(self, ctx: Context, *, when: time.UserFriendlyTime(commands.clean_content, default='\u2026')):  # noqa
         """Set your reminder."""
 
-        results = await self.db.find().sort([("_id", -1)]).to_list(1)
+        results = await self.db.find().sort("_id", -1).to_list(1)
 
         for result in results:
             newID = result['_id'] + 1
@@ -57,11 +57,11 @@ class Reminders(commands.Cog):
     async def remind_list(self, ctx: Context):
         """See your list of reminders, if you have any."""
 
-        results = await self.db.find({"user_id": ctx.author.id}).sort([("remind_when", 1)]).to_list(10)
+        results = await self.db.find({"user_id": ctx.author.id}).sort("remind_when", 1).to_list(10)
         em = disnake.Embed(color=Colours.light_pink, title="Reminders")
         index = 0
         total_reminders = 0
-        z = await self.db.find({"user_id": ctx.author.id}).sort([("remind_when", 1)]).to_list(100000)
+        z = await self.db.find({"user_id": ctx.author.id}).sort("remind_when", 1).to_list(100000)
 
         for x in z:
             total_reminders += 1
