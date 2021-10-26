@@ -11,6 +11,12 @@ from utils.paginator import CustomMenu
 from utils.context import Context
 from main import ViHillCorner
 
+NUMBER_EMOJIS = (
+    '1️⃣', '2️⃣', '3️⃣',
+    '4️⃣', '5️⃣', '6️⃣',
+    '7️⃣', '8️⃣',
+)
+
 
 class MutePageEntry:
     def __init__(self, entry):
@@ -47,6 +53,141 @@ class TimeConverter(commands.Converter):
         return time
 
 
+class NumberedButtons(disnake.ui.Button):
+    def __init__(self, emoji: str, db, *, custom_id):
+        super().__init__(label='0', emoji=emoji, custom_id=custom_id)
+        self.db = db
+
+    async def callback(self, inter: disnake.MessageInteraction):
+        data = await self.db.find_one({'_id': inter.message.id})
+        if data is not None:
+            voted_users = data.get('voted_users')
+
+            if voted_users is not None:
+                if inter.author.id in voted_users:
+                    return await inter.response.send_message('You already voted for this poll!', ephemeral=True)
+
+            to_update = voted_users + [inter.author.id] if voted_users is not None else [inter.author.id]
+            await self.db.update_one({'_id': inter.message.id}, {'$set': {'voted_users': to_update}})
+            index = str(NUMBER_EMOJIS.index(str(self.emoji)) + 1)
+            info = data[index]
+            info[0] += 1
+            await self.db.update_one({'_id': inter.message.id}, {'$set': {index: info}})
+
+            for child in self.view.children:
+                if child.emoji == self.emoji:
+                    child.label = str(int(self.label) + 1)
+
+            await inter.message.edit(view=self.view)
+            await inter.response.send_message(f'You voted for option: {self.emoji}', ephemeral=True)
+        else:
+            await inter.response.send_message('This poll is over!', ephemeral=True)
+
+
+class PollInteractiveMenu(disnake.ui.View):
+    def __init__(self, ctx: Context, channel: disnake.TextChannel, duration: int, question: str):
+        super().__init__(timeout=None)
+        self.ctx = ctx
+        self.channel = channel
+        self.duration = duration
+        self.db = ctx.bot.db1['Poll']
+        self.question = question
+        self.adding_option = False
+        self.options = []
+
+    async def interaction_check(self, inter: disnake.MessageInteraction) -> bool:
+        if inter.author.id != self.ctx.author.id:
+            await inter.response.send_message(f'Only `{self.ctx.author.display_name}` can use this poll menu!', ephemeral=True)
+            return False
+        return True
+
+    @disnake.ui.button(label='Add Option', style=disnake.ButtonStyle.blurple)
+    async def add_option_button(self, button: disnake.Button, inter: disnake.MessageInteraction):
+        if self.adding_option:
+            return await inter.response.send_message('You are already adding an option!', ephemeral=True)
+        if len(self.options) == 8:
+            return await inter.response.send_message('There already are a total of 8 options. No more can be added.', ephemeral=True)
+
+        self.adding_option = True
+        while True:
+            try:
+                await self.ctx.send(f'Please send the option. (Total: `#{len(self.options) + 1}`)')
+                msg = await self.ctx.bot.wait_for('message', timeout=90.0, check=lambda m: m.author.id == self.ctx.author.id)
+            except asyncio.TimeoutError:
+                pass
+            else:
+                if len(msg.content) >= 200:
+                    await msg.delete()
+                    await inter.response.send_message('Content too large. Limit is of `200` characters.\nTry again.', ephemeral=True)
+                else:
+                    break
+
+        self.adding_option = False
+        self.options.append(msg.content)
+        em = disnake.Embed(
+            title='Creating the poll',
+            description='\n'.join([f'{NUMBER_EMOJIS[index]} **->** {option}' for index, option in enumerate(self.options)]),
+            color=disnake.Colour.blurple()
+        )
+        await self.message.edit(embed=em)
+
+    @disnake.ui.button(label='Confirm', style=disnake.ButtonStyle.green)
+    async def confirm_button(self, button: disnake.Button, inter: disnake.MessageInteraction):
+        if len(self.options) == 0:
+            return await inter.response.send_message('You didn\'t add any options yet! Add some options and confirm later.', ephemeral=True)
+        expire_date = datetime.datetime.now() + relativedelta(seconds=self.duration)
+        em = disnake.Embed(
+            title='Expires: ' + disnake.utils.format_dt(expire_date, 'R'),
+            description='\n'.join([f'{NUMBER_EMOJIS[index]} **->** {option}' for index, option in enumerate(self.options)])
+        )
+        em.set_author(name=f'Poll by: {self.ctx.author}', icon_url=self.ctx.author.display_avatar.url)
+        em.add_field('Question', f'`{self.question}`')
+        msg = await self.channel.send(embed=em)
+
+        button_view = disnake.ui.View(timeout=self.duration)
+        data = {
+            '_id': msg.id,
+            'expire_date': expire_date,
+            'channel_id': self.channel.id,
+            'user_id': self.ctx.author.id
+        }
+        for index, option in enumerate(self.options):
+            data[str(index + 1)] = [0, option, self.question]
+            button_view.add_item(NumberedButtons(NUMBER_EMOJIS[index], self.db, custom_id=f'vhc:poll:{index}'))
+        await self.db.insert_one(data)
+        await msg.edit(view=button_view)
+
+        for child in self.children:
+            child.disabled = True
+            child.style = disnake.ButtonStyle.grey
+        em = self.message.embeds[0]
+        em.color = disnake.Colour.green()
+        em.title = 'Poll created!'
+        em.description = '\n'.join([f'{NUMBER_EMOJIS[index]} **->** {option}' for index, option in enumerate(self.options)])
+        await self.message.edit(embed=em, view=self)
+        self.stop()
+
+    @disnake.ui.button(label='Cancel', style=disnake.ButtonStyle.red)
+    async def cancel_button(self, button: disnake.Button, inter: disnake.MessageInteraction):
+        for child in self.children:
+            child.disabled = True
+            child.style = disnake.ButtonStyle.grey
+        em = self.message.embeds[0]
+        em.color = disnake.Colour.red()
+        em.title = 'Poll creation cancelled!'
+        em.description = '\n'.join([f'{NUMBER_EMOJIS[index]} **->** {option}' for index, option in enumerate(self.options)])
+        await self.message.edit(embed=em, view=self)
+        await inter.response.send_message('Poll creation cancelled.')
+        self.stop()
+
+
+class DummyPollView(disnake.ui.View):
+    def __init__(self, db, options: int):
+        super().__init__(timeout=None)
+        for i in range(options):
+            self.add_item(NumberedButtons(NUMBER_EMOJIS[i], db, custom_id=f'vhc:poll:{i}'))
+
+
 class Moderator(commands.Cog):
     """Moderator related commands."""
     def __init__(self, bot: ViHillCorner):
@@ -55,10 +196,12 @@ class Moderator(commands.Cog):
         self.db2 = bot.db1['Filter Mutes']
         self.prefix = "!"
         self.check_current_mutes.start()
+        self.check_polls.start()
         self.ignored_channels = (
             750645852237987891, 750160850303582236, 779388444304211991, 750160850303582237, 750160850593251449,
             797867811967467560, 752164200222163016, 783304066691235850, 770209436488171530, 779280794530086952,
-            788377362739494943, 750160852380024895, 781777255885570049, 750432155179679815, 750160850593251454
+            788377362739494943, 750160852380024895, 781777255885570049, 750432155179679815, 750160850593251454,
+            902536749073432576, 902677227307679797,
         )
 
     async def cog_check(self, ctx: Context):
@@ -121,6 +264,76 @@ class Moderator(commands.Cog):
                         await self.db2.delete_one({"_id": member.id})
                     else:
                         await self.db2.delete_one({"_id": result2['_id']})
+
+    @tasks.loop(seconds=5.0)
+    async def check_polls(self):
+        db = self.bot.db1['Poll']
+        data = await db.find().sort('expire_date', 1).to_list(1)
+        if len(data) != 0:
+            for i in data:
+                if datetime.datetime.now() >= i['expire_date']:
+                    await db.delete_one({'_id': i['_id']})
+                    won = []
+                    ignored = ('_id', 'expire_date', 'voted_users', 'channel_id', 'user_id')
+                    for k in i:
+                        if k not in ignored:
+                            if len(won) == 0:
+                                won = [k, i[k][0], i[k][1], i[k][2]]
+                            else:
+                                if won[1] > i[k][0]:
+                                    won = [k, i[k][0], i[k][1], i[k][2]]
+                    em = disnake.Embed(title='Poll ended!', color=disnake.Colour.red())
+                    em.add_field('Question', f'`{won[3]}`', inline=False)
+                    em.add_field('Winner', f'{NUMBER_EMOJIS[int(won[0])]} **->** {won[2]} (**`{won[1]} votes`**)', inline=False)
+
+                    guild = self.bot.get_guild(750160850077089853)
+                    channel = guild.get_channel(i['channel_id'])
+                    message = await channel.fetch_message(i['_id'])
+                    user = await self.bot.fetch_user(i['user_id'])
+                    em.set_author(name=f'Poll by: {user}', icon_url=user.display_avatar.url)
+                    await channel.send(embed=em, reference=message)
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        if not hasattr(self, 'added_views'):
+            messages = await self.bot.db1['Poll'].find().to_list(100000000)
+            if len(messages) != 0:
+                ignored = ('_id', 'expire_date', 'voted_users', 'channel_id', 'user_id')
+                for message in messages:
+                    self.bot.add_view(DummyPollView(self.bot.db1['Poll'], len([k for k in message if k not in ignored])), message_id=message['_id'])
+                self.added_views = True
+
+    @commands.command()
+    @commands.has_role(754676705741766757)
+    async def poll(self, ctx: Context, *, duration: TimeConverter):
+        """Starts the interactive poll creation, the poll message is sent in <#902677227307679797>
+
+        Example:
+            !poll 5m
+        """
+
+        if duration:
+            em = disnake.Embed(
+                title='Creating the poll',
+                description='No Options.',
+                color=disnake.Colour.blurple()
+            )
+            while True:
+                try:
+                    await ctx.reply('What is the poll\'s question?')
+                    msg = await self.bot.wait_for('message', timeout=180.0, check=lambda m: m.author.id == ctx.author.id)
+                except asyncio.TimeoutError:
+                    return await ctx.send(f'Ran out of time. {ctx.author.mention}')
+                else:
+                    if len(msg.content) >= 300:
+                        await ctx.send('Question cannot have more than `300` characters.')
+                    else:
+                        question = msg.content
+                        break
+            guild = self.bot.get_guild(750160850077089853)
+            channel = guild.get_channel(902677227307679797)
+            view = PollInteractiveMenu(ctx, channel, duration, question)
+            view.message = await ctx.send(embed=em, view=view)
 
     @commands.command()
     @commands.has_role(754676705741766757)
