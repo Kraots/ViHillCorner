@@ -7,7 +7,7 @@ import datetime
 from disnake.ext import commands, tasks
 from dateutil.relativedelta import relativedelta
 from utils import time
-from utils.paginator import CustomMenu
+from utils.paginator import CustomMenu, SimplePages
 from utils.context import Context
 from main import ViHillCorner
 
@@ -137,6 +137,7 @@ class PollInteractiveMenu(disnake.ui.View):
             return await inter.response.send_message('You didn\'t add any options yet! Add some options and confirm later.', ephemeral=True)
         expire_date = datetime.datetime.now() + relativedelta(seconds=self.duration)
         em = disnake.Embed(
+            color=disnake.Color.green(),
             title='Expires: ' + disnake.utils.format_dt(expire_date, 'R'),
             description='\n'.join([f'{NUMBER_EMOJIS[index]} **->** {option}' for index, option in enumerate(self.options)])
         )
@@ -148,7 +149,6 @@ class PollInteractiveMenu(disnake.ui.View):
         data = {
             '_id': msg.id,
             'expire_date': expire_date,
-            'channel_id': self.channel.id,
             'user_id': self.ctx.author.id
         }
         for index, option in enumerate(self.options):
@@ -274,7 +274,7 @@ class Moderator(commands.Cog):
                 if datetime.datetime.now() >= i['expire_date']:
                     await db.delete_one({'_id': i['_id']})
                     won = []
-                    ignored = ('_id', 'expire_date', 'voted_users', 'channel_id', 'user_id')
+                    ignored = ('_id', 'expire_date', 'voted_users', 'user_id')
                     for k in i:
                         if k not in ignored:
                             if len(won) == 0:
@@ -287,23 +287,26 @@ class Moderator(commands.Cog):
                     em.add_field('Winner', f'{NUMBER_EMOJIS[int(won[0])]} **->** {won[2]} (**`{won[1]} votes`**)', inline=False)
 
                     guild = self.bot.get_guild(750160850077089853)
-                    channel = guild.get_channel(i['channel_id'])
+                    channel = guild.get_channel(902677227307679797)
                     message = await channel.fetch_message(i['_id'])
                     user = await self.bot.fetch_user(i['user_id'])
                     em.set_author(name=f'Poll by: {user}', icon_url=user.display_avatar.url)
                     await channel.send(embed=em, reference=message)
+                    em = message.embeds[0]
+                    em.color = disnake.Color.red()
+                    await message.edit(embed=em)
 
     @commands.Cog.listener()
     async def on_ready(self):
         if not hasattr(self, 'added_views'):
             messages = await self.bot.db1['Poll'].find().to_list(100000000)
             if len(messages) != 0:
-                ignored = ('_id', 'expire_date', 'voted_users', 'channel_id', 'user_id')
+                ignored = ('_id', 'expire_date', 'voted_users', 'user_id')
                 for message in messages:
                     self.bot.add_view(DummyPollView(self.bot.db1['Poll'], len([k for k in message if k not in ignored])), message_id=message['_id'])
                 self.added_views = True
 
-    @commands.command()
+    @commands.group(invoke_without_command=True, case_insensitive=True)
     @commands.has_role(754676705741766757)
     async def poll(self, ctx: Context, *, duration: TimeConverter):
         """Starts the interactive poll creation, the poll message is sent in <#902677227307679797>
@@ -334,6 +337,52 @@ class Moderator(commands.Cog):
             channel = guild.get_channel(902677227307679797)
             view = PollInteractiveMenu(ctx, channel, duration, question)
             view.message = await ctx.send(embed=em, view=view)
+
+    @poll.command(name='show')
+    async def poll_show(self, ctx: Context):
+        """Shows the current running polls, in expire order."""
+
+        data = await self.bot.db1['Poll'].find().sort('expire_date', 1).to_list(1000000)
+        if data is None:
+            return await ctx.reply('No current running polls found!')
+
+        channel_url = 'https://discord.com/channels/750160850077089853/902677227307679797/'
+        entries = []
+        for poll in data:
+            usr = ctx.guild.get_member(poll['user_id'])
+            url = channel_url + str(poll['_id'])
+            entries.append(
+                f"Poll id: **{poll['_id']}**\n"
+                f"Poll by: `{usr}`\n"
+                f"Expires: {disnake.utils.format_dt(poll['expire_date'])}\n"
+                f"[Jump!]({url})\n"
+            )
+        pages = SimplePages(ctx, entries, per_page=5)
+        await pages.start()
+
+    @poll.command(name='cancel')
+    @commands.has_role(754676705741766757)
+    async def poll_cancel(self, ctx: Context, poll_id: int):
+        """Cancels a poll based on its id.
+
+        You can find the id by using `!poll show` and finding your poll
+        or by getting the poll's message id.
+        """
+
+        poll = await self.bot.db1['Poll'].find_one({'_id': poll_id})
+        if poll is None:
+            return await ctx.reply(f'No poll with the id `{poll_id}` found.')
+        elif poll['user_id'] != ctx.author.id and ctx.author.id != self.bot._owner_id:
+            return await ctx.reply(
+                'You did not create this poll!'
+                f'Only `{ctx.guild.get_member(poll["user_id"])}` can cancel it.'
+            )
+
+        await self.bot.db1['Poll'].delete_one({'_id': poll_id})
+        ch = ctx.guild.get_channel(902677227307679797)
+        msg = await ch.fetch_message(poll['_id'])
+        await msg.delete()
+        await ctx.reply('Successfully cancelled and deleted the poll.')
 
     @commands.command()
     @commands.has_role(754676705741766757)
