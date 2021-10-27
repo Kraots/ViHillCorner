@@ -163,6 +163,7 @@ class PollInteractiveMenu(disnake.ui.View):
         em = self.message.embeds[0]
         em.color = disnake.Colour.green()
         em.title = 'Poll created!'
+        em.description = disnake.Embed.Empty
         v = disnake.ui.View()
         btn = disnake.ui.Button(label='Jump!', url=msg.jump_url)
         v.add_item(btn)
