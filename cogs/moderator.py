@@ -72,11 +72,12 @@ class NumberedButtons(disnake.ui.Button):
             index = str(NUMBER_EMOJIS.index(str(self.emoji)) + 1)
             info = data[index]
             info[0] += 1
+            new_label = info[0]
             await self.db.update_one({'_id': inter.message.id}, {'$set': {index: info}})
 
             for child in self.view.children:
                 if child.emoji == self.emoji:
-                    child.label = str(int(self.label) + 1)
+                    child.label = str(new_label)
 
             await inter.message.edit(view=self.view)
             await inter.response.send_message(f'You voted for option: {self.emoji}', ephemeral=True)
