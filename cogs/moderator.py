@@ -313,7 +313,7 @@ class Moderator(commands.Cog):
                     for i, k in enumerate([key for key in message if key not in ignored]):
                         buttons.append(NumberedButtons(
                             emoji=NUMBER_EMOJIS[i],
-                            db=self.bot.db['Poll'],
+                            db=self.bot.db1['Poll'],
                             custom_id=f'vhc:poll:{i}',
                             label=str(message[k][0])
                         ))
