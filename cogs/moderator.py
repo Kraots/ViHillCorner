@@ -143,6 +143,7 @@ class PollInteractiveMenu(disnake.ui.View):
             description='\n'.join([f'{NUMBER_EMOJIS[index]} **->** {option}' for index, option in enumerate(self.options)])
         )
         em.set_author(name=f'Poll by: {self.ctx.author}', icon_url=self.ctx.author.display_avatar.url)
+        em.set_footer(text='Once you voted you cannot remove your vote or vote again! Choose wisely.')
         em.add_field('Question', f'`{self.question}`')
         msg = await self.channel.send(embed=em)
 
