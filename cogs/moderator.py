@@ -1,3 +1,4 @@
+from typing import List
 import disnake
 import asyncio
 from utils.colors import Colours
@@ -54,8 +55,8 @@ class TimeConverter(commands.Converter):
 
 
 class NumberedButtons(disnake.ui.Button):
-    def __init__(self, emoji: str, db, *, custom_id):
-        super().__init__(label='0', emoji=emoji, custom_id=custom_id)
+    def __init__(self, emoji: str, db, *, custom_id: str, label: str = '0'):
+        super().__init__(label=label, emoji=emoji, custom_id=custom_id)
         self.db = db
 
     async def callback(self, inter: disnake.MessageInteraction):
@@ -187,10 +188,10 @@ class PollInteractiveMenu(disnake.ui.View):
 
 
 class DummyPollView(disnake.ui.View):
-    def __init__(self, db, options: int):
+    def __init__(self, buttons: List[disnake.ui.Button]):
         super().__init__(timeout=None)
-        for i in range(options):
-            self.add_item(NumberedButtons(NUMBER_EMOJIS[i], db, custom_id=f'vhc:poll:{i}'))
+        for button in buttons:
+            self.add_item(button)
 
 
 class Moderator(commands.Cog):
@@ -308,7 +309,15 @@ class Moderator(commands.Cog):
             if len(messages) != 0:
                 ignored = ('_id', 'expire_date', 'voted_users', 'user_id')
                 for message in messages:
-                    self.bot.add_view(DummyPollView(self.bot.db1['Poll'], len([k for k in message if k not in ignored])), message_id=message['_id'])
+                    buttons = []
+                    for i, k in enumerate([key for key in message if key not in ignored]):
+                        buttons.append(NumberedButtons(
+                            emoji=NUMBERED_EMOJIS[i],
+                            db=self.bot.db['Poll'],
+                            custom_id=f'vhc:poll:{i}',
+                            label=str(message[k][0])
+                        ))
+                    self.bot.add_view(DummyPollView(buttons), message_id=message['_id'])
                 self.added_views = True
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
