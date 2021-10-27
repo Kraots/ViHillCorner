@@ -354,7 +354,7 @@ class Moderator(commands.Cog):
             entries.append(
                 f"Poll id: **{poll['_id']}**\n"
                 f"Poll by: `{usr}`\n"
-                f"Expires: {disnake.utils.format_dt(poll['expire_date'])}\n"
+                f"Expires: {disnake.utils.format_dt(poll['expire_date'], 'R')}\n"
                 f"[Jump!]({url})\n"
             )
         pages = SimplePages(ctx, entries, per_page=5)
