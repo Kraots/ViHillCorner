@@ -136,7 +136,7 @@ class PollInteractiveMenu(disnake.ui.View):
     async def confirm_button(self, button: disnake.Button, inter: disnake.MessageInteraction):
         if len(self.options) == 0:
             return await inter.response.send_message('You didn\'t add any options yet! Add some options and confirm later.', ephemeral=True)
-        expire_date = datetime.datetime.now() + relativedelta(seconds=self.duration)
+        expire_date = datetime.datetime.utcnow() + relativedelta(seconds=self.duration)
         em = disnake.Embed(
             color=disnake.Color.green(),
             title='Expires: ' + disnake.utils.format_dt(expire_date, 'R'),
@@ -219,20 +219,20 @@ class Moderator(commands.Cog):
     @tasks.loop(seconds=30)
     async def check_current_mutes(self):
         await self.bot.wait_until_ready()
-        currentTime = datetime.datetime.now()
+        currentTime = datetime.datetime.utcnow()
         results = await self.db1.find().to_list(100000)
         results2 = await self.db2.find().to_list(100000)
         for result in results:
-            if result['muteDuration'] is not None:
-                unmuteTime = result['mutedAt'] + relativedelta(seconds=result['muteDuration'])
+            if result['mute_duration'] is not None:
+                unmute_time = result['muted_at'] + relativedelta(seconds=result['mute_duration'])
 
-                if currentTime >= unmuteTime:
-                    guild = self.bot.get_guild(result['guildId'])
+                if currentTime >= unmute_time:
+                    guild = self.bot.get_guild(result['guild_id'])
                     member = guild.get_member(result['_id'])
-                    isStaff = result['staff']
+                    is_staff = result['staff']
 
                     if member is not None:
-                        if isStaff is True:
+                        if is_staff is True:
                             staff = guild.get_role(754676705741766757)
                             mod = guild.get_role(750162714407600228)
                             new_roles = [role for role in member.roles if role.id != 750465726069997658] + [staff, mod]
@@ -247,16 +247,16 @@ class Moderator(commands.Cog):
                         await self.db1.delete_one({"_id": result['_id']})
 
         for result2 in results2:
-            if result2['muteDuration'] is not None:
-                unmuteTime = result2['mutedAt'] + relativedelta(seconds=result2['muteDuration'])
+            if result2['mute_duration'] is not None:
+                unmute_time = result2['muted_at'] + relativedelta(seconds=result2['mute_duration'])
 
-                if currentTime >= unmuteTime:
-                    guild = self.bot.get_guild(result2['guildId'])
+                if currentTime >= unmute_time:
+                    guild = self.bot.get_guild(result2['guild_id'])
                     member = guild.get_member(result2['_id'])
-                    isStaff = result2['staff']
+                    is_staff = result2['staff']
 
                     if member is not None:
-                        if isStaff is True:
+                        if is_staff is True:
                             staff = guild.get_role(754676705741766757)
                             mod = guild.get_role(750162714407600228)
                             new_roles = [role for role in member.roles if role.id != 750465726069997658] + [staff, mod]
@@ -276,7 +276,7 @@ class Moderator(commands.Cog):
         data = await db.find().sort('expire_date', 1).to_list(1)
         if len(data) != 0:
             for i in data:
-                if datetime.datetime.now() >= i['expire_date']:
+                if datetime.datetime.utcnow() >= i['expire_date']:
                     await db.delete_one({'_id': i['_id']})
                     won = []
                     ignored = ('_id', 'expire_date', 'voted_users', 'user_id')
@@ -544,11 +544,11 @@ class Moderator(commands.Cog):
         If the time is specified (1s|1m|1h|1d), the member will be unmuted after that amount of time expires.
         """
 
-        isStaff = False
+        is_staff = False
         if 754676705741766757 in (role.id for role in member.roles):
             if ctx.author.id != 374622847672254466:
                 return await ctx.send("You can't mute mods or take any moderator action against them.")
-            isStaff = True
+            is_staff = True
 
         result1 = await self.db1.find_one({'_id': member.id})
         result2 = await self.db2.find_one({'_id': member.id})
@@ -575,11 +575,11 @@ class Moderator(commands.Cog):
         else:
             post = {
                 '_id': member.id,
-                'mutedAt': datetime.datetime.utcnow(),
-                'muteDuration': muted_time,
-                'mutedBy': ctx.author.id,
-                'guildId': ctx.guild.id,
-                'staff': isStaff
+                'muted_at': datetime.datetime.utcnow(),
+                'mute_duration': muted_time,
+                'muted_by': ctx.author.id,
+                'guild_id': ctx.guild.id,
+                'staff': is_staff
             }
 
             await self.db1.insert_one(post)
@@ -593,7 +593,7 @@ class Moderator(commands.Cog):
             guild = self.bot.get_guild(750160850077089853)
             log_channel = guild.get_channel(788377362739494943)
             muted = guild.get_role(750465726069997658)
-            if isStaff is True:
+            if is_staff is True:
                 new_roles = [role for role in member.roles if role.id not in (754676705741766757, 750162714407600228)] + [muted]
             else:
                 new_roles = [role for role in member.roles] + [muted]
@@ -630,8 +630,8 @@ class Moderator(commands.Cog):
             if len(results) == 0:
                 return await ctx.reply("No members muted currently.")
             for result in results:
-                if result['muteDuration'] is not None:
-                    _time = result['mutedAt'] + relativedelta(seconds=result['muteDuration'])
+                if result['mute_duration'] is not None:
+                    _time = result['muted_at'] + relativedelta(seconds=result['mute_duration'])
                     _time = f"Time Left: {time.human_timedelta(_time, suffix=False, brief=True)}"
                 else:
                     _time = "Time Left: Eternity"
@@ -648,8 +648,8 @@ class Moderator(commands.Cog):
                 if result is None:
                     return await ctx.reply("That member is not muted.")
 
-            if result['muteDuration'] is not None:
-                _time = result['mutedAt'] + relativedelta(seconds=result['muteDuration'])
+            if result['mute_duration'] is not None:
+                _time = result['muted_at'] + relativedelta(seconds=result['mute_duration'])
                 _time = time.human_timedelta(_time, suffix=False)
             else:
                 _time = "Eternity"
@@ -670,13 +670,13 @@ class Moderator(commands.Cog):
         resultt = await self.db2.find_one({'_id': member.id})
 
         if result is not None:
-            isStaff = result['staff']
-            mutedBy = result['mutedBy']
-            if mutedBy == 374622847672254466 and ctx.author.id != 374622847672254466:
+            is_staff = result['staff']
+            muted_by = result['muted_by']
+            if muted_by == 374622847672254466 and ctx.author.id != 374622847672254466:
                 return await ctx.send(f"`{member}` cannot be unmuted since the one who muted them was none other than my master <:yamete:857163308427902987>")
         else:
             if resultt is not None:
-                isStaff = resultt['staff']
+                is_staff = resultt['staff']
                 if ctx.author.id != 374622847672254466:
                     return await ctx.send("Members muted by filters cannot be unmuted by anyone except from my master <:yamete:857163308427902987>")
             else:
@@ -684,7 +684,7 @@ class Moderator(commands.Cog):
 
         guild = self.bot.get_guild(750160850077089853)
         log_channel = guild.get_channel(788377362739494943)
-        if isStaff is True:
+        if is_staff is True:
             staff = guild.get_role(754676705741766757)
             mod = guild.get_role(750162714407600228)
             new_roles = [role for role in member.roles if role.id != 750465726069997658] + [staff, mod]

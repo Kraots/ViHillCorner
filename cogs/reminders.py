@@ -129,8 +129,8 @@ class Reminders(commands.Cog):
     @tasks.loop(seconds=5)
     async def check_current_reminders(self):
         await self.bot.wait_until_ready()
-        current_time = datetime.datetime.now()
-        results = await self.db.find().to_list(100000)
+        current_time = datetime.datetime.utcnow()
+        results = await self.db.find().sort('remind_when', 1).to_list(1)
         for result in results:
             expire_date = result['remind_when']
             remind_id = result['_id']

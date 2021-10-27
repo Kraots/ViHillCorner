@@ -121,18 +121,18 @@ class FilterCog(commands.Cog):
                                 with open("words-warns.json", "w", encoding="utf-8") as f:
                                     json.dump(users, f, ensure_ascii=False, indent=4)
 
-                                isStaff = False
+                                is_staff = False
                                 if 754676705741766757 in (role.id for role in message.author.roles):
-                                    isStaff = True
+                                    is_staff = True
 
                                 mute_time = get_mute_time(user.id)
 
                                 post = {
                                     '_id': user.id,
-                                    'mutedAt': datetime.datetime.now(),
-                                    'muteDuration': mute_time,
-                                    'guildId': message.guild.id,
-                                    'staff': isStaff
+                                    'muted_at': datetime.datetime.utcnow(),
+                                    'mute_duration': mute_time,
+                                    'guild_id': message.guild.id,
+                                    'staff': is_staff
                                 }
                                 try:
                                     await self.db.insert_one(post)
@@ -140,7 +140,7 @@ class FilterCog(commands.Cog):
                                     return
                                 guild = self.bot.get_guild(750160850077089853)
                                 muted = guild.get_role(750465726069997658)
-                                if isStaff is True:
+                                if is_staff is True:
                                     new_roles = [role for role in message.author.roles if role.id not in (754676705741766757, 750162714407600228)] + [muted]
                                 else:
                                     new_roles = [role for role in message.author.roles] + [muted]
@@ -365,18 +365,18 @@ class FilterCog(commands.Cog):
                                 with open("words-warns.json", "w", encoding="utf-8") as f:
                                     json.dump(users, f, ensure_ascii=False, indent=4)
 
-                                isStaff = False
+                                is_staff = False
                                 if 754676705741766757 in (role.id for role in after.author.roles):
-                                    isStaff = True
+                                    is_staff = True
 
                                 mute_time = get_mute_time(user.id)
 
                                 post = {
                                     '_id': user.id,
-                                    'mutedAt': datetime.datetime.now(),
-                                    'muteDuration': mute_time,
-                                    'guildId': after.guild.id,
-                                    'staff': isStaff
+                                    'muted_at': datetime.datetime.utcnow(),
+                                    'mute_duration': mute_time,
+                                    'guild_id': after.guild.id,
+                                    'staff': is_staff
                                 }
                                 try:
                                     await self.db.insert_one(post)
@@ -384,7 +384,7 @@ class FilterCog(commands.Cog):
                                     return
                                 guild = self.bot.get_guild(750160850077089853)
                                 muted = guild.get_role(750465726069997658)
-                                if isStaff is True:
+                                if is_staff is True:
                                     new_roles = [role for role in after.author.roles if role.id not in (754676705741766757, 750162714407600228)] + [muted]
                                 else:
                                     new_roles = [role for role in after.author.roles] + [muted]

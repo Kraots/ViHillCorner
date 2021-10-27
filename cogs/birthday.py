@@ -24,11 +24,11 @@ class Birthdays(commands.Cog):
     def display_emoji(self) -> str:
         return '🍰'
 
-    @tasks.loop(minutes=30)
+    @tasks.loop(minutes=30.0)
     async def check_bdays(self):
         await self.bot.wait_until_ready()
         currentTime = datetime.datetime.utcnow()
-        results = await self.db.find().to_list(100000)
+        results = await self.db.find().sort('region_birthday', 1).to_list(1)
         for result in results:
             preBday = result['birthdaydate']
             bdayDate = result['region_birthday']
@@ -119,7 +119,7 @@ class Birthdays(commands.Cog):
                 "!birthday set 04/27`"
             )
 
-        dateNow = datetime.datetime.now().strftime("%Y/%m/%d")
+        dateNow = datetime.datetime.utcnow().strftime("%Y/%m/%d")
         dateNow = datetime.datetime.strptime(dateNow, "%Y/%m/%d")
 
         if dateNow > birthday:
