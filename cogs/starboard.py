@@ -22,10 +22,18 @@ class Starboard(commands.Cog):
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
+        self.prefix = '!'
         self._message_cache: Dict[int, disnake.Message] = {}
         self.db = self.bot.db4['Starboard']
         self.db2 = self.bot.db4['StarboardStats']
         self.db3 = self.bot.db4['StarboardStatus']
+
+    async def cog_check(self, ctx: Context):
+        return ctx.prefix == self.prefix
+
+    @property
+    def display_emoji(self) -> str:
+        return STAR_EMOJI
 
     async def increment_user(self, user_id: int, data: dict):
         user = await self.db2.find_one({'_id': user_id})
