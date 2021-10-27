@@ -163,8 +163,10 @@ class PollInteractiveMenu(disnake.ui.View):
         em = self.message.embeds[0]
         em.color = disnake.Colour.green()
         em.title = 'Poll created!'
-        em.description = '\n'.join([f'{NUMBER_EMOJIS[index]} **->** {option}' for index, option in enumerate(self.options)])
-        await self.message.edit(embed=em, view=self)
+        v = disnake.ui.View()
+        btn = disnake.ui.Button(label='Jump!', url=msg.jump_url)
+        v.add_item(btn)
+        await self.message.edit(embed=em, view=v)
         self.stop()
 
     @disnake.ui.button(label='Cancel', style=disnake.ButtonStyle.red)
