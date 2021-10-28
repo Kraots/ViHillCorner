@@ -1,17 +1,21 @@
-import disnake
-from disnake.ext import commands
+import aiohttp
+import functools
 import random
 from random import randint
-from utils.helpers import time_phaser
 import asyncio
-import games
-import aiohttp
+
+import disnake
+from disnake.ext import commands
+
+from utils.helpers import time_phaser
 from utils.colors import Colours
-import functools
 from utils.helpers import replace_many, suppress_links
 from utils.pillow import invert_pfp
-import akinator
 from utils.context import Context
+
+import akinator
+import games
+
 from main import ViHillCorner
 
 UWU_WORDS = {

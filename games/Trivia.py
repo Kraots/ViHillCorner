@@ -1,9 +1,13 @@
-from trivia import trivia
 import asyncio
-from utils.colors import Colours
-import disnake
 import random
+
+import disnake
+
+from trivia import trivia
+
+from utils.colors import Colours
 from utils.context import Context
+
 from main import ViHillCorner
 
 

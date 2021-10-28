@@ -1,5 +1,7 @@
-from PIL import Image, ImageFont, ImageDraw
 import numpy as np
+
+from PIL import Image, ImageFont, ImageDraw
+
 import disnake
 
 GRAY = (48, 48, 48)

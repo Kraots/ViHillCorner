@@ -1,12 +1,16 @@
+from typing import List
+import textwrap
+
 import disnake
 from disnake.ext import commands
-from utils.paginator import CustomMenu
-from utils.colors import Colours
+
 from mal import Anime as AnimeSearchId
 from mal import AnimeSearch
-import textwrap
+
+from utils.colors import Colours
 from utils.context import Context
-from typing import List
+from utils.paginator import CustomMenu
+
 from main import ViHillCorner
 
 

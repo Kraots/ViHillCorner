@@ -1,11 +1,14 @@
-from disnake.ext import commands
-import disnake
-from . import menus
-from utils.paginator import RoboPages
-from utils.colors import Colours
 from typing import Any, Dict, List, Optional, Union
 import itertools
 import inspect
+
+import disnake
+from disnake.ext import commands
+
+from utils.paginator import RoboPages
+from utils.colors import Colours
+
+from . import menus
 
 
 class GroupHelpPageSource(menus.ListPageSource):

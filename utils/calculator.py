@@ -1,8 +1,9 @@
-from .context import Context
-from utils.colors import Colours
-
 import disnake
 from disnake.ui import View
+
+from utils.colors import Colours
+
+from .context import Context
 
 
 class Calculator(View):

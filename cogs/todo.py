@@ -1,8 +1,10 @@
-from disnake.ext import commands
-from utils.colors import Colours
-from utils.paginator import ToDoMenu
-from utils.context import Context
 import disnake
+from disnake.ext import commands
+
+from utils.colors import Colours
+from utils.context import Context
+from utils.paginator import ToDoMenu
+
 from main import ViHillCorner
 
 

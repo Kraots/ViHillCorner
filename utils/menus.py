@@ -1,12 +1,10 @@
-import asyncio
-import disnake
-
-import itertools
-import inspect
-import bisect  # noqa
-import logging  # noqa
 import re
+import inspect
+import asyncio
+import itertools
 from collections import OrderedDict, namedtuple
+
+import disnake
 
 
 class MenuError(Exception):
