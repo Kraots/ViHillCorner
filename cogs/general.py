@@ -1,3 +1,4 @@
+import re
 import os
 import random
 import datetime
@@ -14,6 +15,8 @@ from disnake.ext import commands
 from utils.colors import Colours
 from utils.context import Context
 from utils import time
+
+from .token_invalidation import TokenInvalidation, GistContent
 
 from main import ViHillCorner
 
@@ -39,7 +42,7 @@ def take_ss(url):
     urllib.request.urlretrieve(api_url, output)
 
 
-addd = """
+SERVER_AD = """
 ୨୧ VIHILL CORNER ୨୧
 ♥︎ Your chance to meet and chat with awesome people ♥︎
 
@@ -60,6 +63,8 @@ nono_list = (
     'https://hanime.tv', 'xvideos.com', 'https://xvideos.com', 'hentai.com', 'https://hentai.com', 'hentai.net', 'https://hentai.net',
     'https://www.pornhub.com/', 'www.pornhub.com/'
 )
+
+LANGUAGE_REGEX = re.compile(r"(\w*)\s*(?:```)(\w*)?([\s\S]*)(?:```$)")
 
 
 class General(commands.Cog):
@@ -203,7 +208,7 @@ class General(commands.Cog):
         """See the server's ad."""
 
         await ctx.message.delete()
-        ad = disnake.Embed(color=Colours.light_pink, title="Here's the ad to the server:", description=addd)
+        ad = disnake.Embed(color=Colours.light_pink, title="Here's the ad to the server:", description=SERVER_AD)
         ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
         await ctx.send(embed=ad, reference=ctx.replied_reference)
@@ -213,7 +218,7 @@ class General(commands.Cog):
         """See the server's ad but in raw format."""
 
         await ctx.message.delete()
-        ad = disnake.Embed(color=Colours.light_pink, title="Here's the raw ad version of the server:", description="```%s```" % (addd))
+        ad = disnake.Embed(color=Colours.light_pink, title="Here's the raw ad version of the server:", description="```%s```" % (SERVER_AD))
         ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
         await ctx.send(embed=ad, reference=ctx.replied_reference)
@@ -266,6 +271,67 @@ class General(commands.Cog):
                     return
                 else:
                     pass
+
+    @commands.command(name='run')
+    async def run_code(self, ctx: Context, *, code: str):
+        """Runs the code and returns the result, must be in a codeblock with the markdown of the desired language."""
+
+        matches = LANGUAGE_REGEX.findall(code)
+        if not matches:
+            rand = (
+                'Your code is not wrapped inside a codeblock.',
+                'You forgot your codeblock.',
+                'Missing the codeblock.',
+            )
+            return await ctx.reply(random.choice(rand))
+
+        lang = matches[0][0] or matches[0][1]
+        if not lang:
+            rand = (
+                'You did not specify the language markdown in your codeblock.',
+                'Missing the language markdown in your codeblock.',
+                'Your codeblock is missing the language markdown.',
+            )
+            return await ctx.reply(random.choice(rand))
+
+        code = matches[0][2]
+        await ctx.trigger_typing()
+        _res = await self.bot.session.post(
+            'https://emkc.org/api/v1/piston/execute',
+            json={'language': lang, 'source': code}
+        )
+        res = await _res.json()
+        if 'message' in res:
+            em = disnake.Embed(
+                title='An error occured while running the code',
+                description=res['message']
+            )
+            return await ctx.reply(embed=em)
+
+        output = res['output']
+        if len(output) > 500:
+            gh = TokenInvalidation(self.bot)
+            content = GistContent(f'```{res["language"]}\n' + output + '\n```')
+            url = await gh.create_gist(
+                content.source,
+                description=f'(`{ctx.author.id}` {ctx.author}) code result',
+                filename='code_output.txt',
+                public=False
+            )
+            return await ctx.reply(f'Your output was too long so I sent it to <{url}>')
+
+        em = disnake.Embed(
+            title=f'Ran your {res["language"]} code',
+            color=Colours.blue
+        )
+        output = output[:500].strip()
+        lines = output.splitlines()
+        shortened = (len(lines) > 15)
+        output = "\n".join(lines[:15])
+        output += shortened * '\n\n**Output shortened**'
+        em.add_field(name='Output', value=output or '**<No output>**')
+
+        await ctx.reply(embed=em)
 
     @commands.command(aliases=['src'])
     @commands.is_owner()
