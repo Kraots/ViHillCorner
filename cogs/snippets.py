@@ -21,7 +21,7 @@ class SnippetPageEntry:
     def __init__(self, entry):
 
         self.name = entry['_id']
-        self.id = entry['snippet_credits']
+        self.id = entry['owner_id']
 
     def __str__(self):
         return f'{self.name}\u2800•\u2800(`Owner:` <@!{self.id}>)'
@@ -81,7 +81,7 @@ class Snippets(commands.Cog):
         for result in results:
             snippet_name = result['_id']
             uses = result['uses_count']
-            get_owner = result['snippet_credits']
+            get_owner = result['owner_id']
             owner = self.bot.get_user(get_owner)
             index += 1
             em.add_field(name=f"`{index}`.\u2800{snippet_name}", value=f"Uses: `{uses}`\n Owner: `{owner}`", inline=False)
@@ -93,7 +93,7 @@ class Snippets(commands.Cog):
         """Get a list with all the snippets that the member has."""
 
         member = member or ctx.author
-        entries = await self.db.find({'snippet_credits': member.id}).to_list(100000)
+        entries = await self.db.find({'owner_id': member.id}).to_list(100000)
         try:
             p = SnippetPages(ctx=ctx, entries=entries, per_page=7, color=Colours.reds)
             await p.start()
@@ -120,7 +120,7 @@ class Snippets(commands.Cog):
                 break
 
         snippet_name = data['_id']
-        snippet_owner_id = data['snippet_credits']
+        snippet_owner_id = data['owner_id']
         snippet_uses = data['uses_count']
         snippet_created_at = data['created_at']
 
@@ -203,7 +203,7 @@ class Snippets(commands.Cog):
         post = {
             "_id": snippet_name.lower(),
             "snippet_content": snippet_info,
-            "snippet_credits": ctx.author.id,
+            "owner_id": ctx.author.id,
             "created_at": get_time,
             "uses_count": 0
         }
@@ -235,7 +235,7 @@ class Snippets(commands.Cog):
             return await ctx.send("Snippet `%s` does not exist! %s" % (snippet_name, ctx.author.mention))
 
         if ctx.author.id != 374622847672254466:
-            if ctx.author.id != data['snippet_credits']:
+            if ctx.author.id != data['owner_id']:
                 await ctx.send("You do not own this snippet!")
                 return
         else:
@@ -264,7 +264,7 @@ class Snippets(commands.Cog):
             return await ctx.send("Snippet **%s** does not exist. %s" % (snippet_name, ctx.author.mention))
 
         else:
-            get_snippet_owner = data['snippet_credits']
+            get_snippet_owner = data['owner_id']
             snippet_owner = self.bot.get_user(get_snippet_owner)
             the_snippet_name = data['_id']
             snippet_created_at = data['created_at']
@@ -293,7 +293,7 @@ class Snippets(commands.Cog):
             return
 
         snippet = data['snippet_content']
-        get_credits_info = data['snippet_credits']
+        get_credits_info = data['owner_id']
         credits_user = self.bot.get_user(get_credits_info)
         credits_avatar = credits_user.display_avatar
         await self.db.update_one({"_id": data['_id']}, {"$inc": {"uses_count": 1}})
@@ -308,7 +308,7 @@ class Snippets(commands.Cog):
     async def on_member_remove(self, member: disnake.Member):
         if member.id == 374622847672254466:
             return
-        await self.db.delete_many({"snippet_credits": member.id})
+        await self.db.delete_many({"owner_id": member.id})
 
     async def cog_command_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.MissingAnyRole):
