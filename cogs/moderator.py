@@ -152,10 +152,11 @@ class PollInteractiveMenu(disnake.ui.View):
         data = {
             '_id': msg.id,
             'expire_date': expire_date,
-            'user_id': self.ctx.author.id
+            'user_id': self.ctx.author.id,
+            'question': self.question
         }
         for index, option in enumerate(self.options):
-            data[str(index + 1)] = [0, option, self.question]
+            data[str(index + 1)] = [0, option]
             button_view.add_item(NumberedButtons(NUMBER_EMOJIS[index], self.db, custom_id=f'vhc:poll:{index}'))
         await self.db.insert_one(data)
         await msg.edit(view=button_view)
@@ -188,7 +189,7 @@ class PollInteractiveMenu(disnake.ui.View):
 
 
 class DummyPollView(disnake.ui.View):
-    def __init__(self, buttons: List[disnake.ui.Button]):
+    def __init__(self, buttons: List[NumberedButtons]):
         super().__init__(timeout=None)
         for button in buttons:
             self.add_item(button)
@@ -280,16 +281,16 @@ class Moderator(commands.Cog):
                 if datetime.datetime.utcnow() >= i['expire_date']:
                     await db.delete_one({'_id': i['_id']})
                     won = []
-                    ignored = ('_id', 'expire_date', 'voted_users', 'user_id')
+                    ignored = ('_id', 'expire_date', 'voted_users', 'user_id', 'question')
                     for k in i:
                         if k not in ignored:
                             if len(won) == 0:
-                                won = [k, i[k][0], i[k][1], i[k][2]]
+                                won = [k, i[k][0], i[k][1]]
                             else:
                                 if won[1] > i[k][0]:
-                                    won = [k, i[k][0], i[k][1], i[k][2]]
+                                    won = [k, i[k][0], i[k][1]]
                     em = disnake.Embed(title='Poll ended!', color=disnake.Colour.red())
-                    em.add_field('Question', f'`{won[3]}`', inline=False)
+                    em.add_field('Question', f'`{i["question"]}`', inline=False)
                     em.add_field('Winner', f'{NUMBER_EMOJIS[int(won[0])]} **->** {won[2]} (**`{won[1]} votes`**)', inline=False)
 
                     guild = self.bot.get_guild(750160850077089853)
@@ -307,7 +308,7 @@ class Moderator(commands.Cog):
         if not hasattr(self, 'added_views'):
             messages = await self.bot.db1['Poll'].find().to_list(100000000)
             if len(messages) != 0:
-                ignored = ('_id', 'expire_date', 'voted_users', 'user_id')
+                ignored = ('_id', 'expire_date', 'voted_users', 'user_id', 'question')
                 for message in messages:
                     buttons = []
                     for i, k in enumerate([key for key in message if key not in ignored]):
