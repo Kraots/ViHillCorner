@@ -220,7 +220,7 @@ class General(commands.Cog):
 
     @commands.command(aliases=["untill-partner"])
     async def up(self, ctx: Context):
-        """See how many members there are left until the server can apply for the disnake partnership program."""
+        """See how many members there are left until the server can apply for the discord partnership program."""
 
         guild = self.bot.get_guild(750160850077089853)
         member_count = len([m for m in guild.members if not m.bot])
