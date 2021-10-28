@@ -147,6 +147,8 @@ class PollInteractiveMenu(disnake.ui.View):
         em.set_footer(text='Once you voted you cannot remove your vote or vote again! Choose wisely.')
         em.add_field('Question', f'`{self.question}`')
         msg = await self.channel.send(embed=em)
+        await msg.pin(reason='Poll started.')
+        await self.channel.purge(limit=1)
 
         button_view = disnake.ui.View(timeout=self.duration)
         data = {
@@ -302,6 +304,7 @@ class Moderator(commands.Cog):
                     em = message.embeds[0]
                     em.color = disnake.Color.red()
                     await message.edit(embed=em)
+                    await message.unpin(reason='Poll expired.')
 
     @commands.Cog.listener()
     async def on_ready(self):
