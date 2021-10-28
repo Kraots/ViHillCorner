@@ -44,32 +44,40 @@ class NameFilter(commands.Cog):
 
             f = remove_emoji(u" %s" % (user_name))
 
+            good_count = 0
             for x in f:
-                if x not in allowed_letters:
-                    user = await self.db.find_one({'_id': message.author.id})
-                    if user is None:
-                        kr = await self.db.find_one({'_id': 374622847672254466})
-                        new_index = kr['TotalInvalidNames'][-1] + 1
-                        old_list = kr['TotalInvalidNames']
-                        new_list = old_list + [new_index]
-                        post = {
-                            '_id': message.author.id,
-                            'InvalidNameIndex': new_index
-                        }
-                        await self.db.insert_one(post)
-                        await self.db.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
-                        new_nick = f'UnpingableName{new_index}'
+                if good_count < 4:
+                    if x not in allowed_letters:
+                        good_count = 0
                     else:
-                        new_nick = f"UnpingableName{user['InvalidNameIndex']}"
+                        good_count += 1
+                else:
+                    break
 
-                    await message.author.edit(nick=new_nick)
-                    await message.author.send(
-                        f"Hello! Your `username` doesn't follow our naming policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n "  # noqa
-                        "If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡"
-                        "\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
-                    )
-                    await self.bot._owner.send(f'**{message.author}** got name changed, letter that lead to this: `{x}`')
-                    return
+            if good_count < 4:
+                user = await self.db.find_one({'_id': message.author.id})
+                if user is None:
+                    kr = await self.db.find_one({'_id': 374622847672254466})
+                    new_index = kr['TotalInvalidNames'][-1] + 1
+                    old_list = kr['TotalInvalidNames']
+                    new_list = old_list + [new_index]
+                    post = {
+                        '_id': message.author.id,
+                        'InvalidNameIndex': new_index
+                    }
+                    await self.db.insert_one(post)
+                    await self.db.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
+                    new_nick = f'UnpingableName{new_index}'
+                else:
+                    new_nick = f"UnpingableName{user['InvalidNameIndex']}"
+
+                await message.author.edit(nick=new_nick)
+                await message.author.send(
+                    f"Hello! Your `username` doesn't follow our naming policy. A random nickname has been assigned to you temporarily. (`{new_nick}`). \n\n "
+                    "If you want to change it, send `!nick <nickname>` in <#750160851822182486>.\n\n**Acceptable nicknames:**\nPotato10\nTom_owo\nElieyn ♡"
+                    "\n\n**Unacceptable nicknames:**\nZ҉A҉L҉G҉O\n❥察爱\n! Champa\nKraots\nViHill Corner"
+                )
+                await self.bot._owner.send(f'**{message.author}** got name changed, letter that lead to this: `{x}`')
 
     @commands.Cog.listener('on_member_remove')
     async def on_member_remove(self, member: disnake.Member):
