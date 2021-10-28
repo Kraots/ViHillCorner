@@ -270,7 +270,7 @@ class Misc(commands.Cog):
         botinfo.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
         botinfo.add_field(name="Name | ID :", value=f"{self.bot.user} | {self.bot.user.id}", inline=False)
         botinfo.add_field(name="Bot Owner:", value=f"{self.bot._owner}", inline=False)
-        botinfo.add_field(name="Created at:", value=format_date(self.bot.user.created_at), inline=False)
+        botinfo.add_field(name="Created at:", value=format_date(self.bot.user.created_at.replace(tzinfo=None)), inline=False)
         botinfo.add_field(name="Python Versions:", value=f"`{py_version}`", inline=False)
         botinfo.add_field(name="Wrapper Version:", value=f"`disnake {package_version('disnake')}`", inline=False)
         botinfo.add_field(name="Commands loaded:", value=f"{len([x.name for x in self.bot.commands])}", inline=False)
