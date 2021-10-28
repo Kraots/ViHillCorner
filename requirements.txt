@@ -3,7 +3,7 @@ aiodns
 dnspython
 aiohttp
 async-cse
-git+https://github.com/Kraots/jishaku
+disnake-jishaku
 git+https://github.com/EQUENOS/disnake
 python-dateutil
 hmtai
