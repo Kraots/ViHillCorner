@@ -23,7 +23,10 @@ class GroupHelpPageSource(menus.ListPageSource):
         embed = disnake.Embed(title=self.title, description=self.description, colour=Colours.light_pink)
 
         for command in commands:
-            signature = f'```{self.prefix}{command.qualified_name} {command.signature}\n```'
+            if command.signature:
+                signature = f'```{self.prefix}{command.qualified_name} {command.signature}\n```'
+            else:
+                signature = f'```{self.prefix}{command.qualified_name}\n```'
             embed.add_field(name=signature, value=command.short_doc or 'No help given...', inline=False)
 
         maximum = self.get_max_pages()
@@ -176,7 +179,10 @@ class PaginatedHelpCommand(commands.HelpCommand):
     def get_command_signature(self, command):
         parent = command.full_parent_name
         cmd = command.name if not parent else f'{parent} {command.name}'
-        return f'```{self.context.clean_prefix}{cmd} {command.signature}\n```'
+        if command.signature:
+            return f'```{self.context.clean_prefix}{cmd} {command.signature}\n```'
+        else:
+            return f'```{self.context.clean_prefix}{cmd}\n```'
 
     async def send_bot_help(self, mapping):
         bot = self.context.bot
