@@ -327,41 +327,38 @@ class Tags(commands.Cog):
 
         if alias is None:
             return await ctx.reply("You must specify the name of the alias you wish to delete. %s" % (ctx.author.mention))
-        results = await self.db.find_one({'aliases': alias.lower()})
-        try:
-            for result in results:
-                aliases = result['aliases']
-                tagName = result['the_tag_name']
-                tagOwner = result['tag_owner_id']
-        except KeyError:
+        result = await self.db.find_one({'aliases': alias.lower()})
+        if result is None:
             return await ctx.send(f"{ctx.author.mention} There is no alias called **{alias}**")
-        else:
-            try:
-                if ctx.author.id != 374622847672254466:
-                    if ctx.author.id != tagOwner:
-                        return await ctx.send("You do not own this tag! %s" % (ctx.author.mention))
+        aliases = result['aliases']
+        tag_name = result['the_tag_name']
+        tag_owner_id = result['tag_owner_id']
+        try:
+            if ctx.author.id != 374622847672254466:
+                if ctx.author.id != tag_owner_id:
+                    return await ctx.send("You do not own this tag! %s" % (ctx.author.mention))
 
-                view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-                view.message = msg = await ctx.send(
-                    f"{ctx.author.mention} Are you sure you want to remove the alias `{alias}` from the tag **{tagName}**?",
-                    view=view
-                )
-                await view.wait()
-                if view.response is True:
-                    new_aliases = []
-                    for _alias in aliases:
-                        if not _alias == alias.lower():
-                            new_aliases.append(_alias)
-                    await self.db.update_one({'the_tag_name': tagName}, {'$set': {'aliases': new_aliases}})
-                    e = f"{ctx.author.mention} Successfully removed the alias `{alias}` from tag **{tagName}**!"
-                    return await msg.edit(content=e, view=view)
+            view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
+            view.message = msg = await ctx.send(
+                f"{ctx.author.mention} Are you sure you want to remove the alias `{alias}` from the tag **{tag_name}**?",
+                view=view
+            )
+            await view.wait()
+            if view.response is True:
+                new_aliases = []
+                for _alias in aliases:
+                    if not _alias == alias.lower():
+                        new_aliases.append(_alias)
+                await self.db.update_one({'the_tag_name': tag_name}, {'$set': {'aliases': new_aliases}})
+                e = f"{ctx.author.mention} Successfully removed the alias `{alias}` from tag **{tag_name}**!"
+                return await msg.edit(content=e, view=view)
 
-                elif view.response is False:
-                    e = "Alias has not been deleted. %s" % (ctx.author.mention)
-                    return await msg.edit(content=e, view=view)
+            elif view.response is False:
+                e = "Alias has not been deleted. %s" % (ctx.author.mention)
+                return await msg.edit(content=e, view=view)
 
-            except UnboundLocalError:
-                return await ctx.send("No such alias exists. %s" % (ctx.author.mention))
+        except UnboundLocalError:
+            return await ctx.send("No such alias exists. %s" % (ctx.author.mention))
 
     @tag.command(name='create', aliases=['make', 'add'])
     @commands.has_any_role(*all_roles)
