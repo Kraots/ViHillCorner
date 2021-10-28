@@ -72,6 +72,7 @@ class Welcome(commands.Cog):
             for x in f:
                 if good_count < 4:
                     if x not in allowed_letters:
+                        x = x
                         good_count = 0
                     else:
                         good_count += 1
