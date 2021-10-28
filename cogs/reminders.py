@@ -153,6 +153,13 @@ class Reminders(commands.Cog):
     async def on_member_remove(self, member: disnake.Member):
         await self.db.delete_many({"user_id": member.id})
 
+    @remind.error
+    async def remind_error(self, ctx: Context, error):
+        if isinstance(error, commands.BadArgument):
+            return await ctx.send(str(error))
+        else:
+            return await self.bot.reraise(ctx, error)
+
     @remind_remove.error
     async def remind_remove_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.TooManyArguments):
