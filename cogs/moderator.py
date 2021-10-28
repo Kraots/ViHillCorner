@@ -81,7 +81,7 @@ class NumberedButtons(disnake.ui.Button):
                     child.label = str(new_label)
 
             await inter.message.edit(view=self.view)
-            await inter.response.send_message(f'You voted for option: {self.emoji}', ephemeral=True)
+            await inter.response.send_message(f'You voted for option: ({self.emoji}) `{info[1]}`', ephemeral=True)
         else:
             await inter.response.send_message('This poll is over!', ephemeral=True)
 
