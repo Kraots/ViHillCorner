@@ -185,7 +185,7 @@ class General(commands.Cog):
 
         member = member or ctx.author
 
-        avatar = disnake.Embed(title=f"Here's {member.display_name}'s avatar", url=member.display_avatar, color=Colours.blue)
+        avatar = disnake.Embed(title=f"Here's {member.display_name}'s avatar", url=member.display_avatar, color=Colours.blurple)
         avatar.set_image(url=member.display_avatar)
         avatar.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
@@ -322,7 +322,7 @@ class General(commands.Cog):
 
         em = disnake.Embed(
             title=f'Ran your {res["language"]} code',
-            color=Colours.blue
+            color=Colours.blurple
         )
         output = output[:500].strip()
         lines = output.splitlines()

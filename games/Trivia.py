@@ -454,7 +454,7 @@ class Trivia:
             final_result = "***Draw. No one lost and no one won anything.***"
             draw = True
 
-        em = disnake.Embed(color=Colours.blue, title="Trivia has ended.", description=final_result)
+        em = disnake.Embed(color=Colours.blurple, title="Trivia has ended.", description=final_result)
         if draw is False:
             em.add_field(name=f"**-->** `{self.player.display_name}'s` total points before:", value=f"**{before_points_user}**", inline=True)
             em.add_field(name=f"`{self.player.display_name}'s` total points after:", value=f"**{after_points_user}**", inline=False)

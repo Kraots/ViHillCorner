@@ -50,8 +50,8 @@ class Colours:
         return Colour(0xf1a3d8)
 
     @property
-    def blue(self) -> Colour:
-        return Colour(0x708DD0)
+    def blurple(self) -> Colour:
+        return Colour(0x5865f2)
 
     @property
     def reds(self) -> Colour:
