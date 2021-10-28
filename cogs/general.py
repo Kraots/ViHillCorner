@@ -274,7 +274,13 @@ class General(commands.Cog):
 
     @commands.command(name='run')
     async def run_code(self, ctx: Context, *, code: str):
-        """Runs the code and returns the result, must be in a codeblock with the markdown of the desired language."""
+        r"""Runs the code and returns the result, must be in a codeblock with the markdown of the desired language.
+
+        Example:
+        \`\`\`language
+        code
+        \`\`\`
+        """
 
         matches = LANGUAGE_REGEX.findall(code)
         if not matches:
