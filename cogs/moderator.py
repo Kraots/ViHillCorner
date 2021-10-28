@@ -282,18 +282,18 @@ class Moderator(commands.Cog):
             for i in data:
                 if datetime.datetime.utcnow() >= i['expire_date']:
                     await db.delete_one({'_id': i['_id']})
-                    won = []
+                    won = None
                     ignored = ('_id', 'expire_date', 'voted_users', 'user_id', 'question')
                     for k in i:
                         if k not in ignored:
-                            if len(won) == 0:
+                            if won is None:
                                 won = [k, i[k][0], i[k][1]]
                             else:
-                                if won[1] > i[k][0]:
+                                if i[k][0] > won[1]:
                                     won = [k, i[k][0], i[k][1]]
                     em = disnake.Embed(title='Poll ended!', color=disnake.Colour.red())
                     em.add_field('Question', f'`{i["question"]}`', inline=False)
-                    em.add_field('Winner', f'{NUMBER_EMOJIS[int(won[0])]} **->** {won[2]} (**`{won[1]} votes`**)', inline=False)
+                    em.add_field('Winner', f'{NUMBER_EMOJIS[int(won[0]) - 1]} **->** {won[2]} (**`{won[1]} votes`**)', inline=False)
 
                     guild = self.bot.get_guild(750160850077089853)
                     channel = guild.get_channel(902677227307679797)
