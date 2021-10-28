@@ -19,7 +19,7 @@ filter_invite = re.compile(r"(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/
 class TagPageEntry:
     def __init__(self, entry):
 
-        self.name = entry['the_tag_name']
+        self.name = entry['name']
         self.id = entry['_id']
 
     def __str__(self):
@@ -54,7 +54,7 @@ class Tags(commands.Cog):
         if tag_name is None:
             return await ctx.send_help('tag')
 
-        data = await self.db.find_one({'the_tag_name': tag_name.lower()})
+        data = await self.db.find_one({'name': tag_name.lower()})
         if data is None:
             data = await self.db.find_one({'aliases': tag_name.lower()})
         if data is None:
@@ -71,7 +71,7 @@ class Tags(commands.Cog):
         """Search for tag matches based on the query that you've given."""
 
         query = str(query).lower()
-        entries = await self.db.find({'the_tag_name': {'$regex': query, '$options': 'i'}}).to_list(100000)
+        entries = await self.db.find({'name': {'$regex': query, '$options': 'i'}}).to_list(100000)
         try:
             p = TagPages(ctx=ctx, entries=entries, per_page=7)
             await p.start()
@@ -83,7 +83,7 @@ class Tags(commands.Cog):
         """See the list of all the tags that the member owns."""
 
         member = member or ctx.author
-        entries = await self.db.find({'tag_owner_id': member.id}).to_list(100000)
+        entries = await self.db.find({'owner_id': member.id}).to_list(100000)
         try:
             p = TagPages(ctx=ctx, entries=entries, per_page=7)
             await p.start()
@@ -106,9 +106,9 @@ class Tags(commands.Cog):
         index = 0
         em = disnake.Embed(color=disnake.Color.blurple())
         for result in results:
-            tag_name = result['the_tag_name']
+            tag_name = result['name']
             uses = result['uses_count']
-            get_owner = result['tag_owner_id']
+            get_owner = result['owner_id']
             owner = self.bot.get_user(get_owner)
             index += 1
             em.add_field(name=f"`{index}`.\u2800{tag_name}", value=f"Uses: `{uses}`\n Owner: `{owner}`", inline=False)
@@ -122,7 +122,7 @@ class Tags(commands.Cog):
         if tag_name is None:
             return await ctx.reply("**!tag info <tag_name>**")
 
-        data = await self.db.find_one({'the_tag_name': tag_name.lower()})
+        data = await self.db.find_one({'name': tag_name.lower()})
         if data is None:
             try:
                 data = await self.db.find_one({'_id': int(tag_name)})
@@ -140,13 +140,13 @@ class Tags(commands.Cog):
             if i['_id'] == data['_id']:
                 break
 
-        tag_name = data["the_tag_name"]
-        tag_owner_id = data["tag_owner_id"]
+        tag_name = data['name']
+        owner_id = data["owner_id"]
         tag_uses = data["uses_count"]
         tag_created_at = data["created_at"]
         the_tag_id = data["_id"]
 
-        tag_owner = self.bot.get_user(tag_owner_id)
+        tag_owner = self.bot.get_user(owner_id)
 
         em = disnake.Embed(color=Colours.blurple, title=tag_name)
         em.set_author(name=tag_owner, url=tag_owner.display_avatar, icon_url=tag_owner.display_avatar)
@@ -182,7 +182,7 @@ class Tags(commands.Cog):
             if len(_list) <= 0:
                 return await ctx.send(f"This tag has no aliases. {ctx.author.mention}")
 
-            tag_name = data['the_tag_name']
+            tag_name = data['name']
             em = disnake.Embed(color=disnake.Color.blurple(), title="Here are all the aliases for the tag `%s`" % (tag_name))
             aliases = "\n• ".join(_list)
             if len(_list) == 1:
@@ -193,7 +193,7 @@ class Tags(commands.Cog):
 
         except ValueError:
             tag = str(tag).lower()
-            data = await self.db.find_one({'the_tag_name': tag})
+            data = await self.db.find_one({'name': tag})
 
             if data is None:
                 return await ctx.send(f"No tag named **{tag}** found. {ctx.author.mention}")
@@ -229,7 +229,7 @@ class Tags(commands.Cog):
         names = await self.db.find().to_list(100000)
         allAliases = []
         for name in names:
-            all_names.append(name['the_tag_name'])
+            all_names.append(name['name'])
             allAliases.append(name['aliases'])
 
         try:
@@ -240,7 +240,7 @@ class Tags(commands.Cog):
                 return await ctx.send("This is not a valid tag's id or this tag does not exist. %s" % (ctx.author.mention))
 
             if ctx.author.id != 374622847672254466:
-                if data['tag_owner_id'] != ctx.author.id:
+                if data['owner_id'] != ctx.author.id:
                     return await ctx.send("You do not own this tag. %s" % (ctx.author.mention))
 
             tagAliases = data['aliases']
@@ -274,17 +274,17 @@ class Tags(commands.Cog):
                 else:
                     tagAliases.append(str(alias_name.content).lower())
                     await self.db.update_one({'_id': tag}, {'$set': {'aliases': tagAliases}})
-                await ctx.send(f"{ctx.author.mention} Successfully added the alias `{str(alias_name.content).lower()}` for tag **{data['the_tag_name']}**")
+                await ctx.send(f"{ctx.author.mention} Successfully added the alias `{str(alias_name.content).lower()}` for tag **{data['name']}**")
 
         except ValueError:
             tag = str(tag).lower()
-            data = await self.db.find_one({'the_tag_name': tag})
+            data = await self.db.find_one({'name': tag})
 
             if data is None:
                 return await ctx.send("This is not a valid tag's id or this tag does not exist. %s" % (ctx.author.mention))
 
             if ctx.author.id != 374622847672254466:
-                if data['tag_owner_id'] != ctx.author.id:
+                if data['owner_id'] != ctx.author.id:
                     return await ctx.send("You do not own this tag. %s" % (ctx.author.mention))
 
             tagAliases = data['aliases']
@@ -314,11 +314,11 @@ class Tags(commands.Cog):
                 elif len(alias_name.content) > 75:
                     return await ctx.send("Alias cannot be longer than `75` characters!")
                 if len(tagAliases) == 0:
-                    await self.db.update_one({'the_tag_name': tag}, {'$set': {'aliases': [str(alias_name.content).lower()]}})
+                    await self.db.update_one({'name': tag}, {'$set': {'aliases': [str(alias_name.content).lower()]}})
                 else:
                     tagAliases.append(str(alias_name.content).lower())
-                    await self.db.update_one({'the_tag_name': tag}, {'$set': {'aliases': tagAliases}})
-                await ctx.send(f"{ctx.author.mention} Successfully added the alias `{str(alias_name.content).lower()}` for tag **{data['the_tag_name']}**")
+                    await self.db.update_one({'name': tag}, {'$set': {'aliases': tagAliases}})
+                await ctx.send(f"{ctx.author.mention} Successfully added the alias `{str(alias_name.content).lower()}` for tag **{data['name']}**")
 
     @tag_aliases.command(name='delete')
     @commands.has_any_role(*all_roles)
@@ -331,11 +331,11 @@ class Tags(commands.Cog):
         if result is None:
             return await ctx.send(f"{ctx.author.mention} There is no alias called **{alias}**")
         aliases = result['aliases']
-        tag_name = result['the_tag_name']
-        tag_owner_id = result['tag_owner_id']
+        tag_name = result['name']
+        owner_id = result['owner_id']
         try:
             if ctx.author.id != 374622847672254466:
-                if ctx.author.id != tag_owner_id:
+                if ctx.author.id != owner_id:
                     return await ctx.send("You do not own this tag! %s" % (ctx.author.mention))
 
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
@@ -349,7 +349,7 @@ class Tags(commands.Cog):
                 for _alias in aliases:
                     if not _alias == alias.lower():
                         new_aliases.append(_alias)
-                await self.db.update_one({'the_tag_name': tag_name}, {'$set': {'aliases': new_aliases}})
+                await self.db.update_one({'name': tag_name}, {'$set': {'aliases': new_aliases}})
                 e = f"{ctx.author.mention} Successfully removed the alias `{alias}` from tag **{tag_name}**!"
                 return await msg.edit(content=e, view=view)
 
@@ -383,7 +383,7 @@ class Tags(commands.Cog):
                 await ctx.send("No invites or what so ever.")
                 return
 
-        data = await self.db.find_one({'the_tag_name': str(tag_name).lower()})
+        data = await self.db.find_one({'name': str(tag_name).lower()})
 
         if data is not None:
             await ctx.send("Tag name already taken.")
@@ -426,8 +426,8 @@ class Tags(commands.Cog):
 
             post = {"_id": last_id + 1,
                     "tag_content": tag_content,
-                    "tag_owner_id": ctx.author.id,
-                    "the_tag_name": tag_name.lower(),
+                    "owner_id": ctx.author.id,
+                    'name': tag_name.lower(),
                     "created_at": get_time,
                     "uses_count": 0,
                     "aliases": []
@@ -445,7 +445,7 @@ class Tags(commands.Cog):
         if tag_name is None:
             return await ctx.reply("**!tag delete <tag_name>**")
 
-        data = await self.db.find_one({'the_tag_name': tag_name.lower()})
+        data = await self.db.find_one({'name': tag_name.lower()})
         if data is None:
             try:
                 data = await self.db.find_one({'_id': int(tag_name)})
@@ -454,19 +454,19 @@ class Tags(commands.Cog):
         if data is None:
             return await ctx.send("That tag does not exist. %s" % (ctx.author.mention))
         if ctx.author.id != 374622847672254466:
-            if ctx.author.id != data['tag_owner_id']:
-                return await ctx.send("You do not own the tag **%s**! %s" % (data['the_tag_name'], ctx.author.mention))
+            if ctx.author.id != data['owner_id']:
+                return await ctx.send("You do not own the tag **%s**! %s" % (data['name'], ctx.author.mention))
 
         view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-        view.message = msg = await ctx.send("Are you sure you wish to delete the tag **%s**? %s" % (data['the_tag_name'], ctx.author.mention), view=view)
+        view.message = msg = await ctx.send("Are you sure you wish to delete the tag **%s**? %s" % (data['name'], ctx.author.mention), view=view)
         await view.wait()
         if view.response is True:
             await self.db.delete_one({'_id': data['_id']})
-            e = "Successfully deleted the tag **%s**. %s" % (data['the_tag_name'], ctx.author.mention)
+            e = "Successfully deleted the tag **%s**. %s" % (data['name'], ctx.author.mention)
             return await msg.edit(content=e, view=view)
 
         elif view.response is False:
-            e = "Operation of deleting the tag  **%s** has been canceled. %s" % (data['the_tag_name'], ctx.author.mention)
+            e = "Operation of deleting the tag  **%s** has been canceled. %s" % (data['name'], ctx.author.mention)
             return await msg.edit(content=e, view=view)
 
     @tag.command(name='remove')
@@ -477,7 +477,7 @@ class Tags(commands.Cog):
         if tag_name is None:
             return await ctx.reply("**!tag remove <tag_name>**")
 
-        data = await self.db.find_one({'the_tag_name': tag_name.lower()})
+        data = await self.db.find_one({'name': tag_name.lower()})
         if data is None:
             try:
                 data = await self.db.find_one({'_id': int(tag_name)})
@@ -486,16 +486,16 @@ class Tags(commands.Cog):
         if data is None:
             return await ctx.send("That tag does not exist in the database. %s" % (ctx.author.mention))
 
-        get_tag_owner = data['tag_owner_id']
+        get_tag_owner = data['owner_id']
         tag_owner = self.bot.get_user(get_tag_owner)
-        the_tag_name = data['the_tag_name']
+        tag_name = data['name']
         tag_created_at = data['created_at']
         uses = data['uses_count']
 
         await self.db.delete_one({"_id": data['_id']})
 
         em = disnake.Embed(title="Tag Removed", color=Colours.red)
-        em.add_field(name="Name", value=the_tag_name)
+        em.add_field(name="Name", value=tag_name)
         em.add_field(name="Owner", value=tag_owner)
         em.add_field(name="Uses", value=f"`{uses}`", inline=False)
         em.set_footer(text=f"Tag created at • {tag_created_at}")
@@ -506,7 +506,7 @@ class Tags(commands.Cog):
     async def on_member_remove(self, member: disnake.Member):
         if member.id == 374622847672254466:
             return
-        await self.db.delete_many({"tag_owner_id": member.id})
+        await self.db.delete_many({"owner_id": member.id})
 
     async def cog_command_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.MissingAnyRole):
