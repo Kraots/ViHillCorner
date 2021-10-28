@@ -394,7 +394,8 @@ class Moderator(commands.Cog):
             )
 
         await self.bot.db1['Poll'].delete_one({'_id': poll_id})
-        ch = ctx.guild.get_channel(902677227307679797)
+        guild = self.bot.get_guild(750160850077089853)
+        ch = guild.get_channel(902677227307679797)
         msg = await ch.fetch_message(poll['_id'])
         await msg.delete()
         await ctx.reply('Successfully cancelled and deleted the poll.')
