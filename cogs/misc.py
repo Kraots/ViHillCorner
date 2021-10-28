@@ -257,6 +257,9 @@ class Misc(commands.Cog):
     async def botinfo(self, ctx: Context):
         """Get some info of the bot"""
 
+        def format_date(dt):
+            return f'{dt:%Y-%m-%d} ({time.human_timedelta(dt, accuracy=3)})'
+
         update = await self.db.find_one({'_id': 374622847672254466})
         updatedMsg = update['update']
         major = sys.version_info.major
@@ -267,7 +270,7 @@ class Misc(commands.Cog):
         botinfo.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
         botinfo.add_field(name="Name | ID :", value=f"{self.bot.user} | {self.bot.user.id}", inline=False)
         botinfo.add_field(name="Bot Owner:", value=f"{self.bot._owner}", inline=False)
-        botinfo.add_field(name="Created at:", value="05/09/2020", inline=False)
+        botinfo.add_field(name="Created at:", value=format_date(self.bot.user.created_at), inline=False)
         botinfo.add_field(name="Python Versions:", value=f"`{py_version}`", inline=False)
         botinfo.add_field(name="Wrapper Version:", value=f"`disnake {package_version('disnake')}`", inline=False)
         botinfo.add_field(name="Commands loaded:", value=f"{len([x.name for x in self.bot.commands])}", inline=False)
