@@ -469,17 +469,17 @@ class Economy(commands.Cog):
                     item_durr = item['uses']
                 except KeyError:
                     item_durr = None
-                name = item['item_name'].title
+                name = item['item_name'].title()
                 if item_durr is not None:
-                    uses_left = f"{item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
+                    uses_left = f"({item_durr}/{''.join([str(i['uses']) for i in _shop if i['item_name'] == item['item_name']])} uses left)"
                 else:
                     uses_left = ''
-                owned = ''.join([i['owned'] for i in _shop if i['item_name'] == item['item_name']])
+                owned = item['owned']
                 try:
                     emoji = ''.join([i['item_emoji'] for i in _shop if i['item_name'] == item['item_name']])
-                    to_append = f"— {emoji} {name} {owned} {uses_left}"
+                    to_append = f"— {emoji} {name} ({owned} owned) {uses_left}"
                 except KeyError:
-                    to_append = f"— {name} {owned} {uses_left}"
+                    to_append = f"— {name} ({owned} owned) {uses_left}"
                 try:
                     item_worth = item['owned'] * int(
                         ''.join([str(i['sells_for']) for i in _shop if isinstance(i['sells_for'], int) and i['item_name'] == item['item_name']])
