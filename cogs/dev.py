@@ -58,10 +58,10 @@ class QuitButton(disnake.ui.View):
 
     async def on_timeout(self):
         if self.delete_after is False:
-            if self.message:
+            if not isinstance(self.ctx, ApplicationCommandInteraction):
                 return await self.message.edit(view=None)
 
-        if self.message:
+        if not isinstance(self.ctx, ApplicationCommandInteraction):
             await self.message.delete()
             await self.ctx.message.delete()
         else:
@@ -70,7 +70,7 @@ class QuitButton(disnake.ui.View):
     @disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red)
     async def quit(self, button: disnake.ui.Button, interaction: disnake.Interaction):
         """Deletes the user's message along with the bot's message."""
-        if self.message:
+        if not isinstance(self.ctx, ApplicationCommandInteraction):
             await self.message.delete()
             await self.ctx.message.delete()
             self.stop()
