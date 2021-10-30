@@ -243,7 +243,7 @@ async def send_denial(ctx: Union[Context, ApplicationCommandInteraction], reason
     embed.description = reason
 
     if isinstance(ctx, ApplicationCommandInteraction):
-        return await ctx.followup.send(embed=embed, view=view, ephemeral=True)
+        return await ctx.followup.send(embed=embed, view=view)
     return await ctx.send(embed=embed, view=view)
 
 

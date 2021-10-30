@@ -265,7 +265,7 @@ class Misc(commands.Cog):
 
         e = disnake.Embed(colour=disnake.Colour.blurple())
         if len(matches) == 0:
-            return await inter.followup.send('Could not find anything. Sorry.', ephemeral=True)
+            return await inter.followup.send('Could not find anything. Sorry.')
 
         e.description = '\n'.join(f'[`{key}`]({url})' for key, url in matches)
         await inter.followup.send(embed=e)
