@@ -121,6 +121,8 @@ class RoboPages(disnake.ui.View):
     async def on_timeout(self) -> None:
         if self.message:
             await self.message.edit(view=None)
+        else:
+            await self.ctx.response.edit_message(view=None)
 
     async def on_error(self, error: Exception, item: disnake.ui.Item, interaction: disnake.Interaction) -> None:
         if interaction.response.is_done():
