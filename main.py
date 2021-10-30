@@ -59,6 +59,7 @@ class ViHillCorner(commands.Bot):
         self.slash_reraise = slash_reraise
         self.confirm_view = ConfirmView
         self.snipes = {}
+        self.poll_views = {}
         self.added_views = False
         self.dagpi_client = dagpi.Client(os.getenv('DAGPI_TOKEN'))
 
