@@ -233,7 +233,6 @@ class Moderator(commands.Cog):
 
     @tasks.loop(seconds=30)
     async def check_current_mutes(self):
-        await self.bot.wait_until_ready()
         currentTime = datetime.datetime.utcnow()
         results = await self.db1.find().to_list(100000)
         results2 = await self.db2.find().to_list(100000)
@@ -323,6 +322,11 @@ class Moderator(commands.Cog):
                         del self.bot.poll_views[message.id]
                     except KeyError:
                         pass
+
+    @check_current_mutes.before_loop
+    @check_polls.before_loop
+    async def before_loop(self):
+        await self.bot.wait_until_ready()
 
     @commands.Cog.listener()
     async def on_ready(self):
