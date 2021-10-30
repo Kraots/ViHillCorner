@@ -167,7 +167,8 @@ class Misc(commands.Cog):
             if doc['_id'] == 'disnake':
                 for name in doc['data']:
                     if name not in DISNAKE_RTFM:
-                        DISNAKE_RTFM.append(name)
+                        if name.startswith('disnake.'):
+                            DISNAKE_RTFM.append(name)
 
             elif doc['_id'] == 'python':
                 for name in doc['data']:
