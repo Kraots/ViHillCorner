@@ -40,6 +40,7 @@ class QuitButton(disnake.ui.View):
         super().__init__(timeout=timeout)
         self.ctx = ctx
         self.delete_after = delete_after
+        self.message = None
 
     async def interaction_check(self, interaction: disnake.MessageInteraction):
         if interaction.author.id != self.ctx.author.id:
@@ -57,7 +58,8 @@ class QuitButton(disnake.ui.View):
 
     async def on_timeout(self):
         if self.delete_after is False:
-            return await self.message.edit(view=None)
+            if self.message:
+                return await self.message.edit(view=None)
 
         if self.message:
             await self.message.delete()
