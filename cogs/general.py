@@ -282,6 +282,9 @@ class General(commands.Cog):
         \`\`\`
         """
 
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+            return
+
         matches = LANGUAGE_REGEX.findall(code)
         if not matches:
             rand = (

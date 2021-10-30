@@ -242,7 +242,7 @@ class Messages(commands.Cog):
     async def msg_top(self, ctx: Context):
         """See the top 15 most active members of the server and when the top restarts."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061):
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
             return
 
         view = MessagesTopButtons(self.db, ctx)
