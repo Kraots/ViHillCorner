@@ -1,10 +1,12 @@
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, Optional, List, Union
 import asyncio
 
 import disnake
-from disnake.ext import commands
+from disnake import ApplicationCommandInteraction
 
 from . import menus
+
+from utils.context import Context
 
 
 class RoboPages(disnake.ui.View):
@@ -12,7 +14,7 @@ class RoboPages(disnake.ui.View):
         self,
         source: menus.PageSource,
         *,
-        ctx: commands.Context,
+        ctx: Union[Context, ApplicationCommandInteraction],
         check_embeds: bool = True,
         compact: bool = False,
         quit_delete: bool = False,
@@ -20,7 +22,7 @@ class RoboPages(disnake.ui.View):
         super().__init__()
         self.source: menus.PageSource = source
         self.check_embeds: bool = check_embeds
-        self.ctx: commands.Context = ctx
+        self.ctx: Union[Context, ApplicationCommandInteraction] = ctx
         self.message: Optional[disnake.Message] = None
         self.current_page: int = 0
         self.compact: bool = compact
@@ -135,7 +137,10 @@ class RoboPages(disnake.ui.View):
         page = await self.source.get_page(0)
         kwargs = await self._get_kwargs_from_page(page)
         self._update_labels(0)
-        self.message = await self.ctx.send(**kwargs, view=self)
+        if isinstance(self.ctx, ApplicationCommandInteraction):
+            self.message = await self.ctx.response.send_message(**kwargs, view=self)
+        else:
+            self.message = await self.ctx.send(**kwargs, view=self)
 
     @disnake.ui.button(label='≪', style=disnake.ButtonStyle.grey)
     async def go_to_first_page(self, button: disnake.ui.Button, interaction: disnake.Interaction):
@@ -195,8 +200,9 @@ class RoboPages(disnake.ui.View):
         """stops the pagination session."""
         await interaction.response.defer()
         await interaction.delete_original_message()
-        if self.quit_delete:
-            await self.ctx.message.delete()
+        if not isinstance(self.ctx, ApplicationCommandInteraction):
+            if self.quit_delete:
+                await self.ctx.message.delete()
         self.stop()
 
 

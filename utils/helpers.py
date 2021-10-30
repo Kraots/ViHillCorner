@@ -1,3 +1,4 @@
+import io
 import re
 import string
 import typing
@@ -164,7 +165,10 @@ async def slash_reraise(inter: disnake.ApplicationCommandInteraction, error):
     if isinstance(error, commands.NotOwner):
         error = disnake.Embed(title="ERROR", description="Command Error: You do not own this bot!")
         error.set_footer(text='This is an owner only command')
-        return await inter.response.send_message(embed=error, ephemeral=True)
+        try:
+            return await inter.response.send_message(embed=error, ephemeral=True)
+        except disnake.InteractionResponded:
+            return await inter.followup.send(embed=error, ephemeral=True)
 
     elif (
         isinstance(error, commands.TooManyArguments) or
@@ -186,9 +190,15 @@ async def slash_reraise(inter: disnake.ApplicationCommandInteraction, error):
                 description='An error has occured while invoking this command and has been sent to my master for a fix.',
                 color=Colours.red
             )
-            await inter.response.send_message(embed=em, ephemeral=True)
+            try:
+                await inter.response.send_message(embed=em, ephemeral=True)
+            except disnake.InteractionResponded:
+                await inter.followup.send(embed=em, ephemeral=True)
         else:
-            await inter.response.send_message(embed=em, ephemeral=True)
+            try:
+                await inter.response.send_message(embed=em, ephemeral=True)
+            except disnake.InteractionResponded:
+                await inter.followup.send(embed=em, ephemeral=True)
 
 
 def replace_many(
@@ -278,13 +288,18 @@ class ConfirmView(disnake.ui.View):
         return True
 
     async def on_error(self, error: Exception, item, interaction):
+        if isinstance(self.ctx, disnake.ApplicationCommandInteraction):
+            return await self.ctx.bot.slash_reraise(self.ctx, error)
         return await self.ctx.bot.reraise(self.ctx, error)
 
     async def on_timeout(self):
         for item in self.children:
             item.disabled = True
             item.style = disnake.ButtonStyle.grey
-        await self.message.edit(content=self.new_message, embed=None, view=self)
+        if self.message:
+            await self.message.edit(content=self.new_message, embed=None, view=self)
+        else:
+            await self.ctx.edit_original_message(content=self.new_message, embed=None, view=self)
 
     @disnake.ui.button(label='Confirm', style=disnake.ButtonStyle.green)
     async def yes_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
@@ -304,7 +319,6 @@ class ConfirmView(disnake.ui.View):
             item.style = disnake.ButtonStyle.grey
             if item.label == button.label:
                 item.style = disnake.ButtonStyle.blurple
-
         self.stop()
 
 
@@ -345,3 +359,76 @@ class ConfirmViewDMS(disnake.ui.View):
                 item.style = disnake.ButtonStyle.blurple
 
         self.stop()
+
+
+def clean_inter_content(
+    *,
+    fix_channel_mentions: bool = False,
+    use_nicknames: bool = True,
+    escape_markdown: bool = False,
+    remove_markdown: bool = False,
+):
+    async def convert(inter: disnake.ApplicationCommandInteraction, argument: str):
+        if inter.guild:
+            def resolve_member(id: int) -> str:
+                m = inter.guild.get_member(id)
+                return f'@{m.display_name if use_nicknames else m.name}' if m else '@deleted-user'
+
+            def resolve_role(id: int) -> str:
+                r = inter.guild.get_role(id)
+                return f'@{r.name}' if r else '@deleted-role'
+        else:
+            def resolve_member(id: int) -> str:
+                m = inter.bot.get_user(id)
+                return f'@{m.name}' if m else '@deleted-user'
+
+            def resolve_role(id: int) -> str:
+                return '@deleted-role'
+
+        if fix_channel_mentions and inter.guild:
+            def resolve_channel(id: int) -> str:
+                c = inter.guild.get_channel(id)
+                return f'#{c.name}' if c else '#deleted-channel'
+        else:
+            def resolve_channel(id: int) -> str:
+                return f'<#{id}>'
+
+        transforms = {
+            '@': resolve_member,
+            '@!': resolve_member,
+            '#': resolve_channel,
+            '@&': resolve_role,
+        }
+
+        def repl(match: re.Match) -> str:
+            type = match[1]
+            id = int(match[2])
+            transformed = transforms[type](id)
+            return transformed
+
+        result = re.sub(r'<(@[!&]?|#)([0-9]{15,20})>', repl, argument)
+        if escape_markdown:
+            result = disnake.utils.escape_markdown(result)
+        elif remove_markdown:
+            result = disnake.utils.remove_markdown(result)
+
+        # Completely ensure no mentions escape:
+        return disnake.utils.escape_mentions(result)
+
+    return convert
+
+
+async def safe_send_prepare(content, **kwargs):
+    """Same as send except with some safe guards.
+    If the message is too long then it sends a file with the results instead.
+    """
+
+    if len(content) > 2000:
+        fp = io.BytesIO(content.encode())
+        kwargs.pop('file', None)
+        return {
+            'file': disnake.File(fp, filename='message_too_long.txt'),
+            **kwargs
+        }
+    else:
+        return {'content': content}

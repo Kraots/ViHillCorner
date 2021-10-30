@@ -60,6 +60,8 @@ class ViHillCorner(commands.Bot):
         self.confirm_view = ConfirmView
         self.snipes = {}
         self.poll_views = {}
+        self.tags = []
+        self.tag_aliases = []
         self.added_views = False
         self.dagpi_client = dagpi.Client(os.getenv('DAGPI_TOKEN'))
 

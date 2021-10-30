@@ -119,7 +119,11 @@ class PollInteractiveMenu(disnake.ui.View):
         while True:
             try:
                 await self.ctx.send(f'Please send the option. (Total: `#{len(self.options) + 1}`)')
-                msg = await self.ctx.bot.wait_for('message', timeout=90.0, check=lambda m: m.author.id == self.ctx.author.id)
+                msg = await self.ctx.bot.wait_for(
+                    'message',
+                    timeout=90.0,
+                    check=lambda m: m.author.id == self.ctx.author.id and m.channel.id == self.ctx.channel.id
+                )
             except asyncio.TimeoutError:
                 pass
             else:
@@ -367,7 +371,7 @@ class Moderator(commands.Cog):
             while True:
                 try:
                     await ctx.reply('What is the poll\'s question?')
-                    msg = await self.bot.wait_for('message', timeout=180.0, check=lambda m: m.author.id == ctx.author.id)
+                    msg = await self.bot.wait_for('message', timeout=180.0, check=lambda m: m.author.id == ctx.author.id and m.channel.id == ctx.channel.id)
                 except asyncio.TimeoutError:
                     return await ctx.send(f'Ran out of time. {ctx.author.mention}')
                 else:
