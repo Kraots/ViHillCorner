@@ -67,6 +67,7 @@ class ViHillCorner(commands.Bot):
 
         self.load_extension('docs')
         self.load_extension('jishaku')
+        os.environ["JISHAKU_NO_DM_TRACEBACK"] = '1'
         os.environ['JISHAKU_FORCE_PAGINATOR'] = '1'
         os.environ['JISHAKU_EMBEDDED_JSK'] = '1'
         os.environ['JISHAKU_EMBEDDED_JSK_COLOR'] = 'blurple'
