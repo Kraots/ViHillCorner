@@ -58,9 +58,10 @@ class TimeConverter(commands.Converter):
 
 
 class NumberedButtons(disnake.ui.Button):
-    def __init__(self, emoji: str, db, *, custom_id: str, label: str = '0'):
+    def __init__(self, emoji: str, db, *, custom_id: str, bot: ViHillCorner, label: str = '0'):
         super().__init__(label=label, emoji=emoji, custom_id=custom_id)
         self.db = db
+        self.bot = bot
 
     async def callback(self, inter: disnake.MessageInteraction):
         data = await self.db.find_one({'_id': inter.message.id})
@@ -83,7 +84,7 @@ class NumberedButtons(disnake.ui.Button):
                 if child.emoji == self.emoji:
                     child.label = str(new_label)
 
-            inter.bot.poll_views[inter.message.id] = self.view
+            self.bot.poll_views[inter.message.id] = self.view
             await inter.message.edit(view=self.view)
             await inter.response.send_message(f'You voted for option: ({self.emoji}) `{info[1]}`', ephemeral=True)
         else:
@@ -163,7 +164,12 @@ class PollInteractiveMenu(disnake.ui.View):
         }
         for index, option in enumerate(self.options):
             data[str(index + 1)] = [0, option]
-            button_view.add_item(NumberedButtons(NUMBER_EMOJIS[index], self.db, custom_id=f'vhc:poll:{index}'))
+            button_view.add_item(NumberedButtons(
+                NUMBER_EMOJIS[index],
+                self.db,
+                bot=self.ctx.bot,
+                custom_id=f'vhc:poll:{index}'
+            ))
         await self.db.insert_one(data)
         await msg.edit(view=button_view)
         self.ctx.bot.poll_views[msg.id] = button_view
@@ -331,6 +337,7 @@ class Moderator(commands.Cog):
                             emoji=NUMBER_EMOJIS[i],
                             db=self.bot.db1['Poll'],
                             custom_id=f'vhc:poll:{i}',
+                            bot=self.bot,
                             label=str(message[k][0])
                         ))
                     view = DummyPollView(buttons)
