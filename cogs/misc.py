@@ -175,8 +175,6 @@ class Misc(commands.Cog):
                     if name not in PY_RTFM:
                         PY_RTFM.append(name)
 
-        print(DISNAKE_RTFM)
-
     @property
     def display_emoji(self) -> str:
         return '🔧'
