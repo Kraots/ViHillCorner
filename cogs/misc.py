@@ -241,7 +241,7 @@ class Misc(commands.Cog):
             'python': 'https://docs.python.org/3'
         }
 
-        await inter.response.defer(ephemeral=True)
+        await inter.response.defer()
         if obj is None:
             await inter.followup.send(page_types[key])
             return
@@ -268,10 +268,7 @@ class Misc(commands.Cog):
             return await inter.followup.send('Could not find anything. Sorry.', ephemeral=True)
 
         e.description = '\n'.join(f'[`{key}`]({url})' for key, url in matches)
-        await inter.followup.send(embed=e, ephemeral=False)
-
-    def transform_rtfm_language_key(self, ctx: Context, prefix):
-        return prefix
+        await inter.followup.send(embed=e)
 
     @commands.command(name='vihillcorner', aliases=('vhc',))
     async def _vhc(self, ctx: Context):

@@ -287,6 +287,8 @@ class Docs(commands.Cog):
         with self.symbol_get_event:
             data = self.get_symbol_item(symbol_name)
             symbol_name, doc_item = data
+            if doc_item is None:
+                return None
 
             embed = disnake.Embed(
                 title=disnake.utils.escape_markdown(symbol_name),
