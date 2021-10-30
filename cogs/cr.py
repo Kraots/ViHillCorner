@@ -259,7 +259,7 @@ class CustomRoles(commands.Cog):
 
     @cr.command(name='info')
     async def cr_info(self, ctx: Context, *, role: int = None):
-        """Get some data about a custom role, it doesn't have to be yours, but the <role> parameter must be a ingere (the role's id)."""
+        """Get some data about a custom role, it doesn't have to be yours, but the <role> parameter must be a integer (the role's id)."""
 
         if role is None:
             result = await self.db.find_one({'_id': ctx.author.id})
