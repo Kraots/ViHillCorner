@@ -36,7 +36,6 @@ class Inventory(Converter):
     @staticmethod
     async def convert(ctx: Context, url: str) -> t.Tuple[str, InventoryDict]:
         """Convert url to Intersphinx inventory URL."""
-        await ctx.trigger_typing()
         if (inventory := await fetch_inventory(url)) is None:
             raise BadArgument(
                 f"Failed to fetch inventory file after {FAILED_REQUEST_ATTEMPTS} attempts."
@@ -72,7 +71,7 @@ class ValidURL(Converter):
     async def convert(ctx: Context, url: str) -> str:
         """This converter checks whether the given URL can be reached with a status code of 200."""
         try:
-            async with ctx.bot.http_session.get(url) as resp:
+            async with ctx.bot.session.get(url) as resp:
                 if resp.status != 200:
                     raise BadArgument(
                         f"HTTP GET on `{url}` returned status `{resp.status}`, expected 200"

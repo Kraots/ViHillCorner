@@ -2,23 +2,26 @@ from __future__ import annotations
 
 import asyncio
 import sys
+import string as st
 from types import SimpleNamespace
-from typing import Dict, NamedTuple, Optional, List
+from typing import Dict, NamedTuple, Optional, List, Tuple
 
 import aiohttp
 import disnake
+from disnake import ApplicationCommandInteraction
 from disnake.ext import commands
+from disnake.ext.commands import Param
 
-from .converters import Inventory, PackageName, ValidURL
-from .lock import SharedEvent, lock
+from .converters import Inventory, PackageName
+from .lock import SharedEvent
 from .messages import send_denial
 from cogs.dev import QuitButton
 from utils.paginator import ToDoMenu
-from .pagination import EmbedPaginator
 from utils import fuzzy
 from .utils import create_task, Scheduler
-from . import NAMESPACE, PRIORITY_PACKAGES, batch_parser, doc_cache
+from . import PRIORITY_PACKAGES, batch_parser, doc_cache
 from .inventory_parser import InventoryDict, fetch_inventory
+
 from main import ViHillCorner
 
 # symbols with a group contained here will get the group prefixed on duplicates
@@ -34,7 +37,23 @@ NOT_FOUND_DELETE_DELAY = 30.0
 # Delay to wait before trying to reach a rescheduled inventory again, in minutes
 FETCH_RESCHEDULE_DELAY = SimpleNamespace(first=2, repeated=5)
 
-COMMAND_LOCK_SINGLETON = "inventory refresh"
+DOC_SYMBOLS = {}
+ALL_PACKAGES = []
+
+
+async def autocomplete_doc(inter: ApplicationCommandInteraction, string: str) -> List[str]:
+    abc = st.ascii_lowercase
+    doc_symbols = []
+    for symbol in DOC_SYMBOLS:
+        if symbol[0] in abc:
+            doc_symbols.append(symbol)
+    matches = fuzzy.finder(string, doc_symbols, lazy=False)[:25]
+    return matches
+
+
+async def autocomplete_package_name(inter: ApplicationCommandInteraction, string: str) -> List[str]:
+    matches = fuzzy.finder(string, ALL_PACKAGES, lazy=False)[:25]
+    return matches
 
 
 class DocItem(NamedTuple):
@@ -83,7 +102,6 @@ class Docs(commands.Cog):
     def display_emoji(self) -> str:
         return '📚'
 
-    @lock(NAMESPACE, COMMAND_LOCK_SINGLETON, raise_error=True)
     async def init_refresh_inventory(self) -> None:
         """Refresh documentation inventory on cog initialization."""
         await self.refresh_inventories()
@@ -98,6 +116,8 @@ class Docs(commands.Cog):
             * `package` is the content of a intersphinx inventory.
         """
         self.base_urls[package_name] = base_url
+        if package_name not in ALL_PACKAGES:
+            ALL_PACKAGES.append(package_name)
 
         for group, items in inventory.items():
             for symbol_name, relative_doc_url in items:
@@ -120,6 +140,7 @@ class Docs(commands.Cog):
                     symbol_id,
                 )
                 self.doc_symbols[symbol_name] = doc_item
+                DOC_SYMBOLS[symbol_name] = doc_item
                 self.item_fetcher.add_item(doc_item)
 
     async def update_or_reschedule_inventory(
@@ -173,6 +194,7 @@ class Docs(commands.Cog):
             if rename_extant:
                 # Instead of renaming the current symbol, rename the symbol with which it conflicts.
                 self.doc_symbols[new_name] = self.doc_symbols[symbol_name]
+                DOC_SYMBOLS[new_name] = DOC_SYMBOLS[symbol_name]
                 return symbol_name
             else:
                 return new_name
@@ -217,13 +239,20 @@ class Docs(commands.Cog):
 
         self.refresh_event.set()
 
-    def get_symbol_item(self, symbol_name: str) -> List[str, Optional[DocItem]]:
+    def get_symbol_item(self, symbol_name: str) -> Tuple[str, Optional[DocItem]]:
         """
         Get the `DocItem` and the symbol name used to fetch it from the `doc_symbols` dict.
+
+        If the doc item is not found directly from the passed in name and the name contains a space,
+        the first word of the name will be attempted to be used to get the item.
         """
-        doc_symbols = list(self.doc_symbols.items())
-        matches = fuzzy.finder(symbol_name, doc_symbols, key=lambda t: t[0], lazy=False)[:3]
-        return matches
+
+        doc_item = self.doc_symbols.get(symbol_name)
+        if doc_item is None and " " in symbol_name:
+            symbol_name = symbol_name.split(" ", maxsplit=1)[0]
+            doc_item = self.doc_symbols.get(symbol_name)
+
+        return symbol_name, doc_item
 
     async def get_symbol_markdown(self, doc_item: DocItem) -> str:
         """
@@ -247,7 +276,7 @@ class Docs(commands.Cog):
 
         return markdown
 
-    async def create_symbol_embed(self, symbol_name: str) -> Optional[List[disnake.Embed]]:
+    async def create_symbol_embed(self, symbol_name: str) -> Optional[disnake.Embed]:
         """
         Attempt to scrape and fetch the data for the given `symbol_name`, and build an embed from its contents.
         If the symbol is known, an Embed with documentation about it is returned.
@@ -257,107 +286,89 @@ class Docs(commands.Cog):
         # Ensure a refresh can't run in case of a context switch until the with block is exited
         with self.symbol_get_event:
             data = self.get_symbol_item(symbol_name)
-            if len(data) == 0:
-                return None
-            embeds = []
-            for i in data:
-                symbol_name, doc_item = i
+            symbol_name, doc_item = data
 
-                embed = disnake.Embed(
-                    title=disnake.utils.escape_markdown(symbol_name),
-                    url=f"{doc_item.url}#{doc_item.symbol_id}",
-                    description=await self.get_symbol_markdown(doc_item)
-                )
-                embeds.append(embed)
-            return embeds
+            embed = disnake.Embed(
+                title=disnake.utils.escape_markdown(symbol_name),
+                url=f"{doc_item.url}#{doc_item.symbol_id}",
+                description=await self.get_symbol_markdown(doc_item)
+            )
+            return embed
 
-    @commands.group(name="docs", aliases=("doc", "d"), invoke_without_command=True)
-    async def docs_group(self, ctx: commands.Context, *, symbol_name: Optional[str]) -> None:
-        """Look up documentation for Python symbols."""
-        await self.get_command(ctx, symbol_name=symbol_name)
+    @commands.slash_command(name="docs")
+    async def docs_group(self, inter) -> None:
+        """Base slash for all docs subcommands."""
+        pass
 
-    @docs_group.command(name="getdoc", aliases=("g",))
-    async def get_command(self, ctx: commands.Context, *, symbol_name: Optional[str]) -> None:
-        """
-        Return a documentation embed for a given symbol.
-        If no symbol is given, return a list of all available inventories.
-        Examples:
-            !docs
-            !docs aiohttp
-            !docs aiohttp.ClientSession
-            !docs getdoc aiohttp.ClientSession
-        """
-        if ctx.channel.id == 750160852006469802:  # bump channel
-            return
+    @docs_group.sub_command(name='inventories')
+    async def doc_inventories(self, inter: ApplicationCommandInteraction):
+        """Shows all the documentation available inventories."""
 
-        if not symbol_name:
-            lines = sorted(f"• [`{name}`]({url})" for name, url in self.base_urls.items())
-            if self.base_urls:
-                paginator = ToDoMenu(
-                    ctx,
-                    lines,
-                    per_page=5,
-                    todo_footer=False,
-                    title=f'All inventories (`{len(self.base_urls)}` total)'
-                )
-                await paginator.start()
-
-            else:
-                inventory_embed = disnake.Embed(title=f'All inventories (`{len(self.base_urls)}` total)', color=disnake.Color.blurple())
-                inventory_embed.description = "Hmmm, seems like there's nothing here yet."
-                await ctx.send(embed=inventory_embed)
+        lines = sorted(f"• [`{name}`]({url})" for name, url in self.base_urls.items())
+        if self.base_urls:
+            paginator = ToDoMenu(
+                inter,
+                lines,
+                per_page=5,
+                todo_footer=False,
+                title=f'All inventories (`{len(self.base_urls)}` total)'
+            )
+            await paginator.start()
 
         else:
-            symbol = symbol_name.strip("`")
-            async with ctx.typing():
-                doc_embeds = await self.create_symbol_embed(symbol)
+            inventory_embed = disnake.Embed(title=f'All inventories (`{len(self.base_urls)}` total)', color=disnake.Color.blurple())
+            inventory_embed.description = "Hmmm, seems like there's nothing here yet."
+            await inter.response.send_message(embed=inventory_embed)
 
-            if doc_embeds is None:
-                view = QuitButton(ctx, timeout=NOT_FOUND_DELETE_DELAY, delete_after=True)
-                view.message = await send_denial(ctx, "No documentation found for the requested symbol.", view=view)
+    @docs_group.sub_command(name="get")
+    async def get_command(
+        self,
+        inter: ApplicationCommandInteraction,
+        symbol_name: str = Param(
+            description='The doc to look for',
+            autocomplete=autocomplete_doc
+        )
+    ) -> None:
+        """Return a documentation embed for a given symbol."""
 
-            else:
-                if len(doc_embeds) == 1:
-                    view = QuitButton(ctx)
-                    view.message = await ctx.send(embed=doc_embeds[0], view=view)
-                    return
+        await inter.response.defer()
+        symbol = symbol_name.strip("`")
+        doc_embed = await self.create_symbol_embed(symbol)
 
-                paginator = EmbedPaginator(ctx, doc_embeds)
-                await paginator.start()
+        if doc_embed is None:
+            view = QuitButton(inter, timeout=NOT_FOUND_DELETE_DELAY, delete_after=True)
+            view.message = await send_denial(inter, "No documentation found for the requested symbol.", view=view)
+
+        else:
+            view = QuitButton(inter)
+            await inter.followup.send(embed=doc_embed, view=view)
 
     @staticmethod
     def base_url_from_inventory_url(inventory_url: str) -> str:
         """Get a base url from the url to an objects inventory by removing the last path segment."""
         return inventory_url.removesuffix("/").rsplit("/", maxsplit=1)[0] + "/"
 
-    @docs_group.command(name="setdoc", aliases=("s",))
+    @docs_group.sub_command(name="set_doc")
     @commands.is_owner()
-    @lock(NAMESPACE, COMMAND_LOCK_SINGLETON, raise_error=True)
     async def set_command(
         self,
-        ctx: commands.Context,
-        package_name: PackageName,
-        inventory: Inventory,
-        base_url: ValidURL = "",
+        inter: ApplicationCommandInteraction,
+        package_name: str,
+        inventory: str
     ) -> None:
-        """
-        Adds a new documentation metadata object to the inventory.
-        If the base url is not specified, a default created by removing the last segment of the inventory url is used.
-        Example:
-            !docs setdoc \
-                    python \
-                    https://docs.python.org/3/objects.inv
-        """
-        if base_url and not base_url.endswith("/"):
-            raise commands.BadArgument("The base url must end with a slash.")
+        """Adds a new documentation metadata object to the inventory."""
+
+        await inter.response.defer(ephemeral=True)
+        package_name = await PackageName.convert(inter, package_name)
+        inventory = await Inventory.convert(inter, inventory)
+
         inventory_url, inventory_dict = inventory
 
-        if not base_url:
-            base_url = self.base_url_from_inventory_url(inventory_url)
+        base_url = self.base_url_from_inventory_url(inventory_url)
 
         doc = await self.db.find_one({'package': package_name})
         if doc is not None:
-            return await ctx.reply(f'A doc with the name `{package_name}` already exists in the database.')
+            return await inter.followup.send(f'A doc with the name `{package_name}` already exists in the database.', ephemeral=True)
         body = {
             'package': package_name,
             'base_url': base_url,
@@ -366,36 +377,47 @@ class Docs(commands.Cog):
 
         await self.db.insert_one(body)
         self.update_single(package_name, base_url, inventory_dict)
-        await ctx.send(f"Added the package `{package_name}` to the database and updated the inventories.")
+        await inter.followup.send(f"Added the package `{package_name}` to the database and updated the inventories.", ephemeral=True)
 
-    @docs_group.command(name="deletedoc", aliases=("removedoc", "rm", "d"))
+    @docs_group.sub_command(name="delete_doc")
     @commands.is_owner()
-    @lock(NAMESPACE, COMMAND_LOCK_SINGLETON, raise_error=True)
-    async def delete_command(self, ctx: commands.Context, package_name: PackageName) -> None:
+    async def delete_command(
+        self,
+        inter: ApplicationCommandInteraction,
+        package_name: str = Param(
+            description='The doc to remove',
+            autocomplete=autocomplete_package_name
+        )
+    ) -> None:
         """
         Removes the specified package from the database.
-        Example:
-            !docs deletedoc aiohttp
         """
+
+        await inter.response.defer(ephemeral=True)
+        package_name = await PackageName.convert(inter, package_name)
 
         doc = await self.db.find_one({'package': package_name})
         if doc is None:
-            return await ctx.reply(f'Doc `{package_name}` doesn\'t exist in the database.')
+            return await inter.followup.send(f'Doc `{package_name}` doesn\'t exist in the database.', ephemeral=True)
 
-        async with ctx.typing():
-            await self.db.delete_one({'package': package_name})
-            await doc_cache.delete(package_name)
-            await self.refresh_inventories()
-        await ctx.send(f"Successfully deleted `{package_name}` and refreshed the inventories.")
+        await self.db.delete_one({'package': package_name})
+        await doc_cache.delete(package_name)
+        ALL_PACKAGES.pop(ALL_PACKAGES.index(package_name))
+        await self.refresh_inventories()
 
-    @docs_group.command(name="refreshdoc", aliases=("refresh", "r"))
+        await inter.followup.send(f"Successfully deleted `{package_name}` and refreshed the inventories.", ephemeral=True)
+
+    @docs_group.sub_command(name="refresh_doc")
     @commands.is_owner()
-    @lock(NAMESPACE, COMMAND_LOCK_SINGLETON, raise_error=True)
-    async def refresh_command(self, ctx: commands.Context) -> None:
+    async def refresh_command(
+        self,
+        inter: ApplicationCommandInteraction
+    ) -> None:
         """Refresh inventories and show the difference."""
+
+        await inter.response.defer(ephemeral=True)
         old_inventories = set(self.base_urls)
-        with ctx.typing():
-            await self.refresh_inventories()
+        await self.refresh_inventories()
         new_inventories = set(self.base_urls)
 
         if added := ", ".join(new_inventories - old_inventories):
@@ -408,20 +430,26 @@ class Docs(commands.Cog):
             title="Inventories refreshed",
             description=f"```diff\n{added}\n{removed}```" if added or removed else ""
         )
-        await ctx.send(embed=embed)
+        await inter.followup.send(embed=embed, ephemeral=True)
 
-    @docs_group.command(name="cleardoccache", aliases=("deletedoccache", "c",))
+    @docs_group.sub_command(name="clear_doc_cache")
     @commands.is_owner()
     async def clear_cache_command(
         self,
-        ctx: commands.Context,
-        package_name: PackageName
+        inter: ApplicationCommandInteraction,
+        package_name: str = Param(
+            description='The doc to clear the cache for',
+            autocomplete=autocomplete_package_name
+        )
     ) -> None:
         """Clear the persistent deta cache for `package`."""
+
+        await inter.response.defer(ephemeral=True)
+        package_name = await PackageName.convert(inter, package_name)
         if await doc_cache.delete(package_name):
-            await ctx.send(f"Successfully cleared the cache for `{package_name}`.")
+            await inter.followup.send(f"Successfully cleared the cache for `{package_name}`.", ephemeral=True)
         else:
-            await ctx.send("No keys matching the package found.")
+            await inter.followup.send("No keys matching the package found.", ephemeral=True)
 
     def cog_unload(self) -> None:
         """Clear scheduled inventories, queued symbols and cleanup task on cog unload."""

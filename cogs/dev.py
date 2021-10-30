@@ -1,3 +1,4 @@
+from typing import Union
 import sys
 import contextlib
 import io
@@ -8,6 +9,7 @@ import asyncio
 from traceback import format_exception
 
 import disnake
+from disnake import ApplicationCommandInteraction
 from disnake import Member
 from disnake.ext import commands
 from disnake.ext.commands import Greedy
@@ -30,7 +32,7 @@ def restart_program():
 class QuitButton(disnake.ui.View):
     def __init__(
         self,
-        ctx,
+        ctx: Union[Context, ApplicationCommandInteraction],
         *,
         timeout: float = 180.0,
         delete_after: bool = False
@@ -49,21 +51,30 @@ class QuitButton(disnake.ui.View):
         return True
 
     async def on_error(self, error, item, interaction):
+        if isinstance(self.ctx, ApplicationCommandInteraction):
+            return await self.ctx.bot.slash_reraise(self.ctx, error)
         return await self.ctx.bot.reraise(self.ctx, error)
 
     async def on_timeout(self):
         if self.delete_after is False:
             return await self.message.edit(view=None)
 
-        await self.message.delete()
-        await self.ctx.message.delete()
+        if self.message:
+            await self.message.delete()
+            await self.ctx.message.delete()
+        else:
+            await self.ctx.delete_original_message()
 
     @disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red)
     async def quit(self, button: disnake.ui.Button, interaction: disnake.Interaction):
         """Deletes the user's message along with the bot's message."""
-        await self.message.delete()
-        await self.ctx.message.delete()
-        self.stop()
+        if self.message:
+            await self.message.delete()
+            await self.ctx.message.delete()
+            self.stop()
+        else:
+            await self.ctx.delete_original_message()
+            self.stop()
 
 
 class Developer(commands.Cog):

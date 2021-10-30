@@ -6,7 +6,8 @@ from typing import Callable, List, Optional, Sequence, Union
 import random
 
 import disnake
-from utils.context import Context  # Custom Context, use from disnake.ext.commands import Context in your case
+from disnake import ApplicationCommandInteraction
+from utils.context import Context
 
 from .utils import create_task
 
@@ -234,13 +235,15 @@ def sub_clyde(username: Optional[str]) -> Optional[str]:
         return username  # Empty string or None
 
 
-async def send_denial(ctx: Context, reason: str, *, view: disnake.ui.View = None) -> disnake.Message:
+async def send_denial(ctx: Union[Context, ApplicationCommandInteraction], reason: str, *, view: disnake.ui.View = None) -> disnake.Message:
     """Send an embed denying the user with the given reason."""
     embed = disnake.Embed()
     embed.colour = disnake.Colour.red()
     embed.title = random.choice(NEGATIVE_REPLIES)
     embed.description = reason
 
+    if isinstance(ctx, ApplicationCommandInteraction):
+        return await ctx.followup.send(embed=embed, view=view, ephemeral=True)
     return await ctx.send(embed=embed, view=view)
 
 
