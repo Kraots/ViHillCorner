@@ -268,7 +268,7 @@ class Misc(commands.Cog):
             return await inter.followup.send('Could not find anything. Sorry.', ephemeral=True)
 
         e.description = '\n'.join(f'[`{key}`]({url})' for key, url in matches)
-        await inter.followup.send(embed=e)
+        await inter.followup.send(embed=e, ephemeral=False)
 
     def transform_rtfm_language_key(self, ctx: Context, prefix):
         return prefix
