@@ -1,3 +1,4 @@
+from typing import List
 import sys
 import os
 import re
@@ -12,10 +13,10 @@ import async_cse as cse
 import pymongo
 
 import disnake
-from disnake import Member
+from disnake import Member, ApplicationCommandInteraction
 from disnake.ui import View, Button
 from disnake.ext import commands
-from disnake.ext.commands import Greedy
+from disnake.ext.commands import Greedy, Param
 
 from utils.colors import Colours
 from utils import fuzzy, time, embedlinks, topicslist, menus
@@ -28,6 +29,16 @@ from utils.CommandButtonRoles import ButtonRoleView, ButtonRoleViewOwner
 from main import ViHillCorner
 
 filter_invite = re.compile(r"(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
+DISNAKE_RTFM = []
+PY_RTFM = []
+
+
+async def autocomplete_disnake(inter: ApplicationCommandInteraction, string: str) -> List[str]:
+    return fuzzy.finder(string, DISNAKE_RTFM, lazy=False)[:25]
+
+
+async def autocomplete_python(inter: ApplicationCommandInteraction, string: str) -> List[str]:
+    return fuzzy.finder(string, PY_RTFM, lazy=False)[:25]
 
 
 class UrbanDictionaryPageSource(menus.ListPageSource):
@@ -150,6 +161,21 @@ class Misc(commands.Cog):
     def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        for doc in await self.bot.db3['DocsCache'].find().to_list(100):
+            if doc['_id'] == 'disnake':
+                for name in doc['data']:
+                    if name not in DISNAKE_RTFM:
+                        DISNAKE_RTFM.append(name)
+
+            elif doc['_id'] == 'python':
+                for name in doc['data']:
+                    if name not in PY_RTFM:
+                        PY_RTFM.append(name)
+
+        print(DISNAKE_RTFM)
+
     @property
     def display_emoji(self) -> str:
         return '🔧'
@@ -210,18 +236,18 @@ class Misc(commands.Cog):
 
         self._rtfm_cache = cache
 
-    async def do_rtfm(self, ctx: Context, key, obj):
+    async def do_rtfm(self, inter: ApplicationCommandInteraction, key, obj):
         page_types = {
             'latest': 'https://disnake.readthedocs.io/en/latest',
             'python': 'https://docs.python.org/3'
         }
 
+        await inter.response.defer(ephemeral=True)
         if obj is None:
-            await ctx.send(page_types[key])
+            await inter.followup.send(page_types[key])
             return
 
         if not hasattr(self, '_rtfm_cache'):
-            await ctx.trigger_typing()
             await self.build_rtfm_lookup_table(page_types)
 
         obj = re.sub(r'^(?:disnake\.(?:ext\.)?)?(?:commands\.)?(.+)', r'\1', obj)
@@ -240,10 +266,10 @@ class Misc(commands.Cog):
 
         e = disnake.Embed(colour=disnake.Colour.blurple())
         if len(matches) == 0:
-            return await ctx.send('Could not find anything. Sorry.')
+            return await inter.followup.send('Could not find anything. Sorry.', ephemeral=True)
 
         e.description = '\n'.join(f'[`{key}`]({url})' for key, url in matches)
-        await ctx.send(embed=e, reference=ctx.replied_reference)
+        await inter.followup.send(embed=e)
 
     def transform_rtfm_language_key(self, ctx: Context, prefix):
         return prefix
@@ -306,19 +332,38 @@ class Misc(commands.Cog):
         await ctx.send(embed=em)
         await GoogleClient.close()
 
-    @commands.group(aliases=['rtfd'], invoke_without_command=True)
-    async def rtfm(self, ctx: Context, *, obj: str = None):
+    @commands.slash_command()
+    async def rtfm(self, inter):
+        """Base rtfm command for all rtfm subcommands."""
+        pass
+
+    @rtfm.sub_command(name='disnake')
+    async def rtfm_disnake(
+        self,
+        inter: ApplicationCommandInteraction,
+        object: str = Param(
+            None,
+            description='The object to search for',
+            autocomplete=autocomplete_disnake
+        )
+    ):
         """Gives you a documentation link for a disnake entity."""
 
-        key = self.transform_rtfm_language_key(ctx, 'latest')
-        await self.do_rtfm(ctx, key, obj)
+        await self.do_rtfm(inter, 'latest', object)
 
-    @rtfm.command(name='python', aliases=['py'])
-    async def rtfm_python(self, ctx: Context, *, obj: str = None):
+    @rtfm.sub_command(name='py')
+    async def rtfm_py(
+        self,
+        inter: ApplicationCommandInteraction,
+        object: str = Param(
+            None,
+            description='The object to search for',
+            autocomplete=autocomplete_python
+        )
+    ):
         """Gives you a documentation link for a python entity."""
 
-        key = self.transform_rtfm_language_key(ctx, 'python')
-        await self.do_rtfm(ctx, key, obj)
+        await self.do_rtfm(inter, 'python', object)
 
     @commands.command(aliases=['server', 'sinfo', 'si'])
     async def serverinfo(self, ctx: Context):
