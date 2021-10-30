@@ -46,7 +46,7 @@ class Bdsm(commands.Cog):
             while True:
                 raw_result = await self.bot.wait_for('message', check=check, timeout=180)
                 if raw_result.content.lower() == "!cancel":
-                    await raw_result.reply("Canceled.")
+                    await raw_result.reply("Cancelled.")
                     return
 
                 try:

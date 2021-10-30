@@ -466,7 +466,7 @@ class Tags(commands.Cog):
             return await msg.edit(content=e, view=view)
 
         elif view.response is False:
-            e = "Operation of deleting the tag  **%s** has been canceled. %s" % (data['name'], ctx.author.mention)
+            e = "Operation of deleting the tag  **%s** has been cancelled. %s" % (data['name'], ctx.author.mention)
             return await msg.edit(content=e, view=view)
 
     @tag.command(name='remove')

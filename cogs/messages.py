@@ -236,7 +236,7 @@ class Messages(commands.Cog):
             return await msg.edit(content='The total message count for member **%s** has been reset successfully.' % (member), view=view)
 
         elif view.response is False:
-            return await msg.edit(content="Command to reset the message count for user `%s` has been canceled." % (member), view=view)
+            return await msg.edit(content="Command to reset the message count for user `%s` has been cancelled." % (member), view=view)
 
     @_msgs.group(name='top', invoke_without_command=True, case_insensitive=True, aliases=['lb'])
     async def msg_top(self, ctx: Context):
@@ -269,7 +269,7 @@ class Messages(commands.Cog):
             return await msg.edit(content='The message count for this week for member **%s** has been reset successfully.' % (member), view=view)
 
         elif view.response is False:
-            return await msg.edit(content="Command to reset the message count for user `%s` has been canceled." % (member), view=view)
+            return await msg.edit(content="Command to reset the message count for user `%s` has been cancelled." % (member), view=view)
 
     @msg_top.command(aliases=['reward'])
     async def rewards(self, ctx: Context):

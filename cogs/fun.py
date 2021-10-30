@@ -963,7 +963,7 @@ class Fun(commands.Cog):
             em = disnake.Embed(description='Ran out of time.', color=Colours.light_blue)
             return await msg.edit(embed=em, view=view)
         elif view.response == 'cancel':
-            em = disnake.Embed(description='Canceled.', color=Colours.light_blue)
+            em = disnake.Embed(description='Cancelled.', color=Colours.light_blue)
             return await msg.edit(embed=em, view=view)
         else:
             await msg.edit(view=view)

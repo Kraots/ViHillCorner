@@ -83,6 +83,7 @@ class NumberedButtons(disnake.ui.Button):
                 if child.emoji == self.emoji:
                     child.label = str(new_label)
 
+            inter.bot.poll_views[inter.message.id] = self.view
             await inter.message.edit(view=self.view)
             await inter.response.send_message(f'You voted for option: ({self.emoji}) `{info[1]}`', ephemeral=True)
         else:
@@ -165,6 +166,7 @@ class PollInteractiveMenu(disnake.ui.View):
             button_view.add_item(NumberedButtons(NUMBER_EMOJIS[index], self.db, custom_id=f'vhc:poll:{index}'))
         await self.db.insert_one(data)
         await msg.edit(view=button_view)
+        self.ctx.bot.poll_views[msg.id] = button_view
 
         for child in self.children:
             child.disabled = True
@@ -308,6 +310,13 @@ class Moderator(commands.Cog):
                     em.color = disnake.Color.red()
                     await message.edit(embed=em)
                     await message.unpin(reason='Poll expired.')
+                    try:
+                        view = self.bot.poll_views[message.id]
+                        view.stop()
+                        await message.edit(view=view)
+                        del self.bot.poll_views[message.id]
+                    except KeyError:
+                        pass
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -324,7 +333,9 @@ class Moderator(commands.Cog):
                             custom_id=f'vhc:poll:{i}',
                             label=str(message[k][0])
                         ))
-                    self.bot.add_view(DummyPollView(buttons), message_id=message['_id'])
+                    view = DummyPollView(buttons)
+                    self.bot.add_view(view, message_id=message['_id'])
+                    self.bot.poll_views[message['_id']] = view
                 self.added_views = True
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
@@ -403,8 +414,18 @@ class Moderator(commands.Cog):
         guild = self.bot.get_guild(750160850077089853)
         ch = guild.get_channel(902677227307679797)
         msg = await ch.fetch_message(poll['_id'])
-        await msg.delete()
-        await ctx.reply('Successfully cancelled and deleted the poll.')
+        em = msg.embeds[0]
+        em.title = 'This poll has been cancelled.'
+        em.color = Colours.red
+        v = self.bot.poll_views[msg.id]
+        v.stop()
+        await msg.edit(embed=em, view=v)
+        await msg.unpin()
+
+        view = disnake.ui.View()
+        button = disnake.ui.Button(label='Poll Message', url=msg.jump_url)
+        view.add_item(button)
+        await ctx.reply('Successfully cancelled the poll.', view=view)
 
     @commands.command()
     @commands.has_role(754676705741766757)

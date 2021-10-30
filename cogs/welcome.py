@@ -155,7 +155,7 @@ class Welcome(commands.Cog):
                 try:
                     name = await self.bot.wait_for('message', timeout=180, check=check)
                     if name.content.lower() == '!cancel':
-                        await channel.send("Canceled.")
+                        await channel.send("Cancelled.")
                         return
 
                 except asyncio.TimeoutError:
@@ -168,7 +168,7 @@ class Welcome(commands.Cog):
                     try:
                         location = await self.bot.wait_for('message', timeout=180, check=check)
                         if location.content.lower() == '!cancel':
-                            await channel.send("Canceled.")
+                            await channel.send("Cancelled.")
                             return
 
                     except asyncio.TimeoutError:
@@ -182,7 +182,7 @@ class Welcome(commands.Cog):
                             while True:
                                 age = await self.bot.wait_for('message', timeout=180, check=check)
                                 if age.content.lower() == '!cancel':
-                                    await channel.send("Canceled.")
+                                    await channel.send("Cancelled.")
                                     return
                                 try:
                                     agenumber = int(age.content)
@@ -203,7 +203,7 @@ class Welcome(commands.Cog):
                             try:
                                 gender = await self.bot.wait_for('message', timeout=180, check=check)
                                 if gender.content.lower() == '!cancel':
-                                    await channel.send("Canceled.")
+                                    await channel.send("Cancelled.")
                                     return
 
                             except asyncio.TimeoutError:
@@ -218,7 +218,7 @@ class Welcome(commands.Cog):
                                         prestatuss = await self.bot.wait_for('message', timeout=180, check=check)
                                         status = prestatuss.content.lower()
                                         if status == '!cancel':
-                                            await channel.send("Canceled.")
+                                            await channel.send("Cancelled.")
                                             return
                                         if status in ('single', 'taken', 'complicated'):
                                             break
@@ -235,7 +235,7 @@ class Welcome(commands.Cog):
                                     try:
                                         interests = await self.bot.wait_for('message', timeout=360, check=check)
                                         if interests.content.lower() == '!cancel':
-                                            await channel.send("Canceled.")
+                                            await channel.send("Cancelled.")
                                             return
 
                                     except asyncio.TimeoutError:

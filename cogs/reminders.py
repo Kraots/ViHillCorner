@@ -96,11 +96,11 @@ class Reminders(commands.Cog):
                 await view.wait()
                 if view.response is True:
                     await self.db.delete_one({"_id": remind_id})
-                    e = "Succesfully canceled the reminder. %s" % (ctx.author.mention)
+                    e = "Succesfully cancelled the reminder. %s" % (ctx.author.mention)
                     return await msg.edit(content=e, view=view)
 
                 elif view.response is False:
-                    e = "Reminder has not been canceled. %s" % (ctx.author.mention)
+                    e = "Reminder has not been cancelled. %s" % (ctx.author.mention)
                     return await msg.edit(content=e, view=view)
             else:
                 await ctx.send("That reminder is not yours!")

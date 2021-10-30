@@ -75,7 +75,7 @@ class CustomRoles(commands.Cog):
                         await ctx.send("The name of the custom role cannot be longer than `20` characters.")
 
                     elif crname.content.lower() == "!cancel":
-                        await ctx.send("Canceled. %s" % (ctx.author.mention))
+                        await ctx.send("Cancelled. %s" % (ctx.author.mention))
                         return
 
                     else:
@@ -93,7 +93,7 @@ class CustomRoles(commands.Cog):
                         crcolor = await self.bot.wait_for('message', timeout=50, check=check)
                         crcolor = crcolor.content.lower()
                         if crcolor == '!cancel':
-                            await ctx.send("Canceled. %s" % (ctx.author.mention))
+                            await ctx.send("Cancelled. %s" % (ctx.author.mention))
                             return
                         if "#" in crcolor:
                             crcolor = crcolor.replace("#", "")

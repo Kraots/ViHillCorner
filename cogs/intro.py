@@ -60,7 +60,7 @@ class Intros(commands.Cog):
                 return ctx.command.reset_cooldown(ctx)
 
             elif view.response is False:
-                e = "Canceled. %s" % (ctx.author.mention)
+                e = "Cancelled. %s" % (ctx.author.mention)
                 ctx.command.reset_cooldown(ctx)
                 return await msg.edit(content=e, view=view)
 
@@ -76,7 +76,7 @@ class Intros(commands.Cog):
                 try:
                     name = await self.bot.wait_for('message', timeout=180, check=check)
                     if name.content.lower() == '!cancel':
-                        await channel.send("Canceled. %s" % (ctx.author.mention))
+                        await channel.send("Cancelled. %s" % (ctx.author.mention))
                         ctx.command.reset_cooldown(ctx)
                         return
 
@@ -91,7 +91,7 @@ class Intros(commands.Cog):
                     try:
                         location = await self.bot.wait_for('message', timeout=180, check=check)
                         if location.content.lower() == '!cancel':
-                            await channel.send("Canceled. %s" % (ctx.author.mention))
+                            await channel.send("Cancelled. %s" % (ctx.author.mention))
                             ctx.command.reset_cooldown(ctx)
                             return
 
@@ -107,7 +107,7 @@ class Intros(commands.Cog):
                             while True:
                                 age = await self.bot.wait_for('message', timeout=180, check=check)
                                 if age.content.lower() == '!cancel':
-                                    await channel.send("Canceled. %s" % (ctx.author.mention))
+                                    await channel.send("Cancelled. %s" % (ctx.author.mention))
                                     ctx.command.reset_cooldown(ctx)
                                     return
                                 try:
@@ -130,7 +130,7 @@ class Intros(commands.Cog):
                             try:
                                 gender = await self.bot.wait_for('message', timeout=180, check=check)
                                 if gender.content.lower() == '!cancel':
-                                    await channel.send("Canceled. %s" % (ctx.author.mention))
+                                    await channel.send("Cancelled. %s" % (ctx.author.mention))
                                     ctx.command.reset_cooldown(ctx)
                                     return
 
@@ -147,7 +147,7 @@ class Intros(commands.Cog):
                                         prestatuss = await self.bot.wait_for('message', timeout=180, check=check)
                                         status = prestatuss.content.lower()
                                         if status == '!cancel':
-                                            await channel.send("Canceled. %s" % (ctx.author.mention))
+                                            await channel.send("Cancelled. %s" % (ctx.author.mention))
                                             ctx.command.reset_cooldown(ctx)
                                             return
                                         elif status in ('single', 'taken', 'complicated'):
@@ -166,7 +166,7 @@ class Intros(commands.Cog):
                                     try:
                                         interests = await self.bot.wait_for('message', timeout=360, check=check)
                                         if interests.content.lower() == '!cancel':
-                                            await channel.send("Canceled. %s" % (ctx.author.mention))
+                                            await channel.send("Cancelled. %s" % (ctx.author.mention))
                                             ctx.command.reset_cooldown(ctx)
                                             return
 
@@ -219,7 +219,7 @@ class Intros(commands.Cog):
             try:
                 name = await self.bot.wait_for('message', timeout=180, check=check)
                 if name.content.lower() == '!cancel':
-                    await channel.send("Canceled. %s" % (ctx.author.mention))
+                    await channel.send("Cancelled. %s" % (ctx.author.mention))
                     ctx.command.reset_cooldown(ctx)
                     return
 
@@ -234,7 +234,7 @@ class Intros(commands.Cog):
                 try:
                     location = await self.bot.wait_for('message', timeout=180, check=check)
                     if location.content.lower() == '!cancel':
-                        await channel.send("Canceled. %s" % (ctx.author.mention))
+                        await channel.send("Cancelled. %s" % (ctx.author.mention))
                         ctx.command.reset_cooldown(ctx)
                         return
 
@@ -250,7 +250,7 @@ class Intros(commands.Cog):
                         while True:
                             age = await self.bot.wait_for('message', timeout=180, check=check)
                             if age.content.lower() == '!cancel':
-                                await channel.send("Canceled. %s" % (ctx.author.mention))
+                                await channel.send("Cancelled. %s" % (ctx.author.mention))
                                 ctx.command.reset_cooldown(ctx)
                                 return
                             try:
@@ -273,7 +273,7 @@ class Intros(commands.Cog):
                         try:
                             gender = await self.bot.wait_for('message', timeout=180, check=check)
                             if gender.content.lower() == '!cancel':
-                                await channel.send("Canceled. %s" % (ctx.author.mention))
+                                await channel.send("Cancelled. %s" % (ctx.author.mention))
                                 ctx.command.reset_cooldown(ctx)
                                 return
 
@@ -290,7 +290,7 @@ class Intros(commands.Cog):
                                     prestatuss = await self.bot.wait_for('message', timeout=180, check=check)
                                     status = prestatuss.content.lower()
                                     if status == '!cancel':
-                                        await channel.send("Canceled. %s" % (ctx.author.mention))
+                                        await channel.send("Cancelled. %s" % (ctx.author.mention))
                                         ctx.command.reset_cooldown(ctx)
                                         return
                                     elif status in ('single', 'taken', 'complicated'):
@@ -309,7 +309,7 @@ class Intros(commands.Cog):
                                 try:
                                     interests = await self.bot.wait_for('message', timeout=360, check=check)
                                     if interests.content.lower() == '!cancel':
-                                        await channel.send("Canceled. %s" % (ctx.author.mention))
+                                        await channel.send("Cancelled. %s" % (ctx.author.mention))
                                         ctx.command.reset_cooldown(ctx)
                                         return
 
