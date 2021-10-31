@@ -111,7 +111,8 @@ class TypeRacer(Game):
             em.description = '\n'.join(
                 [format_line(i, x) for i, x in enumerate(participants, 1)]
             ) + '\n\n' + 'Type the following sentence as fast as possible:'
-            await self._message.edit(embed=em, attachments=self._message.attachments)
+            em.set_image(url='attachments://TypeRace.png') 
+            await self._message.edit(embed=em)
 
             if len(participants) >= 3:
                 break
