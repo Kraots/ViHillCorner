@@ -1243,6 +1243,8 @@ class Fun(commands.Cog):
 
         if ctx.author.id in self.hangman_games:
             return
+        elif ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+            return
 
         filtered_words = [
             word for word in ALL_WORDS
