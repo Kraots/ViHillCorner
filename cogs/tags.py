@@ -235,7 +235,7 @@ class InteractiveTagCreation(disnake.ui.View):
             view=None,
             embed=None
         )
-        self.abort = True
+        self.aborted = True
         self.stop()
 
 
