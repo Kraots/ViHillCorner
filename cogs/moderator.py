@@ -124,6 +124,8 @@ class PollInteractiveMenu(disnake.ui.View):
                     timeout=90.0,
                     check=lambda m: m.author.id == self.ctx.author.id and m.channel.id == self.ctx.channel.id
                 )
+                if self.is_finished():
+                    return
             except asyncio.TimeoutError:
                 pass
             else:
@@ -146,6 +148,7 @@ class PollInteractiveMenu(disnake.ui.View):
     async def confirm_button(self, button: disnake.Button, inter: disnake.MessageInteraction):
         if len(self.options) == 0:
             return await inter.response.send_message('You didn\'t add any options yet! Add some options and confirm later.', ephemeral=True)
+        await inter.response.defer()
         expire_date = datetime.datetime.utcnow() + relativedelta(seconds=self.duration)
         em = disnake.Embed(
             color=disnake.Color.green(),

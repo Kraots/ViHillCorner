@@ -303,6 +303,7 @@ class ConfirmView(disnake.ui.View):
 
     @disnake.ui.button(label='Confirm', style=disnake.ButtonStyle.green)
     async def yes_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
         self.response = True
         for item in self.children:
             item.disabled = True
@@ -313,6 +314,7 @@ class ConfirmView(disnake.ui.View):
 
     @disnake.ui.button(label='Cancel', style=disnake.ButtonStyle.red)
     async def no_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
         self.response = False
         for item in self.children:
             item.disabled = True
