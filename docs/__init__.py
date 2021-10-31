@@ -5,7 +5,6 @@ MAX_SIGNATURE_AMOUNT = 3
 PRIORITY_PACKAGES = (
     "python",
 )
-NAMESPACE = "doc"
 doc_cache = DocCache()
 
 
