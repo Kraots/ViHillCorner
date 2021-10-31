@@ -474,8 +474,8 @@ class Tags(commands.Cog):
                 if role.id in all_roles:
                     found = True
                     break
-        if not found:
-            return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True)
+            if not found:
+                return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True)
 
         alias = alias.lower()
         data = await self.db.find_one({'name': alias})
@@ -537,8 +537,8 @@ class Tags(commands.Cog):
                 if role.id in all_roles:
                     found = True
                     break
-        if not found:
-            return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True) 
+            if not found:
+                return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True)
 
         alias = alias.lower()
         result = await self.db.find_one({'aliases': alias})
@@ -585,8 +585,8 @@ class Tags(commands.Cog):
                 if role.id in all_roles:
                     found = True
                     break
-        if not found:
-            return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True) 
+            if not found:
+                return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True)
 
         view = InteractiveTagCreation(self.bot, inter)
         await inter.response.send_message(embed=view.prepare_embed(), view=view)
@@ -635,8 +635,8 @@ class Tags(commands.Cog):
                 if role.id in all_roles:
                     found = True
                     break
-        if not found:
-            return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True) 
+            if not found:
+                return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True)
 
         tag_name = tag_name.lower()
         data = await self.db.find_one({'name': tag_name})
@@ -684,8 +684,8 @@ class Tags(commands.Cog):
                 if role.id in all_roles:
                     found = True
                     break
-        if not found:
-            return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True) 
+            if not found:
+                return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True)
 
         tag_name = tag_name.lower()
         data = await self.db.find_one({'name': tag_name})
