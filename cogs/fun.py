@@ -1,8 +1,9 @@
+import random
+import asyncio
 import aiohttp
 import functools
-import random
+from pathlib import Path
 from random import randint
-import asyncio
 
 import disnake
 from disnake.ext import commands
@@ -30,6 +31,37 @@ UWU_WORDS = {
     "your": "yur",
     "you": "yuw",
 }
+
+ALL_WORDS = Path("utils/hangman_words.txt").read_text().splitlines()
+IMAGES = {
+    6: "https://cdn.discordapp.com/attachments/859123972884922418/888133201497837598/hangman0.png",
+    5: "https://cdn.discordapp.com/attachments/859123972884922418/888133595259084800/hangman1.png",
+    4: "https://cdn.discordapp.com/attachments/859123972884922418/888134194474139688/hangman2.png",
+    3: "https://cdn.discordapp.com/attachments/859123972884922418/888133758069395466/hangman3.png",
+    2: "https://cdn.discordapp.com/attachments/859123972884922418/888133786724859924/hangman4.png",
+    1: "https://cdn.discordapp.com/attachments/859123972884922418/888133828831477791/hangman5.png",
+    0: "https://cdn.discordapp.com/attachments/859123972884922418/888133845449338910/hangman6.png",
+}
+
+NEGATIVE_REPLIES = (
+    "Noooooo!!",
+    "Nope.",
+    "I'm sorry Dave, I'm afraid I can't do that.",
+    "I don't think so.",
+    "Not gonna happen.",
+    "Out of the question.",
+    "Huh? No.",
+    "Nah.",
+    "Naw.",
+    "Not likely.",
+    "No way, José.",
+    "Not in a million years.",
+    "Fat chance.",
+    "Certainly not.",
+    "NEGATORY.",
+    "Nuh-uh.",
+    "Not in my house!",
+)
 
 
 class AkinatorView(disnake.ui.View):
@@ -123,6 +155,7 @@ class Fun(commands.Cog):
         self.db = bot.db1['Economy']
         self.db2 = bot.db2['Trivia']
         self.prefix = "!"
+        self.hangman_games = []
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
@@ -1170,6 +1203,148 @@ class Fun(commands.Cog):
         elif view.response is False:
             e = "%s has rejected your gift. %s" % (member.mention, ctx.author.mention)
             return await msg.edit(content=e, view=view)
+
+    @staticmethod
+    def create_embed(tries: int, user_guess: str) -> disnake.Embed:
+        """
+        Helper method that creates the embed where the game information is shown.
+        This includes how many letters the user has guessed so far, and the hangman photo itself.
+        """
+        hangman_embed = disnake.Embed(
+            title="Hangman",
+            color=Colours.blurple,
+        )
+        hangman_embed.set_image(url=IMAGES[tries])
+        hangman_embed.add_field(
+            name=f"You've guessed `{user_guess}` so far.",
+            value="Guess the word by sending a message with a letter!"
+        )
+        hangman_embed.set_footer(text=f"Tries remaining: {tries}")
+        return hangman_embed
+
+    @commands.command()
+    async def hangman(
+            self,
+            ctx: commands.Context,
+            min_length: int = 0,
+            max_length: int = 25,
+            min_unique_letters: int = 0,
+            max_unique_letters: int = 25,
+    ) -> None:
+        """
+        Play hangman against the bot, where you have to guess the word it has provided!
+
+        The arguments for this command mean:
+        - **min_length:** the minimum length you want the word to be (i.e. 2)
+        - **max_length:** the maximum length you want the word to be (i.e. 5)
+        - **min_unique_letters:** the minimum unique letters you want the word to have (i.e. 4)
+        - **max_unique_letters:** the maximum unique letters you want the word to have (i.e. 7)
+        """
+
+        if ctx.author.id in self.hangman_games:
+            return
+
+        filtered_words = [
+            word for word in ALL_WORDS
+            if min_length < len(word) < max_length and
+            min_unique_letters < len(set(word)) < max_unique_letters
+        ]
+
+        if not filtered_words:
+            filter_not_found_embed = disnake.Embed(
+                title=random.choice(NEGATIVE_REPLIES),
+                description="No words could be found that fit all filters specified.",
+                color=Colours.red,
+            )
+            await ctx.send(embed=filter_not_found_embed)
+            return
+
+        word = random.choice(filtered_words)
+        pretty_word = ''.join([f"{letter} " for letter in word])[:-1]
+        user_guess = ("_ " * len(word))[:-1]
+        tries = 6
+        guessed_letters = set()
+
+        def check(msg: disnake.Message) -> bool:
+            return msg.author == ctx.author and msg.channel == ctx.channel
+
+        original_message = await ctx.send(embed=disnake.Embed(
+            title="Hangman",
+            description="Loading game...",
+            color=Colours.invisible
+        ))
+
+        self.hangman_games.append(ctx.author.id)
+        while user_guess.replace(' ', '') != word:
+            await original_message.edit(embed=self.create_embed(tries, user_guess))
+
+            try:
+                message = await self.bot.wait_for(
+                    event="message",
+                    timeout=60.0,
+                    check=check
+                )
+            except asyncio.TimeoutError:
+                timeout_embed = disnake.Embed(
+                    title=random.choice(NEGATIVE_REPLIES),
+                    description="Looks like the bot timed out! You must send a letter within 60 seconds.",
+                    color=Colours.red,
+                )
+                await original_message.edit(embed=timeout_embed)
+                self.hangman_games.pop(self.hangman_games.index(ctx.author.id))
+                return
+
+            normalized_content = message.content.lower()
+            if len(normalized_content) > 1:
+                if normalized_content == word:
+                    break
+                letter_embed = disnake.Embed(
+                    title=random.choice(NEGATIVE_REPLIES),
+                    description="You can only send one letter at a time, try again!",
+                    color=Colours.blurple,
+                )
+                await ctx.send(embed=letter_embed, delete_after=4)
+                continue
+
+            elif normalized_content in guessed_letters:
+                already_guessed_embed = disnake.Embed(
+                    title=random.choice(NEGATIVE_REPLIES),
+                    description=f"You have already guessed `{normalized_content}`, try again!",
+                    color=Colours.blurple,
+                )
+                await ctx.send(embed=already_guessed_embed, delete_after=4)
+                continue
+
+            elif normalized_content in word:
+                positions = {idx for idx, letter in enumerate(pretty_word) if letter == normalized_content}
+                user_guess = "".join(
+                    [normalized_content if index in positions else dash for index, dash in enumerate(user_guess)]
+                )
+
+            else:
+                tries -= 1
+
+                if tries <= 0:
+                    losing_embed = disnake.Embed(
+                        title="You lost.",
+                        description=f"The word was `{word}`.",
+                        color=Colours.red,
+                    )
+                    await original_message.edit(embed=self.create_embed(tries, user_guess))
+                    await ctx.send(embed=losing_embed)
+                    self.hangman_games.pop(self.hangman_games.index(ctx.author.id))
+                    return
+
+            guessed_letters.add(normalized_content)
+
+        await original_message.edit(embed=self.create_embed(tries, user_guess))
+        win_embed = disnake.Embed(
+            title="You won!",
+            description=f"The word was `{word}`.",
+            color=disnake.Color.green()
+        )
+        self.hangman_games.pop(self.hangman_games.index(ctx.author.id))
+        await ctx.send(embed=win_embed)
 
     @trivia.error
     async def trivia_error(self, ctx: Context, error):
