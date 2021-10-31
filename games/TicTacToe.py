@@ -4,6 +4,10 @@ from utils.context import Context
 
 from main import ViHillCorner
 
+__all__ = (
+    'TicTacToe',
+)
+
 
 class TicTacToe(disnake.ui.View):
     def __init__(self, p1: disnake.Member, p2: disnake.Member, ctx: Context, *, timeout=60.0):

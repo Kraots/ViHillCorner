@@ -7,6 +7,10 @@ from utils.context import Context
 
 from main import ViHillCorner
 
+__all__ = (
+    'Fight',
+)
+
 
 class Fight(disnake.ui.View):
     def __init__(self, pl1: disnake.Member, pl2: disnake.Member, ctx: Context, *, timeout=30.0):

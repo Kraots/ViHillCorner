@@ -1348,14 +1348,27 @@ class Fun(commands.Cog):
         self.hangman_games.pop(self.hangman_games.index(ctx.author.id))
         await ctx.send(embed=win_embed)
 
+    @commands.command(aliases=('typerace',))
+    @commands.max_concurrency(1, commands.BucketType.channel)
+    async def typeracer(self, ctx: Context):
+        """Play a game of typeracer."""
+
+        game = games.TypeRacer(ctx)
+        await game.start()
+
+    @typeracer.error
+    async def typeracer_error(self, ctx: Context, error):
+        if isinstance(error, commands.MaxConcurrencyReached):
+            return
+        else:
+            await self.bot.reraise(ctx, error)
+
     @trivia.error
     async def trivia_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.CommandInvokeError):
             await ctx.send(error.original)
-
         elif isinstance(error, commands.TooManyArguments):
             return
-
         else:
             await self.bot.reraise(ctx, error)
 

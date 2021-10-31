@@ -1,15 +1,17 @@
 import io
 import re
 import string
-import typing
 import asyncio
+import functools
 from traceback import format_exception
+from typing import Optional, Callable, Union
 
 import disnake
 from disnake.ext import commands
 
-from utils.colors import Colours
 from utils import time
+from utils.colors import Colours
+from utils.context import Context
 
 import pkg_resources
 
@@ -84,7 +86,7 @@ def clean_code(content):
         return content
 
 
-def package_version(package_name: str) -> typing.Optional[str]:
+def package_version(package_name: str) -> Optional[str]:
     try:
         return pkg_resources.get_distribution(package_name).version
     except (pkg_resources.DistributionNotFound, AttributeError):
@@ -434,3 +436,55 @@ async def safe_send_prepare(content, **kwargs):
         }
     else:
         return {'content': content}
+
+
+def run_in_executor(func: Callable):
+    """Decorator that runs the sync function in the executor."""
+
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        loop = asyncio.get_event_loop()
+        to_run = functools.partial(func, *args, **kwargs)
+        return await loop.run_in_executor(None, to_run)
+
+    return wrapper
+
+
+IMAGE_REG = re.compile(r'(http)?s?:?(\/\/[^"\']*\.(?:png|jpg|jpeg|gif|png|svg))')
+
+
+async def get_bytes(
+    ctx: Context,
+    image: Union[disnake.Emoji, disnake.PartialEmoji, disnake.Member, str],
+    session,
+    return_bytes=True
+) -> Union[bytes, str]:
+    """Gets the byte-like object from the given param."""
+
+    if isinstance(image, str):
+        if re.match(IMAGE_REG, image):
+            url = image
+        elif len(image) == 1:
+            digit = f'{ord(image):x}'
+            url = f'https://twemoji.maxcdn.com/v/latest/72x72/{digit}.png'
+        else:
+            raise commands.BadArgument('Invalid image link provided. Try again with a different image.')
+    elif isinstance(image, disnake.Member):
+        url = image.avatar.replace(format="png", size=1024).url
+
+    elif isinstance(image, disnake.Emoji) or isinstance(image, disnake.PartialEmoji):
+        url = image.url
+
+    elif image is None:
+        if attachments := ctx.message.attachments:
+            url = attachments[0].url
+        else:
+            url = ctx.author.avatar.replace(format="png", size=1024).url
+
+    if not return_bytes:
+        return url
+
+    res = await session.get(str(url))
+    if (size := int(res.headers['content-length']) // 1000000) > 8:
+        raise commands.BadArgument(f'⚠️ Image given (`{size} MB`) can not be larger than `8 MB`')
+    return await res.read()

@@ -10,6 +10,10 @@ from utils.context import Context
 
 from main import ViHillCorner
 
+__all__ = (
+    'Trivia',
+)
+
 
 class Trivia:
     def __init__(self, ctx: Context):
