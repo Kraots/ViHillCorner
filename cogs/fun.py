@@ -1349,7 +1349,6 @@ class Fun(commands.Cog):
         await ctx.send(embed=win_embed)
 
     @commands.command(aliases=('typerace',))
-    @commands.max_concurrency(1, commands.BucketType.channel)
     async def typeracer(self, ctx: Context):
         """Play a game of typeracer."""
 
@@ -1358,13 +1357,6 @@ class Fun(commands.Cog):
 
         game = games.TypeRacer(ctx)
         await game.start()
-
-    @typeracer.error
-    async def typeracer_error(self, ctx: Context, error):
-        if isinstance(error, commands.MaxConcurrencyReached):
-            return
-        else:
-            await self.bot.reraise(ctx, error)
 
     @trivia.error
     async def trivia_error(self, ctx: Context, error):
