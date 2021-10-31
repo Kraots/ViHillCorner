@@ -1353,6 +1353,9 @@ class Fun(commands.Cog):
     async def typeracer(self, ctx: Context):
         """Play a game of typeracer."""
 
+        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+            return
+
         game = games.TypeRacer(ctx)
         await game.start()
 
