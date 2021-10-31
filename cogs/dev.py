@@ -60,6 +60,7 @@ class QuitButton(disnake.ui.View):
         if self.delete_after is False:
             if not isinstance(self.ctx, ApplicationCommandInteraction):
                 return await self.message.edit(view=None)
+            return await self.ctx.edit_original_message(view=None)
 
         if not isinstance(self.ctx, ApplicationCommandInteraction):
             await self.message.delete()
@@ -75,6 +76,7 @@ class QuitButton(disnake.ui.View):
             await self.ctx.message.delete()
             self.stop()
         else:
+            await inter.response.defer()
             await self.ctx.delete_original_message()
             self.stop()
 
