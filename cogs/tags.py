@@ -476,7 +476,7 @@ class Tags(commands.Cog):
         if data is None:
             try:
                 data = await self.db.find_one({'_id': int(tag_name)})
-            except KeyError:
+            except ValueError:
                 return await inter.response.send_message("Tag not found.", ephemeral=True)
             else:
                 if data is None:
