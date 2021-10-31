@@ -57,12 +57,31 @@ async def tag_name(inter: disnake.ApplicationCommandInteraction, argument: str):
     lower = converted.lower().strip()
 
     if not lower:
-        raise commands.BadArgument('Missing tag name')
+        raise commands.BadArgument('Missing tag name.')
 
     if len(lower) > 50:
-        raise commands.BadArgument('Tag name must be less than 50')
+        raise commands.BadArgument('Tag name must be less than 50 characters.')
+    elif len(lower) < 3:
+        raise commands.BadArgument('Tag must be greater than 3 characters.')
     elif lower.isnumeric():
         raise commands.BadArgument('Tag must not be digits.')
+
+    return lower
+
+
+async def alias_name(inter: disnake.ApplicationCommandInteraction, argument: str):
+    converted = await clean_inter_content()(inter, argument)
+    lower = converted.lower().strip()
+
+    if not lower:
+        raise commands.BadArgument('Missing alias name.')
+
+    if len(lower) > 50:
+        raise commands.BadArgument('Tag alias must be less than 50 characters.')
+    elif len(lower) < 3:
+        raise commands.BadArgument('Tag alias must be greater than 3 characters.')
+    elif lower.isnumeric():
+        raise commands.BadArgument('Tag alias must not be digits.')
 
     return lower
 
@@ -84,7 +103,7 @@ class InteractiveTagCreation(disnake.ui.View):
         if edit is not None:
             self.remove_item(self.set_name)
             self.name = edit['name']
-            self.content = edit['content']
+            self.content = edit['tag_content']
         else:
             self.name = self.content = None
 
@@ -114,7 +133,7 @@ class InteractiveTagCreation(disnake.ui.View):
         for child in self.children:
             if child.label == 'Confirm':
                 if self._edit:
-                    if self._edit['content'] != self.content:
+                    if self._edit['tag_content'] != self.content:
                         child.disabled = False
                         continue
                 elif self.name is not None and self.content is not None:
@@ -200,7 +219,7 @@ class InteractiveTagCreation(disnake.ui.View):
 
     @disnake.ui.button(label='Confirm', style=disnake.ButtonStyle.green)
     async def confirm(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        if self._edit and self._edit['content'] == self.content:
+        if self._edit and self._edit['tag_content'] == self.content:
             return await inter.response.edit_message(
                 content='Content still the same...\nHint: edit it by pressing "Content"'
             )
@@ -463,13 +482,10 @@ class Tags(commands.Cog):
         else:
             return await inter.response.send_message('There is an existing tag with this name already.', ephemeral=True)
 
-        if len(alias) > 75:
-            return await inter.response.send_message('Alias cannot be longer than `75` characters!', ephemeral=True)
         try:
-            int(alias)
-            return await inter.response.send_message('Alias cannot be an integer.', ephemeral=True)
-        except ValueError:
-            pass
+            alias = await alias_name(inter, alias)
+        except commands.BadArgument as e:
+            return await inter.response.send_message(e, ephemeral=True)
 
         tag_name = tag_name.lower()
         data = await self.db.find_one({'name': tag_name})
@@ -541,6 +557,7 @@ class Tags(commands.Cog):
                         new_aliases.append(_alias)
                 await self.db.update_one({'name': tag_name}, {'$set': {'aliases': new_aliases}})
                 e = f"Successfully removed the alias `{alias}` from tag **{tag_name}**!"
+                self.bot.tag_aliases.pop(self.bot.tag_aliases.index(alias))
                 return await inter.edit_original_message(content=e, view=view)
 
             elif view.response is False:
@@ -589,6 +606,51 @@ class Tags(commands.Cog):
         self.bot.tags.append(view.name)
         await inter.followup.send(f'Tag `{view.name}` successfully created.')
 
+    @base_tag.sub_command(name='edit')
+    async def tag_edit(
+        self,
+        inter: ApplicationCommandInteraction,
+        tag_name: str = Param(
+            description='The tag to edit',
+            autocomplete=autocomplete_tags_names_only
+        )
+    ):
+        """Edits a tag that you own."""
+
+        if inter.author.id != self.bot._owner_id:
+            for role in inter.author.roles:
+                if role.id not in all_roles:
+                    return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True)
+
+        tag_name = tag_name.lower()
+        data = await self.db.find_one({'name': tag_name})
+        if data is None:
+            try:
+                data = await self.db.find_one({'_id': int(tag_name)})
+            except ValueError:
+                return await inter.response.send_message("Tag not found.", ephemeral=True)
+            else:
+                if data is None:
+                    return await inter.response.send_message("Tag not found.", ephemeral=True)
+
+        if inter.author.id != self.bot._owner_id:
+            if inter.author.id != data['owner_id']:
+                return await inter.response.send_message("This tag is not owned by you.", ephemeral=True)
+
+        view = InteractiveTagCreation(self.bot, inter, data)
+        await inter.response.send_message(embed=view.prepare_embed(), view=view)
+        view.message = await inter.original_message()
+
+        if await view.wait():
+            return await view.message.edit(content='You took too long. Goodbye.', view=None, embed=None)
+        else:
+            if view.aborted:
+                return
+            await view.message.edit(view=None)
+
+        await self.db.update_one({'_id': data['_id']}, {'$set': {'tag_content': view.content}})
+        await inter.followup.send(f'Tag `{view.name}` successfully updated.')
+
     @base_tag.sub_command(name='delete')
     async def tag_delete(
         self,
@@ -627,6 +689,8 @@ class Tags(commands.Cog):
             await self.db.delete_one({'_id': data['_id']})
             e = "Successfully deleted the tag **%s**." % (data['name'])
             self.bot.tags.pop(self.bot.tags.index(data['name']))
+            for alias in data['aliases']:
+                self.bot.tag_aliases.pop(self.bot.tag_aliases.index(alias))
             return await inter.edit_original_message(content=e, view=view)
 
         elif view.response is False:
