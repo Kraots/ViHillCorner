@@ -45,7 +45,7 @@ class TypeRacer(Game):
         font = ImageFont.truetype(f'{str(Path(__file__).parents[0])}/assets/Milliard.otf', 50)
 
         text = textwrap.fill(text, width=30)
-        draw.multiline_text((im.width / 2 - 400, im.height / 2 - 70), text, (255, 255, 255), align='center', font=font)
+        draw.multiline_text((im.width / 2 - 400, im.height / 2 - 140), text, (255, 255, 255), align='center', font=font)
 
         buffer = io.BytesIO()
         im.save(buffer, format='png')
