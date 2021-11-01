@@ -4,6 +4,8 @@ from PIL import Image, ImageFont, ImageDraw
 
 import disnake
 
+from utils.helpers import run_in_executor
+
 GRAY = (48, 48, 48)
 ORANGE = (255, 128, 0)
 TRANSPARENT = (0, 0, 0, 0)
@@ -12,7 +14,8 @@ BLACK = (0, 0, 0)
 TTF_FONT = ".heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf"
 
 
-def drawProgressBar(d, x, y, w, h, progress, bg="white", fg="black"):
+@run_in_executor
+def draw_progress_bar(d, x, y, w, h, progress, bg="white", fg="black"):
     # draw background
     d.ellipse((x + w, y, x + h + w, y + h), fill=bg)
     d.ellipse((x, y, x + h, y + h), fill=bg)
@@ -99,7 +102,7 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
 
     progressbar = Image.new("RGBA", (750, 50), (0, 0, 0, 0))
     d = ImageDraw.Draw(progressbar)
-    d = drawProgressBar(d, 0, 0, 650, 45, percentage / 100, fg=BLUE)
+    d = await draw_progress_bar(d, 0, 0, 650, 45, percentage / 100, fg=BLUE)
 
     _rank = Image.new("RGBA", (235, 100))
     draw = ImageDraw.Draw(_rank)
