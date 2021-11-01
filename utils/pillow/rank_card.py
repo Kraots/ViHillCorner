@@ -11,7 +11,7 @@ ORANGE = (255, 128, 0)
 TRANSPARENT = (0, 0, 0, 0)
 BLUE = (22, 160, 245)
 BLACK = (0, 0, 0)
-TTF_FONT = ".heroku/python/lib/python3.9/site-packages/pygame/examples/data/sans.ttf"
+TTF_FONT = 'games/assets/Milliard.otf'
 
 
 @run_in_executor
@@ -122,9 +122,9 @@ async def rank_card(user, level: int, rank: int, members_count: int, current_xp:
     img.paste(im=_user, mask=_user, box=(350, 50))
     img.paste(im=progressbar, mask=progressbar, box=(275, 250))
     if max_lvl is not True:
-        img.paste(im=has_xp, mask=has_xp, box=(285, 255))
-        img.paste(im=next_xp, mask=next_xp, box=(820, 255))
-    img.paste(im=percent, mask=percent, box=(552, 255))
+        img.paste(im=has_xp, mask=has_xp, box=(285, 260))
+        img.paste(im=next_xp, mask=next_xp, box=(800, 260))
+    img.paste(im=percent, mask=percent, box=(552, 260))
     img.paste(im=_rank, mask=_rank, box=(325, 125))
     img.paste(im=_level, mask=_level, box=(600, 125))
     img.save('rank_card.png')
