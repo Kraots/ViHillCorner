@@ -1348,7 +1348,7 @@ class Fun(commands.Cog):
         self.hangman_games.pop(self.hangman_games.index(ctx.author.id))
         await ctx.send(embed=win_embed)
 
-    @commands.command(aliases=('typerace',))
+    @commands.command(aliases=('typerace', 'tr',))
     async def typeracer(self, ctx: Context):
         """Play a game of typeracer."""
 
