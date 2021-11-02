@@ -115,6 +115,7 @@ class PollInteractiveMenu(disnake.ui.View):
         if len(self.options) == 8:
             return await inter.response.send_message('There already are a total of 8 options. No more can be added.', ephemeral=True)
 
+        await inter.response.defer()
         self.adding_option = True
         while True:
             try:
@@ -131,7 +132,7 @@ class PollInteractiveMenu(disnake.ui.View):
             else:
                 if len(msg.content) >= 200:
                     await msg.delete()
-                    await inter.response.send_message('Content too large. Limit is of `200` characters.\nTry again.', ephemeral=True)
+                    await inter.followup.send('Content too large. Limit is of `200` characters.\nTry again.', ephemeral=True)
                 else:
                     break
 

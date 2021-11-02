@@ -102,6 +102,8 @@ class TicTacToe(disnake.ui.View):
 
     @disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=0)
     async def top_1(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         button.disabled = True
         button.label = self.new_label[self.turn]
         button.style = self.new_style[self.turn]
@@ -117,6 +119,8 @@ class TicTacToe(disnake.ui.View):
 
     @disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=0)
     async def top_2(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         button.disabled = True
         button.label = self.new_label[self.turn]
         button.style = self.new_style[self.turn]
@@ -132,6 +136,8 @@ class TicTacToe(disnake.ui.View):
 
     @disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=0)
     async def top_3(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         button.disabled = True
         button.label = self.new_label[self.turn]
         button.style = self.new_style[self.turn]
@@ -147,6 +153,8 @@ class TicTacToe(disnake.ui.View):
 
     @disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=1)
     async def mid_1(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         button.disabled = True
         button.label = self.new_label[self.turn]
         button.style = self.new_style[self.turn]
@@ -162,6 +170,8 @@ class TicTacToe(disnake.ui.View):
 
     @disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=1)
     async def mid_2(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         button.disabled = True
         button.label = self.new_label[self.turn]
         button.style = self.new_style[self.turn]
@@ -177,6 +187,8 @@ class TicTacToe(disnake.ui.View):
 
     @disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=1)
     async def mid_3(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         button.disabled = True
         button.label = self.new_label[self.turn]
         button.style = self.new_style[self.turn]
@@ -192,6 +204,8 @@ class TicTacToe(disnake.ui.View):
 
     @disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=2)
     async def bottom_1(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         button.disabled = True
         button.label = self.new_label[self.turn]
         button.style = self.new_style[self.turn]
@@ -207,6 +221,8 @@ class TicTacToe(disnake.ui.View):
 
     @disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=2)
     async def bottom_2(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         button.disabled = True
         button.label = self.new_label[self.turn]
         button.style = self.new_style[self.turn]
@@ -222,6 +238,8 @@ class TicTacToe(disnake.ui.View):
 
     @disnake.ui.button(label='\u200b', style=disnake.ButtonStyle.grey, row=2)
     async def bottom_3(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         button.disabled = True
         button.label = self.new_label[self.turn]
         button.style = self.new_style[self.turn]
@@ -237,6 +255,8 @@ class TicTacToe(disnake.ui.View):
 
     @disnake.ui.button(label='Forfeit', style=disnake.ButtonStyle.blurple, row=3)
     async def forfeit_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         if self.turn == self.p1:
             winner = self.p2
         else:

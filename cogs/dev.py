@@ -69,14 +69,14 @@ class QuitButton(disnake.ui.View):
             await self.ctx.delete_original_message()
 
     @disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red)
-    async def quit(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def quit(self, button: disnake.ui.Button, inter: disnake.Interaction):
         """Deletes the user's message along with the bot's message."""
+        await inter.response.defer()
         if not isinstance(self.ctx, ApplicationCommandInteraction):
             await self.message.delete()
             await self.ctx.message.delete()
             self.stop()
         else:
-            await inter.response.defer()
             await self.ctx.delete_original_message()
             self.stop()
 

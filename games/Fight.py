@@ -80,6 +80,8 @@ class Fight(disnake.ui.View):
 
     @disnake.ui.button(label='Fight', style=disnake.ButtonStyle.red)
     async def _fight_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         p = self.turn
         self.update_turn()
         curr_hp = self.hp[self.turn]
@@ -92,6 +94,8 @@ class Fight(disnake.ui.View):
 
     @disnake.ui.button(label='Health', style=disnake.ButtonStyle.green)
     async def _health_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         p = self.turn
         curr_hp = self.hp[self.turn]
         hp = random.randint(1, 41)
@@ -102,6 +106,8 @@ class Fight(disnake.ui.View):
 
     @disnake.ui.button(label='Forfeit', style=disnake.ButtonStyle.blurple, row=1)
     async def _forfeit_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
+        await inter.response.defer()
+
         p = self.turn
         self.update_turn()
         for item in self.children:

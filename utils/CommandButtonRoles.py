@@ -54,27 +54,15 @@ class CommandButtonRole(disnake.ui.Select['ButtonRoleView']):
 
 
 class ButtonRoleView(disnake.ui.View):
-    def __init__(self, ctx, *, timeout=180.0):
+    def __init__(self, inter, *, timeout=180.0):
         super().__init__(timeout=timeout)
-        self.ctx = ctx
+        self.inter = inter
         self.add_item(CommandButtonRole())
-
-    async def on_error(self, error, item, interaction):
-        return await self.ctx.bot.reraise(self.ctx, error)
 
     async def on_timeout(self):
         for item in self.children:
             item.disabled = True
-        await self.message.edit(view=self)
-
-    async def interaction_check(self, interaction: disnake.MessageInteraction):
-        if interaction.author.id != self.ctx.author.id:
-            await interaction.response.send_message(
-                f'{self.ctx.author.display_name} is using this menu. If you wish to use it too please type `!colours`',
-                ephemeral=True
-            )
-            return False
-        return True
+        await self.inter.edit_message(view=self)
 
 
 class OwnerCommandButtonRole(disnake.ui.Select['ButtonRoleView']):
@@ -114,21 +102,12 @@ class OwnerCommandButtonRole(disnake.ui.Select['ButtonRoleView']):
 
 
 class ButtonRoleViewOwner(disnake.ui.View):
-    def __init__(self, ctx, *, timeout=180.0):
+    def __init__(self, inter, *, timeout=180.0):
         super().__init__(timeout=timeout)
-        self.ctx = ctx
+        self.inter = inter
         self.add_item(OwnerCommandButtonRole())
-
-    async def on_error(self, error, item, interaction):
-        return await self.ctx.bot.reraise(self.ctx, error)
 
     async def on_timeout(self):
         for item in self.children:
             item.disabled = True
-        await self.message.edit(view=self)
-
-    async def interaction_check(self, interaction: disnake.MessageInteraction):
-        if interaction.author.id != self.ctx.author.id:
-            await interaction.response.send_message('My master is using this menu 😡. If you wish to use it too please type `!colours`', ephemeral=True)
-            return False
-        return True
+        await self.inter.edit_message(view=self)

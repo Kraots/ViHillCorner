@@ -36,6 +36,8 @@ class MessagesTopButtons(disnake.ui.View):
 
     @disnake.ui.button(label='Total Messages Top', style=disnake.ButtonStyle.blurple)
     async def total_messages_top(self, button: disnake.Button, inter: disnake.MessageInteraction):
+        await inter.response.defer()
+
         index = 0
         data = []
         top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
@@ -65,6 +67,8 @@ class MessagesTopButtons(disnake.ui.View):
 
     @disnake.ui.button(label='Weekly Messages Top', style=disnake.ButtonStyle.blurple)
     async def weekly_messages_top(self, button: disnake.Button, inter: disnake.MessageInteraction):
+        await inter.response.defer()
+
         index = 0
         data = []
         top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
@@ -94,6 +98,7 @@ class MessagesTopButtons(disnake.ui.View):
 
     @disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red)
     async def _stop_view(self, button: disnake.Button, inter: disnake.MessageInteraction):
+        await inter.response.defer()
         await self.message.delete()
         self.stop()
 

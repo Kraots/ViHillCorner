@@ -277,14 +277,17 @@ class RPSView(disnake.ui.View):
 
     @disnake.ui.button(label='Rock', style=disnake.ButtonStyle.blurple)
     async def rock(self, button: disnake.Button, inter: disnake.MessageInteraction):
+        await inter.response.defer()
         await self.check_result(button)
 
     @disnake.ui.button(label='Paper', style=disnake.ButtonStyle.blurple)
     async def paper(self, button: disnake.Button, inter: disnake.MessageInteraction):
+        await inter.response.defer()
         await self.check_result(button)
 
     @disnake.ui.button(label='Scissors', style=disnake.ButtonStyle.blurple)
     async def scissors(self, button: disnake.Button, inter: disnake.MessageInteraction):
+        await inter.response.defer()
         await self.check_result(button)
 
 

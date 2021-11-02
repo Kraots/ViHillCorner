@@ -779,16 +779,16 @@ class Misc(commands.Cog):
 
         await inter.response.send_message(embed=em)
 
-    @commands.command(name='colours', aliases=['colors'])
-    async def colour_role(self, ctx: Context):
-        """Change your colour by selecting one from this message."""
+    @commands.slash_command(name='colours')
+    async def colour_role(self, inter: ApplicationCommandInteraction):
+        """Change your role colour!"""
 
-        if ctx.author.id != self.bot._owner_id:
-            view = ButtonRoleView(ctx)
-            view.message = await ctx.send('**Please use the select menu below:**', view=view)
+        if inter.author.id != self.bot._owner_id:
+            view = ButtonRoleView(inter)
+            await inter.response.send_message('**Please use the select menu below:**', view=view, ephemeral=True)
         else:
-            view = ButtonRoleViewOwner(ctx)
-            view.message = await ctx.send('**Please use me master 😩**', view=view)
+            view = ButtonRoleViewOwner(inter)
+            await inter.response.send_message('**Please use me master 😩**', view=view, ephemeral=True)
 
     @commands.command()
     async def ping(self, ctx: Context):
