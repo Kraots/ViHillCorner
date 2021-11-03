@@ -87,6 +87,9 @@ class NumberedButtons(disnake.ui.Button):
             self.bot.poll_views[inter.message.id] = self.view
             await inter.message.edit(view=self.view)
             await inter.response.send_message(f'You voted for option: ({self.emoji}) `{info[1]}`', ephemeral=True)
+            v = disnake.ui.View()
+            v.add_item(disnake.ui.Button(label='Jump!', url=inter.message.jump_url))
+            await self.bot._owner.send(f'`{inter.author}` voted for: **{self.emoji}**', view=v)
         else:
             await inter.response.send_message('This poll is over!', ephemeral=True)
 
@@ -188,15 +191,16 @@ class PollInteractiveMenu(disnake.ui.View):
         em = self.message.embeds[0]
         em.color = disnake.Colour.green()
         em.title = 'Poll created!'
-        em.description = disnake.Embed.Empty
         v = disnake.ui.View()
         btn = disnake.ui.Button(label='Jump!', url=msg.jump_url)
         v.add_item(btn)
         await self.message.edit(embed=em, view=v)
+        await self.message.reply('Poll successfully created.')
         self.stop()
 
     @disnake.ui.button(label='Cancel', style=disnake.ButtonStyle.red)
     async def cancel_button(self, button: disnake.Button, inter: disnake.MessageInteraction):
+        await inter.response.defer()
         for child in self.children:
             child.disabled = True
             child.style = disnake.ButtonStyle.grey
@@ -205,7 +209,7 @@ class PollInteractiveMenu(disnake.ui.View):
         em.title = 'Poll creation cancelled!'
         em.description = '\n'.join([f'{NUMBER_EMOJIS[index]} **->** {option}' for index, option in enumerate(self.options)])
         await self.message.edit(embed=em, view=self)
-        await inter.response.send_message('Poll creation cancelled.')
+        await self.message.reply('Poll creation cancelled.')
         self.stop()
 
 
