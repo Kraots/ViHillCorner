@@ -6,16 +6,16 @@ from disnake.ext import commands
 from utils import time
 from utils.colors import Colours
 from utils.context import Context
+from utils.databases import Marriage
 
 from main import ViHillCorner
 
 
-class Marriage(commands.Cog):
-    """Marriage related commands."""
+class Marriages(commands.Cog):
+    """Marriages related commands."""
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db = bot.db1['Marry Data']
         self.prefix = "!"
 
     async def cog_check(self, ctx: Context):
@@ -43,72 +43,72 @@ class Marriage(commands.Cog):
 
         else:
             all_users = []
-            results = await self.db.find().to_list(1000000)
-            for result in results:
-                all_users.append(result['_id'])
+            marriages: list[Marriage] = await Marriage.find().to_list(1000000)
+            for marriage in marriages:
+                all_users.append(marriage.id)
 
             if member.id in all_users:
-                get_mem = await self.db.find_one({"_id": member.id})
-                member_married_to = get_mem["married_to"]
-                they_already_married_to = self.bot.get_user(member_married_to)
-                await ctx.send("`{}` is already married to `{}`.".format(member.display_name, they_already_married_to.display_name))
+                mem: Marriage = await Marriage.find_one({"_id": member.id})
+                usr = self.bot.get_user(mem.married_to)
+                await ctx.send("`{}` is already married to `{}`.".format(member.display_name, usr.display_name))
                 return
 
             elif ctx.author.id in all_users:
-                get_auth = await self.db.find_one({"_id": ctx.author.id})
-                author_married_to = get_auth["married_to"]
-                author_already_married_to = self.bot.get_user(author_married_to)
-                await ctx.send("You are already married to `{}`.".format(author_already_married_to.display_name))
+                mem: Marriage = await Marriage.find_one({"_id": ctx.author.id})
+                usr = self.bot.get_user(mem.married_to)
+                await ctx.send("You are already married to `{}`.".format(usr.display_name))
 
             else:
                 view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.", member)
-                view.message = msg = await ctx.send("{} do you want to marry {}?".format(member.mention, ctx.author.mention), view=view)
+                view.message = msg = await ctx.send(f"{member.mention} do you want to marry {ctx.author.mention}?", view=view)
                 await view.wait()
                 if view.response is True:
+                    mem = Marriage(
+                        id=ctx.author.id,
+                        married_to=member.id,
+                        marry_date=datetime.datetime.utcnow()
+                    )
+                    usr = Marriage(
+                        id=member.id,
+                        married_to=ctx.author.id,
+                        marry_date=datetime.datetime.utcnow()
+                    )
+                    await mem.commit()
+                    await usr.commit()
 
-                    married_since_save_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M")
-
-                    save_auth = {"_id": ctx.author.id, "married_to": member.id, "marry_date": married_since_save_time}
-                    save_mem = {"_id": member.id, "married_to": ctx.author.id, "marry_date": married_since_save_time}
-
-                    await self.db.insert_many([save_auth, save_mem])
-
-                    await ctx.send("`{}` married `{}`!!! :tada: :tada:".format(ctx.author.display_name, member.display_name))
+                    await ctx.send(f"`{ctx.author.display_name}` married `{member.display_name}`!!! :tada: :tada:")
                     await msg.delete()
 
                 elif view.response is False:
-                    await ctx.send("`{}` does not want to marry with you. {} :pensive: :fist:".format(member.display_name, ctx.author.mention))
+                    await ctx.send(f"`{member.display_name}` does not want to marry with you. {ctx.author.mention} :pensive: :fist:")
                     await msg.delete()
 
     @commands.command()
     async def divorce(self, ctx: Context):
         """Divorce the person you're married with in case you're married with someone."""
 
-        user = ctx.author
+        marriage: Marriage = await Marriage.find_one({"_id": ctx.author.id})
 
-        results = await self.db.find_one({"_id": user.id})
-
-        if results is None:
+        if marriage is None:
             await ctx.send("You are not married to anyone.")
             return
 
         else:
-            the_married_to_user = self.bot.get_user(results['married_to'])
+            usr = self.bot.get_user(marriage.married_to)
 
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-            view.message = msg = await ctx.send("Are you sure you want to divorce `{}`?".format(the_married_to_user.display_name), view=view)
+            view.message = msg = await ctx.send(f"Are you sure you want to divorce `{usr.display_name}`?", view=view)
             await view.wait()
             if view.response is True:
-                auth = {"_id": ctx.author.id}
-                mem = {"_id": the_married_to_user.id}
-                await self.db.delete_one(auth)
-                await self.db.delete_one(mem)
+                mem: Marriage = await Marriage.find_one({'_id': usr.id})
+                await marriage.delete()
+                await mem.delete()
 
-                e = "You divorced `{}`. :cry:".format(the_married_to_user.display_name)
+                e = f"You divorced `{usr.display_name}`. :cry:"
                 return await msg.edit(content=e, view=view)
 
             elif view.response is False:
-                e = "You did not divorce that person :D %s" % (user.mention)
+                e = f"You did not divorce that person :D {usr.mention}"
                 return await msg.edit(content=e, view=view)
 
     @commands.command()
@@ -117,39 +117,29 @@ class Marriage(commands.Cog):
 
         member = member or ctx.author
 
-        results = await self.db.find_one({"_id": member.id})
+        marriage: Marriage = await Marriage.find_one({"_id": member.id})
 
-        user = member
-
-        if user.bot:
+        if member.bot:
             await ctx.send("Bot's cannot marry u dumbo <:pepe_cringe:750755809700348166>")
             return
-
-        elif results is None:
-            if user == ctx.author:
+        elif marriage is None:
+            if member == ctx.author:
                 await ctx.send("You are not married to anyone.\nType `!marry <user>` to marry to someone!")
                 return
-
             else:
-                await ctx.send("`{}` is not married to anyone.".format(user.display_name))
+                await ctx.send(f"`{member.display_name}` is not married to anyone.")
                 return
 
         else:
-            user_married_to = results["married_to"]
-            user_married_to_sincee = results["marry_date"]
-
-            user_married_to_since = datetime.datetime.strptime(user_married_to_sincee, "%Y-%m-%d %H:%M")
-
-            the_married_to_user = self.bot.get_user(user_married_to)
-
+            usr = self.bot.get_user(marriage.married_to)
             if member == ctx.author:
                 def format_date(dt):
                     if dt is None:
                         return 'N/A'
                     return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-                em = disnake.Embed(color=Colours.light_pink, title="You are married to `{}` :tada: :tada:".format(the_married_to_user.display_name))
-                em.add_field(name="_ _ \nMarried since:", value="`{}`".format(format_date(user_married_to_since)), inline=False)
+                em = disnake.Embed(color=Colours.light_pink, title=f"You are married to `{usr.display_name}` :tada: :tada:")
+                em.add_field(name="_ _ \nMarried since:", value=f"`{format_date(marriage.marry_date)}`", inline=False)
                 em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
                 await ctx.send(embed=em)
             else:
@@ -160,18 +150,20 @@ class Marriage(commands.Cog):
 
                 em = disnake.Embed(
                     color=Colours.light_pink,
-                    title="`{}` is married to `{}` :tada: :tada:".format(user.display_name, the_married_to_user.display_name)
+                    title=f"`{member.display_name}` is married to `{usr.display_name}` :tada: :tada:"
                 )
-                em.add_field(name=" _ _ \nMarried since:", value="`{}`".format(format_date(user_married_to_since)), inline=False)
+                em.add_field(name=" _ _ \nMarried since:", value=f"`{format_date(marriage.marry_date)}`", inline=False)
                 em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
                 await ctx.send(embed=em)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
-        if member.id == 374622847672254466:
-            return
-        await self.db.delete_one({"_id": member.id})
-        await self.db.delete_one({'married_to': member.id})
+        if member.id != 374622847672254466:
+            mem = await Marriage.find_one({'_id': member.id})
+            if mem:
+                await mem.delete()
+                usr = await Marriage.find_one({'married_to': member.id})
+                await usr.delete()
 
 
 def setup(bot):
