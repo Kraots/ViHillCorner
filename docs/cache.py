@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional, Union, Dict, TYPE_CHECKING
 
-from main import database3
+from utils.databases import DocsCache
 
 if TYPE_CHECKING:
     from .cog import DocItem
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class DocCache:
     def __init__(self) -> None:
-        self._cache = database3['DocsCache']
+        self._cache = DocsCache
         self.cache = {}
 
     def _add_to_local_cache(self, item: DocItem, value: str) -> None:
@@ -27,13 +27,16 @@ class DocCache:
         """
         self._add_to_local_cache(item, value)
 
-        k: Union[Dict, None] = await self._cache.find_one({'_id': item.package})
+        k: Union[DocsCache, None] = await self._cache.find_one({'_id': item.package})
         if k is None:
-            await self._cache.insert_one({'_id': item.package, 'data': {item.symbol_id: value}})
+            doc = DocsCache(
+                id=item.package,
+                data={item.symbol_id: value}
+            )
+            await doc.commit()
             return
-        k = k['data']
-        k[item.symbol_id] = value
-        await self._cache.update_one({'_id': item.package}, {'$set': {'data': k}})
+        k.data[item.symbol_id] = value
+        await k.commit()
 
     async def get(self, item: DocItem) -> Optional[str]:
         """Return the Markdown content of the symbol `item` if it exists."""
@@ -43,9 +46,9 @@ class DocCache:
             result = key.get(item.symbol_id)
             if result is not None:
                 return result
-        k: Union[Dict, None] = await self._cache.find_one({'_id': item.package})
+        k: Union[DocsCache, None] = await self._cache.find_one({'_id': item.package})
         if k is not None:
-            res = k['data'].get(item.symbol_id)
+            res = k.data.get(item.symbol_id)
             if res is not None:
                 v = res
                 self._add_to_local_cache(item, v)
@@ -54,10 +57,10 @@ class DocCache:
 
     async def delete(self, package: str) -> bool:
         """Remove all values for `package`; return True if at least one key was deleted, False otherwise."""
-        v = await self._cache.find_one({'_id': package})
+        v: DocsCache = await self._cache.find_one({'_id': package})
         if v is None:
             return None
-        await self._cache.delete_one({'_id': package})
+        await v.delete()
         try:
             self.cache.pop(package)
         except KeyError:

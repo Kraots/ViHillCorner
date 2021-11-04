@@ -10,6 +10,7 @@ from .snippets import Snippet
 from .marry import Marriage
 from .bdsm import BDSM
 from .birthday import Birthday
+from .docs import Doc, DocsCache
 
 from .tickets import Ticket
 from .starboard import Starboard, StarboardStats, StarboardStatus
@@ -20,6 +21,8 @@ __all__ = (
     'Marriage',
     'BDSM',
     'Birthday',
+    'Doc',
+    'DocsCache',
     'Ticket',
     'Starboard',
     'StarboardStats',

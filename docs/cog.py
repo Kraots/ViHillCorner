@@ -17,6 +17,7 @@ from .lock import SharedEvent
 from .messages import send_denial
 from cogs.dev import QuitButton
 from utils.paginator import ToDoMenu
+from utils.databases import Doc
 from utils import fuzzy
 from .utils import create_task, Scheduler
 from . import PRIORITY_PACKAGES, batch_parser, doc_cache
@@ -80,7 +81,6 @@ class Docs(commands.Cog):
         self.base_urls = {}
         self.bot = bot
         self.prefix = '!'
-        self.db = self.bot.db3['Docs']
         self.doc_symbols: Dict[str, DocItem] = {}  # Maps symbol names to objects containing their metadata.
         self.item_fetcher = batch_parser.BatchParser()
 
@@ -232,8 +232,8 @@ class Docs(commands.Cog):
 
         coros = [
             self.update_or_reschedule_inventory(
-                item['package'], item['base_url'], item['inventory_url']
-            ) for item in await self.db.find().to_list(100000)
+                item.package, item.base_url, item.inventory_url
+            ) for item in await Doc.find().to_list(100000)
         ]
         asyncio.gather(*coros)
 
@@ -368,16 +368,16 @@ class Docs(commands.Cog):
 
         base_url = self.base_url_from_inventory_url(inventory_url)
 
-        doc = await self.db.find_one({'package': package_name})
+        doc: Doc = await Doc.find_one({'package': package_name})
         if doc is not None:
             return await inter.followup.send(f'A doc with the name `{package_name}` already exists in the database.', ephemeral=True)
-        body = {
-            'package': package_name,
-            'base_url': base_url,
-            'inventory_url': inventory_url
-        }
+        doc = Doc(
+            package=package_name,
+            base_url=base_url,
+            inventory_url=inventory_url
+        )
+        await doc.commit()
 
-        await self.db.insert_one(body)
         self.update_single(package_name, base_url, inventory_dict)
         await inter.followup.send(f"Added the package `{package_name}` to the database and updated the inventories.", ephemeral=True)
 
@@ -398,11 +398,11 @@ class Docs(commands.Cog):
         await inter.response.defer(ephemeral=True)
         package_name = await PackageName.convert(inter, package_name)
 
-        doc = await self.db.find_one({'package': package_name})
+        doc: Doc = await Doc.find_one({'package': package_name})
         if doc is None:
             return await inter.followup.send(f'Doc `{package_name}` doesn\'t exist in the database.', ephemeral=True)
 
-        await self.db.delete_one({'package': package_name})
+        await doc.delete()
         await doc_cache.delete(package_name)
         ALL_PACKAGES.pop(ALL_PACKAGES.index(package_name))
         await self.refresh_inventories()
