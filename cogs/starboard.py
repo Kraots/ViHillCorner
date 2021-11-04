@@ -158,7 +158,7 @@ class StarBoard(commands.Cog):
         else:
             star: Starboard = await Starboard.find_one({'_id': payload.message_id})
             ch = guild.get_channel(STAR_CHANNEL)
-            msg = await self.get_message(ch, star['star_message_id'])
+            msg = await self.get_message(ch, star.star_message_id)
             star.stars_count -= 1
             await self.increment_user(payload.user_id, {'stars_given': -1})
             await self.increment_user(message.author.id, {'stars_received': -1})
