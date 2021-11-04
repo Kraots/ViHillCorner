@@ -18,13 +18,14 @@ from disnake.ui import View, Button
 from disnake.ext import commands
 from disnake.ext.commands import Greedy, Param
 
-from utils.colors import Colours
 from utils import fuzzy, time, embedlinks, topicslist, menus
+from utils.colors import Colours
 from utils.context import Context
 from utils.calculator import Calculator
 from utils.helpers import package_version, profile
 from utils.paginator import SimplePages, RoboPages, CustomMenu
 from utils.CommandButtonRoles import ButtonRoleView, ButtonRoleViewOwner
+from utils.databases import Ticket
 
 from main import ViHillCorner
 
@@ -150,6 +151,24 @@ class SphinxObjectFileReader:
                 pos = buf.find(b'\n')
 
 
+class TicketView(View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @disnake.ui.button(label='Close', emoji='<:trash:905793498333188136>', custom_id='vhc:tickets')
+    async def close(self, button: Button, inter: disnake.MessageInteraction):
+        await inter.response.defer()
+        ticket: Ticket = await Ticket.find_one({'_id': inter.channel.id})
+        em = disnake.Embed(
+            title='Ticket closed',
+            description=f'You closed ticket `#{ticket.ticket_id}` '
+                        f'that you created on: {disnake.utils.format_dt(ticket.created_at, "F")}'
+        )
+        await inter.author.send(embed=em)
+        await inter.channel.delete(reason=f'Ticket Closed by {inter.author} (ID: {inter.author.id})')
+        await ticket.delete()
+
+
 class Misc(commands.Cog):
     """Miscellaneous commands."""
     def __init__(self, bot: ViHillCorner):
@@ -163,6 +182,9 @@ class Misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        async for ticket in Ticket.find():
+            self.bot.add_view(TicketView(), message_id=ticket.message_id)
+
         for doc in await self.bot.db3['DocsCache'].find().to_list(100):
             if doc['_id'] == 'disnake':
                 for name in doc['data']:
@@ -815,6 +837,53 @@ class Misc(commands.Cog):
         uptime = disnake.Embed(description=f"Bot has been online for: `{time.human_timedelta(dt=self.bot.uptime, suffix=False)}`", color=Colours.light_pink)
         uptime.set_footer(text=f'Bot made by: {self.bot._owner}', icon_url=self.bot.user.display_avatar)
         await ctx.send(embed=uptime)
+
+    @commands.command(name='ticket')
+    @commands.cooldown(1, 60.0, commands.BucketType.member)
+    async def ticket_cmd(self, ctx: Context):
+        """Create a ticket."""
+
+        total_tickets = await Ticket.find({'user_id': ctx.author.id}).sort('ticket_id', -1).to_list(5)
+        if len(total_tickets) == 5:
+            return await ctx.reply('You already have a max of `5` tickets created!')
+        ticket_id = '1' if not total_tickets else str(int(total_tickets[0].ticket_id) + 1)
+        ch_name = 'Ticket #' + ticket_id
+
+        g = self.bot.get_guild(750160850077089853)
+        categ = g.get_channel(905805132325863435)
+        channel = await g.create_text_channel(
+            ch_name,
+            category=categ,
+            reason=f'Ticket Creation by {ctx.author} (ID: {ctx.author.id})'
+        )
+        em = disnake.Embed(
+            title=ch_name,
+            description='Hello, thanks for creating a ticket. '
+                        'Please send write out what made you feel like you needed to create a ticket '
+                        'and be patient until one of our staff members give you a proper answer.'
+        )
+        m = await channel.send(
+            ctx.author.mention,
+            embed=em,
+            view=TicketView()
+        )
+
+        ticket = Ticket(
+            channel_id=channel.id,
+            message_id=m.id,
+            user_id=ctx.author.id,
+            ticket_id=ticket_id,
+            created_at=datetime.datetime.utcnow()
+        )
+        await ticket.commit()
+
+        await m.pin()
+        await channel.purge(limit=1)
+        await channel.set_permissions(ctx.author, read_messages=True)
+
+        v = View()
+        v.add_item(Button(label='Jump!', url=m.jump_url))
+        await ctx.reply('Ticket created!.', view=v)
 
     @suggest.error
     async def suggest_error(self, ctx: Context, error):
