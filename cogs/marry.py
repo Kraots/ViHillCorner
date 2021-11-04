@@ -80,7 +80,7 @@ class Marriages(commands.Cog):
                     await msg.delete()
 
                 elif view.response is False:
-                    await ctx.send(f"`{member.display_name}` does not want to marry with you. {ctx.author.mention} :pensive: :fist:")
+                    await ctx.send(f"`{member.display_name}` does not want to marry you. {ctx.author.mention} :pensive: :fist:")
                     await msg.delete()
 
     @commands.command()
