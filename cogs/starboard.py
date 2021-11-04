@@ -10,6 +10,7 @@ from utils.context import Context
 from utils.colors import Colours
 from utils.paginator import SimplePages
 from utils.formats import plural
+from utils.databases import Starboard, StarboardStats, StarboardStatus
 
 from main import ViHillCorner
 
@@ -17,16 +18,13 @@ STAR_CHANNEL = 902536749073432576
 STAR_EMOJI = '\N{WHITE MEDIUM STAR}'
 
 
-class Starboard(commands.Cog):
+class StarBoard(commands.Cog):
     """Commands related to the starboard."""
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.prefix = '!'
         self._message_cache: Dict[int, disnake.Message] = {}
-        self.db = self.bot.db4['Starboard']
-        self.db2 = self.bot.db4['StarboardStats']
-        self.db3 = self.bot.db4['StarboardStatus']
 
     async def cog_check(self, ctx: Context):
         return ctx.prefix == self.prefix
@@ -36,16 +34,16 @@ class Starboard(commands.Cog):
         return STAR_EMOJI
 
     async def increment_user(self, user_id: int, data: dict):
-        user = await self.db2.find_one({'_id': user_id})
+        user = await StarboardStats.find_one({'_id': user_id})
         if user is None:
-            await self.db2.insert_one({
-                '_id': user_id,
-                'messages_starred': 0,
-                'stars_received': 0,
-                'stars_given': 0
-            })
-
-        await self.db2.update_one({'_id': user_id}, {'$inc': data})
+            user: StarboardStats = StarboardStats(
+                id=user_id,
+                messages_starred=0,
+                stars_received=0,
+                stars_given=0
+            )
+            await user.commit()
+        await user.update(data)
 
     async def get_message(self, channel, message_id):
         try:
@@ -128,57 +126,54 @@ class Starboard(commands.Cog):
             return
 
         if action == 'star':
-            star = await self.db.find_one({'_id': payload.message_id})
+            star: Starboard = await Starboard.find_one({'_id': payload.message_id})
             if star is None:
                 star_channel = guild.get_channel(STAR_CHANNEL)
 
                 data = self.get_star_message(message, 1)
                 msg = await star_channel.send(data[0], embed=data[1], view=data[2])
-                await self.db.insert_one({
-                    '_id': payload.message_id,
-                    'author_id': message.author.id,
-                    'starrer_id': payload.user_id,
-                    'starrers': [payload.user_id],
-                    'channel_id': channel.id,
-                    'star_message_id': msg.id,
-                    'stars_count': 1
-                })
+                star = Starboard(
+                    id=payload.message_id,
+                    author_id=message.author.id,
+                    starrer_id=payload.user_id,
+                    starrers=[payload.user_id],
+                    channel_id=channel.id,
+                    star_message_id=msg.id,
+                    stars_count=1
+                )
                 await self.increment_user(payload.user_id, {'stars_given': 1})
                 await self.increment_user(message.author.id, {'stars_received': 1})
                 return
 
-            stars_count = star['stars_count'] + 1
-            starrers = star['starrers'] + [payload.user_id]
-            await self.db.update_one({'_id': star['_id']}, {'$inc': {'stars_count': 1}})
-            await self.db.update_one({'_id': star['_id']}, {'$set': {'starrers': starrers}})
-            data = self.get_star_message(message, stars_count)
+            star.stars_count += 1
+            star.starrers += [payload.user_id]
+            await star.commit()
+            data = self.get_star_message(message, star.stars_count)
             ch = guild.get_channel(STAR_CHANNEL)
-            msg = await self.get_message(ch, star['star_message_id'])
+            msg = await self.get_message(ch, star.star_message_id)
             await msg.edit(content=data[0])
             await self.increment_user(payload.user_id, {'stars_given': 1})
             await self.increment_user(message.author.id, {'stars_received': 1})
 
         else:
-            star = await self.db.find_one({'_id': payload.message_id})
+            star: Starboard = await Starboard.find_one({'_id': payload.message_id})
             ch = guild.get_channel(STAR_CHANNEL)
             msg = await self.get_message(ch, star['star_message_id'])
-            stars_count = star['stars_count'] - 1
+            star.stars_count -= 1
             await self.increment_user(payload.user_id, {'stars_given': -1})
             await self.increment_user(message.author.id, {'stars_received': -1})
-            if stars_count == 0:
-                await self.db.delete_one({'_id': star['_id']})
+            if star.stars_count == 0:
+                await star.delete()
                 await msg.delete()
                 return
-            starrers = star['starrers']
-            starrers.pop(starrers.index(payload.user_id))
-            await self.db.update_one({'_id': star['_id']}, {'$inc': {'stars_count': -1}})
-            await self.db.update_one({'_id': star['_id']}, {'$set': {'starrers': starrers}})
-            data = self.get_star_message(message, stars_count)
+            star.starrers.pop(star.starrers.index(payload.user_id))
+            await star.commit()
+            data = self.get_star_message(message, star.stars_count)
             await msg.edit(content=data[0])
 
     async def is_locked(self) -> bool:
-        data = await self.db3.find_one({'_id': 1})
-        return data['locked']
+        data: StarboardStatus = await StarboardStatus.find_one({'_id': 1})
+        return data.locked
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: RawReactionActionEvent):
@@ -193,11 +188,11 @@ class Starboard(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_message_delete(self, payload: RawMessageDeleteEvent):
         if not await self.is_locked():
-            data = await self.db.find_one({'_id': payload.message_id})
-            if data is not None:
-                await self.db.delete_one({'_id': payload.message_id})
+            data: Starboard = await Starboard.find_one({'_id': payload.message_id})
+            if data:
                 ch = self.bot.get_channel(STAR_CHANNEL)
-                message = await ch.fetch_message(data['star_message_id'])
+                message = await ch.fetch_message(data.star_message_id)
+                await data.delete()
                 await message.delete()
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
@@ -215,21 +210,21 @@ class Starboard(commands.Cog):
         except ValueError:
             return await ctx.send(f'**{message}** is not a valid message ID. Use Developer Mode to get the Copy ID option.')
 
-        data = await self.db.find_one({'_id': message})
+        data: Starboard = await Starboard.find_one({'_id': message})
         if data is None:
             return await ctx.send('Message not found.')
 
-        if data['channel_id'] not in (ch.id for ch in ctx.guild.text_channels):
+        if data.channel_id not in (ch.id for ch in ctx.guild.text_channels):
             return await ctx.send('The message\'s channel has been deleted.')
 
-        channel = ctx.guild.get_channel_or_thread(data['channel_id'])
+        channel = ctx.guild.get_channel_or_thread(data.channel_id)
         try:
-            msg = await self.get_message(channel, data['_id'])
+            msg = await self.get_message(channel, data.id)
         except disnake.NotFound:
-            await self.db.delete_one({'_id': data['_id']})
+            await data.delete()
             return await ctx.send('The message has been deleted.')
 
-        content, embed, view = self.get_star_message(msg, data['stars_count'])
+        content, embed, view = self.get_star_message(msg, data.stars_count)
         await ctx.send(content, embed=embed, view=view)
 
     @star.command(name='who')
@@ -244,11 +239,11 @@ class Starboard(commands.Cog):
         except ValueError:
             return await ctx.send(f'**{message}** is not a valid message ID. Use Developer Mode to get the Copy ID option.')
 
-        data = await self.db.find_one({'_id': message})
+        data: Starboard = await Starboard.find_one({'_id': message})
         if data is None:
             return await ctx.send('No one starred this message or this is an invalid message ID.')
 
-        starrers = [starrer for starrer in data['starrers']]
+        starrers = [starrer for starrer in data.starrers]
         members = [str(ctx.guild.get_member(mem)) for mem in starrers]
 
         p = SimplePages(entries=members, per_page=10, ctx=ctx)
@@ -266,31 +261,31 @@ class Starboard(commands.Cog):
         em.timestamp = (ctx.guild.get_channel(STAR_CHANNEL)).created_at
         em.set_footer(text='Adding stars since')
 
-        total_messages = await self.db.count_documents({})
+        total_messages = await Starboard.count_documents({})
 
-        all_starred_posts = await self.db.find().sort('stars_count', -1).to_list(100000000000)
+        all_starred_posts: list[Starboard] = await Starboard.find().sort('stars_count', -1).to_list(100000000000)
         starred_posts = []
         total_stars = 0
         for star in all_starred_posts:
-            total_stars += star['stars_count']
+            total_stars += star.stars_count
             if len(starred_posts) != 3:
-                starred_posts.append(f"{top_3_emojis[len(starred_posts) + 1]}: {star['_id']} ({plural(star['stars_count']):star})")
+                starred_posts.append(f"{top_3_emojis[len(starred_posts) + 1]}: {star.id} ({plural(star.stars_count):star})")
 
         em.description = f'{plural(total_messages):message} starred with a total of {total_stars} stars.'
         em.color = Colours.yellow
 
-        star_receivers = await self.db2.find().sort('stars_received', -1).to_list(3)
-        star_givers = await self.db2.find().sort('stars_given', -1).to_list(3)
+        star_receivers: list[StarboardStats] = await StarboardStats.find().sort('stars_received', -1).to_list(3)
+        star_givers: list[StarboardStats] = await StarboardStats.find().sort('stars_given', -1).to_list(3)
 
         total_star_receivers = []
         for rec in star_receivers:
-            usr = ctx.guild.get_member(rec['_id'])
-            total_star_receivers.append(f"{top_3_emojis[len(total_star_receivers) + 1]}: {usr.mention} ({plural(rec['stars_received']):star})")
+            usr = ctx.guild.get_member(rec.id)
+            total_star_receivers.append(f"{top_3_emojis[len(total_star_receivers) + 1]}: {usr.mention} ({plural(rec.stars_received):star})")
 
         total_star_givers = []
         for giv in star_givers:
-            usr = ctx.guild.get_member(giv['_id'])
-            total_star_givers.append(f"{top_3_emojis[len(total_star_givers) + 1]}: {usr.mention} ({plural(giv['stars_given']):star})")
+            usr = ctx.guild.get_member(giv.id)
+            total_star_givers.append(f"{top_3_emojis[len(total_star_givers) + 1]}: {usr.mention} ({plural(giv.stars_given):star})")
 
         em.add_field(name='Top Starred Posts', value='\n'.join(starred_posts), inline=False)
         em.add_field(name='Top Star Receivers', value='\n'.join(total_star_receivers), inline=False)
@@ -307,17 +302,17 @@ class Starboard(commands.Cog):
         stars_given = 0
         top_starred_posts = 'None!'
 
-        data = await self.db2.find_one({'_id': member.id})
-        if data is not None:
-            messages_starred = data['messages_starred']
-            stars_received = data['stars_received']
-            stars_given = data['stars_given']
+        data: StarboardStats = await StarboardStats.find_one({'_id': member.id})
+        if data:
+            messages_starred = data.messages_starred
+            stars_received = data.stars_received
+            stars_given = data.stars_given
 
-            starred_posts = await self.db.find({'author_id': member.id}).sort('stars_count', -1).to_list(3)
+            starred_posts: list[Starboard] = await Starboard.find({'author_id': member.id}).sort('stars_count', -1).to_list(3)
             if len(starred_posts) != 0:
                 top_starred_posts = []
                 for post in starred_posts:
-                    top_starred_posts.append(f"{top_3_emojis[len(top_starred_posts) + 1]}: {post['_id']} ({plural(post['stars_count']):star})")
+                    top_starred_posts.append(f"{top_3_emojis[len(top_starred_posts) + 1]}: {post.id} ({plural(post.stars_count):star})")
                 top_starred_posts = '\n'.join(top_starred_posts)
 
         em.add_field(name='Messages Starred', value=messages_starred)
@@ -346,10 +341,10 @@ class Starboard(commands.Cog):
         if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
             return
 
-        data = await self.db.find().to_list(100000000000)
+        data = await Starboard.find().to_list(100000000000)
         data = choice(data)
 
-        await self.star_show(ctx, str(data['_id']))
+        await self.star_show(ctx, str(data.id))
 
     @star.command(name='lock')
     @commands.is_owner()
@@ -360,7 +355,9 @@ class Starboard(commands.Cog):
         This means that all listeners will stop, no stars will be added nor removed anymore until unlocked.
         """
 
-        await self.db3.update_one({'_id': 1}, {'$set': {'locked': True}})
+        status: StarboardStatus = await StarboardStatus.find_one({'_id': 1})
+        status.locked = True
+        await status.commit()
         await ctx.send(f'{ctx.disagree} Starboard is now locked.')
 
     @star.command(name='unlock')
@@ -372,9 +369,11 @@ class Starboard(commands.Cog):
         This means that all listeners will be activate again.
         """
 
-        await self.db3.update_one({'_id': 1}, {'$set': {'locked': False}})
+        status: StarboardStatus = await StarboardStatus.find_one({'_id': 1})
+        status.locked = False
+        await status.commit()
         await ctx.send(f'{ctx.agree} Starboard is now unlocked.')
 
 
 def setup(bot):
-    bot.add_cog(Starboard(bot))
+    bot.add_cog(StarBoard(bot))

@@ -34,7 +34,7 @@ class CustomRoles(commands.Cog):
 
     @property
     def display_emoji(self) -> str:
-        return '⭐'
+        return '💎'
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
     @commands.has_any_role(*all_roles)

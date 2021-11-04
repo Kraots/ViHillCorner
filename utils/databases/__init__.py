@@ -6,7 +6,11 @@ from .db import (  # noqa
 )
 
 from .tickets import Ticket
+from .starboard import Starboard, StarboardStats, StarboardStatus
 
 __all__ = (
     'Ticket',
+    'Starboard',
+    'StarboardStats',
+    'StarboardStatus',
 )
