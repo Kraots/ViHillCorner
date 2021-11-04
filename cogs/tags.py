@@ -13,6 +13,7 @@ from utils import fuzzy
 from utils.colors import Colours
 from utils.paginator import SimplePages
 from utils.helpers import clean_inter_content, safe_send_prepare
+from utils.databases import Tag
 
 from .actions import all_roles
 
@@ -22,10 +23,10 @@ filter_invite = re.compile(r"(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/
 
 
 class TagPageEntry:
-    def __init__(self, entry):
+    def __init__(self, entry: Tag):
 
-        self.name = entry['name']
-        self.id = entry['_id']
+        self.name = entry.name
+        self.id = entry.id
 
     def __str__(self):
         return f'{self.name}\u2800•\u2800(`ID:` **{self.id}**)'
@@ -91,7 +92,7 @@ class InteractiveTagCreation(disnake.ui.View):
         self,
         bot: ViHillCorner,
         original_interaction: ApplicationCommandInteraction,
-        edit: dict = None
+        edit: Tag = None
     ):
         super().__init__(timeout=300.0)
         self.bot = bot
@@ -100,10 +101,10 @@ class InteractiveTagCreation(disnake.ui.View):
         self._edit = edit
         self.aborted = False
 
-        if edit is not None:
+        if edit:
             self.remove_item(self.set_name)
-            self.name = edit['name']
-            self.content = edit['tag_content']
+            self.name = edit.name
+            self.content = edit.content
         else:
             self.name = self.content = None
 
@@ -133,7 +134,7 @@ class InteractiveTagCreation(disnake.ui.View):
         for child in self.children:
             if child.label == 'Confirm':
                 if self._edit:
-                    if self._edit['tag_content'] != self.content:
+                    if self._edit.tag_content != self.content:
                         child.disabled = False
                         continue
                 elif self.name is not None and self.content is not None:
@@ -172,10 +173,10 @@ class InteractiveTagCreation(disnake.ui.View):
         except commands.BadArgument as e:
             content = f'{e}. Press "Name" to retry.'
         else:
-            data = await self.bot.db1['Tags'].find_one({'name': name})
-            if data is None:
-                data = await self.bot.db1['Tags'].find_one({'aliases': name})
-                if data is None:
+            tag = await Tag.find_one({'name': name})
+            if tag is None:
+                tag = await Tag.find_one({'aliases': name})
+                if tag is None:
                     self.name = name
                     self.remove_item(button)
                 else:
@@ -219,7 +220,7 @@ class InteractiveTagCreation(disnake.ui.View):
 
     @disnake.ui.button(label='Confirm', style=disnake.ButtonStyle.green)
     async def confirm(self, button: disnake.Button, inter: disnake.MessageInteraction):
-        if self._edit and self._edit['tag_content'] == self.content:
+        if self._edit and self._edit.content == self.content:
             return await inter.response.edit_message(
                 content='Content still the same...\nHint: edit it by pressing "Content"'
             )
@@ -244,14 +245,13 @@ class Tags(commands.Cog):
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db = bot.db1['Tags']
 
     @commands.Cog.listener()
     async def on_ready(self):
-        tags = await self.db.find().to_list(1000000)
+        tags: List[Tag] = await Tag.find().to_list(1000000)
         for tag in tags:
-            self.bot.tags.append(tag['name'])
-            for alias in tag['aliases']:
+            self.bot.tags.append(tag.name)
+            for alias in tag.aliases:
                 self.bot.tag_aliases.append(alias)
 
     @property
@@ -259,7 +259,7 @@ class Tags(commands.Cog):
         return '🏷️'
 
     @commands.slash_command(name='tag')
-    async def base_tag(self, inter):
+    async def base_tag(*_):
         """Base tag which holds the slash subcommands for it."""
         pass
 
@@ -282,23 +282,24 @@ class Tags(commands.Cog):
     ):
         """Search for a tag and show it."""
 
-        data = await self.db.find_one({'name': tag_name.lower()})
-        if data is None:
-            data = await self.db.find_one({'aliases': tag_name.lower()})
-            if data is None:
+        tag: Tag = await Tag.find_one({'name': tag_name.lower()})
+        if tag is None:
+            tag = await Tag.find_one({'aliases': tag_name.lower()})
+            if tag is None:
                 try:
-                    data = await self.db.find_one({'_id': int(tag_name)})
-                    if data is None:
+                    tag = await Tag.find_one({'_id': int(tag_name)})
+                    if tag is None:
                         return await inter.response.send_message("Tag not found.", ephemeral=True)
                 except ValueError:
                     return await inter.response.send_message("Tag not found.", ephemeral=True)
 
-        await self.db.update_one({'_id': data['_id']}, {'$inc': {'uses_count': 1}})
+        tag.uses_count += 1
+        await tag.commit()
         if type == 'raw':
-            first_step = disnake.utils.escape_markdown(data['tag_content'])
+            first_step = disnake.utils.escape_markdown(tag.content)
             kwargs = await safe_send_prepare(first_step.replace('<', '\\<'))
         else:
-            kwargs = dict(content=data['tag_content'])
+            kwargs = dict(content=tag.content)
 
         await inter.response.send_message(**kwargs)
 
@@ -310,7 +311,7 @@ class Tags(commands.Cog):
     ):
         """See the list of all the tags that the member owns."""
 
-        entries = await self.db.find({'owner_id': member.id}).to_list(100000)
+        entries = await Tag.find({'owner_id': member.id}).to_list(100000)
         try:
             p = TagPages(ctx=inter, entries=entries, per_page=7)
             await p.start()
@@ -321,7 +322,7 @@ class Tags(commands.Cog):
     async def tag_all(self, inter: ApplicationCommandInteraction):
         """See a list of all the existing tags."""
 
-        entries = await self.db.find().to_list(100000)
+        entries = await Tag.find().to_list(100000)
         p = TagPages(ctx=inter, entries=entries, per_page=7)
         await p.start()
 
@@ -329,16 +330,13 @@ class Tags(commands.Cog):
     async def tag_leaderboard(self, inter: ApplicationCommandInteraction):
         """See top 10 most used tags."""
 
-        results = await self.db.find().sort("uses_count", -1).to_list(10)
+        tags: List[Tag] = await Tag.find().sort("uses_count", -1).to_list(10)
         index = 0
         em = disnake.Embed(color=disnake.Color.blurple())
-        for result in results:
-            tag_name = result['name']
-            uses = result['uses_count']
-            get_owner = result['owner_id']
-            owner = self.bot.get_user(get_owner)
+        for tag in tags:
+            owner = self.bot.get_user(tag.owner_id)
             index += 1
-            em.add_field(name=f"`{index}`.\u2800{tag_name}", value=f"Uses: `{uses}`\n Owner: `{owner}`", inline=False)
+            em.add_field(name=f"`{index}`.\u2800{tag.name}", value=f"Uses: `{tag.uses_count}`\n Owner: `{owner}`", inline=False)
 
         await inter.response.send_message(embed=em)
 
@@ -353,44 +351,38 @@ class Tags(commands.Cog):
     ):
         """See some info about the tag."""
 
-        data = await self.db.find_one({'name': tag_name.lower()})
-        if data is None:
-            data = await self.db.find_one({'aliases': tag_name.lower()})
-        if data is None:
+        tag: Tag = await Tag.find_one({'name': tag_name.lower()})
+        if tag is None:
+            tag = await Tag.find_one({'aliases': tag_name.lower()})
+        if tag is None:
             try:
-                data = await self.db.find_one({'_id': int(tag_name)})
+                tag = await Tag.find_one({'_id': int(tag_name)})
             except ValueError:
                 return await inter.response.send_message("Tag not found.", ephemeral=True)
-        if data is None:
+        if tag is None:
             return await inter.response.send_message("Tag not found.", ephemeral=True)
 
-        sort_tags = await self.db.find().sort('uses_count', -1).to_list(100000)
+        sort_tags: list[Tag] = await Tag.find().sort('uses_count', -1).to_list(100000)
         rank = 0
         for i in sort_tags:
             rank += 1
-            if i['_id'] == data['_id']:
+            if i.id == tag.id:
                 break
 
-        tag_name = data['name']
-        owner_id = data["owner_id"]
-        tag_uses = data["uses_count"]
-        tag_created_at = data["created_at"]
-        the_tag_id = data["_id"]
-
-        tag_owner = self.bot.get_user(owner_id)
+        tag_owner = self.bot.get_user(tag.owner_id)
 
         em = disnake.Embed(color=Colours.blurple, title=tag_name)
         em.set_author(name=tag_owner, url=tag_owner.display_avatar, icon_url=tag_owner.display_avatar)
         em.add_field(name="Owner", value=tag_owner.mention)
-        em.add_field(name="Uses", value=tag_uses)
+        em.add_field(name="Uses", value=tag.uses_count)
         em.add_field(name="Rank", value=f"`#{rank}`")
-        em.add_field(name="Tag ID", value="`{}`".format(the_tag_id), inline=False)
-        em.set_footer(text="Tag created at • {}".format(tag_created_at))
+        em.add_field(name="Tag ID", value=f"`{tag.id}`", inline=False)
+        em.set_footer(text=f"Tag created at • {tag.created_at}")
 
         await inter.response.send_message(embed=em)
 
     @base_tag.sub_command_group(name='alias')
-    async def base_tag_alias(self, inter):
+    async def base_tag_alias(*_):
         """Base tag alias command for all the tag aliases subcommands."""
         pass
 
@@ -406,14 +398,14 @@ class Tags(commands.Cog):
         """See all the aliases the tag has."""
 
         try:
-            tag = int(tag_name)
-            data = await self.db.find_one({'_id': tag})
+            tag_ = int(tag_name)
+            tag: Tag = await Tag.find_one({'_id': tag_})
 
-            if data is None:
+            if tag is None:
                 return await inter.response.send_message("Tag not found.", ephemeral=True)
             try:
                 _list = []
-                _list_ = data['aliases']
+                _list_ = tag.aliases
                 for key in _list_:
                     _list.append(f"`{key}`")
             except KeyError:
@@ -422,7 +414,7 @@ class Tags(commands.Cog):
             if len(_list) <= 0:
                 return await inter.response.send_message("This tag has no aliases.", ephemeral=True)
 
-            name = data['name']
+            name = tag.name
             em = disnake.Embed(color=disnake.Color.blurple(), title=f"Here are all the aliases for the tag `{name}`")
             aliases = "\n• ".join(_list)
             if len(_list) == 1:
@@ -432,14 +424,14 @@ class Tags(commands.Cog):
             await inter.response.send_message(embed=em)
 
         except ValueError:
-            tag = tag_name.lower()
-            data = await self.db.find_one({'name': tag})
-            if data is None:
+            tag_ = tag_name.lower()
+            tag: Tag = await Tag.find_one({'name': tag_})
+            if tag is None:
                 return await inter.response.send_message("Tag not found.", ephemeral=True)
 
             try:
                 _list = []
-                _list_ = data['aliases']
+                _list_ = tag.aliases
                 for key in _list_:
                     _list.append(f"`{key}`")
             except KeyError:
@@ -448,7 +440,7 @@ class Tags(commands.Cog):
             if len(_list) <= 0:
                 return await inter.response.send_message("This tag has no aliases.", ephemeral=True)
 
-            em = disnake.Embed(color=disnake.Color.blurple(), title="Here are all the aliases for the tag `%s`" % (tag))
+            em = disnake.Embed(color=disnake.Color.blurple(), title=f"Here are all the aliases for the tag `{tag.name}`")
             aliases = "\n• ".join(_list)
             if len(_list) == 1:
                 em.description = f"• {aliases}"
@@ -478,10 +470,10 @@ class Tags(commands.Cog):
                 return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True)
 
         alias = alias.lower()
-        data = await self.db.find_one({'name': alias})
-        if data is None:
-            data = await self.db.find_one({'aliases': alias})
-            if data is not None:
+        tag: Tag = await Tag.find_one({'name': alias})
+        if tag is None:
+            tag = await Tag.find_one({'aliases': alias})
+            if tag is not None:
                 return await inter.response.send_message('There is an existing alias with this name already.', ephemeral=True)
         else:
             return await inter.response.send_message('There is an existing tag with this name already.', ephemeral=True)
@@ -492,33 +484,29 @@ class Tags(commands.Cog):
             return await inter.response.send_message(e, ephemeral=True)
 
         tag_name = tag_name.lower()
-        data = await self.db.find_one({'name': tag_name})
-        if data is None:
+        tag = await Tag.find_one({'name': tag_name})
+        if tag is None:
             try:
-                data = await self.db.find_one({'_id': int(tag_name)})
+                tag = await Tag.find_one({'_id': int(tag_name)})
             except ValueError:
                 return await inter.response.send_message("Tag not found.", ephemeral=True)
             else:
-                if data is None:
+                if tag is None:
                     return await inter.response.send_message("Tag not found.", ephemeral=True)
 
         else:
             if inter.author.id != self.bot._owner_id:
-                if data['owner_id'] != inter.author.id:
+                if tag.owner_id != inter.author.id:
                     return await inter.response.send_message("This tag is not owned by you.", ephemeral=True)
 
-            tag_aliases = data['aliases']
             if inter.author.id != self.bot._owner_id:
-                if len(data['aliases']) > 7:
+                if len(tag.aliases) > 7:
                     return await inter.response.send_message("This tag has reached the maximum amount of aliases (`7`)", ephemeral=True)
             else:
-                if len(tag_aliases) == 0:
-                    await self.db.update_one({'_id': data['_id']}, {'$set': {'aliases': [alias]}})
-                else:
-                    tag_aliases.append(alias)
-                    await self.db.update_one({'_id': data['_id']}, {'$set': {'aliases': tag_aliases}})
+                tag.aliases += [alias]
+                await tag.commit()
                 self.bot.tag_aliases.append(alias)
-                await inter.response.send_message(f"Successfully added the alias `{alias}` for tag **{data['name']}**")
+                await inter.response.send_message(f"Successfully added the alias `{alias}` for tag **{tag.name}**")
 
     @base_tag_alias.sub_command(name='delete')
     async def tag_alias_delete(
@@ -541,12 +529,11 @@ class Tags(commands.Cog):
                 return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True)
 
         alias = alias.lower()
-        result = await self.db.find_one({'aliases': alias})
-        if result is None:
+        tag: Tag = await Tag.find_one({'aliases': alias})
+        if tag is None:
             return await inter.response.send_message("Alias not found.", ephemeral=True)
-        aliases = result['aliases']
-        tag_name = result['name']
-        owner_id = result['owner_id']
+        tag_name = tag.name
+        owner_id = tag.owner_id
         try:
             if inter.author.id != self.bot._owner_id:
                 if inter.author.id != owner_id:
@@ -559,11 +546,8 @@ class Tags(commands.Cog):
             )
             await view.wait()
             if view.response is True:
-                new_aliases = []
-                for _alias in aliases:
-                    if not _alias == alias.lower():
-                        new_aliases.append(_alias)
-                await self.db.update_one({'name': tag_name}, {'$set': {'aliases': new_aliases}})
+                tag.aliases.pop(tag.aliases.index(alias))
+                await tag.commit()
                 e = f"Successfully removed the alias `{alias}` from tag **{tag_name}**!"
                 self.bot.tag_aliases.pop(self.bot.tag_aliases.index(alias))
                 return await inter.edit_original_message(content=e, view=view)
@@ -600,21 +584,19 @@ class Tags(commands.Cog):
             await view.message.edit(view=None)
 
         get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-        get_sorted = await self.db.find().sort("_id", -1).to_list(1)
-        for x in get_sorted:
-            last_id = x['_id']
+        _sorted = await Tag.find().sort('_id', -1).to_list(1)
+        last_id = _sorted[0].id
 
-        post = {
-            "_id": last_id + 1,
-            "tag_content": view.content,
-            "owner_id": inter.author.id,
-            'name': view.name,
-            "created_at": get_time,
-            "uses_count": 0,
-            "aliases": []
-        }
-
-        await self.db.insert_one(post)
+        tag = Tag(
+            id=last_id + 1,
+            content=view.content,
+            owner_id=inter.author.id,
+            name=view.name,
+            created_at=get_time,
+            uses_count=0,
+            aliases=[]
+        )
+        await tag.commit()
         self.bot.tags.append(view.name)
         await inter.followup.send(f'Tag `{view.name}` successfully created.')
 
@@ -639,21 +621,21 @@ class Tags(commands.Cog):
                 return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True)
 
         tag_name = tag_name.lower()
-        data = await self.db.find_one({'name': tag_name})
-        if data is None:
+        tag: Tag = await Tag.find_one({'name': tag_name})
+        if tag is None:
             try:
-                data = await self.db.find_one({'_id': int(tag_name)})
+                tag = await Tag.find_one({'_id': int(tag_name)})
             except ValueError:
                 return await inter.response.send_message("Tag not found.", ephemeral=True)
             else:
-                if data is None:
+                if tag is None:
                     return await inter.response.send_message("Tag not found.", ephemeral=True)
 
         if inter.author.id != self.bot._owner_id:
-            if inter.author.id != data['owner_id']:
+            if inter.author.id != tag.owner_id:
                 return await inter.response.send_message("This tag is not owned by you.", ephemeral=True)
 
-        view = InteractiveTagCreation(self.bot, inter, data)
+        view = InteractiveTagCreation(self.bot, inter, tag)
         await inter.response.send_message(embed=view.prepare_embed(), view=view)
         view.message = await inter.original_message()
 
@@ -664,7 +646,8 @@ class Tags(commands.Cog):
                 return
             await view.message.edit(view=None)
 
-        await self.db.update_one({'_id': data['_id']}, {'$set': {'tag_content': view.content}})
+        tag.content = view.content
+        await tag.commit()
         await inter.followup.send(f'Tag `{view.name}` successfully updated.')
 
     @base_tag.sub_command(name='delete')
@@ -688,40 +671,40 @@ class Tags(commands.Cog):
                 return await inter.response.send_message('You must be at least `level 15+` in order to use this command!', ephemeral=True)
 
         tag_name = tag_name.lower()
-        data = await self.db.find_one({'name': tag_name})
-        if data is None:
+        tag: Tag = await Tag.find_one({'name': tag_name})
+        if tag is None:
             try:
-                data = await self.db.find_one({'_id': int(tag_name)})
+                tag = await Tag.find_one({'_id': int(tag_name)})
             except ValueError:
                 return await inter.response.send_message("Tag not found.", ephemeral=True)
             else:
-                if data is None:
+                if tag is None:
                     return await inter.response.send_message("Tag not found.", ephemeral=True)
 
         if inter.author.id != self.bot._owner_id:
-            if inter.author.id != data['owner_id']:
+            if inter.author.id != tag.owner_id:
                 return await inter.response.send_message("This tag is not owned by you.", ephemeral=True)
 
         view = self.bot.confirm_view(inter, "Did not react in time.")
-        await inter.response.send_message("Are you sure you wish to delete the tag **%s**?" % (data['name']), view=view)
+        await inter.response.send_message(f"Are you sure you wish to delete the tag **{tag.name}**?", view=view)
         await view.wait()
         if view.response is True:
-            await self.db.delete_one({'_id': data['_id']})
-            e = "Successfully deleted the tag **%s**." % (data['name'])
-            self.bot.tags.pop(self.bot.tags.index(data['name']))
-            for alias in data['aliases']:
+            await tag.delete()
+            e = f"Successfully deleted the tag **{tag.name}**."
+            self.bot.tags.pop(self.bot.tags.index(tag.name))
+            for alias in tag.aliases:
                 self.bot.tag_aliases.pop(self.bot.tag_aliases.index(alias))
             return await inter.edit_original_message(content=e, view=view)
 
         elif view.response is False:
-            e = "Operation of deleting the tag  **%s** has been cancelled." % (data['name'])
+            e = f"Operation of deleting the tag  **{tag.name}** has been cancelled."
             return await inter.edit_original_message(content=e, view=view)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
-        if member.id == self.bot._owner_id:
-            return
-        await self.db.delete_many({"owner_id": member.id})
+        if member.id != self.bot._owner_id:
+            async for tag in Tag.find({'owner_id': member.id}):
+                await tag.delete()
 
 
 def setup(bot):
