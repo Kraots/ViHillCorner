@@ -849,7 +849,7 @@ class Misc(commands.Cog):
         if len(total_tickets) == 5:
             return await ctx.reply('You already have a max of `5` tickets created!')
         ticket_id = '1' if not total_tickets else str(int(total_tickets[0].ticket_id) + 1)
-        ch_name = 'Ticket #' + ticket_id
+        ch_name = f'{ctx.author.name}-ticket #' + ticket_id
 
         g = self.bot.get_guild(750160850077089853)
         categ = g.get_channel(905805132325863435)
