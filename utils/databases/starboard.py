@@ -26,7 +26,7 @@ class StarboardStats(Document):
     id = fields.IntField(attribute='_id', required=True)
     messages_starred = fields.IntField(required=True)
     stars_received = fields.IntField(required=True)
-    stars_given = fields.StringField(required=True)
+    stars_given = fields.IntField(required=True)
 
     class Meta:
         collection_name = 'StarboardStats'
