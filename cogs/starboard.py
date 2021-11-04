@@ -43,7 +43,8 @@ class StarBoard(commands.Cog):
                 stars_given=0
             )
             await user.commit()
-        await user.update(data)
+        user.update(data)
+        await user.commit()
 
     async def get_message(self, channel, message_id):
         try:
