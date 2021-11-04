@@ -859,7 +859,7 @@ class Misc(commands.Cog):
             reason=f'Ticket Creation by {ctx.author} (ID: {ctx.author.id})'
         )
         em = disnake.Embed(
-            title=ch_name,
+            title=f'Ticket #{ticket_id}',
             description='Hello, thanks for creating a ticket. '
                         'Please send write out what made you feel like you needed to create a ticket '
                         'and be patient until one of our staff members give you a proper answer.'
