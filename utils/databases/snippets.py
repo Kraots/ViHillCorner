@@ -16,4 +16,4 @@ class Snippet(Document):
     created_at = fields.StrField(required=True)
 
     class Meta:
-        collection_name = 'Tags'
+        collection_name = 'Snippets'
