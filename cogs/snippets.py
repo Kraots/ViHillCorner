@@ -7,6 +7,7 @@ from disnake.ext import commands
 from utils.colors import Colours
 from utils.context import Context
 from utils.paginator import SimplePages
+from utils.databases import Snippet
 
 from main import ViHillCorner
 
@@ -18,10 +19,10 @@ nono_names = (
 
 
 class SnippetPageEntry:
-    def __init__(self, entry):
+    def __init__(self, entry: Snippet):
 
-        self.name = entry['_id']
-        self.id = entry['owner_id']
+        self.name = entry.name
+        self.id = entry.owner_id
 
     def __str__(self):
         return f'{self.name}\u2800•\u2800(`Owner:` <@!{self.id}>)'
@@ -38,7 +39,6 @@ class Snippets(commands.Cog):
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db = bot.db1['Snippets']
         self.prefix = "!"
 
     async def cog_check(self, ctx: Context):
@@ -55,7 +55,7 @@ class Snippets(commands.Cog):
         To use a snippet you must type `;snippet_name`
         """
 
-        entries = await self.db.find().to_list(100000)
+        entries = await Snippet.find().to_list(100000)
         p = SnippetPages(ctx=ctx, entries=entries, per_page=7, color=Colours.reds)
         await p.start()
 
@@ -64,7 +64,7 @@ class Snippets(commands.Cog):
         """Search for snippet matches based on the query that you've given."""
 
         query = str(query).lower()
-        entries = await self.db.find({'_id': {'$regex': query, '$options': 'i'}}).to_list(100000)
+        entries = await Snippet.find({'_id': {'$regex': query, '$options': 'i'}}).to_list(100000)
         try:
             p = SnippetPages(ctx=ctx, entries=entries, per_page=7, color=Colours.reds)
             await p.start()
@@ -75,16 +75,17 @@ class Snippets(commands.Cog):
     async def snippet_leaderboard(self, ctx: Context):
         """See top **10** most used snippets."""
 
-        results = await self.db.find().sort("uses_count", -1).to_list(10)
+        snippets: list[Snippet] = await Snippet.find().sort("uses_count", -1).to_list(10)
         index = 0
         em = disnake.Embed(color=Colours.reds)
-        for result in results:
-            snippet_name = result['_id']
-            uses = result['uses_count']
-            get_owner = result['owner_id']
-            owner = self.bot.get_user(get_owner)
+        for snippet in snippets:
+            owner = self.bot.get_user(snippet.owner_id)
             index += 1
-            em.add_field(name=f"`{index}`.\u2800{snippet_name}", value=f"Uses: `{uses}`\n Owner: `{owner}`", inline=False)
+            em.add_field(
+                name=f"`{index}`.\u2800{snippet.name}",
+                value=f"Uses: `{snippet.uses_count}`\n Owner: `{owner}`",
+                inline=False
+            )
 
         await ctx.send(embed=em)
 
@@ -93,7 +94,7 @@ class Snippets(commands.Cog):
         """Get a list with all the snippets that the member has."""
 
         member = member or ctx.author
-        entries = await self.db.find({'owner_id': member.id}).to_list(100000)
+        entries: list[Snippet] = await Snippet.find({'owner_id': member.id}).to_list(100000)
         try:
             p = SnippetPages(ctx=ctx, entries=entries, per_page=7, color=Colours.reds)
             await p.start()
@@ -107,31 +108,26 @@ class Snippets(commands.Cog):
         if snippet_name is None:
             return await ctx.reply("**!snippet info <snippet_name>**")
 
-        data = await self.db.find_one({'_id': snippet_name.lower()})
+        snippet: Snippet = await Snippet.find_one({'_id': snippet_name.lower()})
 
-        if data is None:
+        if snippet is None:
             return await ctx.send("Snippet **%s** does not exist! %s" % (snippet_name, ctx.author.mention))
 
-        sortSnippets = await self.db.find().sort('uses_count', -1).to_list(100000)
+        _sorted: list[Snippet] = await Snippet.find().sort('uses_count', -1).to_list(100000)
         rank = 0
-        for e in sortSnippets:
+        for e in _sorted:
             rank += 1
-            if e['_id'] == data['_id']:
+            if e.name == snippet.name:
                 break
 
-        snippet_name = data['_id']
-        snippet_owner_id = data['owner_id']
-        snippet_uses = data['uses_count']
-        snippet_created_at = data['created_at']
-
-        snippet_owner = self.bot.get_user(snippet_owner_id)
+        snippet_owner = self.bot.get_user(snippet.owner_id)
 
         em = disnake.Embed(color=Colours.reds, title=snippet_name)
         em.set_author(name=snippet_owner, url=snippet_owner.display_avatar, icon_url=snippet_owner.display_avatar)
         em.add_field(name="Owner", value=snippet_owner.mention)
-        em.add_field(name="Uses", value=snippet_uses)
+        em.add_field(name="Uses", value=snippet.uses_count)
         em.add_field(name="Rank", value="`#{}`".format(rank))
-        em.set_footer(text="Snippet created at • {}".format(snippet_created_at))
+        em.set_footer(text="Snippet created at • {}".format(snippet.created_at))
 
         await ctx.send(embed=em)
 
@@ -161,8 +157,8 @@ class Snippets(commands.Cog):
             except asyncio.TimeoutError:
                 return await ctx.reply("Ran out of time")
 
-        data = await self.db.find_one({'_id': snippet_name.lower()})
-        if data is not None:
+        snippet: Snippet = await Snippet.find_one({'_id': snippet_name.lower()})
+        if snippet is not None:
             return await ctx.send("Snippet name (`%s`) is already taken. %s" % (snippet_name, ctx.author.mention))
         for x in ('kraots', 'carrots', 'carots', 'carot', 'carrot'):
             if x in snippet_name.lower():
@@ -190,8 +186,8 @@ class Snippets(commands.Cog):
 
         await ctx.send("Please send the image of the snippet.")
         try:
-            presnippet_info = await self.bot.wait_for('message', timeout=180, check=check)
-            snippet_info = presnippet_info.attachments[0].url
+            _content = await self.bot.wait_for('message', timeout=180, check=check)
+            content = _content.attachments[0].url
 
         except asyncio.TimeoutError:
             return await ctx.reply("Ran out of time.")
@@ -200,15 +196,16 @@ class Snippets(commands.Cog):
             return await ctx.reply("That is not an image! Please send an image and nothing else!")
 
         get_time = datetime.datetime.utcnow().strftime("%d/%m/%Y")
-        post = {
-            "_id": snippet_name.lower(),
-            "snippet_content": snippet_info,
-            "owner_id": ctx.author.id,
-            "created_at": get_time,
-            "uses_count": 0
-        }
 
-        await self.db.insert_one(post)
+        snippet = Snippet(
+            name=snippet_name.lower(),
+            content=content,
+            owner_id=ctx.author.id,
+            created_at=get_time,
+            uses_count=0
+        )
+        await snippet.commit()
+
         await ctx.send("Snippet Added!")
 
     @snippet.command(name='delete')
@@ -230,12 +227,12 @@ class Snippets(commands.Cog):
         if snippet_name is None:
             return await ctx.reply("**!snippet delete <snippet_name>**")
 
-        data = await self.db.find_one({'_id': snippet_name.lower()})
-        if data is None:
+        snippet: Snippet = await Snippet.find_one({'_id': snippet_name.lower()})
+        if snippet is None:
             return await ctx.send("Snippet `%s` does not exist! %s" % (snippet_name, ctx.author.mention))
 
         if ctx.author.id != 374622847672254466:
-            if ctx.author.id != data['owner_id']:
+            if ctx.author.id != snippet.owner_id:
                 await ctx.send("You do not own this snippet!")
                 return
         else:
@@ -243,7 +240,7 @@ class Snippets(commands.Cog):
             view.message = msg = await ctx.send("Are you sure you want to delete the snippet `%s`? %s" % (snippet_name, ctx.author.mention), view=view)
             await view.wait()
             if view.response is True:
-                await self.db.delete_one({"_id": data['_id']})
+                await snippet.delete()
 
                 e = f"`{snippet_name}` deleted succesfully! {ctx.author.mention}"
                 return await msg.edit(content=e, view=view)
@@ -251,34 +248,6 @@ class Snippets(commands.Cog):
             elif view.response is False:
                 e = f"Snippet was not deleted. {ctx.author.mention}"
                 return await msg.edit(content=e, view=view)
-
-    @snippet.command(name='remove')
-    @commands.is_owner()
-    async def snippet_remove(self, ctx: Context, *, snippet_name: str = None):
-        """Remove a snippet from the database."""
-
-        if snippet_name is None:
-            return await ctx.reply("You must give the name of the snippet you wish to remove too.")
-        data = await self.db.find_one({'_id': snippet_name.lower()})
-        if len(data) == 0:
-            return await ctx.send("Snippet **%s** does not exist. %s" % (snippet_name, ctx.author.mention))
-
-        else:
-            get_snippet_owner = data['owner_id']
-            snippet_owner = self.bot.get_user(get_snippet_owner)
-            the_snippet_name = data['_id']
-            snippet_created_at = data['created_at']
-            uses = data['uses_count']
-
-            await self.db.delete_one({"_id": data['_id']})
-
-            em = disnake.Embed(title="Snippet Removed", color=Colours.red)
-            em.add_field(name="Name", value=the_snippet_name)
-            em.add_field(name="Owner", value=snippet_owner)
-            em.add_field(name="Uses", value=f"`{uses}`", inline=False)
-            em.set_footer(text=f"Snippet created at • {snippet_created_at}")
-
-            await ctx.send(embed=em)
 
     @commands.Cog.listener()
     async def on_message(self, message: disnake.Message):
@@ -288,27 +257,25 @@ class Snippets(commands.Cog):
         presnippet_name = message.content.lower()
         snippet_name = "".join(presnippet_name.split(";", 1))
 
-        data = await self.db.find_one({'_id': snippet_name})
-        if data is None:
+        snippet: Snippet = await Snippet.find_one({'_id': snippet_name})
+        if snippet is None:
             return
 
-        snippet = data['snippet_content']
-        get_credits_info = data['owner_id']
-        credits_user = self.bot.get_user(get_credits_info)
-        credits_avatar = credits_user.display_avatar
-        await self.db.update_one({"_id": data['_id']}, {"$inc": {"uses_count": 1}})
+        owner = self.bot.get_user(snippet.owner_id)
+        snippet.uses_count += 1
+        await snippet.commit()
 
         if message.content.lower().startswith(f";{snippet_name}"):
             em = disnake.Embed(color=disnake.Color.red())
-            em.set_image(url=snippet)
-            em.set_footer(text=f"Credits: {credits_user}", icon_url=credits_avatar)
+            em.set_image(url=snippet.content)
+            em.set_footer(text=f"Credits: {owner}", icon_url=owner.display_avatar)
             await message.channel.send(embed=em)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
-        if member.id == 374622847672254466:
-            return
-        await self.db.delete_many({"owner_id": member.id})
+        if member.id != 374622847672254466:
+            async for snippet in Snippet.find({'owner_id': member.id}):
+                await snippet.delete()
 
     async def cog_command_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.MissingAnyRole):

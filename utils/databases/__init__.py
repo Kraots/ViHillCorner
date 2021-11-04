@@ -6,6 +6,7 @@ from .db import (  # noqa
 )
 
 from .tags import Tag
+from .snippets import Snippet
 from .marry import Marriage
 from .bdsm import BDSM
 from .birthday import Birthday
@@ -15,6 +16,7 @@ from .starboard import Starboard, StarboardStats, StarboardStatus
 
 __all__ = (
     'Tag',
+    'Snippet',
     'Marriage',
     'BDSM',
     'Birthday',
