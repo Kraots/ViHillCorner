@@ -142,6 +142,7 @@ class StarBoard(commands.Cog):
                     star_message_id=msg.id,
                     stars_count=1
                 )
+                await star.commit()
                 await self.increment_user(payload.user_id, {'stars_given': 1})
                 await self.increment_user(message.author.id, {'stars_received': 1})
                 return
