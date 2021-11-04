@@ -48,7 +48,7 @@ class Snippets(commands.Cog):
     def display_emoji(self) -> str:
         return '✂️'
 
-    @commands.group(invoke_without_command=True, case_insensitive=True, aliases=['snippets'], ignore_extra=False)
+    @commands.group(invoke_without_command=True, case_insensitive=True, aliases=('snippets',), ignore_extra=False)
     async def snippet(self, ctx: Context):
         """
         Get a list with all the snippets.
@@ -71,7 +71,7 @@ class Snippets(commands.Cog):
         except Exception:
             await ctx.send('No snippets found. %s' % (ctx.author.mention))
 
-    @snippet.command(name='leaderboard', aliases=['lb', 'top'])
+    @snippet.command(name='leaderboard', aliases=('lb', 'top',))
     async def snippet_leaderboard(self, ctx: Context):
         """See top **10** most used snippets."""
 
@@ -131,7 +131,7 @@ class Snippets(commands.Cog):
 
         await ctx.send(embed=em)
 
-    @snippet.command(name='create', aliases=['make', 'add'])
+    @snippet.command(name='create', aliases=('make', 'add',))
     @commands.has_any_role(
         'Staff', 'lvl 55+', 'lvl 60+', 'lvl 65+', 'lvl 69+', "lvl 75+", "lvl 80+", "lvl 85+", "lvl 90+",
         "lvl 95+", "lvl 100+", "lvl 105+", "lvl 110+", "lvl 120+", "lvl 130+", "lvl 150+", "lvl 155+",
