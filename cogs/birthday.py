@@ -7,6 +7,7 @@ from disnake.ext import commands, tasks
 
 from utils import time
 from utils.context import Context
+from utils.databases import Birthday
 
 from main import ViHillCorner
 
@@ -16,7 +17,6 @@ class Birthdays(commands.Cog):
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db = bot.db1['Birthdays']
         self.prefix = "!"
         self.check_bdays.start()
 
@@ -30,18 +30,13 @@ class Birthdays(commands.Cog):
     @tasks.loop(minutes=30.0)
     async def check_bdays(self):
         await self.bot.wait_until_ready()
-        currentTime = datetime.datetime.utcnow()
-        results = await self.db.find().sort('region_birthday', 1).to_list(1)
-        for result in results:
-            preBday = result['birthdaydate']
-            bdayDate = result['region_birthday']
-            user = result['_id']
-
-            if currentTime >= bdayDate:
-
+        current_time = datetime.datetime.utcnow()
+        bdays: list[Birthday] = await Birthday.find().sort('region_birthday', 1).to_list(1)
+        for bday in bdays:
+            if current_time >= bday.region_birthday:
                 guild = self.bot.get_guild(750160850077089853)
                 bday_channel = guild.get_channel(797867811967467560)
-                user = guild.get_member(user)
+                user = guild.get_member(bday.id)
 
                 em = disnake.Embed(color=user.color, title=f"Happy birthday {user.name}!!! :tada: :tada:")
                 em.set_image(url='https://cdn.discordapp.com/attachments/787359417674498088/901940653762687037/happy_bday.gif')
@@ -49,20 +44,19 @@ class Birthdays(commands.Cog):
                 msg = await bday_channel.send(user.mention, embed=em)
                 await msg.add_reaction("🍰")
 
-                new_birthday = bdayDate + relativedelta(years=1)
-                new_preBday = preBday + relativedelta(years=1)
-                await self.db.update_one({"_id": user.id}, {"$set": {"birthdaydate": new_preBday, "region_birthday": new_birthday}})
+                bday.region = bday.region + relativedelta(years=1)
+                bday.region_birthday = bday.birthday_date + relativedelta(years=1)
+                await bday.commit()
 
-    @commands.group(invoke_without_command=True, case_insensitive=True, aliases=['bday', 'b-day'])
+    @commands.group(invoke_without_command=True, case_insensitive=True, aliases=('bday', 'b-day',))
     async def birthday(self, ctx: Context, member: disnake.Member = None):
-        """See when the member's birthday is, if any"""
+        """See when the member's birthday is, if any."""
 
         member = member or ctx.author
-        user = member
-        results = await self.db.find_one({"_id": user.id})
+        bday: Birthday = await Birthday.find_one({"_id": member.id})
 
-        if results is None:
-            if user.id == ctx.author.id:
+        if bday is None:
+            if member.id == ctx.author.id:
                 await ctx.send(
                     "You did not set your birthday! Type: `!birthday set month/day` to set your birthday.\n**Example:**\n\u2800"
                     "`!birthday set 01/16`"
@@ -71,47 +65,47 @@ class Birthdays(commands.Cog):
                 await ctx.send("User did not set their birthday!")
             return
 
-        birthday = results['birthdaydate']
-        region_birthday = results['region_birthday']
-
         def format_date(dt1, dt2):
-            return f"{user.mention}'s birthday is in `{time.human_timedelta(dt1, accuracy=3)}` **({dt2:%Y/%m/%d})**"
+            return f"{member.mention}'s birthday is in `{time.human_timedelta(dt1, accuracy=3)}` **({dt2:%Y/%m/%d})**"
 
-        await ctx.send(format_date(region_birthday, birthday))
+        await ctx.send(format_date(bday.region_birthday, bday.birthday_date))
 
-    @birthday.command(name='top', aliases=['upcoming'])
+    @birthday.command(name='top', aliases=('upcoming',))
     async def bday_top(self, ctx: Context):
-        """See top 5 upcoming birthdays"""
+        """See top 5 upcoming birthdays."""
 
         index = 0
 
         def format_date(dt1, dt2):
-            return f"Birthday in  `{time.human_timedelta(dt1, accuracy = 3)}` ( **{dt2:%Y/%m/%d}** ) "
+            return f"Birthday in `{time.human_timedelta(dt1, accuracy = 3)}` ( **{dt2:%Y/%m/%d}** ) "
 
         em = disnake.Embed(color=disnake.Color.blurple(), title="***Top `5` upcoming birthdays***\n _ _ ")
 
-        results = await self.db.find().sort("birthdaydate", 1).to_list(5)
-        for result in results:
-            user = self.bot.get_user(result['_id'])
+        bdays: list[Birthday] = await Birthday.find().sort("birthdaydate", 1).to_list(5)
+        for bday in bdays:
+            user = self.bot.get_user(bday.id)
             index += 1
-            em.add_field(name=f"`{index}`. _ _ _ _ {user.name}", value=f"{format_date(result['region_birthday'], result['birthdaydate'])}", inline=False)
+            em.add_field(
+                name=f"`{index}`. _ _ _ _ {user.name}",
+                value=f"{format_date(bday.region_birthday, bday.birthday_date)}",
+                inline=False
+            )
 
         await ctx.send(embed=em)
 
-    @birthday.command(name='set', aliases=['add'])
+    @birthday.command(name='set', aliases=('add',))
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def bday_set(self, ctx: Context, *, bday=None):
-        """Set your birthday"""
+    async def bday_set(self, ctx: Context, *, birthday=None):
+        """Set your birthday."""
 
-        if bday is None:
+        if birthday is None:
             await ctx.send("Please insert a birthday! Please type `!birthday set month/day`.\n**Example:**\n\u2800`!birthday set 01/16`")
             ctx.command.reset_cooldown(ctx)
             return
-        user = ctx.author
-        results = await self.db.find_one({"_id": user.id})
+        bday: Birthday = await Birthday.find_one({"_id": ctx.author.id})
 
         z = datetime.datetime.utcnow().strftime('%Y')
-        pre = f'{z}/{bday}'
+        pre = f'{z}/{birthday}'
 
         try:
             birthday = datetime.datetime.strptime(pre, "%Y/%m/%d")
@@ -122,10 +116,10 @@ class Birthdays(commands.Cog):
                 "!birthday set 04/27`"
             )
 
-        dateNow = datetime.datetime.utcnow().strftime("%Y/%m/%d")
-        dateNow = datetime.datetime.strptime(dateNow, "%Y/%m/%d")
+        date_now = datetime.datetime.utcnow().strftime("%Y/%m/%d")
+        date_now = datetime.datetime.strptime(date_now, "%Y/%m/%d")
 
-        if dateNow > birthday:
+        if date_now > birthday:
             birthday = birthday + relativedelta(years=1)
 
         msg = """What is your timezone from this list (approx.):
@@ -211,26 +205,29 @@ class Birthdays(commands.Cog):
             def format_date(dt1, dt2):
                 return f"`{time.human_timedelta(dt1, accuracy=3)}` **({dt2:%Y/%m/%d})**"
 
-            if results is not None:
-                await self.db.update_one({"_id": user.id}, {"$set": {"birthdaydate": birthday, "region": region, "region_birthday": region_birthday}})
+            if bday is not None:
+                bday.birthday_date = birthday
+                bday.region = region
+                bday.region_birthday = region_birthday
+                await bday.commit()
                 await ctx.message.delete()
                 await msg.delete()
                 await pre_region.delete()
-                await ctx.send(f"Birthday set!\nYour birthday is in {format_date(region_birthday, birthday)} {user.mention}")
+                await ctx.send(f"Birthday set!\nYour birthday is in {format_date(region_birthday, birthday)} {ctx.author.mention}")
 
             else:
-                post = {
-                    "_id": user.id,
-                    "birthdaydate": birthday,
-                    "region": region,
-                    "region_birthday": region_birthday
-                }
-                await self.db.insert_one(post)
+                bday = Birthday(
+                    id=ctx.author.id,
+                    birthday_date=birthday,
+                    region=region,
+                    region_birthday=region_birthday
+                )
+                await bday.commit()
 
                 await ctx.message.delete()
                 await msg.delete()
                 await pre_region.delete()
-                await ctx.send(f"Birthday set!\nYour birthday is in {format_date(region_birthday, birthday)} {user.mention}")
+                await ctx.send(f"Birthday set!\nYour birthday is in {format_date(region_birthday, birthday)} {ctx.author.mention}")
 
         except asyncio.TimeoutError:
             await ctx.send("Ran out of time.")
@@ -238,15 +235,15 @@ class Birthdays(commands.Cog):
 
     @birthday.command(name='delete', aliases=['remove'])
     async def bday_delete(self, ctx: Context):
-        """Delete your birthday"""
+        """Delete your birthday."""
 
-        results = await self.db.find_one({"_id": ctx.author.id})
-        if results is not None:
+        bday: Birthday = await Birthday.find_one({"_id": ctx.author.id})
+        if bday is not None:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
             view.message = msg = await ctx.send("Are you sure you want to remove your birthday? %s" % (ctx.author.mention), view=view)
             await view.wait()
             if view.response is True:
-                await self.db.delete_one({"_id": ctx.author.id})
+                await bday.delete()
                 e = "Succesfully removed your birthday from the list! {}".format(ctx.author.mention)
                 return await msg.edit(content=e, view=view)
 
@@ -261,7 +258,9 @@ class Birthdays(commands.Cog):
     async def on_member_remove(self, member: disnake.Member):
         if member.id == 374622847672254466:
             return
-        await self.db.delete_one({"_id": member.id})
+        bday: Birthday = await Birthday.find_one({'_id': member.id})
+        if bday:
+            await bday.delete()
 
     @bday_set.error
     async def bday_set_error(self, ctx: Context, error):
