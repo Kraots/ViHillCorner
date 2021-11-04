@@ -17,8 +17,7 @@ PyNaCl
 regex
 trivia.py
 urllib3
-motor
-pymongo
+umongo[motor]
 mal-api
 flake8
 asyncdagpi
