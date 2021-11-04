@@ -166,6 +166,13 @@ class TicketView(View):
         else:
             em.description = f'You closed {inter.guild.get_member(ticket.user_id)}\'s ticket ' \
                              f'that was created on: {disnake.utils.format_dt(ticket.created_at, "F")}'
+            em_2 = disnake.Embed(
+                title='Ticket closed',
+                description=f'Your ticket (`#{ticket.ticket_id}`) '
+                            f'that you created on: {disnake.utils.format_dt(ticket.created_at, "F")} '
+                            f'was closed by **{inter.author}**'
+            )
+            await (inter.guild.get_member(ticket.user_id)).send(embed=em_2)
         await inter.author.send(embed=em)
         await inter.channel.delete(reason=f'Ticket Closed by {inter.author} (ID: {inter.author.id})')
         await ticket.delete()
@@ -886,6 +893,13 @@ class Misc(commands.Cog):
         v = View()
         v.add_item(Button(label='Jump!', url=m.jump_url))
         await ctx.reply('Ticket created!', view=v)
+
+    @commands.Cog.listener()
+    async def on_member_remove(self, member: disnake.Member):
+        if member.id != self.bot._owner_id:
+            async for ticket in Ticket.find():
+                await (member.guild.get_channel(ticket.channel_id)).delete()
+                await ticket.delete()
 
     @suggest.error
     async def suggest_error(self, ctx: Context, error):
