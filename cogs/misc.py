@@ -159,11 +159,13 @@ class TicketView(View):
     async def close(self, button: Button, inter: disnake.MessageInteraction):
         await inter.response.defer()
         ticket: Ticket = await Ticket.find_one({'_id': inter.channel.id})
-        em = disnake.Embed(
-            title='Ticket closed',
-            description=f'You closed ticket `#{ticket.ticket_id}` '
-                        f'that you created on: {disnake.utils.format_dt(ticket.created_at, "F")}'
-        )
+        em = disnake.Embed(title='Ticket Closed')
+        if inter.author.id == ticket.user_id:
+            em.description = f'You closed ticket `#{ticket.ticket_id}` ' \
+                             f'that you created on: {disnake.utils.format_dt(ticket.created_at, "F")}'
+        else:
+            em.description = f'You closed {inter.guild.get_member(ticket.user_id)}\'s ticket ' \
+                             f'that was created on: {disnake.utils.format_dt(ticket.created_at, "F")}'
         await inter.author.send(embed=em)
         await inter.channel.delete(reason=f'Ticket Closed by {inter.author} (ID: {inter.author.id})')
         await ticket.delete()
@@ -883,7 +885,7 @@ class Misc(commands.Cog):
 
         v = View()
         v.add_item(Button(label='Jump!', url=m.jump_url))
-        await ctx.reply('Ticket created!.', view=v)
+        await ctx.reply('Ticket created!', view=v)
 
     @suggest.error
     async def suggest_error(self, ctx: Context, error):
