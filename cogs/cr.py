@@ -6,6 +6,7 @@ from disnake.ext import commands
 
 from utils import time
 from utils.context import Context
+from utils.databases import CustomRole
 
 from main import ViHillCorner
 
@@ -26,7 +27,6 @@ class CustomRoles(commands.Cog):
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db = bot.db1['Custom Roles']
         self.prefix = '!'
 
     def cog_check(self, ctx: Context):
@@ -53,14 +53,13 @@ class CustomRoles(commands.Cog):
         channel = ctx.message.channel
         usercheck = ctx.author.id
 
-        results = await self.db.find_one({"_id": user.id})
+        data: CustomRole = await CustomRole.find_one({"_id": user.id})
 
         def check(message):
             return message.author.id == usercheck and message.channel.id == channel.id
 
-        if results is not None:
-            await ctx.send("You already have a custom role.")
-            return
+        if data:
+            return await ctx.send("You already have a custom role.")
 
         else:
             await channel.send("What do you want your custom role to be named as?\n\n*To cancel type `!cancel`*")
@@ -99,7 +98,7 @@ class CustomRoles(commands.Cog):
                             crcolor = crcolor.replace("#", "")
                             crcolor = f"0x{crcolor}"
                             try:
-                                e = disnake.Color(int(crcolor, 16))  # noqa
+                                _ = disnake.Color(int(crcolor, 16))
                                 break
                             except Exception:
                                 await ctx.send("Invalid hex colour.")
@@ -121,13 +120,13 @@ class CustomRoles(commands.Cog):
 
                     await ctx.author.add_roles(newcr)
 
-                    post = {"_id": user.id,
-                            "CustomRoleName": crname.content,
-                            "roleID": newcr.id,
-                            "shares": 0,
-                            "createdAt": datetime.datetime.utcnow()
-                            }
-                    await self.db.insert_one(post)
+                    await CustomRole(
+                        id=user.id,
+                        custom_role_name=crname.content,
+                        role_id=newcr.id,
+                        shares=0,
+                        created_at=datetime.datetime.utcnow()
+                    ).commit()
 
                     positions = {
                         newcr: 129
@@ -150,15 +149,13 @@ class CustomRoles(commands.Cog):
         user = ctx.author
         guild = self.bot.get_guild(750160850077089853)
 
-        results = await self.db.find_one({"_id": user.id})
+        data: CustomRole = await CustomRole.find_one({"_id": user.id})
 
-        if results is None:
+        if not data:
             await ctx.send("You must have a custom role to edit! Type: `!cr create` to create your custom role.")
             return
 
-        get_role = results['CustomRoleName']
-
-        crname = disnake.utils.get(guild.roles, name=get_role)
+        role = guild.get_role(data.role_id)
         em = disnake.Embed(title="Custom Role Edited")
 
         if new_color is None:
@@ -174,9 +171,9 @@ class CustomRoles(commands.Cog):
                 return
 
             try:
-                await crname.edit(color=disnake.Color(int(new_color, 16)))
+                await role.edit(color=disnake.Color(int(new_color, 16)))
                 em.add_field(name="New Color", value=f"`#{new_color[2:]}`")
-                em.color = crname.color
+                em.color = role.color
                 await ctx.send(embed=em)
 
             except ValueError:
@@ -189,15 +186,13 @@ class CustomRoles(commands.Cog):
         user = ctx.author
         guild = self.bot.get_guild(750160850077089853)
 
-        results = await self.db.find_one({"_id": user.id})
+        data: CustomRole = await CustomRole.find_one({"_id": user.id})
 
-        if results is None:
+        if not data:
             await ctx.send("You must have a custom role to edit! Type: `!cr create` to create your custom role.")
             return
 
-        get_role = results['CustomRoleName']
-
-        crname = disnake.utils.get(guild.roles, name=get_role)
+        role = guild.get_role(data.role_id)
         em = disnake.Embed(title="Custom Role Edited")
 
         if new_name is None:
@@ -209,10 +204,11 @@ class CustomRoles(commands.Cog):
             return
 
         else:
-            await self.db.update_one({"_id": ctx.author.id}, {"$set": {"CustomRoleName": new_name}})
-            await crname.edit(name=new_name)
+            data.name = new_name
+            await data.commit()
+            await role.edit(name=new_name)
             em.add_field(name="New Name", value=f"`{new_name}`")
-            em.color = crname.color
+            em.color = role.color
             await ctx.send(embed=em)
 
     @cr.command()
@@ -221,33 +217,30 @@ class CustomRoles(commands.Cog):
         """Share your custom role with a member."""
 
         if member is None:
-            await ctx.send("You must specify the user that you're sharing the role to!")
-            return
+            return await ctx.send("You must specify the user that you're sharing the role to!")
         user = ctx.author
         guild = self.bot.get_guild(750160850077089853)
 
-        results = await self.db.find_one({"_id": user.id})
+        data: CustomRole = await CustomRole.find_one({"_id": user.id})
 
-        if results is None:
-            await ctx.send("You do not have a custom role to share!")
-            return
+        if not data:
+            return await ctx.send("You do not have a custom role to share!")
 
-        get_role = results['CustomRoleName']
+        role = guild.get_role(data.role_id)
+        if role in member.roles:
+            return await ctx.send("You already shared your custom role with that user!")
 
-        crname = disnake.utils.get(guild.roles, name=get_role)
-        if crname in member.roles:
-            await ctx.send("You already shared your custom role with that user!")
-            return
         view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.", member)
         view.message = msg = await ctx.send(
-            f"{member.mention} Do you accept the role <@&{crname.id}> from {user.mention}?\n\n**Note:** Any changes made to the "
+            f"{member.mention} Do you accept the role {role.mention} from {user.mention}?\n\n**Note:** Any changes made to the "
             "role by {user.mention} would apply to everyone holding the role.",
             view=view
         )
         await view.wait()
         if view.response is True:
-            await self.db.update_one({'roleID': crname.id}, {'$inc': {'shares': 1}})
-            await member.add_roles(crname)
+            data.shares += 1
+            await data.commit()
+            await member.add_roles(role)
             em = disnake.Embed(color=user.color, title=f"{member} has accepted your role")
             em.set_image(url="https://blog.hubspot.com/hubfs/giphy_1-1.gif")
             await msg.edit(view=view)
@@ -258,67 +251,59 @@ class CustomRoles(commands.Cog):
             return await ctx.send(f"**{member}** has denied your role {ctx.author.mention}")
 
     @cr.command(name='info')
-    async def cr_info(self, ctx: Context, *, role: int = None):
-        """Get some data about a custom role, it doesn't have to be yours, but the <role> parameter must be a integer (the role's id)."""
+    async def cr_info(self, ctx: Context, *, role_id: int = None):
+        """Get some data about a custom role, it doesn't have to be yours, but the <role_id> parameter must be a integer (the role's id)."""
 
-        if role is None:
-            result = await self.db.find_one({'_id': ctx.author.id})
-            if result is None:
+        if role_id is None:
+            data: CustomRole = await CustomRole.find_one({'_id': ctx.author.id})
+            if not data:
                 return await ctx.send("You do not have a custom role.")
-            role = result['roleID']
         else:
-            result = await self.db.find_one({'roleID': role})
-            if result is None:
+            data = await CustomRole.find_one({'role_id': role_id})
+            if not data:
                 return await ctx.send("That is not a custom role.")
 
-        createdAt = result['createdAt']
-        shares = result['shares']
-        roleName = result['CustomRoleName']
         index = 0
-        guildRole = ctx.guild.get_role(role)
+        role = ctx.guild.get_role(role_id)
         for m in ctx.guild.members:
-            if guildRole in m.roles:
+            if role in m.roles:
                 index += 1
-        roleOwner = ctx.guild.get_member(result['_id'])
+        role_owner = ctx.guild.get_member(data.id)
 
         def format_date(dt):
             if dt is None:
                 return 'N/A'
             return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-        em = disnake.Embed(color=guildRole.color, title="Role Info About `%s`" % (roleName))
-        em.add_field(name="Custom Role Owner", value=roleOwner, inline=False)
-        em.add_field(name="Hex Code", value=guildRole.color, inline=False)
+        em = disnake.Embed(color=role_owner.color, title=f"Role Info About `{role.name}`")
+        em.add_field(name="Custom Role Owner", value=role_owner, inline=False)
+        em.add_field(name="Hex Code", value=role.color, inline=False)
         em.add_field(name="People That Have The Role", value=index, inline=False)
-        em.add_field(name="Total Role Shares", value=shares, inline=False)
-        em.add_field(name="Created At", value="%s" % (format_date(createdAt)), inline=False)
+        em.add_field(name="Total Role Shares", value=data.shares, inline=False)
+        em.add_field(name="Created At", value=format_date(data.created_at), inline=False)
 
         await ctx.send(embed=em)
 
     @cr.command()
-    async def unrole(self, ctx: Context, *, role: int = None):
-        """Remove a custom role from your roles, the <role> parameter must be a integer (role's id)."""
+    async def unrole(self, ctx: Context, *, role_id: int = None):
+        """Remove a custom role from your roles, the <role_id> parameter must be a integer (role's id)."""
 
-        if role is None:
-            await ctx.send("You must give the role ID, to get it use `!role-id <role_name>`")
-            return
+        if role_id is None:
+            return await ctx.send("You must give the role ID, to get it use `!role-id <role_name>`")
         guild = self.bot.get_guild(750160850077089853)
-        cr = guild.get_role(role)
+        role = guild.get_role(role_id)
 
-        results = await self.db.find_one({"CustomRoleName": cr.name})
-        if results is None:
-            await ctx.send("That is not a custom role!")
-            return
+        data: CustomRole = await CustomRole.find_one({"name": role.name})
+        if not data:
+            return await ctx.send("That is not a custom role!")
         try:
-            owner = results['_id']
-
-            if ctx.author.id == owner:
+            if ctx.author.id == data.id:
                 await ctx.send("You cannot remove that custom role because you're the owner of it! To remove it please type: `!cr delete`")
                 return
 
             else:
-                await ctx.author.remove_roles(cr)
-                await ctx.send(f"Removed the role <@&{cr.id}> from your profile.")
+                await ctx.author.remove_roles(role)
+                await ctx.send(f"Removed the role {role.mention} from your profile.")
 
         except AttributeError:
             await ctx.send("That is not a valid ID! Type: `!role-id <role_name>` to get the role's ID you want to remove from your profile.")
@@ -329,30 +314,29 @@ class CustomRoles(commands.Cog):
         """Remove all of your custom roles from your roles ***except*** your own custom role."""
 
         all_cr = []
-        results = await self.db.find().to_list(100000)
+        data: list[CustomRole] = await CustomRole.find().to_list(100000)
         guild = self.bot.get_guild(750160850077089853)
-        for result in results:
-            user = str(result['_id'])
-            if str(ctx.author.id) != user:
-                all_cr.append(result['CustomRoleName'])
+        for result in data:
+            if ctx.author.id != result.id:
+                all_cr.append(result.role_id)
 
         try:
             member_roles = []
             for x in ctx.author.roles:
-                if x.name not in all_cr:
+                if x.id not in all_cr:
                     member_roles.append(x.id)
 
             member_roles = set(member_roles)
 
-            Roles = []
-            for id in member_roles:
-                role = guild.get_role(id)
-                Roles.append(role)
+            roles = []
+            for role_id in member_roles:
+                role = guild.get_role(role_id)
+                roles.append(role)
 
         except Exception:
             pass
 
-        await ctx.author.edit(roles=Roles)
+        await ctx.author.edit(roles=roles)
         await ctx.send("Succesfully cleaned all the cr's on your profile.")
 
     @cr.command(name='delete')
@@ -363,24 +347,22 @@ class CustomRoles(commands.Cog):
         user = ctx.author
         guild = self.bot.get_guild(750160850077089853)
 
-        results = await self.db.find_one({"_id": user.id})
+        data: CustomRole = await CustomRole.find_one({"_id": user.id})
 
-        if results is None:
-            await ctx.send("You do not have a custom role! Type: `!cr create` to create your role!")
-            return
+        if not data:
+            return await ctx.send("You do not have a custom role! Type: `!cr create` to create your role!")
 
-        get_role = results['CustomRoleName']
-        crname = disnake.utils.get(guild.roles, name=get_role)
+        role = guild.get_role(data.role_id)
         view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-        view.message = msg = await ctx.send("Are you sure you want to delete your custom role (<@&{}>)?".format(crname.id), view=view)
+        view.message = msg = await ctx.send(f"Are you sure you want to delete your custom role ({role.mention})?", view=view)
         await view.wait()
         if view.response is False:
             e = "Your custom role has not been deleted. %s" % (ctx.author.mention)
             return await msg.edit(content=e, view=view)
 
         elif view.response is True:
-            await crname.delete()
-            await self.db.delete_one({"_id": ctx.author.id})
+            await role.delete()
+            await data.delete()
             e = "Succesfully deleted your custom role! {}".format(ctx.author.mention)
             return await msg.edit(content=e, view=view)
 
@@ -431,12 +413,11 @@ class CustomRoles(commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
         guild = self.bot.get_guild(750160850077089853)
-        results = await self.db.find_one({"_id": member.id})
-        if results is not None:
-            get_role = results['CustomRoleName']
-            crname = disnake.utils.get(guild.roles, name=get_role)
-            await crname.delete()
-            await self.db.delete_one({"_id": member.id})
+        data: CustomRole = await CustomRole.find_one({"_id": member.id})
+        if data:
+            role = guild.get_role(data.role_id)
+            await role.delete()
+            await data.delete()
 
 
 def setup(bot):
