@@ -90,7 +90,7 @@ class Bdsm(commands.Cog):
                 timestamp=data.created_at
             )
             em.set_image(url=data.result)
-            em.set_footer(text="Result set at:", icon_url=member.display_avatar)
+            em.set_footer(text="Result set at", icon_url=member.display_avatar)
             await ctx.send(embed=em)
 
         else:
