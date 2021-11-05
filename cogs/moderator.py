@@ -716,7 +716,7 @@ class Moderator(commands.Cog):
                 _time = "Eternity"
 
             em = disnake.Embed(color=Colours.red)
-            em.set_author(name=member, url=member.display_avatar, icon_url=member.display_avatar)
+            em.set_author(name=member, icon_url=member.display_avatar)
             em.description = f"Time Left: `{_time}`"
             em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
 

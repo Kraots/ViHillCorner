@@ -123,7 +123,7 @@ class Snippets(commands.Cog):
         snippet_owner = self.bot.get_user(snippet.owner_id)
 
         em = disnake.Embed(color=Colours.reds, title=snippet_name)
-        em.set_author(name=snippet_owner, url=snippet_owner.display_avatar, icon_url=snippet_owner.display_avatar)
+        em.set_author(name=snippet_owner, icon_url=snippet_owner.display_avatar)
         em.add_field(name="Owner", value=snippet_owner.mention)
         em.add_field(name="Uses", value=snippet.uses_count)
         em.add_field(name="Rank", value="`#{}`".format(rank))

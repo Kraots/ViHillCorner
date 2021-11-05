@@ -177,7 +177,7 @@ class Intros(commands.Cog):
 
                                     else:
                                         em = disnake.Embed(color=ctx.author.color)
-                                        em.set_author(name=ctx.author, url=ctx.author.display_avatar, icon_url=ctx.author.display_avatar)
+                                        em.set_author(name=ctx.author, icon_url=ctx.author.display_avatar)
                                         em.set_thumbnail(url=ctx.author.display_avatar)
                                         em.add_field(name="Name", value=name.content, inline=True)
                                         em.add_field(name="Location", value=location.content, inline=True)
@@ -321,7 +321,7 @@ class Intros(commands.Cog):
                                 else:
                                     em = disnake.Embed(color=ctx.author.color)
                                     em = disnake.Embed(color=ctx.author.color)
-                                    em.set_author(name=ctx.author, url=ctx.author.display_avatar, icon_url=ctx.author.display_avatar)
+                                    em.set_author(name=ctx.author, icon_url=ctx.author.display_avatar)
                                     em.set_thumbnail(url=ctx.author.display_avatar)
                                     em.add_field(name="Name", value=name.content, inline=True)
                                     em.add_field(name="Location", value=location.content, inline=True)
@@ -408,7 +408,7 @@ class Intros(commands.Cog):
 
             await ctx.message.delete()
             em = disnake.Embed(color=member.color)
-            em.set_author(name=member, url=member.display_avatar, icon_url=member.display_avatar)
+            em.set_author(name=member, icon_url=member.display_avatar)
             em.set_thumbnail(url=member.display_avatar)
             em.add_field(name="Name", value=intro_name, inline=True)
             em.add_field(name="Location", value=intro_location, inline=True)

@@ -182,7 +182,7 @@ class Messages(commands.Cog):
         if user_db is None:
             return await ctx.reply(f'`{member.display_name}` sent no messages.')
         em = disnake.Embed(color=Colours.light_pink)
-        em.set_author(name=f'{member.display_name}\'s message stats', url=member.display_avatar, icon_url=member.display_avatar)
+        em.set_author(name=f'{member.display_name}\'s message stats', icon_url=member.display_avatar)
         em.add_field(name='Total Messages', value=f"`{user_db['messages_count']:,}`")
         em.add_field(name='Weekly Messages', value=f"`{user_db['weekly_messages_count']:,}`")
         em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)

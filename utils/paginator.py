@@ -358,7 +358,7 @@ class ToDoMenu(RoboPages):
             color = disnake.Color.blurple()
         self.embed = disnake.Embed(colour=color, title=title)
         if author_name is not None:
-            self.embed.set_author(name=author_name, url=author_icon_url, icon_url=author_icon_url)
+            self.embed.set_author(name=author_name, icon_url=author_icon_url)
 
 
 class EmbedPaginator(disnake.ui.View):

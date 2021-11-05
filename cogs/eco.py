@@ -493,7 +493,7 @@ class Economy(commands.Cog):
                 total_items += item['owned']
                 user_items.append(to_append)
         em = disnake.Embed(color=member.color, description='\n'.join(user_items))
-        em.set_author(name=f'{member.display_name}\'s inventory', url=member.display_avatar, icon_url=member.display_avatar)
+        em.set_author(name=f'{member.display_name}\'s inventory', icon_url=member.display_avatar)
         em.set_thumbnail(url=member.display_avatar)
         _text = f'{total_items:,} total items'
         if inv_worth != 0:

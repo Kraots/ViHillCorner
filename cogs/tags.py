@@ -372,7 +372,7 @@ class Tags(commands.Cog):
         tag_owner = self.bot.get_user(tag.owner_id)
 
         em = disnake.Embed(color=Colours.blurple, title=tag_name)
-        em.set_author(name=tag_owner, url=tag_owner.display_avatar, icon_url=tag_owner.display_avatar)
+        em.set_author(name=tag_owner, icon_url=tag_owner.display_avatar)
         em.add_field(name="Owner", value=tag_owner.mention)
         em.add_field(name="Uses", value=tag.uses_count)
         em.add_field(name="Rank", value=f"`#{rank}`")
