@@ -4,15 +4,16 @@ import disnake
 from disnake.ext import commands
 
 from utils.colors import Colours
+from utils.context import Context
 from utils.pillow import rank_card
 from utils.paginator import RoboPages, FieldPageSource
-from utils.context import Context
+from utils.databases import Level
 
 from main import ViHillCorner
 
 bot_channel = (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088)
 no_talk_channels = (750160852006469807, 780374324598145055)
-botsChannels = (750160851822182486, 750160851822182487)
+bot_channels = (750160851822182486, 750160851822182487)
 
 # LEVEL: LEVEL_ROLE_ID
 levels = {
@@ -41,7 +42,6 @@ class Levels(commands.Cog):
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db = bot.db2['Levels']
         self.prefix = "!"
 
     def cog_check(self, ctx: Context):
@@ -58,24 +58,26 @@ class Levels(commands.Cog):
             if ch_id not in no_talk_channels:
                 if not message.author.bot:
                     guild = self.bot.get_guild(750160850077089853)
-                    stats = await self.db.find_one({"_id": message.author.id})
+                    stats: Level = await Level.find_one({"_id": message.author.id})
                     if stats is None:
                         try:
-                            newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0, "weekly_messages_count": 0}
-                            await self.db.insert_one(newuser)
+                            await Level(
+                                id=message.author.id,
+                                xp=0,
+                                messages_count=0,
+                                weekly_messages_count=0
+                            ).commit()
                             return
                         except pymongo.errors.DuplicateKeyError:
                             return
 
-                    kraotsDocument = await self.db.find_one({'_id': 374622847672254466})
-                    membersMultiplier = kraotsDocument['xp multiplier']
-                    boostersMultiplier = kraotsDocument['booster xp multiplier']
-                    modMultiplier = kraotsDocument['mod xp multiplier']
-                    kraotsMultiplier = kraotsDocument['kraots xp multiplier']
+                    kraots_doc: Level = await Level.find_one({'_id': self.bot._owner_id})
 
-                    if ch_id not in botsChannels:
-                        await self.db.update_one({"_id": message.author.id}, {"$inc": {"weekly_messages_count": 1}})
-                    xp = stats['xp']
+                    if ch_id not in bot_channels:
+                        stats.weekly_messages_count += 1
+                        await stats.commit()
+
+                    xp = stats.xp
                     lvl = 0
                     while True:
                         if xp < ((50 * (lvl ** 2)) + (50 * (lvl - 1))):
@@ -84,22 +86,23 @@ class Levels(commands.Cog):
                     xp -= ((50 * ((lvl - 1)**2)) + (50 * (lvl - 1)))
                     if xp < 0:
                         lvl = lvl - 1
-                        xp = stats['xp']
+                        xp = stats.xp
                         xp -= ((50 * ((lvl - 1)**2)) + (50 * (lvl - 1)))
                     if lvl >= 500:
                         return
 
                     else:
                         if message.author.id == 374622847672254466:
-                            xp = stats['xp'] + (30 * kraotsMultiplier)
+                            xp = stats.xp + (30 * kraots_doc.kraots_xp_multiplier)
                         elif 754676705741766757 in (role.id for role in message.author.roles):
-                            xp = stats['xp'] + (20 * modMultiplier)
+                            xp = stats.xp + (20 * kraots_doc.mod_xp_multiplier)
                         elif 759475712867565629 in (role.id for role in message.author.roles):
-                            xp = stats['xp'] + (15 * boostersMultiplier)
+                            xp = stats.xp + (15 * kraots_doc.booster_xp_multiplier)
                         else:
-                            xp = stats['xp'] + (5 * membersMultiplier)
+                            xp = stats.xp + (5 * kraots_doc.xp_multiplier)
 
-                        await self.db.update_one({"_id": message.author.id}, {"$set": {"xp": xp}})
+                        stats.xp = xp
+                        await stats.commit()
                         lvl = 0
                         while True:
                             if xp < ((50 * (lvl**2)) + (50 * (lvl - 1))):
@@ -108,7 +111,7 @@ class Levels(commands.Cog):
                         xp -= ((50 * ((lvl - 1)**2)) + (50 * (lvl - 1)))
                         if xp < 0:
                             lvl = lvl - 1
-                            xp = stats['xp']
+                            xp = stats.xp
                             xp -= ((50 * ((lvl - 1)**2)) + (50 * (lvl - 1)))
                         elif xp >= 0:
                             if lvl >= 3:
@@ -144,7 +147,7 @@ class Levels(commands.Cog):
         member = member or ctx.author
 
         if ctx.channel.id in bot_channel:
-            stats = await self.db.find_one({"_id": member.id})
+            stats: Level = await Level.find_one({"_id": member.id})
             if stats is None:
                 if member.id == ctx.author.id:
                     await ctx.send("You haven't sent any messages, therefore you don't have a level.")
@@ -156,7 +159,7 @@ class Levels(commands.Cog):
                     await ctx.send(f"`{member.display_name}` did not send any messages, therefore they do not have any level.")
                     return
             else:
-                xp = stats['xp']
+                xp = stats.xp
                 lvl = 0
                 rank = 0
                 while True:
@@ -164,15 +167,15 @@ class Levels(commands.Cog):
                         break
                     lvl += 1
                 xp -= ((50 * ((lvl - 1)**2)) + (50 * (lvl - 1)))
-                rankings = await self.db.find().sort('xp', -1).to_list(100000)
+                rankings: list[Level] = await Level.find().sort('xp', -1).to_list(100000)
                 for data in rankings:
                     rank += 1
-                    if stats['_id'] == data['_id']:
+                    if stats.id == data.id:
                         break
 
                 if xp < 0:
                     lvl = lvl - 1
-                    xp = stats['xp']
+                    xp = stats.xp
                     xp -= ((50 * ((lvl - 1)**2)) + (50 * (lvl - 1)))
 
                 guild = self.bot.get_guild(750160850077089853)
@@ -197,9 +200,13 @@ class Levels(commands.Cog):
         """Set the rank for the member."""
 
         member = member or ctx.author
+        mem: Level = await Level.find_one({'_id': member.id})
+        if not mem:
+            return await ctx.reply('Member not in the database.')
 
         xp = ((50 * ((lvl - 1)**2)) + (50 * (lvl - 1)))
-        await self.db.update_one({"_id": member.id}, {"$set": {"xp": xp}})
+        mem.xp = xp
+        await mem.commit()
         await ctx.send("Set level `{}` for **{}**.".format(lvl, member.display_name))
 
     @rank.command(name='leaderboard', aliases=['lb', 'top'])
@@ -209,11 +216,11 @@ class Levels(commands.Cog):
         if ctx.channel.id in bot_channel:
             top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
             data = []
-            results = await self.db.find().sort('xp', -1).to_list(100000)
+            results: list[Level] = await Level.find().sort('xp', -1).to_list(100000)
             index = 0
             for result in results:
-                xp = result['xp']
-                user = result['_id']
+                xp = result.xp
+                user = result.id
                 user = self.bot.get_user(user)
 
                 lvl = 0
@@ -226,10 +233,10 @@ class Levels(commands.Cog):
 
                 if xp < 0:
                     lvl = lvl - 1
-                    xp = result['xp']
+                    xp = result.xp
 
                 index += 1
-                f = result['xp']
+                f = result.xp
                 if lvl == 500:
                     lvl = "500(MAX)"
 
@@ -259,17 +266,33 @@ class Levels(commands.Cog):
     async def multiplier(self, ctx: Context):
         """See the multipliers."""
 
-        kraotsDocument = await self.db.find_one({'_id': 374622847672254466})
-        membersMultiplier = float(kraotsDocument['xp multiplier'])
-        boostersMultiplier = float(kraotsDocument['booster xp multiplier'])
-        modMultiplier = float(kraotsDocument['mod xp multiplier'])
-        kraotsMultiplier = float(kraotsDocument['kraots xp multiplier'])
+        kraots_doc: Level = await Level.find_one({'_id': 374622847672254466})
+        members_multiplier = float(kraots_doc.xp_multiplier)
+        boosters_multiplier = float(kraots_doc.booster_xp_multiplier)
+        mod_multiplier = float(kraots_doc.mod_xp_multiplier)
+        kraots_multiplier = float(kraots_doc.kraots_xp_multiplier)
 
         em = disnake.Embed(color=Colours.light_pink, title="**Current Multipliers:**")
-        em.add_field(name="Mod/Staff", value="%sx (%s XP per message)" % (modMultiplier, 20 * modMultiplier), inline=False)
-        em.add_field(name="Server Boosters", value="%sx (%s XP per message)" % (boostersMultiplier, 15 * boostersMultiplier), inline=False)
-        em.add_field(name="Members", value="%sx (%s XP per message)" % (membersMultiplier, 5 * membersMultiplier), inline=False)
-        em.add_field(name="Kraots", value="%sx (%s XP per message)" % (kraotsMultiplier, 30 * kraotsMultiplier), inline=False)
+        em.add_field(
+            name="Mod/Staff",
+            value="%sx (%s XP per message)" % (mod_multiplier, 20 * mod_multiplier),
+            inline=False
+        )
+        em.add_field(
+            name="Server Boosters",
+            value="%sx (%s XP per message)" % (boosters_multiplier, 15 * boosters_multiplier),
+            inline=False
+        )
+        em.add_field(
+            name="Members",
+            value="%sx (%s XP per message)" % (members_multiplier, 5 * members_multiplier),
+            inline=False
+        )
+        em.add_field(
+            name="Kraots",
+            value="%sx (%s XP per message)" % (kraots_multiplier, 30 * kraots_multiplier),
+            inline=False
+        )
         em.set_footer(text="Requested By: %s" % (ctx.author), icon_url=ctx.author.display_avatar)
 
         await ctx.send(embed=em)
@@ -301,32 +324,38 @@ class Levels(commands.Cog):
                 x = str(multiplier).replace(".0", "")
             else:
                 x = multiplier
+            data: Level = Level.find_one({'_id': self.bot._owner_id})
 
             if group in ('mod', 'staff', 'mods'):
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'mod xp multiplier': multiplier}})
+                data.mod_xp_multiplier = multiplier
+                await data.commit()
                 await ctx.send("Set the multiplier for Mods/Staff members to **%s**." % (x))
                 return
 
             elif group in ('booster', 'boosters', 'serverbooster', 'serverboosters'):
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'booster xp multiplier': multiplier}})
+                data.booster_xp_multiplier = multiplier
+                await data.commit()
                 await ctx.send("Set the multiplier for Server Boosters to **%s**." % (x))
                 return
 
             elif group in ('member', 'members'):
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'xp multiplier': multiplier}})
+                data.xp_multiplier = multiplier
+                await data.commit()
                 await ctx.send("Set the multiplier for Members to **%s**." % (x))
                 return
 
             elif group in ('kraots', 'kraot'):
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'kraots xp multiplier': multiplier}})
+                data.kraots_xp_multiplier = multiplier
+                await data.commit()
                 await ctx.send("Set the multiplier for Kraots to **%s**." % (x))
                 return
 
             elif group == "all":
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'mod xp multiplier': multiplier}})
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'booster xp multiplier': multiplier}})
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'xp multiplier': multiplier}})
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'kraots xp multiplier': multiplier}})
+                data.kraots_xp_multiplier = multiplier
+                data.xp_multiplier = multiplier
+                data.mod_xp_multiplier = multiplier
+                data.booster_xp_multiplier = multiplier
+                await data.commit()
                 await ctx.send("Set the multiplier for every group to **%s**." % (x))
 
     @multiplier.command()
@@ -343,39 +372,46 @@ class Levels(commands.Cog):
 
         else:
             group = group.lower()
+            data: Level = await Level.find_one({'_id': self.bot._owner_id})
 
             if group in ('mod', 'staff', 'mods'):
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'mod xp multiplier': 1}})
+                data.mod_xp_multiplier = 1
+                await data.commit()
                 await ctx.send("Set the multiplier for Mods/Staff members back to **1**.")
                 return
 
             elif group in ('booster', 'boosters', 'serverbooster', 'serverboosters'):
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'booster xp multiplier': 1}})
+                data.booster_xp_multiplier = 1
+                await data.commit()
                 await ctx.send("Set the multiplier for Server Boosters back to **1**.")
                 return
 
             elif group in ('member', 'members'):
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'xp multiplier': 1}})
+                data.xp_multiplier = 1
+                await data.commit()
                 await ctx.send("Set the multiplier for Members back to **1**.")
                 return
 
             elif group in ('kraots', 'kraot'):
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'kraots xp multiplier': 1}})
+                data.kraots_xp_multiplier = 1
+                await data.commit()
                 await ctx.send("Set the multiplier for Kraots to **1**.")
                 return
 
             elif group == "all":
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'mod xp multiplier': 1}})
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'booster xp multiplier': 1}})
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'xp multiplier': 1}})
-                await self.db.update_one({'_id': 374622847672254466}, {'$set': {'kraots xp multiplier': 1}})
+                data.kraots_xp_multiplier = 1
+                data.xp_multiplier = 1
+                data.mod_xp_multiplier = 1
+                data.booster_xp_multiplier = 1
+                await data.commit()
                 await ctx.send("Set the multiplier for every group back to **1**.")
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
-        if member.id == 374622847672254466:
-            return
-        await self.db.delete_one({"_id": member.id})
+        if member.id != 374622847672254466:
+            data: Level = await Level.find_one({'_id': member.id})
+            if data:
+                await data.delete()
 
 
 def setup(bot):

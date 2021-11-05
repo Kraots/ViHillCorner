@@ -13,6 +13,7 @@ from .birthday import Birthday
 from .docs import Doc, DocsCache
 from .anime import Alist
 from .cr import CustomRole
+from .levels import Level
 
 from .tickets import Ticket
 from .starboard import Starboard, StarboardStats, StarboardStatus
@@ -25,6 +26,7 @@ __all__ = (
     'Birthday',
     'Alist',
     'CustomRole',
+    'Level',
     'Doc',
     'DocsCache',
     'Ticket',
