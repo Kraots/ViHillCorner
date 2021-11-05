@@ -11,6 +11,7 @@ from .marry import Marriage
 from .bdsm import BDSM
 from .birthday import Birthday
 from .docs import Doc, DocsCache
+from .anime import Alist
 
 from .tickets import Ticket
 from .starboard import Starboard, StarboardStats, StarboardStatus
@@ -22,6 +23,7 @@ __all__ = (
     'BDSM',
     'Birthday',
     'Doc',
+    'Alist',
     'DocsCache',
     'Ticket',
     'Starboard',

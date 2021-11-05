@@ -10,6 +10,7 @@ from mal import AnimeSearch
 from utils.colors import Colours
 from utils.context import Context
 from utils.paginator import CustomMenu
+from utils.databases import Alist
 
 from main import ViHillCorner
 
@@ -34,7 +35,6 @@ class Anime(commands.Cog):
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db = bot.db1['Alist']
         self.prefix = '!'
 
     def cog_check(self, ctx: Context):
@@ -50,16 +50,14 @@ class Anime(commands.Cog):
 
         member = member or ctx.author
 
-        results = await self.db.find_one({"_id": member.id})
+        data: Alist = await Alist.find_one({'_id': member.id})
 
-        user = member
-        if results is not None:
-            entries = results['alist']
-            p = AlistPages(ctx=ctx, entries=entries, per_page=10, title=f"Here's `{member.display_name}`'s anime list:", color=Colours.reds)
+        if data:
+            p = AlistPages(ctx=ctx, entries=data.alist, per_page=10, title=f"Here's `{member.display_name}`'s anime list:", color=Colours.reds)
             await p.start()
 
         else:
-            if ctx.author.id == user.id:
+            if ctx.author.id == member.id:
                 await ctx.send("You do not have an anime list! Type: `!alist set <recommendations>` to set your anime list!")
                 return
 
@@ -71,33 +69,36 @@ class Anime(commands.Cog):
         """Set your anime list."""
 
         args = animes
-        user = ctx.author
-        results = await self.db.find_one({"_id": user.id})
+        data: Alist = await Alist.find_one({'_id': ctx.author.id})
         alist = list(filter(bool, args.splitlines()))
-        if results is None:
-            post = {"_id": user.id, "alist": alist}
-            await self.db.insert_one(post)
+        if not data:
+            await Alist(
+                id=ctx.author.id,
+                alist=alist
+            ).commit()
         else:
-            await self.db.update_one({"_id": user.id}, {"$set": {"alist": alist}})
+            data.alist = alist
+            await data.commit()
         await ctx.message.delete()
-        await ctx.send(f"Anime list set! {user.mention}")
+        await ctx.send(f"Anime list set! {ctx.author.mention}")
 
     @alist.command(name='add')
     async def alist_add(self, ctx: Context, *, anime: str):
         """Add to your anime list."""
 
         args = anime
-        user = ctx.author
-        results = await self.db.find_one({"_id": user.id})
+        data: Alist = await Alist.find_one({'_id': ctx.author.id})
         alist = list(filter(bool, args.splitlines()))
-        if results is None:
-            post = {"_id": user.id, "alist": alist}
-            await self.db.insert_one(post)
+        if not data:
+            await Alist(
+                id=ctx.author.id,
+                alist=alist
+            ).commit()
         else:
-            alst = results['alist']
-            await self.db.update_one({"_id": user.id}, {"$set": {"alist": alst + alist}})
+            data.alist += alist
+            await data.commit()
         await ctx.message.delete()
-        await ctx.send("Succesfully added to your anime list! {}".format(user.mention))
+        await ctx.send(f"Succesfully added to your anime list! {ctx.author.mention}")
 
     @alist.command(name='delete')
     async def alist_delete(self, ctx: Context, index: str):
@@ -107,36 +108,31 @@ class Anime(commands.Cog):
             nr = int(index)
         except ValueError:
             return await ctx.send("Must be a number. %s" % (ctx.author.mention))
-        results = await self.db.find_one({'_id': ctx.author.id})
-        if results is None:
+        data: Alist = await Alist.find_one({'_id': ctx.author.id})
+        if not data:
             return await ctx.send("You do not have an anime list. %s" % (ctx.author.mention))
         n = nr - 1
-        new_alist = []
-        rec = None
 
-        for i in range(len(results['alist'])):
-            if i != n:
-                new_alist.append(results['alist'][i])
-            else:
-                rec = results['alist'][i]
+        try:
+            rec = data.alist.pop(n)
+        except IndexError:
+            await ctx.send(f"No recommendation with that number found. {ctx.author.mention}")
 
-        await self.db.update_one({'_id': ctx.author.id}, {'$set': {'alist': new_alist}})
-        if rec is not None:
-            return await ctx.send(f"Successfully removed **{rec}** from your anime list. {ctx.author.mention}")
-        await ctx.send(f"No recommendation with that number found. {ctx.author.mention}")
+        await data.commit()
+        await ctx.send(f"Successfully removed **{rec}** from your anime list. {ctx.author.mention}")
 
     @alist.command(name='clear')
     async def alist_clear(self, ctx: Context):
         """Delete your whole anime list."""
 
-        results = await self.db.find_one({"_id": ctx.author.id})
+        data: Alist = await Alist.find_one({'_id': ctx.author.id})
 
-        if results is not None:
+        if data:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
             view.message = msg = await ctx.send("Are you sure you want to delete your anime list? %s" % (ctx.author.mention), view=view)
             await view.wait()
             if view.response is True:
-                await self.db.delete_one({"_id": ctx.author.id})
+                await data.delete()
                 e = "Succesfully deleted your anime list! %s" % (ctx.author.mention)
                 return await msg.edit(content=e, view=view)
 
@@ -152,10 +148,10 @@ class Anime(commands.Cog):
     async def alist_remove(self, ctx: Context, member: disnake.Member):
         """Remove the member from the anime list database."""
 
-        results = await self.db.find_one({"_id": member.id})
+        data: Alist = await Alist.find_one({"_id": member.id})
 
-        if results is not None:
-            await self.db.delete_one({"_id": member.id})
+        if data:
+            await data.delete()
             await ctx.send("Succesfully removed `{}`'s anime list from the database.".format(member.display_name))
 
         else:
