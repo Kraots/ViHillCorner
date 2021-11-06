@@ -81,7 +81,7 @@ class Birthdays(commands.Cog):
 
         em = disnake.Embed(color=disnake.Color.blurple(), title="***Top `5` upcoming birthdays***\n _ _ ")
 
-        bdays: list[Birthday] = await Birthday.find().sort("birthdaydate", 1).to_list(5)
+        bdays: list[Birthday] = await Birthday.find().sort("birthday_date", 1).to_list(5)
         for bday in bdays:
             user = self.bot.get_user(bday.id)
             index += 1
