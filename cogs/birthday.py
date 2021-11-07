@@ -44,8 +44,8 @@ class Birthdays(commands.Cog):
                 msg = await bday_channel.send(user.mention, embed=em)
                 await msg.add_reaction("🍰")
 
-                bday.region = bday.region + relativedelta(years=1)
-                bday.region_birthday = bday.birthday_date + relativedelta(years=1)
+                bday.birthday_date = bday.birthday_date + relativedelta(years=1)
+                bday.region_birthday = bday.region_birthday + relativedelta(years=1)
                 await bday.commit()
 
     @commands.group(invoke_without_command=True, case_insensitive=True, aliases=('bday', 'b-day',))
