@@ -518,7 +518,7 @@ class Misc(commands.Cog):
             else:
                 if len(curr_snipes) >= 500:
                     curr_snipes.pop(0)
-                curr_snipes.append(message)
+                curr_snipes = [message, *curr_snipes]
                 self.bot.snipes[message.channel.id] = curr_snipes
 
     @commands.group(invoke_without_command=True, case_insensitive=True)
