@@ -527,7 +527,7 @@ class Misc(commands.Cog):
 
         channel = channel or ctx.channel
         try:
-            msg: disnake.Message = self.bot.snipes[channel.id][-1]
+            msg: disnake.Message = self.bot.snipes[channel.id][0]
         except KeyError:
             return await ctx.send('Nothing to snipe!')
 
