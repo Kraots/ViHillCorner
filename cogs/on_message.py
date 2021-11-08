@@ -35,9 +35,9 @@ async def check_invalid_name(db, message, kraots) -> str:
 
 
 # Webhook that sends a message in messages-log channel
-async def send_webhook(em, bot):
+async def send_webhook(em, view, bot):
     webhook = await bot.get_channel(750432155179679815).webhooks()
-    await webhook[0].send(embed=em)
+    await webhook[0].send(embed=em, view=view)
 
 
 class on_message(commands.Cog):
@@ -46,7 +46,7 @@ class on_message(commands.Cog):
         self.db = bot.db2['InvalidName Filter']
 
     @commands.Cog.listener('on_message_delete')
-    async def on_message_delete(self, message):
+    async def on_message_delete(self, message: disnake.Message):
         if message.author.bot:
             return
 
@@ -56,22 +56,27 @@ class on_message(commands.Cog):
         else:
             em = disnake.Embed(
                 color=Colours.red,
-                description=f'[Message]({message.jump_url}) deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```',
+                description=f'Message deleted in <#{message.channel.id}> \n\n**Content:** \n```{message.content}```',
                 timestamp=datetime.datetime.utcnow()
             )
             em.set_author(name=f'{message.author}', icon_url=f'{message.author.display_avatar}')
             em.set_footer(text=f'User ID: {message.author.id}')
             if message.attachments:
                 em.set_image(url=message.attachments[0].proxy_url)
+            ref = message.reference
+            if ref and isinstance(ref.resolved, disnake.Message):
+                em.add_field(name='Replying to...', value=f'[{ref.resolved.author}]({ref.resolved.jump_url})', inline=False)
 
             await asyncio.sleep(0.5)
             try:
-                await send_webhook(em, self.bot)
+                btn = disnake.ui.View()
+                btn.add_item(disnake.ui.Button(label='Jump!', url=message.jump_url))
+                await send_webhook(em, btn, self.bot)
             except Exception as e:
                 await self.bot._owner.send(e)
 
     @commands.Cog.listener('on_message_edit')
-    async def on_message_edit(self, before, after):
+    async def on_message_edit(self, before: disnake.Message, after: disnake.Message):
 
         if before.author.bot:
             return
@@ -80,15 +85,20 @@ class on_message(commands.Cog):
         else:
             em = disnake.Embed(
                 color=Colours.yellow,
-                description=f'[Message]({before.jump_url}) edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```',  # noqa
+                description=f'Message edited in <#{before.channel.id}>\n\n**Before:**\n```{before.content}```\n\n**After:**\n```{after.content}```',  # noqa
                 timestamp=datetime.datetime.utcnow()
             )
             em.set_author(name=f'{before.author}', icon_url=f'{before.author.display_avatar}')
             em.set_footer(text=f'User ID: {before.author.id}')
+            ref = after.reference
+            if ref and isinstance(ref.resolved, disnake.Message):
+                em.add_field(name='Replying to...', value=f'[{ref.resolved.author}]({ref.resolved.jump_url})', inline=False)
 
             await asyncio.sleep(0.5)
             try:
-                await send_webhook(em, self.bot)
+                btn = disnake.ui.View()
+                btn.add_item(disnake.ui.Button(label='Jump!', url=after.jump_url))
+                await send_webhook(em, btn, self.bot)
             except Exception as e:
                 await self.bot._owner.send(e)
 
