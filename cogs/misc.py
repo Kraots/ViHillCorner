@@ -376,6 +376,9 @@ class Misc(commands.Cog):
     ):
         """Gives you a documentation link for a disnake entity."""
 
+        if inter.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+            return await inter.response.send_message('To use this command, please go in a bots channel.', ephemeral=True)
+
         await self.do_rtfm(inter, 'latest', object)
 
     @rtfm.sub_command(name='py')
@@ -389,6 +392,9 @@ class Misc(commands.Cog):
         )
     ):
         """Gives you a documentation link for a python entity."""
+
+        if inter.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+            return await inter.response.send_message('To use this command, please go in a bots channel.', ephemeral=True)
 
         await self.do_rtfm(inter, 'python', object)
 
