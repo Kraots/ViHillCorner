@@ -536,6 +536,9 @@ class Misc(commands.Cog):
         embed.set_footer(text="Deleted in `{}`".format(msg.channel))
         if msg.attachments:
             embed.set_image(url=msg.attachments[0].proxy_url)
+        ref = msg.reference
+        if ref and isinstance(ref.resolved, disnake.Message):
+            embed.add_field(name='Replying to...', value=f'[{ref.resolved.author}]({ref.resolved.jump_url})', inline=False)
         await ctx.send(embed=embed)
 
     @snipe.command(name='list')
