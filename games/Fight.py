@@ -46,7 +46,10 @@ class Fight(disnake.ui.View):
             winner = self.p2
         else:
             winner = self.p1
-        await self.message.edit(f'{self._data}\n\n**___TIMEOUT___**\n**{self.turn.display_name}** took too much to react. {winner.mention} won.', view=self)
+        await self.message.edit(
+            content=f'{self._data}\n\n**___TIMEOUT___**\n**{self.turn.display_name}** took too much to react. {winner.mention} won.',
+            view=self
+        )
 
     def update_turn(self):
         if self.turn == self.p1:
@@ -75,7 +78,7 @@ class Fight(disnake.ui.View):
             for item in self.children:
                 item.style = disnake.ButtonStyle.grey
                 item.disabled = True
-            await self.message.edit(f'{self._data}\n\n**{winner.display_name}** won.\n{self.turn.mention} you lost!', view=self)
+            await self.message.edit(content=f'{self._data}\n\n**{winner.display_name}** won.\n{self.turn.mention} you lost!', view=self)
             self.stop()
 
     @disnake.ui.button(label='Fight', style=disnake.ButtonStyle.red)
@@ -90,7 +93,7 @@ class Fight(disnake.ui.View):
         self.hp[self.turn] = new_hp
         await self.check_health()
         if self.ended is False:
-            await self.message.edit(f'{self._data}\n\n**{p.display_name}** chose to fight and dealt `{dmg}` damage. Your turn now: {self.turn.mention}')
+            await self.message.edit(content=f'{self._data}\n\n**{p.display_name}** chose to fight and dealt `{dmg}` damage. Your turn now: {self.turn.mention}')
 
     @disnake.ui.button(label='Health', style=disnake.ButtonStyle.green)
     async def _health_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
@@ -102,7 +105,7 @@ class Fight(disnake.ui.View):
         new_hp = curr_hp + hp
         self.hp[self.turn] = new_hp
         self.update_turn()
-        await self.message.edit(f'{self._data}\n\n**{p.display_name}** chose health and got `{hp}` hp. Your turn now: {self.turn.mention}')
+        await self.message.edit(content=f'{self._data}\n\n**{p.display_name}** chose health and got `{hp}` hp. Your turn now: {self.turn.mention}')
 
     @disnake.ui.button(label='Forfeit', style=disnake.ButtonStyle.blurple, row=1)
     async def _forfeit_button(self, button: disnake.ui.Button, inter: disnake.Interaction):
@@ -113,5 +116,5 @@ class Fight(disnake.ui.View):
         for item in self.children:
             item.style = disnake.ButtonStyle.grey
             item.disabled = True
-        await self.message.edit(f'{self._data}\n\n**___FORFEIT___**\n**{p.display_name}** forfeited, {self.turn.mention} you won!', view=self)
+        await self.message.edit(content=f'{self._data}\n\n**___FORFEIT___**\n**{p.display_name}** forfeited, {self.turn.mention} you won!', view=self)
         self.stop()
