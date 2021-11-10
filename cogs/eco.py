@@ -158,7 +158,7 @@ class EcoSearchView(disnake.ui.View):
         for item in self.children:
             item.disabled = True
             item.style = disnake.ButtonStyle.grey
-        await self.message.edit('Guess you didn\'t want to search anywhere 🙄', view=self)
+        await self.message.edit(content='Guess you didn\'t want to search anywhere 🙄', view=self)
 
     @disnake.ui.button(label='1', style=disnake.ButtonStyle.blurple)
     async def search_1_result(self, button: disnake.ui.Button, inter: disnake.Interaction):
@@ -240,7 +240,7 @@ class RPSView(disnake.ui.View):
         for item in self.children:
             item.disabled = True
             item.style = disnake.ButtonStyle.gray
-        await self.message.edit('Timed Out.', view=self)
+        await self.message.edit(content='Timed Out.', view=self)
 
     def disable_buttons(self, button):
         for item in self.children:
@@ -261,12 +261,12 @@ class RPSView(disnake.ui.View):
             (choice == 'paper' and bot_choice == 'scissors') or
             (choice == 'scissors' and bot_choice == 'rock')
         ):
-            await self.message.edit(lost_message, view=self)
+            await self.message.edit(content=lost_message, view=self)
             won = False
         elif choice == bot_choice:
-            return await self.message.edit(f'We both chose `{choice}`. Nothing happened, your balance stays the same.', view=self)
+            return await self.message.edit(content=f'We both chose `{choice}`. Nothing happened, your balance stays the same.', view=self)
         else:
-            await self.message.edit(won_message, view=self)
+            await self.message.edit(content=won_message, view=self)
             won = True
 
         if won is True:
