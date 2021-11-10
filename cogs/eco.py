@@ -244,7 +244,7 @@ class RPSView(disnake.ui.View):
 
     def disable_buttons(self, button):
         for item in self.children:
-            if item.label != button.style:
+            if item.label != button.label:
                 item.style = disnake.ButtonStyle.gray
             item.disabled = True
 
