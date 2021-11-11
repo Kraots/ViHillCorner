@@ -2,7 +2,7 @@ from typing import Any, Dict, Optional, List, Union
 import asyncio
 
 import disnake
-from disnake import ApplicationCommandInteraction
+from disnake import ApplicationCommandInteraction, MessageInteraction
 
 from . import menus
 
@@ -62,7 +62,7 @@ class RoboPages(disnake.ui.View):
         else:
             return {}
 
-    async def show_page(self, interaction: disnake.Interaction, page_number: int) -> None:
+    async def show_page(self, interaction: MessageInteraction, page_number: int) -> None:
         page = await self.source.get_page(page_number)
         self.current_page = page_number
         kwargs = await self._get_kwargs_from_page(page)
@@ -100,7 +100,7 @@ class RoboPages(disnake.ui.View):
                 self.go_to_previous_page.disabled = True
                 self.go_to_previous_page.label = '…'
 
-    async def show_checked_page(self, interaction: disnake.Interaction, page_number: int) -> None:
+    async def show_checked_page(self, interaction: MessageInteraction, page_number: int) -> None:
         max_pages = self.source.get_max_pages()
         try:
             if max_pages is None:
@@ -112,7 +112,7 @@ class RoboPages(disnake.ui.View):
             # An error happened that can be handled, so ignore it.
             pass
 
-    async def interaction_check(self, interaction: disnake.Interaction) -> bool:
+    async def interaction_check(self, interaction: MessageInteraction) -> bool:
         if interaction.user and interaction.user.id in (self.ctx.bot._owner_id, self.ctx.author.id):
             return True
         await interaction.response.send_message('This pagination menu cannot be controlled by you, sorry!', ephemeral=True)
@@ -124,7 +124,7 @@ class RoboPages(disnake.ui.View):
         else:
             await self.ctx.response.edit_message(view=None)
 
-    async def on_error(self, error: Exception, item: disnake.ui.Item, interaction: disnake.Interaction) -> None:
+    async def on_error(self, error: Exception, item: disnake.ui.Item, interaction: MessageInteraction) -> None:
         if interaction.response.is_done():
             await interaction.followup.send('An unknown error occurred, sorry', ephemeral=True)
         else:
@@ -145,32 +145,32 @@ class RoboPages(disnake.ui.View):
             self.message = await self.ctx.send(**kwargs, view=self)
 
     @disnake.ui.button(label='≪', style=disnake.ButtonStyle.grey)
-    async def go_to_first_page(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def go_to_first_page(self, button: disnake.ui.Button, interaction: MessageInteraction):
         """go to the first page"""
         await self.show_page(interaction, 0)
 
     @disnake.ui.button(label='Back', style=disnake.ButtonStyle.blurple)
-    async def go_to_previous_page(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def go_to_previous_page(self, button: disnake.ui.Button, interaction: MessageInteraction):
         """go to the previous page"""
         await self.show_checked_page(interaction, self.current_page - 1)
 
     @disnake.ui.button(label='Current', style=disnake.ButtonStyle.grey, disabled=True)
-    async def go_to_current_page(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def go_to_current_page(self, button: disnake.ui.Button, interaction: MessageInteraction):
         pass
 
     @disnake.ui.button(label='Next', style=disnake.ButtonStyle.blurple)
-    async def go_to_next_page(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def go_to_next_page(self, button: disnake.ui.Button, interaction: MessageInteraction):
         """go to the next page"""
         await self.show_checked_page(interaction, self.current_page + 1)
 
     @disnake.ui.button(label='≫', style=disnake.ButtonStyle.grey)
-    async def go_to_last_page(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def go_to_last_page(self, button: disnake.ui.Button, interaction: MessageInteraction):
         """go to the last page"""
         # The call here is safe because it's guarded by skip_if
         await self.show_page(interaction, self.source.get_max_pages() - 1)
 
     @disnake.ui.button(label='Skip to page...', style=disnake.ButtonStyle.grey)
-    async def numbered_page(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def numbered_page(self, button: disnake.ui.Button, interaction: MessageInteraction):
         """lets you type a page number to go to"""
         if self.input_lock.locked():
             await interaction.response.send_message('Already waiting for your response...', ephemeral=True)
@@ -198,7 +198,7 @@ class RoboPages(disnake.ui.View):
                 await self.show_checked_page(interaction, page - 1)
 
     @disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red)
-    async def stop_pages(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def stop_pages(self, button: disnake.ui.Button, interaction: MessageInteraction):
         """stops the pagination session."""
         await interaction.response.defer()
         await interaction.delete_original_message()
@@ -374,7 +374,7 @@ class EmbedPaginator(disnake.ui.View):
         self.embeds = embeds
         self.current_page = 0
 
-    async def interaction_check(self, interaction: disnake.Interaction) -> bool:
+    async def interaction_check(self, interaction: MessageInteraction) -> bool:
         if interaction.user and interaction.user.id in (self.ctx.bot._owner_id, self.ctx.author.id):
             return True
         await interaction.response.send_message('This pagination menu cannot be controlled by you, sorry!', ephemeral=True)
@@ -399,31 +399,31 @@ class EmbedPaginator(disnake.ui.View):
             await inter.response.edit_message(embed=embed)
 
     @disnake.ui.button(label='≪', style=disnake.ButtonStyle.grey)
-    async def go_to_first_page(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def go_to_first_page(self, button: disnake.ui.Button, interaction: MessageInteraction):
         """Go to the first page."""
 
-        await self.show_page(0)
+        await self.show_page(interaction, 0)
 
     @disnake.ui.button(label='Back', style=disnake.ButtonStyle.blurple)
-    async def go_to_previous_page(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def go_to_previous_page(self, button: disnake.ui.Button, interaction: MessageInteraction):
         """Go to the previous page."""
 
-        await self.show_page(self.current_page - 1)
+        await self.show_page(interaction, self.current_page - 1)
 
     @disnake.ui.button(label='Next', style=disnake.ButtonStyle.blurple)
-    async def go_to_next_page(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def go_to_next_page(self, button: disnake.ui.Button, interaction: MessageInteraction):
         """Go to the next page."""
 
-        await self.show_page(self.current_page + 1)
+        await self.show_page(interaction, self.current_page + 1)
 
     @disnake.ui.button(label='≫', style=disnake.ButtonStyle.grey)
-    async def go_to_last_page(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def go_to_last_page(self, button: disnake.ui.Button, interaction: MessageInteraction):
         """Go to the last page."""
 
-        await self.show_page(len(self.embeds) - 1)
+        await self.show_page(interaction, len(self.embeds) - 1)
 
     @disnake.ui.button(label='Quit', style=disnake.ButtonStyle.red)
-    async def stop_pages(self, button: disnake.ui.Button, interaction: disnake.Interaction):
+    async def stop_pages(self, button: disnake.ui.Button, interaction: MessageInteraction):
         """Stops the pagination session."""
 
         await interaction.response.defer()
@@ -434,4 +434,7 @@ class EmbedPaginator(disnake.ui.View):
         """Start paginating over the embeds."""
         embed = self.embeds[0]
         embed.set_footer(text=f'Page 1/{len(self.embeds)}')
+        if isinstance(self.ctx, ApplicationCommandInteraction):
+            self.message = await self.ctx.response.send_message(embed=embed, view=self)
+            return
         self.message = await self.ctx.send(embed=embed, view=self)
