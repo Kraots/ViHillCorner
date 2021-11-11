@@ -212,9 +212,10 @@ class Anime(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
-        if member.id == 374622847672254466:
-            return
-        await self.db.delete_one({"_id": member.id})
+        if member.id != 374622847672254466:
+            usr: Alist = await Alist.find_one({"_id": member.id})
+            if usr:
+                await usr.delete()
 
 
 def setup(bot):
