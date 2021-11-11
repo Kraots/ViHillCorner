@@ -384,11 +384,13 @@ class EmbedPaginator(disnake.ui.View):
         if self.message:
             await self.message.edit(view=None)
 
-    async def show_page(self, inter: ApplicationCommandInteraction, page_number: int):
+    async def show_page(self, inter: MessageInteraction, page_number: int):
         if (
             (page_number < 0) or
             (page_number > len(self.embeds) - 1)
         ):
+            if not inter.response.is_done():
+                await inter.response.defer()
             return
         self.current_page = page_number
         embed = self.embeds[page_number]
@@ -435,6 +437,9 @@ class EmbedPaginator(disnake.ui.View):
         embed = self.embeds[0]
         embed.set_footer(text=f'Page 1/{len(self.embeds)}')
         if isinstance(self.ctx, ApplicationCommandInteraction):
-            self.message = await self.ctx.response.send_message(embed=embed, view=self)
+            if not self.ctx.response.is_done():
+                self.message = await self.ctx.response.send_message(embed=embed, view=self)
+            else:
+                self.message = await self.ctx.followup.send(embed=embed, view=self)
             return
         self.message = await self.ctx.send(embed=embed, view=self)

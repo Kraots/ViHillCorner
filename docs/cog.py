@@ -4,7 +4,7 @@ import asyncio
 import sys
 import string as st
 from types import SimpleNamespace
-from typing import Dict, NamedTuple, Optional, List, Tuple
+from typing import Dict, NamedTuple, Optional, List
 
 import aiohttp
 import disnake
@@ -16,7 +16,7 @@ from .converters import Inventory, PackageName
 from .lock import SharedEvent
 from .messages import send_denial
 from cogs.dev import QuitButton
-from utils.paginator import ToDoMenu
+from utils.paginator import ToDoMenu, EmbedPaginator
 from utils.databases import Doc
 from utils import fuzzy
 from .utils import create_task, Scheduler
@@ -239,7 +239,7 @@ class Docs(commands.Cog):
 
         self.refresh_event.set()
 
-    def get_symbol_item(self, symbol_name: str) -> Tuple[str, Optional[DocItem]]:
+    def get_symbol_item(self, symbol_name: str) -> List[str, Optional[DocItem]]:
         """
         Get the `DocItem` and the symbol name used to fetch it from the `doc_symbols` dict.
 
@@ -247,12 +247,9 @@ class Docs(commands.Cog):
         the first word of the name will be attempted to be used to get the item.
         """
 
-        doc_item = self.doc_symbols.get(symbol_name)
-        if doc_item is None and " " in symbol_name:
-            symbol_name = symbol_name.split(" ", maxsplit=1)[0]
-            doc_item = self.doc_symbols.get(symbol_name)
-
-        return symbol_name, doc_item
+        doc_symbols = list(self.doc_symbols.items())
+        matches = fuzzy.finder(symbol_name, doc_symbols, key=lambda t: t[0], lazy=False)[:3]
+        return matches
 
     async def get_symbol_markdown(self, doc_item: DocItem) -> str:
         """
@@ -276,7 +273,7 @@ class Docs(commands.Cog):
 
         return markdown
 
-    async def create_symbol_embed(self, symbol_name: str) -> Optional[disnake.Embed]:
+    async def create_symbol_embed(self, symbol_name: str) -> Optional[List[disnake.Embed]]:
         """
         Attempt to scrape and fetch the data for the given `symbol_name`, and build an embed from its contents.
         If the symbol is known, an Embed with documentation about it is returned.
@@ -286,16 +283,19 @@ class Docs(commands.Cog):
         # Ensure a refresh can't run in case of a context switch until the with block is exited
         with self.symbol_get_event:
             data = self.get_symbol_item(symbol_name)
-            symbol_name, doc_item = data
-            if doc_item is None:
+            if len(data) == 0:
                 return None
+            embeds = []
+            for i in data:
+                symbol_name, doc_item = i
 
-            embed = disnake.Embed(
-                title=disnake.utils.escape_markdown(symbol_name),
-                url=f"{doc_item.url}#{doc_item.symbol_id}",
-                description=await self.get_symbol_markdown(doc_item)
-            )
-            return embed
+                embed = disnake.Embed(
+                    title=disnake.utils.escape_markdown(symbol_name),
+                    url=f"{doc_item.url}#{doc_item.symbol_id}",
+                    description=await self.get_symbol_markdown(doc_item)
+                )
+                embeds.append(embed)
+            return embeds
 
     @commands.slash_command(name="docs")
     async def docs_group(self, inter) -> None:
@@ -341,15 +341,20 @@ class Docs(commands.Cog):
 
         await inter.response.defer()
         symbol = symbol_name.strip("`")
-        doc_embed = await self.create_symbol_embed(symbol)
+        doc_embeds = await self.create_symbol_embed(symbol)
 
-        if doc_embed is None:
+        if doc_embeds is None:
             view = QuitButton(inter, timeout=NOT_FOUND_DELETE_DELAY, delete_after=True)
             view.message = await send_denial(inter, "No documentation found for the requested symbol.", view=view)
 
         else:
-            view = QuitButton(inter)
-            await inter.followup.send(embed=doc_embed, view=view)
+            if len(doc_embeds) == 1:
+                view = QuitButton(inter)
+                await inter.followup.send(embed=doc_embeds[0], view=view)
+                return
+
+            paginator = EmbedPaginator(inter, doc_embeds)
+            await paginator.start()
 
     @staticmethod
     def base_url_from_inventory_url(inventory_url: str) -> str:
