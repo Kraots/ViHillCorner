@@ -175,7 +175,7 @@ class Anime(commands.Cog):
         try:
             rec = data.alist.pop(n)
         except IndexError:
-            await ctx.send(f"No recommendation with that number found. {ctx.author.mention}")
+            return await ctx.send(f"No recommendation with that number found. {ctx.author.mention}")
 
         await data.commit()
         await ctx.send(f"Successfully removed **{rec}** from your anime list. {ctx.author.mention}")
@@ -199,7 +199,7 @@ class Anime(commands.Cog):
         try:
             rec = data.mlist.pop(n)
         except IndexError:
-            await ctx.send(f"No recommendation with that number found. {ctx.author.mention}")
+            return await ctx.send(f"No recommendation with that number found. {ctx.author.mention}")
 
         await data.commit()
         await ctx.send(f"Successfully removed **{rec}** from your manga list. {ctx.author.mention}")
