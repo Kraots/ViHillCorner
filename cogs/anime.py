@@ -73,7 +73,7 @@ class Anime(commands.Cog):
         data: Alist = await Alist.find_one({'_id': member.id})
 
         if data and data.mlist:
-            p = AlistPages(ctx=ctx, entries=data.mlist, per_page=10, title=f"Here's `{member.display_name}`'s manga list:", color=Colours.reds)
+            p = AlistPages(ctx=ctx, entries=data.mlist, per_page=10, title=f"Here's `{member.display_name}`'s manga list:", color=Colours.blurple)
             await p.start()
 
         else:

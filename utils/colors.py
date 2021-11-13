@@ -17,7 +17,7 @@ class Colours:
         - `pastel`
         - `yellow`
         - `light_pink`
-        - `blue`
+        - `blurple`
         - `reds`
         - `light_blue`
     """
