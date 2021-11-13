@@ -326,7 +326,16 @@ class Moderator(commands.Cog):
                     await channel.send(embed=em, reference=message)
                     em = message.embeds[0]
                     em.color = disnake.Color.red()
-                    await message.edit(embed=em)
+                    em.title = em.title.replace('Expires', 'Expired')
+                    view = disnake.ui.View()
+                    for comp in message.components:
+                        for btn in comp.children:
+                            btn = btn.to_dict()
+                            del btn['type']
+                            btn['disabled'] = True
+                            button = disnake.ui.Button(**btn)
+                            view.add_item(button)
+                    await message.edit(embed=em, view=view)
                     await message.unpin(reason='Poll expired.')
                     try:
                         view = self.bot.poll_views[message.id]
