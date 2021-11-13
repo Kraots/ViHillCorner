@@ -7,6 +7,7 @@ from disnake.ext import commands
 from disnake.ext.commands import Greedy
 
 from utils.context import Context
+from utils.databases import Marriage
 
 from main import ViHillCorner
 
@@ -71,7 +72,6 @@ class Actions(commands.Cog):
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db = bot.db1['Marry Data']
         self.prefix = ";"
 
     async def cog_check(self, ctx: Context):
@@ -367,8 +367,8 @@ class Actions(commands.Cog):
             return
 
         else:
-            result = await self.db.find_one({"_id": member.id})
-            get_marry = await self.db.find_one({"_id": member.id})
+            result: Marriage = await Marriage.find_one({"_id": member.id})
+            get_marry: Marriage = await Marriage.find_one({"_id": member.id})
 
             if result is None:
                 return await ctx.send(
@@ -380,7 +380,7 @@ class Actions(commands.Cog):
                 )
 
             else:
-                user = self.bot.get_user(get_marry["married_to"])
+                user = self.bot.get_user(get_marry.married_to)
 
                 if ctx.author.id == user.id:
 
