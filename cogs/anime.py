@@ -78,7 +78,7 @@ class Anime(commands.Cog):
 
         else:
             if ctx.author.id == member.id:
-                await ctx.send("You do not have a manga list! Type: `!alist set <recommendations>` to set your manga list!")
+                await ctx.send("You do not have a manga list! Type: `!mlist set <recommendations>` to set your manga list!")
                 return
 
             else:
@@ -246,7 +246,7 @@ class Anime(commands.Cog):
                 return await msg.edit(content=e, view=view)
 
         else:
-            await ctx.send("You do not have an manga list! Type: `!alist set <recommendations>` to set your manga list!")
+            await ctx.send("You do not have an manga list! Type: `!mlist set <recommendations>` to set your manga list!")
 
     @alist.command(name='remove')
     @commands.is_owner()
