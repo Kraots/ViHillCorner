@@ -343,6 +343,7 @@ class Moderator(commands.Cog):
                                 btn = btn.to_dict()
                                 del btn['type']
                                 btn['disabled'] = True
+                                btn['emoji'] = btn['emoji']['name']
                                 button = disnake.ui.Button(**btn)
                                 v.add_item(button)
                         await message.edit(view=v)
