@@ -343,7 +343,6 @@ class General(commands.Cog):
         await ctx.reply(embed=em)
 
     @commands.command(aliases=['src'])
-    @commands.is_owner()
     async def source(self, ctx: Context, *, command: str = None):
         """Sends the source of code for the specified command if any, if not then just the link to the github repository."""
 
