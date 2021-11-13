@@ -10,14 +10,14 @@ from utils import time
 from utils.colors import Colours
 from utils.context import Context
 from utils.paginator import RoboPages, FieldPageSource
+from utils.databases import Level
 
 from main import ViHillCorner
 
 
 class MessagesTopButtons(disnake.ui.View):
-    def __init__(self, db, ctx, *, timeout=180.0):
+    def __init__(self, ctx, *, timeout=180.0):
         super().__init__(timeout=timeout)
-        self.db = db
         self.ctx = ctx
 
     async def interaction_check(self, interaction: disnake.MessageInteraction):
@@ -43,20 +43,20 @@ class MessagesTopButtons(disnake.ui.View):
         top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
         guild = self.ctx.bot.get_guild(750160850077089853)
 
-        results = await self.db.find().sort("messages_count", -1).to_list(100000)
+        results: list[Level] = await Level.find().sort("messages_count", -1).to_list(100000)
         for result in results:
-            if result['messages_count'] != 0:
+            if result.messages_count != 0:
                 index += 1
-                mem = guild.get_member(result['_id'])
+                mem = guild.get_member(result.id)
                 if index in (1, 2, 3):
                     place = top_3_emojis[index]
                 else:
                     place = f'`#{index:,}`'
                 if mem == self.ctx.author:
-                    to_append = (f'**{place} {mem.name} (YOU)**', f"**{result['messages_count']:,}** messages")
+                    to_append = (f'**{place} {mem.name} (YOU)**', f"**{result.messages_count:,}** messages")
                     data.append(to_append)
                 else:
-                    to_append = (f'{place} {mem.name}', f"**{result['messages_count']:,}** messages")
+                    to_append = (f'{place} {mem.name}', f"**{result.messages_count:,}** messages")
                     data.append(to_append)
         source = FieldPageSource(data, per_page=10)
         source.embed.title = 'Top most active users'
@@ -74,20 +74,20 @@ class MessagesTopButtons(disnake.ui.View):
         top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
         guild = self.ctx.bot.get_guild(750160850077089853)
 
-        results = await self.db.find().sort("weekly_messages_count", -1).to_list(100000)
+        results: list[Level] = await Level.find().sort("weekly_messages_count", -1).to_list(100000)
         for result in results:
-            if result['weekly_messages_count'] != 0:
+            if result.weekly_messages_count != 0:
                 index += 1
-                mem = guild.get_member(result['_id'])
+                mem = guild.get_member(result.id)
                 if index in (1, 2, 3):
                     place = top_3_emojis[index]
                 else:
                     place = f'`#{index:,}`'
                 if mem == self.ctx.author:
-                    to_append = (f'**{place} {mem.name} (YOU)**', f"**{result['weekly_messages_count']:,}** messages")
+                    to_append = (f'**{place} {mem.name} (YOU)**', f"**{result.weekly_messages_count:,}** messages")
                     data.append(to_append)
                 else:
-                    to_append = (f'{place} {mem.name}', f"**{result['weekly_messages_count']:,}** messages")
+                    to_append = (f'{place} {mem.name}', f"**{result.weekly_messages_count:,}** messages")
                     data.append(to_append)
         source = FieldPageSource(data, per_page=10)
         source.embed.title = 'This week\'s most active members'
@@ -108,7 +108,6 @@ class Messages(commands.Cog):
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db = bot.db2['Levels']
         self.weekly_reset.start()
         self.prefix = "!"
 
@@ -122,18 +121,18 @@ class Messages(commands.Cog):
     @tasks.loop(minutes=1)
     async def weekly_reset(self):
         await self.bot.wait_until_ready()
-        results = await self.db.find_one({"_id": 374622847672254466})
-        resetWhen = results['weekly_reset']
-        a = datetime.datetime.utcnow().strftime('%Y-%m-%d')
-        dateNow = datetime.datetime.strptime(a, '%Y-%m-%d')
+        kraots: Level = await Level.find_one({"_id": 374622847672254466})
+        reset_when = kraots.weekly_reset
+        dt = datetime.datetime.utcnow().strftime('%Y-%m-%d')
+        date_now = datetime.datetime.strptime(dt, '%Y-%m-%d')
 
-        if dateNow >= resetWhen:
+        if date_now >= reset_when:
             users = {}
             index = 0
-            results = await self.db.find().sort("weekly_messages_count", -1).to_list(3)
+            results: list[Level] = await Level.find().sort("weekly_messages_count", -1).to_list(3)
             for result in results:
                 index += 1
-                user = self.bot.get_user(result['_id'])
+                user = self.bot.get_user(result.id)
                 users[index] = user
             _1stplace = users[1]
             _2ndplace = users[2]
@@ -154,23 +153,31 @@ class Messages(commands.Cog):
                 f"\nThe others placed:\n\u2800• **{_1stplace}** -> `1st`\n\u2800• **{_2ndplace}** -> `2nd`"
             )
 
-            await self.db.update_many({}, {"$set": {"weekly_messages_count": 0}})
-            x = dateNow + relativedelta(weeks=1)
-            await self.db.update_one({'_id': 374622847672254466}, {'$set': {'weekly_reset': x}})
+            async for usr in Level.find():
+                usr.weekly_messages_count = 0
+                await usr.commit()
+            new_date = date_now + relativedelta(weeks=1)
+            kraots.weekly_reset = new_date
+            await kraots.commit()
 
     @commands.Cog.listener()
     async def on_message(self, message: disnake.Message):
         if message.author.bot:
             return
-        data = await self.db.find_one({'_id': message.author.id})
+        data: Level = await Level.find_one({'_id': message.author.id})
         if data is None:
             try:
-                newuser = {"_id": message.author.id, "xp": 0, "messages_count": 0, "weekly_messages_count": 0}
-                await self.db.insert_one(newuser)
+                await Level(
+                    id=message.author.id,
+                    xp=0,
+                    messages_count=0,
+                    weekly_messages_count=0
+                ).commit()
                 return
             except pymongo.errors.DuplicateKeyError:
                 return
-        await self.db.update_one({"_id": message.author.id}, {"$inc": {"messages_count": 1}})
+        data.messages_count += 1
+        await data.commit()
 
     @commands.group(name='messages', invoke_without_command=True, case_insensitive=True, aliases=['msg'])
     async def _msgs(self, ctx: Context, member: disnake.Member = None):
@@ -178,13 +185,13 @@ class Messages(commands.Cog):
 
         member = member or ctx.author
 
-        user_db = await self.db.find_one({'_id': member.id})
+        user_db: Level = await Level.find_one({'_id': member.id})
         if user_db is None:
             return await ctx.reply(f'`{member.display_name}` sent no messages.')
         em = disnake.Embed(color=Colours.light_pink)
         em.set_author(name=f'{member.display_name}\'s message stats', icon_url=member.display_avatar)
-        em.add_field(name='Total Messages', value=f"`{user_db['messages_count']:,}`")
-        em.add_field(name='Weekly Messages', value=f"`{user_db['weekly_messages_count']:,}`")
+        em.add_field(name='Total Messages', value=f"`{user_db.messages_count:,}`")
+        em.add_field(name='Weekly Messages', value=f"`{user_db.weekly_messages_count:,}`")
         em.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
         await ctx.send(embed=em)
 
@@ -193,7 +200,7 @@ class Messages(commands.Cog):
     async def msg_add(self, ctx: Context, member: disnake.Member, amount: str):
         """Add a certain amount of messages for the member."""
 
-        usr_db = await self.db.find_one({'_id': member.id})
+        usr_db: Level = await Level.find_one({'_id': member.id})
         if usr_db is None:
             return await ctx.reply('User not in the database.')
 
@@ -203,7 +210,8 @@ class Messages(commands.Cog):
         except ValueError:
             return await ctx.reply('Master, the amount must be an integer 🥺')
 
-        await self.db.update_one({'_id': member.id}, {'$inc': {'messages_count': amount}})
+        usr_db.messages_count += amount
+        await usr_db.commit()
         await ctx.send(content=f'Added `{amount:,}` messages to {member.mention}')
 
     @_msgs.command(name='set')
@@ -211,7 +219,7 @@ class Messages(commands.Cog):
     async def msg_set(self, ctx: Context, member: disnake.Member, amount: str):
         """Set the amount of messages for the member."""
 
-        usr_db = await self.db.find_one({'_id': member.id})
+        usr_db: Level = await Level.find_one({'_id': member.id})
         if usr_db is None:
             return await ctx.reply('User not in the database.')
 
@@ -221,7 +229,7 @@ class Messages(commands.Cog):
         except ValueError:
             return await ctx.reply('Master, the amount must be an integer 🥺')
 
-        await self.db.update_one({'_id': member.id}, {'$set': {'messages_count': amount}})
+        usr_db.messages_count = amount
         await ctx.send(content=f'Added `{amount:,}` messages to {member.mention}')
 
     @_msgs.command(name='reset')
@@ -229,7 +237,7 @@ class Messages(commands.Cog):
     async def msg_reset(self, ctx: Context, member: disnake.Member):
         """Reset the amount of total messages for the member."""
 
-        usr_db = await self.db.find_one({'_id': member.id})
+        usr_db: Level = await Level.find_one({'_id': member.id})
         if usr_db is None:
             return await ctx.reply('User not in the database.')
 
@@ -237,7 +245,8 @@ class Messages(commands.Cog):
         view.message = msg = await ctx.send("Are you sure you want to reset the total message count for member %s?" % (member.mention), view=view)
         await view.wait()
         if view.response is True:
-            await self.db.update_one({'_id': member.id}, {'$set': {'messages_count': 0}})
+            usr_db.messages_count = 0
+            await usr_db.commit()
             return await msg.edit(content='The total message count for member **%s** has been reset successfully.' % (member), view=view)
 
         elif view.response is False:
@@ -250,7 +259,7 @@ class Messages(commands.Cog):
         if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
             return
 
-        view = MessagesTopButtons(self.db, ctx)
+        view = MessagesTopButtons(ctx)
         em = disnake.Embed(title='Please click the button of the top you wish to see.', color=Colours.reds)
         view.message = await ctx.send(embed=em, view=view)
 
@@ -258,19 +267,24 @@ class Messages(commands.Cog):
     async def msg_top_remaining(self, ctx: Context):
         """Check how much time until the top ends."""
 
-        data = await self.db.find_one({'_id': self.bot._owner_id})
-        await ctx.send(f"The weekly top resets in: `{time.human_timedelta(data['weekly_reset'])}`")
+        data: Level = await Level.find_one({'_id': self.bot._owner_id})
+        await ctx.send(f"The weekly top resets in: `{time.human_timedelta(data.weekly_reset)}`")
 
     @msg_top.command(name='reset')
     @commands.is_owner()
     async def msg_top_reset(self, ctx: Context, member: disnake.Member):
         """Reset the amount of weekly messages for the member."""
 
+        usr_db: Level = await Level.find_one({'_id': member.id})
+        if usr_db is None:
+            return await ctx.reply('User not in the database.')
+
         view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
         view.message = msg = await ctx.send("Are you sure you want to reset the message count for this week for member %s?" % (member.mention), view=view)
         await view.wait()
         if view.response is True:
-            await self.db.update_one({'_id': member.id}, {'$set': {'weekly_messages_count': 0}})
+            usr_db.weekly_messages_count = 0
+            await usr_db.commit()
             return await msg.edit(content='The message count for this week for member **%s** has been reset successfully.' % (member), view=view)
 
         elif view.response is False:
