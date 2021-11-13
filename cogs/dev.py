@@ -114,7 +114,8 @@ class Developer(commands.Cog):
             "_channel": ctx.channel,
             "_author": ctx.author,
             "_guild": ctx.guild,
-            "_message": ctx.message
+            "_message": ctx.message,
+            "colours": Colours
         }
         start = time.perf_counter()
 
