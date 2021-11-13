@@ -327,23 +327,25 @@ class Moderator(commands.Cog):
                     em = message.embeds[0]
                     em.color = disnake.Color.red()
                     em.title = em.title.replace('Expires', 'Expired')
-                    view = disnake.ui.View()
-                    for comp in message.components:
-                        for btn in comp.children:
-                            btn = btn.to_dict()
-                            del btn['type']
-                            btn['disabled'] = True
-                            button = disnake.ui.Button(**btn)
-                            view.add_item(button)
-                    await message.edit(embed=em, view=view)
+                    await message.edit(embed=em)
                     await message.unpin(reason='Poll expired.')
                     try:
                         view = self.bot.poll_views[message.id]
                         view.stop()
+                        for btn in view.children:
+                            btn.disabled = True
                         await message.edit(view=view)
                         del self.bot.poll_views[message.id]
                     except KeyError:
-                        pass
+                        v = disnake.ui.View()
+                        for comp in message.components:
+                            for btn in comp.children:
+                                btn = btn.to_dict()
+                                del btn['type']
+                                btn['disabled'] = True
+                                button = disnake.ui.Button(**btn)
+                                v.add_item(button)
+                        await message.edit(view=v)
 
     @check_current_mutes.before_loop
     @check_polls.before_loop
