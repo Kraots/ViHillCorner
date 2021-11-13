@@ -104,7 +104,7 @@ class Anime(commands.Cog):
 
     @mlist.command(name='set')
     async def mlist_set(self, ctx: Context, *, mangas: str):
-        """Set your anime list."""
+        """Set your manga list."""
 
         args = mangas
         data: Alist = await Alist.find_one({'_id': ctx.author.id})
