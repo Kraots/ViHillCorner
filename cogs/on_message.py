@@ -112,17 +112,17 @@ class on_message(commands.Cog):
 
         if message.guild is None and not message.author.bot:
             em = disnake.Embed(
-                title=f'{message.author}:',
                 description=f'{message.content}',
                 color=Colours.invisible,
                 timestamp=message.created_at.replace(tzinfo=None)
             )
+            em.set_author(name=str(message.author) + ':', icon_url=message.author.display_avatar)
             em.set_footer(text=f'User ID: {message.author.id}')
 
             if message.attachments:
                 em.set_image(url=message.attachments[0].proxy_url)
 
-            if message.author.id == self.bot._owner.id:
+            if message.author.id == self.bot._owner_id:
                 return
 
             else:
