@@ -426,7 +426,7 @@ class Misc(commands.Cog):
         em = disnake.Embed(color=Colours.light_pink)
         em.add_field(name='Name | ID', value=f"{guild.name}  |  {guild.id}")
         em.add_field(name='Owner', value=guild.owner, inline=False)
-        em.add_field(name='Users', value=f"{len([m for m in guild.members if not m.bot])} members | {len([m for m in guild.members if m.bot])} bots")
+        em.add_field(name='Users', value=f"{len([m for m in guild.members if not m.bot])} humans | {len([m for m in guild.members if m.bot])} bots")
         em.add_field(name='Currently Online', value=online)
         em.add_field(name='Text Channels', value=str(channel_count))
         em.add_field(name='Region', value=guild.region)
