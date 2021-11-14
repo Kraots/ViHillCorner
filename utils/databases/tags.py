@@ -14,7 +14,7 @@ class Tag(Document):
     content = StrField(required=True)
     owner_id = IntField(required=True)
     uses_count = IntField(required=True)
-    aliases = ListField(StrField())
+    aliases = ListField(StrField(), default=[])
     created_at = StrField(required=True)
 
     class Meta:
