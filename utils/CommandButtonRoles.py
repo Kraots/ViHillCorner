@@ -54,7 +54,7 @@ class CommandButtonRole(disnake.ui.Select['ButtonRoleView']):
 
 
 class ButtonRoleView(disnake.ui.View):
-    def __init__(self, inter, *, timeout=180.0):
+    def __init__(self, inter, *, timeout=None):
         super().__init__(timeout=timeout)
         self.inter = inter
         self.add_item(CommandButtonRole())
@@ -102,7 +102,7 @@ class OwnerCommandButtonRole(disnake.ui.Select['ButtonRoleView']):
 
 
 class ButtonRoleViewOwner(disnake.ui.View):
-    def __init__(self, inter, *, timeout=180.0):
+    def __init__(self, inter, *, timeout=None):
         super().__init__(timeout=timeout)
         self.inter = inter
         self.add_item(OwnerCommandButtonRole())
