@@ -877,7 +877,7 @@ class Misc(commands.Cog):
         em = disnake.Embed(
             title=f'Ticket #{ticket_id}',
             description='Hello, thanks for creating a ticket. '
-                        'Please send write out what made you feel like you needed to create a ticket '
+                        'Please write out what made you feel like you needed to create a ticket '
                         'and be patient until one of our staff members give you a proper answer.'
         )
         m = await channel.send(
