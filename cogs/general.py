@@ -170,13 +170,13 @@ class General(commands.Cog):
     @commands.command()
     async def membercount(self, ctx: Context):
         """
-        See how many members there are in the server
-        *This does not include bots, only human members
+        See how many members there are in the server.
+        *This does not include bots, only human members.*
         """
 
         guild = self.bot.get_guild(750160850077089853)
         member_count = len([m for m in guild.members if not m.bot])
-        member_count = f'`{member_count}` members.'
+        member_count = f'`{member_count}` humans.'
         await ctx.send(member_count, reference=ctx.replied_reference)
 
     @commands.command(name='av', aliases=["avatar"])
@@ -235,13 +235,19 @@ class General(commands.Cog):
     async def random_number(self, ctx: Context, num1: int = None, num2: int = None, num3: int = None):
         """
         Get a random number depending on the amount of numbers you give
-        If you don't provide any number, the bot will give a random number between `0` and the `largest positive integer supported by the machine`.
+        If you don't provide any number, the bot will give a random number
+        between `0` and the `largest positive integer supported by the machine`.
 
-        If you provide only one number, then the bot will give a random number between `0` and `your chosen number (num1)`.
+        If you provide only one number, then the bot will give a random number
+        between `0` and `your chosen number (num1)`.
 
-        If you provide two numbers only, then the bot will give you a random number between `your first number (num1)` and `your second number (num2)`.
+        If you provide two numbers only, then the bot will give you a random
+        number between `your first number (num1)` and `your second number (num2)`.
 
-        If you provide all three numbers, then the bot will give a random number between `your first number (num1)` and `your second number (num2)`, that is not `your third number (num3)`, this can be used if you want a random number between 2 numbers that is not a specific one, here's some examples:
+        If you provide all three numbers, then the bot will give a random number
+        between `your first number (num1)` and `your second number (num2)`,
+        that is not `your third number (num3)`, this can be used if you want
+        a random number between 2 numbers that is not a specific one, here's some examples:
         • `10 15 13 - will give a number between 10 and 15 that is not 13`
         • `0 10 5 - will give a number between 0 and 10 that is not 5`
         • `20 100 50 - will give a number between 20 and 100 that is not 50`
