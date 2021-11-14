@@ -164,7 +164,7 @@ class TicketView(View):
             em.description = f'You closed ticket `#{ticket.ticket_id}` ' \
                              f'that you created on: {disnake.utils.format_dt(ticket.created_at, "F")}'
         else:
-            em.description = f'You closed {inter.guild.get_member(ticket.user_id)}\'s ticket ' \
+            em.description = f'You closed **{(inter.guild.get_member(ticket.user_id)).name}**\'s ticket ' \
                              f'that was created on: {disnake.utils.format_dt(ticket.created_at, "F")}'
             em_2 = disnake.Embed(
                 title='Ticket closed',
