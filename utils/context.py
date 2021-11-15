@@ -52,7 +52,13 @@ class Context(commands.Context):
                 The disnake File object.
         """
 
-        img = await self.dagpi.image_process(ImageFeatures.pixel(), url=img_url)
+        while True:
+            try:
+                img = await self.dagpi.image_process(ImageFeatures.pixel(), url=img_url)
+                break
+            except Exception:
+                pass
+
         file = File(fp=img.image, filename=f'pixel.{img.format}')
         return file
 
@@ -70,7 +76,13 @@ class Context(commands.Context):
                 The disnake File object.
         """
 
-        img = await self.dagpi.image_process(ImageFeatures.ascii(), url=img_url)
+        while True:
+            try:
+                img = await self.dagpi.image_process(ImageFeatures.ascii(), url=img_url)
+                break
+            except Exception:
+                pass
+
         file = File(fp=img.image, filename=f'ascii.{img.format}')
         return file
 
@@ -88,7 +100,13 @@ class Context(commands.Context):
                 The disnake File object.
         """
 
-        img = await self.dagpi.image_process(ImageFeatures.blur(), url=img_url)
+        while True:
+            try:
+                img = await self.dagpi.image_process(ImageFeatures.blur(), url=img_url)
+                break
+            except Exception:
+                pass
+
         file = File(fp=img.image, filename=f'blur.{img.format}')
         return file
 
@@ -106,7 +124,13 @@ class Context(commands.Context):
                 The disnake File object.
         """
 
-        img = await self.dagpi.image_process(ImageFeatures.bonk(), url=img_url)
+        while True:
+            try:
+                img = await self.dagpi.image_process(ImageFeatures.bonk(), url=img_url)
+                break
+            except Exception:
+                pass
+
         file = File(fp=img.image, filename=f'bonk.{img.format}')
         return file
 
@@ -124,7 +148,13 @@ class Context(commands.Context):
                 The disnake File object.
         """
 
-        img = await self.dagpi.image_process(ImageFeatures.colors(), url=img_url)
+        while True:
+            try:
+                img = await self.dagpi.image_process(ImageFeatures.colors(), url=img_url)
+                break
+            except Exception:
+                pass
+
         file = File(fp=img.image, filename=f'colors.{img.format}')
         return file
 
@@ -142,7 +172,13 @@ class Context(commands.Context):
                 The disnake File object.
         """
 
-        img = await self.dagpi.image_process(ImageFeatures.burn(), url=img_url)
+        while True:
+            try:
+                img = await self.dagpi.image_process(ImageFeatures.burn(), url=img_url)
+                break
+            except Exception:
+                pass
+
         file = File(fp=img.image, filename=f'burn.{img.format}')
         return file
 
@@ -160,7 +196,13 @@ class Context(commands.Context):
                 The disnake File object.
         """
 
-        img = await self.dagpi.image_process(ImageFeatures.deepfry(), url=img_url)
+        while True:
+            try:
+                img = await self.dagpi.image_process(ImageFeatures.deepfry(), url=img_url)
+                break
+            except Exception:
+                pass
+
         file = File(fp=img.image, filename=f'deepfry.{img.format}')
         return file
 
@@ -178,7 +220,13 @@ class Context(commands.Context):
                 The disnake File object.
         """
 
-        img = await self.dagpi.image_process(ImageFeatures.gay(), url=img_url)
+        while True:
+            try:
+                img = await self.dagpi.image_process(ImageFeatures.gay(), url=img_url)
+                break
+            except Exception:
+                pass
+
         file = File(fp=img.image, filename=f'gay.{img.format}')
         return file
 
@@ -196,7 +244,13 @@ class Context(commands.Context):
                 The disnake File object.
         """
 
-        img = await self.dagpi.image_process(ImageFeatures.mirror(), url=img_url)
+        while True:
+            try:
+                img = await self.dagpi.image_process(ImageFeatures.mirror(), url=img_url)
+                break
+            except Exception:
+                pass
+
         file = File(fp=img.image, filename=f'mirror.{img.format}')
         return file
 
@@ -214,7 +268,13 @@ class Context(commands.Context):
                 The disnake File object.
         """
 
-        img = await self.dagpi.image_process(ImageFeatures.lego(), url=img_url)
+        while True:
+            try:
+                img = await self.dagpi.image_process(ImageFeatures.lego(), url=img_url)
+                break
+            except Exception:
+                pass
+
         file = File(fp=img.image, filename=f'lego.{img.format}')
         return file
 
@@ -232,7 +292,13 @@ class Context(commands.Context):
                 The disnake File object.
         """
 
-        img = await self.dagpi.image_process(ImageFeatures.flip(), url=img_url)
+        while True:
+            try:
+                img = await self.dagpi.image_process(ImageFeatures.flip(), url=img_url)
+                break
+            except Exception:
+                pass
+
         file = File(fp=img.image, filename=f'lego.{img.format}')
         return file
 
