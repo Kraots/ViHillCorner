@@ -210,13 +210,13 @@ class RoboPages(disnake.ui.View):
 
 class FieldPageSource(menus.ListPageSource):
     """A page source that requires (field_name, field_value) tuple items."""
+
     def __init__(self, entries, *, per_page=12):
         super().__init__(entries, per_page=per_page)
         self.embed = disnake.Embed(colour=disnake.Colour.blurple())
 
     async def format_page(self, menu, entries):
         self.embed.clear_fields()
-        self.embed.description = disnake.Embed.Empty
 
         for key, value in entries:
             self.embed.add_field(name=key, value=value, inline=False)
