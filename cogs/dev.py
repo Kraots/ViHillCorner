@@ -1,23 +1,30 @@
-from typing import Union
-import sys
-import contextlib
 import io
-import textwrap
 import os
+import sys
 import time
 import asyncio
+import textwrap
+import contextlib
+from typing import Union
 from traceback import format_exception
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 import disnake
-from disnake import ApplicationCommandInteraction
 from disnake import Member
 from disnake.ext import commands
 from disnake.ext.commands import Greedy
+from disnake import ApplicationCommandInteraction
 
-from utils.helpers import clean_code
 from utils.colors import Colours
 from utils.context import Context
-from utils.paginator import TextPage
+from utils.databases import Level
+from utils.helpers import clean_code
+from utils.paginator import (
+    TextPage,
+    FieldPageSource,
+    RoboPages
+)
 
 from .token_invalidation import TokenInvalidation, GistContent
 
@@ -148,6 +155,40 @@ class Developer(commands.Cog):
         em.set_footer(text=f'Took {took}s')
         view = QuitButton(ctx)
         view.message = await ctx.send(embed=em, view=view)
+
+    @commands.command(name='purgeall')
+    @commands.is_owner()
+    async def purge_all(self, ctx: Context, xp: int = 200):
+        """Kicks all the members that haven't gotten at least the given amount of `xp` within the last month. Default is 200."""
+
+        g = self.bot.get_guild(750160850077089853)
+        date = datetime.utcnow() - relativedelta(months=1)
+        usrs = []
+        view = disnake.ui.View()
+        view.add_item(disnake.ui.Button(label='Join Back!', url='https://discord.gg/Uf2kA8q'))
+        async for m in Level.find():
+            usr = g.get_member(m.id)
+            if m.xp <= xp and usr.joined_at.replace(tzinfo=None) <= date:
+                try:
+                    await usr.send(
+                        "Hello, you have been kicked from `ViHill Corner` "
+                        f"for not having *at least {xp}xp* within the last month, "
+                        "meaning that you were not active what-so-ever in the server. "
+                        "If you wish to come back please click the button below.",
+                        view=view
+                    )
+                except disnake.Forbidden:
+                    pass
+                usrs.append(
+                    (usr, '**Joined:**' + disnake.utils.format_dt(usr.joined_at, 'R') + '\n' + f'**Total XP:** `{m.xp}`')
+                )
+                await usr.kick(reason=f"Didn't have at least {xp}xp within the last 1mo")
+
+        source = FieldPageSource(usrs, per_page=10)
+        source.embed.description = f"Kicked a total of **{len(usrs)}** users from the server for not having *at least {xp}xp* within the last month."
+        await ctx.message.delete()
+        pages = RoboPages(source, ctx=ctx)
+        await pages.start()
 
     @commands.command()
     async def gist(self, ctx: Context, *, content: GistContent):
