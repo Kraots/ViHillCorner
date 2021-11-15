@@ -173,7 +173,7 @@ class Developer(commands.Cog):
                 try:
                     await usr.send(
                         "Hello, you have been kicked from `ViHill Corner` "
-                        f"for not having *at least {xp}xp* within the last month, "
+                        f"for not having *at least {xp:,}xp* within the last month, "
                         "meaning that you were not active what-so-ever in the server. "
                         "If you wish to come back please click the button below.",
                         view=view
@@ -182,16 +182,16 @@ class Developer(commands.Cog):
                     pass
                 usrs.append(
                     (
-                        f'{index}. {usr}',
-                        '**Joined:** ' + disnake.utils.format_dt(usr.joined_at, 'R') + '\n' + f'**Total XP:** `{m.xp}`'
+                        f'`#{index:,}` {usr}',
+                        '**Joined:** ' + disnake.utils.format_dt(usr.joined_at, 'R') + '\n' + f'**Total XP:** `{m.xp:,}`'
                     )
                 )
-                await usr.kick(reason=f"Didn't have at least {xp}xp within the last 1mo")
+                await usr.kick(reason=f"Didn't have at least {xp:,}xp within the last 1mo")
                 index += 1
 
-        source = FieldPageSource(usrs, per_page=10)
+        source = FieldPageSource(usrs, per_page=5)
         source.embed.title = f'Kicked {len(usrs)} members'
-        source.embed.description = f"Kicked a total of **{len(usrs)}** members from the server for not having *at least {xp}xp* within the last month."
+        source.embed.description = f"Kicked a total of **{len(usrs)}** members from the server for not having *at least {xp:,}xp* within the last month."
         pages = RoboPages(source, ctx=ctx)
         await pages.start()
 
