@@ -164,6 +164,7 @@ class Developer(commands.Cog):
         g = self.bot.get_guild(750160850077089853)
         date = datetime.utcnow() - relativedelta(months=1)
         usrs = []
+        index = 1
         view = disnake.ui.View()
         view.add_item(disnake.ui.Button(label='Join Back!', url='https://discord.gg/Uf2kA8q'))
         async for m in Level.find():
@@ -180,9 +181,13 @@ class Developer(commands.Cog):
                 except disnake.Forbidden:
                     pass
                 usrs.append(
-                    (usr, '**Joined:**' + disnake.utils.format_dt(usr.joined_at, 'R') + '\n' + f'**Total XP:** `{m.xp}`')
+                    (
+                        f'{index}. {usr}',
+                        '**Joined:** ' + disnake.utils.format_dt(usr.joined_at, 'R') + '\n' + f'**Total XP:** `{m.xp}`'
+                    )
                 )
                 await usr.kick(reason=f"Didn't have at least {xp}xp within the last 1mo")
+                index += 1
 
         source = FieldPageSource(usrs, per_page=10)
         source.embed.title = f'Kicked {len(usrs)} members'
