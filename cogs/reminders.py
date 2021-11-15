@@ -32,18 +32,15 @@ class Reminders(commands.Cog):
     async def remind(self, ctx: Context, *, when: time.UserFriendlyTime(commands.clean_content, default='\u2026')):  # noqa
         """Set your reminder."""
 
-        results = await self.db.find().sort("_id", -1).to_list(1)
+        res = await self.db.find().sort("_id", -1).to_list(1)
 
-        for result in results:
-            newID = result['_id'] + 1
-
-        try:
-            newID = newID
-        except UnboundLocalError:
-            newID = 1324
+        if res:
+            new_id = res['_id'] + 1
+        else:
+            new_id = 1324
 
         post = {
-            "_id": newID,
+            "_id": new_id,
             "user_id": ctx.author.id,
             "channel_id": ctx.channel.id,
             "remind_when": when.dt,
