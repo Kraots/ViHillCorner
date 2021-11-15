@@ -169,7 +169,7 @@ class Developer(commands.Cog):
         view.add_item(disnake.ui.Button(label='Join Back!', url='https://discord.gg/Uf2kA8q'))
         async for m in Level.find():
             usr = g.get_member(m.id)
-            if m.xp <= xp and usr.joined_at.replace(tzinfo=None) <= date:
+            if m.xp < xp and usr.joined_at.replace(tzinfo=None) <= date:
                 try:
                     await usr.send(
                         "Hello, you have been kicked from `ViHill Corner` "
