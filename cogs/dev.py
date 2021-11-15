@@ -187,7 +187,6 @@ class Developer(commands.Cog):
         source = FieldPageSource(usrs, per_page=10)
         source.embed.title = f'Kicked {len(usrs)} members'
         source.embed.description = f"Kicked a total of **{len(usrs)}** members from the server for not having *at least {xp}xp* within the last month."
-        await ctx.message.delete()
         pages = RoboPages(source, ctx=ctx)
         await pages.start()
 
