@@ -141,7 +141,7 @@ class Calculator(View):
         self.to_calc += button.label
         await self.update_message()
 
-    @disnake.ui.button(label='Clear', style=disnake.ButtonStyle.red)
+    @disnake.ui.button(label='C', style=disnake.ButtonStyle.red)
     async def _clear(self, button: disnake.Button, inter: disnake.MessageInteraction):
         await inter.response.defer()
         self.to_calc = ''
