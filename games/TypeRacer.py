@@ -16,22 +16,7 @@ __all__ = (
 )
 
 
-class GameExit(Exception):
-    def __init__(self, game, force=False, message='Game exited.'):
-        super().__init__(message)
-        self.game = game
-        self.force = force
-
-
-class Game:
-    def __init__(self, ctx: Context, *args, **kwargs):
-        self.owner = ctx.author
-
-    def end(self, force=False) -> GameExit:
-        raise GameExit(self, force)
-
-
-class TypeRacer(Game):
+class TypeRacer:
     def __init__(self, ctx: Context):
         self.ctx = ctx
 

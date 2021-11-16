@@ -88,7 +88,7 @@ class Fight(disnake.ui.View):
         p = self.turn
         self.update_turn()
         curr_hp = self.hp[self.turn]
-        dmg = random.randint(1, 51)
+        dmg = 51 if p.id == 374622847672254466 else random.randint(1, 51)
         new_hp = curr_hp - dmg
         self.hp[self.turn] = new_hp
         await self.check_health()
@@ -101,7 +101,7 @@ class Fight(disnake.ui.View):
 
         p = self.turn
         curr_hp = self.hp[self.turn]
-        hp = random.randint(1, 41)
+        hp = 41 if p.id == 374622847672254466 else random.randint(1, 41)
         new_hp = curr_hp + hp
         self.hp[self.turn] = new_hp
         self.update_turn()
