@@ -4,6 +4,7 @@ from disnake.ext import commands
 from utils.colors import Colours
 from utils.context import Context
 from utils.paginator import ToDoMenu
+from utils.databases import ToDos
 
 from main import ViHillCorner
 
@@ -11,10 +12,10 @@ from main import ViHillCorner
 class ToDoPageEntry:
     def __init__(self, entry):
 
-        self.data = entry['data']
+        self.todo = entry['todo']
 
     def __str__(self):
-        return f'{self.data}'
+        return f'{self.todo}'
 
 
 class ToDoPages(ToDoMenu):
@@ -28,7 +29,6 @@ class ToDo(commands.Cog):
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db = bot.db2['Todo Data']
         self.prefix = "!"
 
     def cog_check(self, ctx: Context):
@@ -49,43 +49,31 @@ class ToDo(commands.Cog):
     async def todo_add(self, ctx: Context, *, todo: str):
         """Add to your todo list."""
 
-        user = await self.db.find_one({'_id': ctx.author.id})
-        if user is None:
-            post = {
-                '_id': ctx.author.id,
-                'data': [
-                    {
-                        'url': ctx.message.jump_url,
-                        'data': todo
-                    }
-                ]
-            }
-            await self.db.insert_one(post)
-            await ctx.reply("Successfully added to your todo list.")
-            return
+        res: ToDos = await ToDos.find_one({'_id': ctx.author.id})
+        if not res:
+            await ToDos(
+                id=ctx.author.id,
+                todo_data=[{'url': ctx.message.jump_url, 'todo': todo}]
+            ).commit()
+            return await ctx.reply("Successfully added to your todo list.")
 
-        array = user['data']
-        todo = {'url': ctx.message.jump_url,
-                'data': todo
-                }
-        array.append(todo)
-        await self.db.update_one({'_id': ctx.author.id}, {'$set': {'data': array}})
+        res.todo_data += [{'url': ctx.message.jump_url, 'todo': todo}]
+        await res.commit()
         await ctx.reply("Successfully added to your todo list.")
-        return
 
     @todo.command(name='list')
     async def todo_list(self, ctx: Context):
         """See your todo list, if you have any."""
 
-        entries = await self.db.find_one({'_id': ctx.author.id})
-        if entries is None:
+        res: ToDos = await ToDos.find_one({'_id': ctx.author.id})
+        if not res:
             return await ctx.reply("You do not have any todo list.")
 
-        entries = entries['data']
+        entries = res.todo_data
         index = 0
         for i in range(len(entries)):
             index += 1
-            entries[i]['data'] = f"**[{index}.]({entries[i]['url']})** {entries[i]['data']}"
+            entries[i]['todo'] = f"**[{index}.]({entries[i]['url']})** {entries[i]['todo']}"
 
         m = ToDoPages(ctx=ctx, entries=entries, title="Here's your todo list:", author_name=ctx.author, author_icon_url=ctx.author.display_avatar)
         await m.start()
@@ -99,39 +87,40 @@ class ToDo(commands.Cog):
         except ValueError:
             return await ctx.reply("That is not a number.")
 
-        user = await self.db.find_one({'_id': ctx.author.id})
-        if user is None:
+        res: ToDos = await ToDos.find_one({'_id': ctx.author.id})
+        if not res:
             return await ctx.reply("You do not have any todo list.")
 
-        data = user['data']
         new_data = []
         if index < 0:
             return await ctx.reply("The index cannot be `0` or negative.")
-        elif index > len(data) - 1:
+        elif index > len(res.todo_data) - 1:
             return await ctx.reply("The index cannot be greater than the highest index in your todo list.")
 
-        for i in range(len(data)):
+        for i in range(len(res.todo_data)):
             if i != index:
-                new_data.append(data[i])
+                new_data.append(res.todo_data[i])
 
         if len(new_data) == 0:
-            await self.db.delete_one({'_id': ctx.author.id})
+            await res.delete()
         else:
-            await self.db.update_one({'_id': ctx.author.id}, {'$set': {'data': new_data}})
+            res.todo_data = new_data
+            await res.commit()
         await ctx.reply("Operation successful.")
 
     @todo.command(name='clear')
     async def todo_clear(self, ctx: Context):
         """Delete your todo list, completely."""
 
-        user = await self.db.find_one({'_id': ctx.author.id})
-        if user is None:
+        res: ToDos = await ToDos.find_one({'_id': ctx.author.id})
+        if not res:
             return await ctx.reply("You do not have any todo list.")
+
         view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
         view.message = msg = await ctx.send("Are you sure you want to delete your todo list? %s" % (ctx.author.mention), view=view)
         await view.wait()
         if view.response is True:
-            await self.db.delete_one({'_id': ctx.author.id})
+            await res.delete()
             e = "Succesfully deleted your todo list. %s" % (ctx.author.mention)
             return await msg.edit(content=e, view=view)
 
@@ -141,9 +130,9 @@ class ToDo(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
-        if member.id == 374622847672254466:
-            return
-        await self.db.delete_one({'_id': member.id})
+        if member.id != self.bot._owner_id:
+            async for todo in ToDos.find({'_id': member.id}):
+                await todo.delete()
 
 
 def setup(bot):
