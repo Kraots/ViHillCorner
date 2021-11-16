@@ -259,7 +259,7 @@ class Levels(commands.Cog):
 
             source = FieldPageSource(data, per_page=10)
             source.embed.title = 'Rank top'
-            pages = RoboPages(source, ctx=ctx, compact=True)
+            pages = RoboPages(source, ctx=ctx)
             await pages.start()
 
     @commands.group(invoke_without_command=True, case_insensitive=True, aliases=['multipliers'])
