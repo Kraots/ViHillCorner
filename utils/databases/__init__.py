@@ -14,6 +14,7 @@ from .docs import Doc, DocsCache
 from .anime import Alist
 from .cr import CustomRole
 from .levels import Level
+from .reminders import Reminder
 
 from .tickets import Ticket
 from .starboard import Starboard, StarboardStats, StarboardStatus
@@ -30,6 +31,7 @@ __all__ = (
     'Doc',
     'DocsCache',
     'Ticket',
+    'Reminder',
     'Starboard',
     'StarboardStats',
     'StarboardStatus',

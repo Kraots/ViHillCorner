@@ -8,6 +8,7 @@ from disnake.ui import View, Button
 from utils import time
 from utils.colors import Colours
 from utils.context import Context
+from utils.databases import Reminder
 
 from main import ViHillCorner
 
@@ -17,7 +18,6 @@ class Reminders(commands.Cog):
 
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
-        self.db = bot.db1['Reminders']
         self.prefix = "!"
         self.check_current_reminders.start()
 
@@ -32,24 +32,23 @@ class Reminders(commands.Cog):
     async def remind(self, ctx: Context, *, when: time.UserFriendlyTime(commands.clean_content, default='\u2026')):  # noqa
         """Set your reminder."""
 
-        res = await self.db.find().sort("_id", -1).to_list(1)
+        res: Reminder = await Reminder.find().sort("_id", -1).to_list(1)
 
         if res:
-            new_id = res['_id'] + 1
+            new_id = res.id + 1
         else:
             new_id = 1324
 
-        post = {
-            "_id": new_id,
-            "user_id": ctx.author.id,
-            "channel_id": ctx.channel.id,
-            "remind_when": when.dt,
-            "remind_what": when.arg,
-            "time_now": datetime.datetime.utcnow(),
-            "message_url": ctx.message.jump_url
-        }
+        await Reminder(
+            id=new_id,
+            user_id=ctx.author.id,
+            channel_id=ctx.channel.id,
+            remind_when=when.dt,
+            remind_what=when.arg,
+            time_now=datetime.datetime.utcnow(),
+            message_url=ctx.message.jump_url
+        ).commit()
 
-        await self.db.insert_one(post)
         delta = time.human_timedelta(when.dt, accuracy=3)
         await ctx.send(f"Alright {ctx.author.mention}, in **{delta}**: {when.arg}")
 
@@ -57,23 +56,25 @@ class Reminders(commands.Cog):
     async def remind_list(self, ctx: Context):
         """See your list of reminders, if you have any."""
 
-        results = await self.db.find({"user_id": ctx.author.id}).sort("remind_when", 1).to_list(10)
+        results: list[Reminder] = await Reminder.find({"user_id": ctx.author.id}).sort("remind_when", 1).to_list(100000)
         em = disnake.Embed(color=Colours.light_pink, title="Reminders")
         index = 0
         total_reminders = 0
-        z = await self.db.find({"user_id": ctx.author.id}).sort("remind_when", 1).to_list(100000)
 
-        for x in z:
+        for x in results:
             total_reminders += 1
 
         for result in results:
             index += 1
-            shorten = textwrap.shorten(result['remind_what'], width=320)
+            shorten = textwrap.shorten(result.remind_what, width=320)
             em.add_field(
-                name=f"(ID)`{result['_id']}`: In {time.human_timedelta(result['remind_when'])}",
-                value=f"{shorten}\n[Click here to go there]({result['message_url']})",
+                name=f"(ID)`{result.id}`: In {time.human_timedelta(result.remind_when)}",
+                value=f"{shorten}\n[Click here to go there]({result.message_url})",
                 inline=False
             )
+
+            if index == 10:
+                break
 
         if len(em) < 12:
             await ctx.send("No currently running reminders.")
@@ -85,14 +86,14 @@ class Reminders(commands.Cog):
     async def remind_remove(self, ctx: Context, remind_id: int):
         """Remove a reminder from your list based on its id."""
 
-        results = await self.db.find_one({"_id": remind_id})
-        if results is not None:
-            if results['user_id'] == ctx.author.id:
+        res: Reminder = await Reminder.find_one({"_id": remind_id})
+        if res is not None:
+            if res.user_id == ctx.author.id:
                 view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
                 view.message = msg = await ctx.send("Are you sure you want to cancel that reminder? %s" % (ctx.author.mention), view=view)
                 await view.wait()
                 if view.response is True:
-                    await self.db.delete_one({"_id": remind_id})
+                    await res.delete()
                     e = "Succesfully cancelled the reminder. %s" % (ctx.author.mention)
                     return await msg.edit(content=e, view=view)
 
@@ -110,13 +111,14 @@ class Reminders(commands.Cog):
     async def remind_clear(self, ctx: Context):
         """Delete all of your reminders."""
 
-        results = await self.db.find_one({"user_id": ctx.author.id})
-        if results is not None:
+        res: Reminder = await Reminder.find_one({"user_id": ctx.author.id})
+        if res is not None:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
             view.message = msg = await ctx.send("Are you sure you want to clear your reminders? %s" % (ctx.author.mention), view=view)
             await view.wait()
             if view.response is True:
-                await self.db.delete_many({"user_id": ctx.author.id})
+                async for remind in Reminder.find({'user_id': ctx.author.id}):
+                    await remind.delete()
                 e = "Succesfully cleared all your reminders. %s" % (ctx.author.mention)
                 return await msg.edit(content=e, view=view)
 
@@ -130,28 +132,21 @@ class Reminders(commands.Cog):
     async def check_current_reminders(self):
         await self.bot.wait_until_ready()
         current_time = datetime.datetime.utcnow()
-        results = await self.db.find().sort('remind_when', 1).to_list(1)
-        for result in results:
-            expire_date = result['remind_when']
-            remind_id = result['_id']
-            user = result['user_id']
-            reminded_when = result['time_now']
-            remind_what = result['remind_what']
-            remind_url = result['message_url']
-            channel_id = result['channel_id']
-
-            if current_time >= expire_date:
-                remindChannel = self.bot.get_channel(channel_id)
-                msg = f"<@!{user}>, **{time.human_timedelta(reminded_when)}**: {remind_what}"
+        results: list[Reminder] = await Reminder.find().sort('remind_when', 1).to_list(1)
+        for res in results:
+            if current_time >= res.remind_when:
+                remind_channel = self.bot.get_channel(res.channel_id)
+                msg = f"<@!{res.user_id}>, **{time.human_timedelta(res.remind_when)}**: {res.remind_what}"
                 view = View()
-                button = Button(label='Go to original message', url=remind_url)
+                button = Button(label='Go to original message', url=res.message_url)
                 view.add_item(button)
-                await remindChannel.send(msg, view=view)
-                await self.db.delete_one({"_id": remind_id})
+                await remind_channel.send(msg, view=view)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
-        await self.db.delete_many({"user_id": member.id})
+        if member.id != self.bot._owner_id:
+            async for remind in Reminder.find({'user_id': member.id}):
+                await remind.delete()
 
     @remind.error
     async def remind_error(self, ctx: Context, error):
