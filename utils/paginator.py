@@ -277,8 +277,8 @@ class SimplePages(RoboPages):
     Basically an embed with some normal formatting.
     """
 
-    def __init__(self, ctx, entries, *, per_page=12, color=None):
-        super().__init__(SimplePageSource(entries, per_page=per_page), ctx=ctx)
+    def __init__(self, ctx, entries, *, per_page=12, color=None, compact=False):
+        super().__init__(SimplePageSource(entries, per_page=per_page), ctx=ctx, compact=compact)
         if color is None:
             color = disnake.Color.blurple()
         self.embed = disnake.Embed(colour=color)
@@ -325,8 +325,8 @@ class NewCustomMenus(menus.ListPageSource):
 
 
 class CustomMenu(RoboPages):
-    def __init__(self, ctx, entries, *, per_page=12, title="", color=None):
-        super().__init__(NewCustomMenus(entries, per_page=per_page), ctx=ctx)
+    def __init__(self, ctx, entries, *, per_page=12, title="", color=None, compact=False):
+        super().__init__(NewCustomMenus(entries, per_page=per_page), ctx=ctx, compact=compact)
         if color is None:
             color = disnake.Color.blurple()
         self.embed = disnake.Embed(colour=color, title=title)

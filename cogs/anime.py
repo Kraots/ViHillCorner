@@ -27,7 +27,7 @@ class AlistPageEntry:
 class AlistPages(CustomMenu):
     def __init__(self, ctx: Context, entries: List, *, per_page: int = 12, title: str = "", color=None):
         converted = [AlistPageEntry(entry) for entry in entries]
-        super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color, title=title)
+        super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color, title=title, compact=True)
 
 
 class Anime(commands.Cog):

@@ -35,7 +35,7 @@ class MutePageEntry:
 class MutePages(CustomMenu):
     def __init__(self, ctx: Context, entries, *, per_page=12, title="", color=None):
         converted = [MutePageEntry(entry) for entry in entries]
-        super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color, title=title)
+        super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=color, title=title, compact=True)
 
 
 time_regex = re.compile(r"(?:(\d{1,5})(h|s|m|d))+?")

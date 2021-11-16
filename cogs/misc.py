@@ -95,7 +95,7 @@ class SnipesPageEntry:
 class SnipesPages(CustomMenu):
     def __init__(self, ctx: Context, entries, *, per_page=12):
         converted = [SnipesPageEntry(entry) for entry in entries]
-        super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=Colours.light_pink)
+        super().__init__(ctx=ctx, entries=converted, per_page=per_page, color=Colours.light_pink, compact=True)
 
 
 class SuggestPageEntry:
@@ -110,7 +110,7 @@ class SuggestPageEntry:
 class SuggestionPages(SimplePages):
     def __init__(self, ctx: Context, entries, *, per_page=12):
         converted = [SuggestPageEntry(entry) for entry in entries]
-        super().__init__(ctx=ctx, entries=converted, per_page=per_page)
+        super().__init__(ctx=ctx, entries=converted, per_page=per_page, compact=True)
 
 
 GoogleKey1 = os.getenv("GOOGLE_API_KEY_A")
@@ -754,7 +754,7 @@ class Misc(commands.Cog):
             if not data:
                 return await ctx.send('No results found.')
 
-        pages = RoboPages(source=UrbanDictionaryPageSource(data), ctx=ctx)
+        pages = RoboPages(source=UrbanDictionaryPageSource(data), ctx=ctx, compact=True)
         await pages.start()
 
     @commands.slash_command(name='embed', description='Creates an embed', options=[

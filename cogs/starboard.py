@@ -248,7 +248,7 @@ class StarBoard(commands.Cog):
         starrers = [starrer for starrer in data.starrers]
         members = [str(ctx.guild.get_member(mem)) for mem in starrers]
 
-        p = SimplePages(entries=members, per_page=10, ctx=ctx)
+        p = SimplePages(entries=members, per_page=10, ctx=ctx, compact=True)
         base = format(plural(len(starrers)), 'star')
         if len(starrers) > len(members):
             p.embed.title = f'{base} ({len(starrers) - len(members)} left server)'

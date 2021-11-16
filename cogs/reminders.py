@@ -63,7 +63,7 @@ class Reminders(commands.Cog):
         for result in results:
             shorten = textwrap.shorten(result.remind_what, width=320)
             reminders.append((
-                f"(ID)` {result.id}`: In {time.human_timedelta(result.remind_when)}",
+                f"(ID) `{result.id}`: In {time.human_timedelta(result.remind_when)}",
                 f"{shorten}\n[Click here to go there]({result.message_url})"
             ))
 

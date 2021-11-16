@@ -38,7 +38,7 @@ class ShopEcoMenus(menus.ListPageSource):
 
 class ShopEcoMenu(RoboPages):
     def __init__(self, ctx: Context, entries, *, per_page=12, color=None):
-        super().__init__(ShopEcoMenus(entries, per_page=per_page), ctx=ctx)
+        super().__init__(ShopEcoMenus(entries, per_page=per_page), ctx=ctx, compact=True)
         if color is None:
             color = disnake.Embed.Empty
         self.embed = disnake.Embed(colour=color, title='Shop Items')
@@ -1024,7 +1024,7 @@ class Economy(commands.Cog):
                     data.append(to_append)
         source = FieldPageSource(data, per_page=10)
         source.embed.title = 'Top users with highest wallet balance'
-        pages = RoboPages(source, ctx=ctx)
+        pages = RoboPages(source, ctx=ctx, compact=True)
         await pages.start()
 
     @balance.command(name='add-bank')

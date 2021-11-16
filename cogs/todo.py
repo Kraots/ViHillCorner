@@ -21,7 +21,16 @@ class ToDoPageEntry:
 class ToDoPages(ToDoMenu):
     def __init__(self, ctx: Context, entries, *, per_page=5, title="", color=Colours.red, author_name=None, author_icon_url=None):
         converted = [ToDoPageEntry(entry) for entry in entries]
-        super().__init__(ctx=ctx, entries=converted, per_page=per_page, title=title, color=color, author_name=author_name, author_icon_url=author_icon_url)
+        super().__init__(
+            ctx=ctx,
+            entries=converted,
+            per_page=per_page,
+            title=title,
+            color=color,
+            author_name=author_name,
+            author_icon_url=author_icon_url,
+            compact=True
+        )
 
 
 class ToDo(commands.Cog):
