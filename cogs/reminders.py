@@ -9,6 +9,7 @@ from utils import time
 from utils.colors import Colours
 from utils.context import Context
 from utils.databases import Reminder
+from utils.paginator import RoboPages, FieldPageSource
 
 from main import ViHillCorner
 
@@ -57,30 +58,23 @@ class Reminders(commands.Cog):
         """See your list of reminders, if you have any."""
 
         results: list[Reminder] = await Reminder.find({"user_id": ctx.author.id}).sort("remind_when", 1).to_list(100000)
-        em = disnake.Embed(color=Colours.light_pink, title="Reminders")
-        index = 0
-        total_reminders = 0
-
-        for x in results:
-            total_reminders += 1
+        reminders = []
 
         for result in results:
-            index += 1
             shorten = textwrap.shorten(result.remind_what, width=320)
-            em.add_field(
-                name=f"(ID)`{result.id}`: In {time.human_timedelta(result.remind_when)}",
-                value=f"{shorten}\n[Click here to go there]({result.message_url})",
-                inline=False
-            )
+            reminders.append((
+                f"(ID)` {result.id}`: In {time.human_timedelta(result.remind_when)}",
+                f"{shorten}\n[Click here to go there]({result.message_url})"
+            ))
 
-            if index == 10:
-                break
+        if len(reminders) == 0:
+            return await ctx.send("No currently running reminders.")
 
-        if len(em) < 12:
-            await ctx.send("No currently running reminders.")
-            return
-        em.set_footer(text="Showing %s/%s reminders." % (index, total_reminders))
-        await ctx.send(embed=em)
+        src = FieldPageSource(reminders, per_page=5)
+        src.embed.title = 'Reminders'
+        src.embed.colour = Colours.light_pink
+        pages = RoboPages(src, ctx=ctx, compact=True)
+        await pages.start()
 
     @remind.command(name='remove', aliases=['delete', 'cancel'])
     async def remind_remove(self, ctx: Context, remind_id: int):
