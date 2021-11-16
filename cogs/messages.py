@@ -137,9 +137,9 @@ class Messages(commands.Cog):
             _1stplace = users[1]
             _2ndplace = users[2]
             _3rdplace = users[3]
-            await self.db.update_one({'_id': _1stplace.id}, {'$inc': {'xp': 50000}})
-            await self.db.update_one({'_id': _2ndplace.id}, {'$inc': {'xp': 30000}})
-            await self.db.update_one({'_id': _3rdplace.id}, {'$inc': {'xp': 20000}})
+            await Level.collection.update_one({'_id': _1stplace.id}, {'$inc': {'xp': 50000}})
+            await Level.collection.update_one({'_id': _2ndplace.id}, {'$inc': {'xp': 30000}})
+            await Level.collection.update_one({'_id': _3rdplace.id}, {'$inc': {'xp': 20000}})
             await _1stplace.send(
                 "Congrats. You placed `1st` in the weekly top! Your reward is **50,000** XP.\n"
                 f"The others placed:\n\u2800• **{_2ndplace}** -> `2nd`\n\u2800• **{_3rdplace}** -> `3rd`"
