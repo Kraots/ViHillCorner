@@ -154,9 +154,10 @@ class ViHillCorner(commands.Bot):
         """
 
         slash = self.get_slash_command(parent)
-        group = slash.children.get(name)
-        if isinstance(group, SubCommandGroup):
-            return group
+        if slash:
+            group = slash.children.get(name)
+            if isinstance(group, SubCommandGroup):
+                return group
 
         return None
 
@@ -184,16 +185,17 @@ class ViHillCorner(commands.Bot):
         """
 
         slash = self.get_slash_command(parent)
-        if parent_group:
-            group = slash.children.get(parent_group)
-            if isinstance(group, SubCommandGroup):
-                sub_command = group.children.get(name)
-                return sub_command
-            return None
+        if slash:
+            if parent_group:
+                group = slash.children.get(parent_group)
+                if isinstance(group, SubCommandGroup):
+                    sub_command = group.children.get(name)
+                    return sub_command
+                return None
 
-        sub_command = slash.children.get(name)
-        if isinstance(sub_command, SubCommand):
-            return sub_command
+            sub_command = slash.children.get(name)
+            if isinstance(sub_command, SubCommand):
+                return sub_command
 
         return None
 
