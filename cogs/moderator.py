@@ -455,7 +455,16 @@ class Moderator(commands.Cog):
         em.color = Colours.red
         v = self.bot.poll_views[msg.id]
         v.stop()
-        await msg.edit(embed=em, view=v)
+        new_view = disnake.ui.View()
+        for comp in msg.components:
+            for btn in comp.children:
+                btn = btn.to_dict()
+                del btn['type']
+                btn['disabled'] = True
+                btn['emoji'] = btn['emoji']['name']
+                button = disnake.ui.Button(**btn)
+                new_view.add_item(button)
+        await msg.edit(embed=em, view=new_view)
         await msg.unpin()
 
         view = disnake.ui.View()
