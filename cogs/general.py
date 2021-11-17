@@ -369,11 +369,13 @@ class General(commands.Cog):
                 if len(cmd) == 1:
                     obj = self.bot.get_slash_command(cmd[0])
                 elif len(cmd) == 2:
-                    obj = self.bot.get_slash_sub_command_group(cmd[1], cmd[0])
+                    parent, name = cmd
+                    obj = self.bot.get_slash_sub_command_group(name, parent)
                     if obj is None:
-                        obj = self.bot.get_slash_sub_command(cmd[1], cmd[0])
+                        obj = self.bot.get_slash_sub_command(name, parent)
                 elif len(cmd) == 3:
-                    obj = obj = self.bot.get_slash_sub_command(cmd[2], cmd[0], cmd[1])
+                    parent, group, name = cmd
+                    obj = obj = self.bot.get_slash_sub_command(name, parent, group)
             if obj is None:
                 return await ctx.send('Could not find command.')
 
