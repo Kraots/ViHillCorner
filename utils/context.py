@@ -43,12 +43,12 @@ class Context(commands.Context):
 
         Parameters
         ----------
-            img_url: [`:class:str`]
+            img_url: `:class:str`
                 The image url to apply the effect on.
 
         Returns
         -------
-            file: [`:class:disnake.File`]
+            file: `:class:disnake.File`
                 The disnake File object.
         """
 
@@ -67,12 +67,12 @@ class Context(commands.Context):
 
         Parameters
         ----------
-            img_url: [`:class:str`]
+            img_url: `:class:str`
                 The image url to apply the effect on.
 
         Returns
         -------
-            file: [`:class:disnake.File`]
+            file: `:class:disnake.File`
                 The disnake File object.
         """
 
@@ -91,12 +91,12 @@ class Context(commands.Context):
 
         Parameters
         ----------
-            img_url: [`:class:str`]
+            img_url: `:class:str`
                 The image url to apply the effect on.
 
         Returns
         -------
-            file: [`:class:disnake.File`]
+            file: `:class:disnake.File`
                 The disnake File object.
         """
 
@@ -115,12 +115,12 @@ class Context(commands.Context):
 
         Parameters
         ----------
-            img_url: [`:class:str`]
+            img_url: `:class:str`
                 The image url to apply the effect on.
 
         Returns
         -------
-            file: [`:class:disnake.File`]
+            file: `:class:disnake.File`
                 The disnake File object.
         """
 
@@ -139,12 +139,12 @@ class Context(commands.Context):
 
         Parameters
         ----------
-            img_url: [`:class:str`]
+            img_url: `:class:str`
                 The image url to apply the effect on.
 
         Returns
         -------
-            file: [`:class:disnake.File`]
+            file: `:class:disnake.File`
                 The disnake File object.
         """
 
@@ -163,12 +163,12 @@ class Context(commands.Context):
 
         Parameters
         ----------
-            img_url: [`:class:str`]
+            img_url: `:class:str`
                 The image url to apply the effect on.
 
         Returns
         -------
-            file: [`:class:disnake.File`]
+            file: `:class:disnake.File`
                 The disnake File object.
         """
 
@@ -187,12 +187,12 @@ class Context(commands.Context):
 
         Parameters
         ----------
-            img_url: [`:class:str`]
+            img_url: `:class:str`
                 The image url to apply the effect on.
 
         Returns
         -------
-            file: [`:class:disnake.File`]
+            file: `:class:disnake.File`
                 The disnake File object.
         """
 
@@ -211,12 +211,12 @@ class Context(commands.Context):
 
         Parameters
         ----------
-            img_url: [`:class:str`]
+            img_url: `:class:str`
                 The image url to apply the effect on.
 
         Returns
         -------
-            file: [`:class:disnake.File`]
+            file: `:class:disnake.File`
                 The disnake File object.
         """
 
@@ -235,12 +235,12 @@ class Context(commands.Context):
 
         Parameters
         ----------
-            img_url: [`:class:str`]
+            img_url: `:class:str`
                 The image url to apply the effect on.
 
         Returns
         -------
-            file: [`:class:disnake.File`]
+            file: `:class:disnake.File`
                 The disnake File object.
         """
 
@@ -259,12 +259,12 @@ class Context(commands.Context):
 
         Parameters
         ----------
-            img_url: [`:class:str`]
+            img_url: `:class:str`
                 The image url to apply the effect on.
 
         Returns
         -------
-            file: [`:class:disnake.File`]
+            file: `:class:disnake.File`
                 The disnake File object.
         """
 
@@ -283,12 +283,12 @@ class Context(commands.Context):
 
         Parameters
         ----------
-            img_url: [`:class:str`]
+            img_url: `:class:str`
                 The image url to apply the effect on.
 
         Returns
         -------
-            file: [`:class:disnake.File`]
+            file: `:class:disnake.File`
                 The disnake File object.
         """
 

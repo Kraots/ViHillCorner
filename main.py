@@ -1,9 +1,14 @@
 import os
 import aiohttp
 import datetime
+from typing import Optional
 
 import disnake
 from disnake.ext import commands
+from disnake.ext.commands.slash_core import (
+    SubCommandGroup,
+    SubCommand
+)
 
 from utils import context
 from utils.ButtonRoles import ButtonRoles
@@ -127,6 +132,70 @@ class ViHillCorner(commands.Bot):
             await ctx.send('Commands do not work in dm channels. Please use commands in <#750160851822182486>')
             return False
         return True
+
+    def get_slash_sub_command_group(
+        self,
+        name: str,
+        parent: str
+    ) -> Optional[SubCommandGroup]:
+        """Get a :class:`.SubCommandGroup` from the given parent.
+
+        Parameters
+        ----------
+            name: :class:`str`
+                The name of the sub command group.
+            parent: :class:`str`
+                The top-level slash command of this group.
+
+        Returns
+        -------
+            Optional[:class:`SubCommandGroup`]
+                The slash sub command group that was requested. If not found, returns ``None``.
+        """
+
+        slash = self.get_slash_command(parent)
+        group = slash.children.get(name)
+        if isinstance(group, SubCommandGroup):
+            return group
+
+        return None
+
+    def get_slash_sub_command(
+        self,
+        name: str,
+        parent: str,
+        parent_group: str = None
+    ) -> Optional[SubCommand]:
+        """Get a :class:`.SubCommand` from the given parent.
+
+        Parameters
+        ----------
+            name: :class:`str`
+                The name of the sub command.
+            parent: :class:`str`
+                The top-level slash command of this sub command.
+            parent_group: :class:`str`
+                The ``.SubCommandGroup`` this sub command is part of.
+
+        Returns
+        -------
+            Optional[:class:`SubCommand`]
+                The slash sub command that was requested. If not found, returns ``None``.
+        """
+
+        slash = self.get_slash_command(parent)
+        if parent_group:
+            group = slash.children.get(parent_group)
+            if isinstance(group, SubCommandGroup):
+                sub_command = group.children.get(name)
+                return sub_command
+            return None
+
+        sub_command = slash.children.get(name)
+        if isinstance(sub_command, SubCommand):
+            return sub_command
+
+        return None
 
 
 ViHillCorner().run(token)

@@ -88,16 +88,16 @@ class Actions(commands.Cog):
 
         Parameters
         ----------
-            ctx: [`:class:Context`]
+            ctx: `:class:Context`
                 The Context object.
-            url: [`:class:str`]
+            url: `:class:str`
                 The url of the action to set the image to.
-            members: [`List[disnake.Member]`]
+            members: `List[disnake.Member]`
                 The members list to mention, if None is returned then no mentions are applied.
 
         Return
         ------
-            `None`
+            None
         """
 
         em = disnake.Embed(color=disnake.Color.red())
