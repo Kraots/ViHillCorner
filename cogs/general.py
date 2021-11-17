@@ -362,9 +362,31 @@ class General(commands.Cog):
             src = type(self.bot.help_command)
             filename = inspect.getsourcefile(src)
         else:
-            obj = self.bot.get_command(command.replace('.', ' ')) or self.bot.get_slash_command(command.replace('.', ' '))
+            command = command.replace('.', ' ')
+            obj = self.bot.get_command(command)
+            if obj is None:
+                cmd = command.split()
+                slash = self.bot.get_slash_command(cmd[0])
+                if slash:
+                    if len(cmd) > 1:
+                        if slash.children:
+                            if len(cmd) < 3:
+                                for name, subcmd in slash.children.items():
+                                    if name == cmd[1]:
+                                        obj = subcmd
+                                        break
+                            if obj is None:
+                                for subcmdgrp in slash.children.values():
+                                    if isinstance(subcmdgrp, commands.slash_core.SubCommandGroup):
+                                        for name, subcmd in subcmdgrp.children.items():
+                                            if name == cmd[2]:
+                                                obj = subcmd
+                                                break
+                    else:
+                        obj = slash
             if obj is None:
                 return await ctx.send('Could not find command.')
+
             src = obj.callback.__code__
             filename = src.co_filename
 
