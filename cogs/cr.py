@@ -41,7 +41,7 @@ class CustomRoles(commands.Cog):
     async def cr(self, ctx: Context):
         """Base command for all the cr commands."""
 
-        await ctx.send("`!help cr` for a list of commands.")
+        await ctx.send_help('cr')
 
     @cr.command(name='create')
     @commands.has_any_role(*all_roles)
@@ -122,7 +122,7 @@ class CustomRoles(commands.Cog):
 
                     await CustomRole(
                         id=user.id,
-                        custom_role_name=crname.content,
+                        name=crname.content,
                         role_id=newcr.id,
                         shares=0,
                         created_at=datetime.datetime.utcnow()
