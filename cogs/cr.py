@@ -230,7 +230,7 @@ class CustomRoles(commands.Cog):
         view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.", member)
         view.message = msg = await ctx.send(
             f"{member.mention} Do you accept the role {role.mention} from {user.mention}?\n\n**Note:** Any changes made to the "
-            "role by {user.mention} would apply to everyone holding the role.",
+            f"role by {user.mention} would apply to everyone holding the role.",
             view=view
         )
         await view.wait()
@@ -241,11 +241,11 @@ class CustomRoles(commands.Cog):
             em = disnake.Embed(color=user.color, title=f"{member} has accepted your role")
             em.set_image(url="https://blog.hubspot.com/hubfs/giphy_1-1.gif")
             await msg.edit(view=view)
-            return await ctx.send(ctx.author.mention, embed=em)
+            return await msg.reply(ctx.author.mention, embed=em)
 
         elif view.response is False:
             await msg.edit(view=view)
-            return await ctx.send(f"**{member}** has denied your role {ctx.author.mention}")
+            return await msg.reply(f"**{member}** has denied your role {ctx.author.mention}")
 
     @cr.command(name='info')
     async def cr_info(self, ctx: Context, *, role_id: int = None):
