@@ -363,19 +363,7 @@ class General(commands.Cog):
             filename = inspect.getsourcefile(src)
         else:
             command = command.replace('.', ' ')
-            obj = self.bot.get_command(command)
-            if obj is None:
-                cmd = command.split()
-                if len(cmd) == 1:
-                    obj = self.bot.get_slash_command(cmd[0])
-                elif len(cmd) == 2:
-                    parent, name = cmd
-                    obj = self.bot.get_slash_sub_command_group(name, parent)
-                    if obj is None:
-                        obj = self.bot.get_slash_sub_command(name, parent)
-                elif len(cmd) == 3:
-                    parent, group, name = cmd
-                    obj = obj = self.bot.get_slash_sub_command(name, parent, group)
+            obj = self.bot.get_command(command) or self.bot.get_slash_command(command)
             if obj is None:
                 return await ctx.send('Could not find command.')
 

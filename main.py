@@ -1,11 +1,12 @@
 import os
 import aiohttp
 import datetime
-from typing import Optional
+from typing import Optional, Union
 
 import disnake
 from disnake.ext import commands
 from disnake.ext.commands.slash_core import (
+    InvokableSlashCommand,
     SubCommandGroup,
     SubCommand
 )
@@ -133,69 +134,37 @@ class ViHillCorner(commands.Bot):
             return False
         return True
 
-    def get_slash_sub_command_group(
+    def get_slash_command(
         self,
-        name: str,
-        parent: str
-    ) -> Optional[SubCommandGroup]:
-        """Get a :class:`.SubCommandGroup` from the given parent.
+        name: str
+    ) -> Optional[Union[InvokableSlashCommand, SubCommandGroup, SubCommand]]:
+        """Get a slash command or a slash group command or a slash sub command from the internal list
+        of commands.
 
         Parameters
-        ----------
-            name: :class:`str`
-                The name of the sub command group.
-            parent: :class:`str`
-                The top-level slash command of this group.
+        -----------
+        name: :class:`str`
+            The name of the slash command to get.
 
         Returns
-        -------
-            Optional[:class:`SubCommandGroup`]
-                The slash sub command group that was requested. If not found, returns ``None``.
+        --------
+        Optional[Union[:class:`InvokableSlashCommand`, :class:`SubCommandGroup`, :class:`SubCommand`]]
+            The slash command that was requested. If not found, returns ``None``.
         """
 
-        slash = self.get_slash_command(parent)
+        command = name.split()
+        slash = super().get_slash_command(command[0])
         if slash:
-            group = slash.children.get(name)
-            if isinstance(group, SubCommandGroup):
-                return group
-
-        return None
-
-    def get_slash_sub_command(
-        self,
-        name: str,
-        parent: str,
-        parent_group: str = None
-    ) -> Optional[SubCommand]:
-        """Get a :class:`.SubCommand` from the given parent.
-
-        Parameters
-        ----------
-            name: :class:`str`
-                The name of the sub command.
-            parent: :class:`str`
-                The top-level slash command of this sub command.
-            parent_group: :class:`str`
-                The ``.SubCommandGroup`` this sub command is part of.
-
-        Returns
-        -------
-            Optional[:class:`SubCommand`]
-                The slash sub command that was requested. If not found, returns ``None``.
-        """
-
-        slash = self.get_slash_command(parent)
-        if slash:
-            if parent_group:
-                group = slash.children.get(parent_group)
+            if len(command) == 1:
+                return slash
+            elif len(command) == 2:
+                cmd = slash.children.get(command[1])
+                return cmd
+            elif len(command) == 3:
+                group = slash.children.get(command[1])
                 if isinstance(group, SubCommandGroup):
-                    sub_command = group.children.get(name)
-                    return sub_command
-                return None
-
-            sub_command = slash.children.get(name)
-            if isinstance(sub_command, SubCommand):
-                return sub_command
+                    cmd = group.children.get(command[2])
+                    return cmd
 
         return None
 
