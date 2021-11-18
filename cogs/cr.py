@@ -127,11 +127,8 @@ class CustomRoles(commands.Cog):
                         shares=0,
                         created_at=datetime.datetime.utcnow()
                     ).commit()
-
-                    positions = {
-                        newcr: 129
-                    }
-                    await guild.edit_role_positions(positions=positions)
+                    cr_role = guild.get_role(788130150075334657)
+                    await guild.edit_role_positions(positions={newcr: cr_role.position - 1})
 
                     await ctx.send("The role has been created and now you have it!")
 
@@ -264,6 +261,7 @@ class CustomRoles(commands.Cog):
                 return await ctx.send("That is not a custom role.")
 
         index = 0
+        role_id = role_id or data.role_id
         role = ctx.guild.get_role(role_id)
         for m in ctx.guild.members:
             if role in m.roles:
