@@ -118,7 +118,10 @@ class CustomRoles(commands.Cog):
 
                     newcr = await guild.create_role(name=crname.content, color=disnake.Color(int(crcolor, 16)))
 
-                    await ctx.author.add_roles(newcr)
+                    try:
+                        await ctx.author.add_roles(newcr)
+                    except disnake.HTTPException:
+                        return await ctx.reply('Invalid hex colour.')
 
                     await CustomRole(
                         id=user.id,
