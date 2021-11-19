@@ -4,7 +4,7 @@ dnspython
 aiohttp
 async-cse
 disnake-jishaku
-disnake
+git+https://github.com/DisnakeDev/disnake
 python-dateutil
 hmtai
 numpy
