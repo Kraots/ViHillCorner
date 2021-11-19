@@ -1,9 +1,15 @@
 import os
 import aiohttp
 import datetime
+from typing import Optional, Union
 
 import disnake
 from disnake.ext import commands
+from disnake.ext.commands.slash_core import (
+    InvokableSlashCommand,
+    SubCommandGroup,
+    SubCommand
+)
 
 from utils import context
 from utils.ButtonRoles import ButtonRoles
@@ -127,6 +133,44 @@ class ViHillCorner(commands.Bot):
             await ctx.send('Commands do not work in dm channels. Please use commands in <#750160851822182486>')
             return False
         return True
+
+    def get_slash_command(
+        self, name: str
+    ) -> Optional[Union[InvokableSlashCommand, SubCommandGroup, SubCommand]]:
+        """Works like ``Bot.get_command``, but for slash commands.
+
+        If the name contains spaces, then it will assume that you are looking for a :class:`.SubCommand` or
+        a :class:`.SubCommandGroup`.
+        e.g: ``'foo bar'`` will get the sub command group, or the sub command ``bar`` of the top-level slash command
+        ``foo`` if found, otherwise ``None``.
+
+        Parameters
+        -----------
+        name: :class:`str`
+            The name of the slash command to get.
+
+        Returns
+        --------
+        Optional[Union[:class:`InvokableSlashCommand`, :class:`SubCommandGroup`, :class:`SubCommand`]]
+            The slash command that was requested. If not found, returns ``None``.
+        """
+
+        if not isinstance(name, str):
+            raise TypeError(f"Expected name to be str, not {name.__class__}")
+
+        chain = name.split()
+        slash = self.all_slash_commands.get(chain[0])
+        if slash is None:
+            return None
+
+        if len(chain) == 1:
+            return slash
+        elif len(chain) == 2:
+            return slash.children.get(chain[1])
+        elif len(chain) == 3:
+            group = slash.children.get(chain[1])
+            if isinstance(group, SubCommandGroup):
+                return group.children.get(chain[2])
 
 
 ViHillCorner().run(token)
