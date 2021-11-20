@@ -190,7 +190,7 @@ class PollInteractiveMenu(disnake.ui.View):
                     self.db,
                     bot=self.ctx.bot,
                     custom_id=f'vhc:poll:{index}',
-                    index=0
+                    row=0
                 ))
             else:
                 button_view.add_item(NumberedButtons(
@@ -198,7 +198,7 @@ class PollInteractiveMenu(disnake.ui.View):
                     self.db,
                     bot=self.ctx.bot,
                     custom_id=f'vhc:poll:{index}',
-                    index=1
+                    row=1
                 ))
         await self.db.insert_one(data)
         await msg.edit(view=button_view)
