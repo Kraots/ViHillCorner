@@ -58,8 +58,17 @@ class TimeConverter(commands.Converter):
 
 
 class NumberedButtons(disnake.ui.Button):
-    def __init__(self, emoji: str, db, *, custom_id: str, bot: ViHillCorner, label: str = '0'):
-        super().__init__(label=label, emoji=emoji, custom_id=custom_id)
+    def __init__(
+        self,
+        emoji: str,
+        db,
+        *,
+        custom_id: str,
+        bot: ViHillCorner,
+        label: str = '0',
+        row: int = None
+    ):
+        super().__init__(label=label, emoji=emoji, custom_id=custom_id, row=row)
         self.db = db
         self.bot = bot
 
@@ -175,12 +184,22 @@ class PollInteractiveMenu(disnake.ui.View):
         }
         for index, option in enumerate(self.options):
             data[str(index + 1)] = [0, option]
-            button_view.add_item(NumberedButtons(
-                NUMBER_EMOJIS[index],
-                self.db,
-                bot=self.ctx.bot,
-                custom_id=f'vhc:poll:{index}'
-            ))
+            if index <= 3:
+                button_view.add_item(NumberedButtons(
+                    NUMBER_EMOJIS[index],
+                    self.db,
+                    bot=self.ctx.bot,
+                    custom_id=f'vhc:poll:{index}',
+                    index=0
+                ))
+            else:
+                button_view.add_item(NumberedButtons(
+                    NUMBER_EMOJIS[index],
+                    self.db,
+                    bot=self.ctx.bot,
+                    custom_id=f'vhc:poll:{index}',
+                    index=1
+                ))
         await self.db.insert_one(data)
         await msg.edit(view=button_view)
         self.ctx.bot.poll_views[msg.id] = button_view
@@ -362,13 +381,27 @@ class Moderator(commands.Cog):
                 for message in messages:
                     buttons = []
                     for i, k in enumerate([key for key in message if key not in ignored]):
-                        buttons.append(NumberedButtons(
-                            emoji=NUMBER_EMOJIS[i],
-                            db=self.bot.db1['Poll'],
-                            custom_id=f'vhc:poll:{i}',
-                            bot=self.bot,
-                            label=str(message[k][0])
-                        ))
+                        # Since there will ever be only 8 buttons, we break the row
+                        # when ``i`` hits 3 (4th collumn) and arrange the rest of the
+                        # buttons on the second row.
+                        if i <= 3:
+                            buttons.append(NumberedButtons(
+                                emoji=NUMBER_EMOJIS[i],
+                                db=self.bot.db1['Poll'],
+                                custom_id=f'vhc:poll:{i}',
+                                bot=self.bot,
+                                label=str(message[k][0]),
+                                row=0
+                            ))
+                        else:
+                            buttons.append(NumberedButtons(
+                                emoji=NUMBER_EMOJIS[i],
+                                db=self.bot.db1['Poll'],
+                                custom_id=f'vhc:poll:{i}',
+                                bot=self.bot,
+                                label=str(message[k][0]),
+                                row=1
+                            ))
                     view = DummyPollView(buttons)
                     self.bot.add_view(view, message_id=message['_id'])
                     self.bot.poll_views[message['_id']] = view
