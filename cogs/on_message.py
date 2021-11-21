@@ -40,7 +40,7 @@ async def send_webhook(em: disnake.Embed, view: disnake.ui.View, bot: ViHillCorn
     await webhook.send(embed=em, view=view)
 
 
-class on_message(commands.Cog):
+class OnMessage(commands.Cog):
     def __init__(self, bot: ViHillCorner):
         self.bot = bot
         self.db = bot.db2['InvalidName Filter']
@@ -77,7 +77,6 @@ class on_message(commands.Cog):
 
     @commands.Cog.listener('on_message_edit')
     async def on_message_edit(self, before: disnake.Message, after: disnake.Message):
-
         if before.author.bot:
             return
         if before.author.id == 374622847672254466:
@@ -187,4 +186,4 @@ class on_message(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(on_message(bot))
+    bot.add_cog(OnMessage(bot))

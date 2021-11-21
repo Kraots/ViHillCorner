@@ -5,6 +5,7 @@ import datetime
 import sys
 import psutil
 import inspect
+import asyncio
 
 import urllib.request
 import urllib.parse
@@ -333,7 +334,13 @@ class General(commands.Cog):
                 filename='code_output.txt',
                 public=False
             )
-            return await ctx.reply(f'Your output was too long so I sent it to <{url}>')
+            msg = await ctx.reply(f'Your output was too long so I sent it to <{url}>')
+            data = self.bot.execs.get(ctx.author.id)
+            if data is None:
+                self.bot.execs[ctx.author.id] = {ctx.command.name: msg}
+            else:
+                self.bot.execs[ctx.author.id][ctx.command.name] = msg
+            return
 
         em = disnake.Embed(
             title=f'Ran your {res["language"]} code',
@@ -346,7 +353,33 @@ class General(commands.Cog):
         output += shortened * '\n\n**Output shortened**'
         em.add_field(name='Output', value=output or '**<No output>**')
 
-        await ctx.reply(embed=em)
+        msg = await ctx.reply(embed=em)
+        data = self.bot.execs.get(ctx.author.id)
+        if data is None:
+            self.bot.execs[ctx.author.id] = {ctx.command.name: msg}
+        else:
+            self.bot.execs[ctx.author.id][ctx.command.name] = msg
+
+    @commands.Cog.listener('on_message_edit')
+    async def on_message_edit(self, before: disnake.Message, after: disnake.Message):
+        if after.content.lower().startswith(('!run', '!e', '!eval')):
+            ctx = await self.bot.get_context(after)
+            cmd = self.bot.get_command(after.content.lower().replace('!', ''))
+            await after.add_reaction('🔁')
+            try:
+                await self.bot.wait_for(
+                    'reaction_add',
+                    check=lambda r, u: str(r.emoji) == '🔁' and u.id == after.author.id,
+                    timeout=360.0
+                )
+            except asyncio.TimeoutError:
+                await after.clear_reaction('🔁')
+            else:
+                curr: disnake.Message = self.bot.execs[after.author.id].get(cmd.name)
+                if curr:
+                    await curr.delete()
+                await after.clear_reaction('🔁')
+                await cmd.invoke(ctx)
 
     @commands.command(aliases=['src'])
     async def source(self, ctx: Context, *, command: str = None):

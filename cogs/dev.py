@@ -154,7 +154,12 @@ class Developer(commands.Cog):
         em = disnake.Embed(description=f'```py\n{result}\n```')
         em.set_footer(text=f'Took {took}s')
         view = QuitButton(ctx)
-        view.message = await ctx.send(embed=em, view=view)
+        view.message = msg = await ctx.send(embed=em, view=view)
+        data = self.bot.execs.get(ctx.author.id)
+        if data is None:
+            self.bot.execs[ctx.author.id] = {ctx.command.name: msg}
+        else:
+            self.bot.execs[ctx.author.id][ctx.command.name] = msg
 
     @commands.command(name='purgeall')
     @commands.is_owner()

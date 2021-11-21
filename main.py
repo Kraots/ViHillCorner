@@ -68,6 +68,7 @@ class ViHillCorner(commands.Bot):
         self.reraise = reraise
         self.slash_reraise = slash_reraise
         self.confirm_view = ConfirmView
+        self.execs = {}
         self.snipes = {}
         self.poll_views = {}
         self.tags = []
