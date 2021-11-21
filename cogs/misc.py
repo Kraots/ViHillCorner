@@ -534,7 +534,7 @@ class Misc(commands.Cog):
         channel = channel or ctx.channel
         try:
             msg: disnake.Message = self.bot.snipes[channel.id][0]
-        except KeyError:
+        except (IndexError, KeyError):
             return await ctx.send('Nothing to snipe!')
 
         embed = disnake.Embed(description=msg.content, color=msg.author.color, timestamp=msg.created_at.replace(tzinfo=None))

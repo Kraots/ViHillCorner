@@ -172,5 +172,42 @@ class ViHillCorner(commands.Bot):
             if isinstance(group, SubCommandGroup):
                 return group.children.get(chain[2])
 
+    async def get_webhook(
+        self,
+        channel: disnake.TextChannel,
+        *,
+        name: str = "ViHill Corner",
+        avatar: disnake.Asset = None,
+    ) -> disnake.Webhook:
+        """Returns the general bot hook or creates one."""
+
+        webhooks = await channel.webhooks()
+        webhook = disnake.utils.find(lambda w: w.name and w.name.lower() == name.lower(), webhooks)
+
+        if webhook is None:
+            webhook = await channel.create_webhook(
+                name=name,
+                avatar=await avatar.read() if avatar else None,
+                reason="Used ``get_webhook`` but webhook didn't exist",
+            )
+
+        return webhook
+
+    async def reference_to_message(self, reference: disnake.MessageReference) -> Optional[disnake.Message]:
+        if reference._state is None or reference.message_id is None:
+            return None
+
+        channel = reference._state.get_channel(reference.channel_id)
+        if channel is None:
+            return None
+
+        if not isinstance(channel, (disnake.TextChannel, disnake.Thread)):
+            return None
+
+        try:
+            return await channel.fetch_message(reference.message_id)
+        except disnake.NotFound:
+            return None
+
 
 ViHillCorner().run(token)

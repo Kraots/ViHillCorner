@@ -22,6 +22,8 @@ class InviteFilter(commands.Cog):
     async def on_message(self, message: disnake.Message):
         if message.author.id in no_mute_these:
             return
+        elif message.channel.id == 752164200222163016:
+            return
         guild = self.bot.get_guild(750160850077089853)
         if message.guild:
             use_this = message.content.lower()
@@ -45,7 +47,7 @@ class InviteFilter(commands.Cog):
                 await log_channel.send(embed=embed)
                 await message.author.add_roles(muted)
                 curr_snipes = self.bot.snipes[message.channel.id]
-                curr_snipes.pop(-1)
+                curr_snipes.pop(0)
                 self.bot.snipes[message.channel.id] = curr_snipes
                 await asyncio.sleep(30)
                 await message.author.remove_roles(muted)

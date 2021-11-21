@@ -35,9 +35,9 @@ async def check_invalid_name(db, message, kraots) -> str:
 
 
 # Webhook that sends a message in messages-log channel
-async def send_webhook(em, view, bot):
-    webhook = await bot.get_channel(750432155179679815).webhooks()
-    await webhook[0].send(embed=em, view=view)
+async def send_webhook(em: disnake.Embed, view: disnake.ui.View, bot: ViHillCorner):
+    webhook = await bot.get_webhook(bot.get_channel(750432155179679815))
+    await webhook.send(embed=em, view=view)
 
 
 class on_message(commands.Cog):

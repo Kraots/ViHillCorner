@@ -11,10 +11,10 @@ from main import ViHillCorner
 
 
 # Webhook that sends a message in logs channel
-async def send_webhook(em, bot):
-    webhook = await bot.get_channel(750160852380024895).webhooks()
+async def send_webhook(em: disnake.Embed, bot: ViHillCorner):
+    webhook = await bot.get_webhook(bot.get_channel(750160852380024895))
     if isinstance(em, disnake.Embed):
-        await webhook[0].send(embed=em)
+        await webhook.send(embed=em)
     else:
         count = 0
         embeds = []
@@ -22,11 +22,11 @@ async def send_webhook(em, bot):
             embeds.append(embed)
             count += 1
             if count == 10:
-                await webhook[0].send(embeds=embeds)
+                await webhook.send(embeds=embeds)
                 count = 0
         else:
             if count != 0:
-                await webhook[0].send(embeds=embeds)
+                await webhook.send(embeds=embeds)
                 embeds = []
 
 
