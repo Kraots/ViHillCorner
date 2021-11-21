@@ -361,7 +361,7 @@ class General(commands.Cog):
             self.bot.execs[ctx.author.id][ctx.command.name] = msg
 
     @commands.Cog.listener('on_message_edit')
-    async def on_message_edit(self, before: disnake.Message, after: disnake.Message):
+    async def repeat_command(self, before: disnake.Message, after: disnake.Message):
         if after.content.lower().startswith(('!run', '!e', '!eval')):
             ctx = await self.bot.get_context(after)
             cmd = self.bot.get_command(after.content.lower().replace('!', ''))
