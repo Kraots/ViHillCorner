@@ -38,7 +38,7 @@ class Bdsm(commands.Cog):
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
 
-        await ctx.send("Please send the screenshot of your BDSM results. %s" % (ctx.author.mention))
+        await ctx.send(f"Please send the screenshot of your BDSM results. {ctx.author.mention}")
 
         data: BDSM = await BDSM.find_one({'_id': ctx.author.id})
 
@@ -72,7 +72,7 @@ class Bdsm(commands.Cog):
                     await ctx.send("You must send an image from your gallery, not an image url.")
 
         except asyncio.TimeoutError:
-            await ctx.send("You ran out of time, type the command again to set your bdsm results. %s " % (ctx.author.mention))
+            await ctx.send(f"You ran out of time, type the command again to set your bdsm results. {ctx.author.mention}")
             return
 
     @bdsm.command(name='results', aliases=('result',))
