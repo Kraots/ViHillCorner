@@ -390,8 +390,8 @@ class Trivia:
             await self.update_db(self.player, self.points)
 
         em = disnake.Embed(color=final_color, title="Trivia has ended.", description=final_result)
-        em.add_field(name='Your total points before:', value="**%s**" % (before_points), inline=False)
-        em.add_field(name='Your total points now:', value="**%s**" % (after_points), inline=False)
+        em.add_field(name='Your total points before:', value=f"**{before_points}**", inline=False)
+        em.add_field(name='Your total points now:', value=f"**{after_points}**", inline=False)
 
         return em
 

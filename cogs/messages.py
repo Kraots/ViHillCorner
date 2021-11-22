@@ -242,15 +242,24 @@ class Messages(commands.Cog):
             return await ctx.reply('User not in the database.')
 
         view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-        view.message = msg = await ctx.send("Are you sure you want to reset the total message count for member %s?" % (member.mention), view=view)
+        view.message = msg = await ctx.send(
+            f"Are you sure you want to reset the total message count for member {member.mention}?",
+            view=view
+        )
         await view.wait()
         if view.response is True:
             usr_db.messages_count = 0
             await usr_db.commit()
-            return await msg.edit(content='The total message count for member **%s** has been reset successfully.' % (member), view=view)
+            return await msg.edit(
+                content=f'The total message count for member **{member}** has been reset successfully.',
+                view=view
+            )
 
         elif view.response is False:
-            return await msg.edit(content="Command to reset the message count for user `%s` has been cancelled." % (member), view=view)
+            return await msg.edit(
+                content=f"Command to reset the message count for user `{member}` has been cancelled.",
+                view=view
+            )
 
     @_msgs.group(name='top', invoke_without_command=True, case_insensitive=True, aliases=['lb'])
     async def msg_top(self, ctx: Context):
@@ -280,15 +289,15 @@ class Messages(commands.Cog):
             return await ctx.reply('User not in the database.')
 
         view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-        view.message = msg = await ctx.send("Are you sure you want to reset the message count for this week for member %s?" % (member.mention), view=view)
+        view.message = msg = await ctx.send(f"Are you sure you want to reset the message count for this week for member {member.mention}?", view=view)
         await view.wait()
         if view.response is True:
             usr_db.weekly_messages_count = 0
             await usr_db.commit()
-            return await msg.edit(content='The message count for this week for member **%s** has been reset successfully.' % (member), view=view)
+            return await msg.edit(content=f'The message count for this week for member **{member}** has been reset successfully.', view=view)
 
         elif view.response is False:
-            return await msg.edit(content="Command to reset the message count for user `%s` has been cancelled." % (member), view=view)
+            return await msg.edit(content=f"Command to reset the message count for user `{member}` has been cancelled.", view=view)
 
     @msg_top.command(aliases=['reward'])
     async def rewards(self, ctx: Context):
@@ -298,7 +307,7 @@ class Messages(commands.Cog):
         em.add_field(name="`1st Place`", value="**50k XP**", inline=False)
         em.add_field(name="`2nd Place`", value="**30k XP**", inline=False)
         em.add_field(name="`3rd Place`", value="**20k XP**", inline=False)
-        em.set_footer(text="Requested by: %s" % (ctx.author), icon_url=ctx.author.display_avatar)
+        em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
         await ctx.send(embed=em)
 
 
