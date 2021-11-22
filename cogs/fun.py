@@ -630,7 +630,7 @@ class Fun(commands.Cog):
     async def fight(self, ctx: Context, p2: disnake.Member):
         """Have an interactive fight with someone."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         if p2 == ctx.author:
@@ -722,7 +722,7 @@ class Fun(commands.Cog):
     async def _tictactoe(self, ctx: Context, member: disnake.Member = None):
         """Play a game of tictactoe against someone."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         if member is None:
@@ -937,7 +937,7 @@ class Fun(commands.Cog):
     async def _akinator(self, ctx: Context):
         """Play a game with akinator."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         aki_em = disnake.Embed(title='Akinator', description='Starting game...')
@@ -990,7 +990,7 @@ class Fun(commands.Cog):
     async def bagels(self, ctx: Context):
         """Play a game of bagels."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         em = disnake.Embed(color=Colours.light_blue, title='Bagels, a deductive logic game', description='I am thinking of a 3-digit number with no repeated digits.')  # noqa
@@ -1057,7 +1057,7 @@ class Fun(commands.Cog):
     async def trivia(self, ctx: Context):
         """Start your trivia game."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         trivia = games.Trivia(ctx)
@@ -1067,7 +1067,7 @@ class Fun(commands.Cog):
     async def trivia_points(self, ctx: Context, member: disnake.Member = None):
         """See how many points the member has."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         member = member or ctx.author
@@ -1102,7 +1102,7 @@ class Fun(commands.Cog):
     async def trivia_leaderboard(self, ctx: Context):
         """See the top 5 members with the most amount of trivia points."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         rank = 0
@@ -1165,7 +1165,7 @@ class Fun(commands.Cog):
     async def trivia_points_gift(self, ctx: Context, amount: str, member: disnake.Member = None):
         """Gift some of your points to the other member."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         if member is None:
@@ -1252,7 +1252,7 @@ class Fun(commands.Cog):
 
         if ctx.author.id in self.hangman_games:
             return
-        elif ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        elif ctx.channel.id not in self.bot.ignored_channels:
             return
 
         filtered_words = [
@@ -1361,7 +1361,7 @@ class Fun(commands.Cog):
     async def typeracer(self, ctx: Context):
         """Play a game of typeracer."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         game = games.TypeRacer(ctx)

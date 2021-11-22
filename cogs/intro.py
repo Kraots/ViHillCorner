@@ -35,7 +35,7 @@ class Intros(commands.Cog):
     async def intro(self, ctx: Context):
         """Create a new intro if you don't have one or edit an existing one."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return ctx.command.reset_cooldown(ctx)
 
         results = self.db.get(str(ctx.author.id))

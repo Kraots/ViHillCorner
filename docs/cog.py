@@ -306,7 +306,7 @@ class Docs(commands.Cog):
     async def doc_inventories(self, inter: ApplicationCommandInteraction):
         """Shows all the documentation available inventories."""
 
-        if inter.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if inter.channel.id not in self.bot.ignored_channels:
             return await inter.response.send_message('To use this command, please go in a bots channel.', ephemeral=True)
 
         lines = sorted(f"• [`{name}`]({url})" for name, url in self.base_urls.items())
@@ -336,7 +336,7 @@ class Docs(commands.Cog):
     ) -> None:
         """Return a documentation embed for a given symbol."""
 
-        if inter.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if inter.channel.id not in self.bot.ignored_channels:
             return await inter.response.send_message('To use this command, please go in a bots channel.', ephemeral=True)
 
         await inter.response.defer()

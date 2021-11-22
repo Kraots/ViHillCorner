@@ -233,7 +233,7 @@ class StarBoard(commands.Cog):
     async def star_who(self, ctx: Context, message: str):
         """Show who starred a message."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         try:
@@ -328,7 +328,7 @@ class StarBoard(commands.Cog):
     async def star_stats(self, ctx: Context, *, member: disnake.Member = None):
         """Shows stats of the starboard usage of the server or of a member."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         if member is None:
@@ -340,7 +340,7 @@ class StarBoard(commands.Cog):
     async def star_random(self, ctx: Context):
         """Sends a random starred message from the starboard."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         data = await Starboard.find().to_list(100000000000)

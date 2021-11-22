@@ -376,7 +376,7 @@ class Misc(commands.Cog):
     ):
         """Gives you a documentation link for a disnake entity."""
 
-        if inter.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if inter.channel.id not in self.bot.ignored_channels:
             return await inter.response.send_message('To use this command, please go in a bots channel.', ephemeral=True)
 
         await self.do_rtfm(inter, 'latest', object)
@@ -393,7 +393,7 @@ class Misc(commands.Cog):
     ):
         """Gives you a documentation link for a python entity."""
 
-        if inter.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if inter.channel.id not in self.bot.ignored_channels:
             return await inter.response.send_message('To use this command, please go in a bots channel.', ephemeral=True)
 
         await self.do_rtfm(inter, 'python', object)
@@ -645,7 +645,7 @@ class Misc(commands.Cog):
     async def suggest(self, ctx: Context, *, args):
         """Make a suggestion in <#750160850593251454>."""
 
-        if ctx.channel.id not in (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088):
+        if ctx.channel.id not in self.bot.ignored_channels:
             return
 
         result = await self.db2.find_one({'_id': ctx.author.id})

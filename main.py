@@ -58,27 +58,37 @@ class ViHillCorner(commands.Bot):
                 787357561116426258
             ]
         )
-        self.add_check(self.check_dms)
         self.db1 = database1
         self.db2 = database2
         self.db3 = database3
         self.db4 = database4
         self.base = deta.Base
         self.url = 'https://vihillcorner.deta.dev'
+
+        self.add_check(self.check_dms)
+        self.confirm_view = ConfirmView
         self.reraise = reraise
         self.slash_reraise = slash_reraise
-        self.confirm_view = ConfirmView
+
         self.execs = {}
         self.snipes = {}
         self.poll_views = {}
         self.tags = []
         self.tag_aliases = []
-        self.added_views = False
+
+        self.ignored_channels = (
+            750160851822182486,
+            750160851822182487,
+            752164200222163016,
+            855126816271106061,
+            787359417674498088
+        )
+
         self.dagpi_client = dagpi.Client(os.getenv('DAGPI_TOKEN'))
 
         self.load_extension('docs')
         self.load_extension('jishaku')
-        os.environ["JISHAKU_NO_DM_TRACEBACK"] = '1'
+        os.environ['JISHAKU_NO_DM_TRACEBACK'] = '1'
         os.environ['JISHAKU_FORCE_PAGINATOR'] = '1'
         os.environ['JISHAKU_EMBEDDED_JSK'] = '1'
         os.environ['JISHAKU_EMBEDDED_JSK_COLOR'] = 'blurple'

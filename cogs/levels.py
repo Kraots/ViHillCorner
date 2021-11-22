@@ -11,7 +11,6 @@ from utils.databases import Level
 
 from main import ViHillCorner
 
-bot_channel = (750160851822182486, 750160851822182487, 752164200222163016, 855126816271106061, 787359417674498088)
 no_talk_channels = (750160852006469807, 780374324598145055)
 bot_channels = (750160851822182486, 750160851822182487)
 
@@ -146,7 +145,7 @@ class Levels(commands.Cog):
         """
         member = member or ctx.author
 
-        if ctx.channel.id in bot_channel:
+        if ctx.channel.id in self.bot.ignored_channels:
             stats: Level = await Level.find_one({"_id": member.id})
             if stats is None:
                 if member.id == ctx.author.id:
@@ -213,7 +212,7 @@ class Levels(commands.Cog):
     async def rank_leaderboard(self, ctx: Context):
         """Leaderboard for levels."""
 
-        if ctx.channel.id in bot_channel:
+        if ctx.channel.id in self.bot.ignored_channels:
             top_3_emojis = {1: '🥇', 2: '🥈', 3: '🥉'}
             data = []
             results: list[Level] = await Level.find().sort('xp', -1).to_list(100000)
