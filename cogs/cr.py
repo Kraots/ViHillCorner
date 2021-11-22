@@ -74,7 +74,7 @@ class CustomRoles(commands.Cog):
                         await ctx.send("The name of the custom role cannot be longer than `20` characters.")
 
                     elif crname.content.lower() == "!cancel":
-                        await ctx.send("Cancelled. %s" % (ctx.author.mention))
+                        await ctx.send(f"Cancelled. {ctx.author.mention}")
                         return
 
                     else:
@@ -92,7 +92,7 @@ class CustomRoles(commands.Cog):
                         crcolor = await self.bot.wait_for('message', timeout=50, check=check)
                         crcolor = crcolor.content.lower()
                         if crcolor == '!cancel':
-                            await ctx.send("Cancelled. %s" % (ctx.author.mention))
+                            await ctx.send(f"Cancelled. {ctx.author.mention}")
                             return
                         if "#" in crcolor:
                             crcolor = crcolor.replace("#", "")
@@ -358,13 +358,13 @@ class CustomRoles(commands.Cog):
         view.message = msg = await ctx.send(f"Are you sure you want to delete your custom role ({role.mention})?", view=view)
         await view.wait()
         if view.response is False:
-            e = "Your custom role has not been deleted. %s" % (ctx.author.mention)
+            e = f"Your custom role has not been deleted. {ctx.author.mention}"
             return await msg.edit(content=e, view=view)
 
         elif view.response is True:
             await role.delete()
             await data.delete()
-            e = "Succesfully deleted your custom role! {}".format(ctx.author.mention)
+            e = f"Succesfully deleted your custom role! {ctx.author.mention}"
             return await msg.edit(content=e, view=view)
 
     @commands.command(name='role-id')
@@ -405,7 +405,7 @@ class CustomRoles(commands.Cog):
 
     async def cog_command_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.MissingAnyRole):
-            await ctx.send("You must be at least `level 40+` in order to use this command! %s" % (ctx.author.mention))
+            await ctx.send(f"You must be at least `level 40+` in order to use this command! {ctx.author.mention}")
         else:
             if hasattr(ctx.command, 'on_error'):
                 return

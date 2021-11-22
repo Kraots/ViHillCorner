@@ -163,13 +163,13 @@ class Anime(commands.Cog):
         try:
             nr = int(index)
         except ValueError:
-            return await ctx.send("Must be a number. %s" % (ctx.author.mention))
+            return await ctx.send(f"Must be a number. {ctx.author.mention}")
         data: Alist = await Alist.find_one({'_id': ctx.author.id})
         if (
             (not data) or
             (not data.alist)
         ):
-            return await ctx.send("You do not have an anime list. %s" % (ctx.author.mention))
+            return await ctx.send(f"You do not have an anime list. {ctx.author.mention}")
         n = nr - 1
 
         try:
@@ -187,13 +187,13 @@ class Anime(commands.Cog):
         try:
             nr = int(index)
         except ValueError:
-            return await ctx.send("Must be a number. %s" % (ctx.author.mention))
+            return await ctx.send(f"Must be a number. {ctx.author.mention}")
         data: Alist = await Alist.find_one({'_id': ctx.author.id})
         if (
             (not data) or
             (not data.mlist)
         ):
-            return await ctx.send("You do not have a manga list. %s" % (ctx.author.mention))
+            return await ctx.send(f"You do not have a manga list. {ctx.author.mention}")
         n = nr - 1
 
         try:
@@ -212,15 +212,15 @@ class Anime(commands.Cog):
 
         if data and data.alist:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-            view.message = msg = await ctx.send("Are you sure you want to delete your anime list? %s" % (ctx.author.mention), view=view)
+            view.message = msg = await ctx.send(f"Are you sure you want to delete your anime list? {ctx.author.mention}", view=view)
             await view.wait()
             if view.response is True:
                 await data.delete()
-                e = "Succesfully deleted your anime list! %s" % (ctx.author.mention)
+                e = f"Succesfully deleted your anime list! {ctx.author.mention}"
                 return await msg.edit(content=e, view=view)
 
             elif view.response is False:
-                e = "Your anime list has not been deleted. %s" % (ctx.author.mention)
+                e = f"Your anime list has not been deleted. {ctx.author.mention}"
                 return await msg.edit(content=e, view=view)
 
         else:
@@ -234,15 +234,15 @@ class Anime(commands.Cog):
 
         if data and data.mlist:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-            view.message = msg = await ctx.send("Are you sure you want to delete your manga list? %s" % (ctx.author.mention), view=view)
+            view.message = msg = await ctx.send(f"Are you sure you want to delete your manga list? {ctx.author.mention}", view=view)
             await view.wait()
             if view.response is True:
                 await data.delete()
-                e = "Succesfully deleted your manga list! %s" % (ctx.author.mention)
+                e = f"Succesfully deleted your manga list! {ctx.author.mention}"
                 return await msg.edit(content=e, view=view)
 
             elif view.response is False:
-                e = "Your manga list has not been deleted. %s" % (ctx.author.mention)
+                e = f"Your manga list has not been deleted. {ctx.author.mention}"
                 return await msg.edit(content=e, view=view)
 
         else:

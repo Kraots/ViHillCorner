@@ -240,15 +240,15 @@ class Birthdays(commands.Cog):
         bday: Birthday = await Birthday.find_one({"_id": ctx.author.id})
         if bday is not None:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-            view.message = msg = await ctx.send("Are you sure you want to remove your birthday? %s" % (ctx.author.mention), view=view)
+            view.message = msg = await ctx.send(f"Are you sure you want to remove your birthday? {ctx.author.mention}", view=view)
             await view.wait()
             if view.response is True:
                 await bday.delete()
-                e = "Succesfully removed your birthday from the list! {}".format(ctx.author.mention)
+                e = f"Succesfully removed your birthday from the list! {ctx.author.mention}"
                 return await msg.edit(content=e, view=view)
 
             elif view.response is False:
-                e = "Birthday has not been removed. %s" % (ctx.author.mention)
+                e = f"Birthday has not been removed. {ctx.author.mention}"
                 return await msg.edit(content=e, view=view)
 
         else:
