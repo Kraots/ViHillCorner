@@ -219,7 +219,7 @@ class General(commands.Cog):
         """See the server's ad but in raw format."""
 
         await ctx.message.delete()
-        ad = disnake.Embed(color=Colours.light_pink, title="Here's the raw ad version of the server:", description="```%s```" % (SERVER_AD))
+        ad = disnake.Embed(color=Colours.light_pink, title="Here's the raw ad version of the server:", description=f"```{SERVER_AD}```")
         ad.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
 
         await ctx.send(embed=ad, reference=ctx.replied_reference)
@@ -257,24 +257,24 @@ class General(commands.Cog):
 
         if num1 is None and num2 is None:
             number = random.randint(0, sys.maxsize)
-            await ctx.send("Random number between `0` and the largest positive integer supported by the machine is: \n`%s`" % (number))
+            await ctx.send(f"Random number between `0` and the largest positive integer supported by the machine is: \n`{number}`")
             return
 
         elif num2 is None:
             number = random.randint(0, num1)
-            await ctx.send("Random number from `0` to `%s`: \n`%s`" % (num1, number))
+            await ctx.send(f"Random number from `0` to `{num1}`: \n`{number}`")
             return
 
         elif num3 is None:
             number = random.randint(num1, num2)
-            await ctx.send("Random number between `%s` and `%s`: \n`%s`" % (num1, num2, number))
+            await ctx.send(f"Random number between `{num1}` and `{num2}`: \n`{number}`")
             return
 
         else:
             while True:
                 number = random.randint(num1, num2)
                 if number != num3:
-                    await ctx.send("Random number between `%s` and `%s` that is not `%s`: \n`%s`" % (num1, num2, num3, number))
+                    await ctx.send("Random number between `{num1}` and `{num2}` that is not `{num3}`: \n`{number}`")
                     return
                 else:
                     pass

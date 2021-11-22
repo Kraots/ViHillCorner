@@ -655,12 +655,12 @@ class Misc(commands.Cog):
 
         result = await self.db2.find_one({'_id': ctx.author.id})
         if result is not None:
-            await ctx.send("You are blocked from using this command. %s" % (ctx.author.mention))
+            await ctx.send(f"You are blocked from using this command. {ctx.author.mention}")
             ctx.command.reset_cooldown(ctx)
             return
 
         await ctx.message.delete()
-        em1 = disnake.Embed(color=Colours.light_pink, title="Are you ready to post your suggestion?", description="**`%s`**" % (args))
+        em1 = disnake.Embed(color=Colours.light_pink, title="Are you ready to post your suggestion?", description=f"**`{args}`**")
         em1.set_author(name=f'{ctx.author.name}', icon_url=ctx.author.display_avatar)
         view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
         view.message = msg1 = await ctx.send(embed=em1, view=view)
@@ -678,7 +678,7 @@ class Misc(commands.Cog):
             return await msg1.edit(content=ctx.author.mention, embed=em, view=view)
 
         elif view.response is False:
-            e = "Suggestion aborted. %s" % (ctx.author.mention)
+            e = f"Suggestion aborted. {ctx.author.mention}"
             return await msg1.edit(content=e, embed=None, view=view)
 
     @suggest.command(name='block')
@@ -700,7 +700,7 @@ class Misc(commands.Cog):
                 pass
             await member.send("You are not able to use the command `!suggest` anymore, you have been blocked from using it due to abuse or innapropriate use.")
         blocked_users = " | ".join(blocked_list)
-        await ctx.send("`%s` have been blocked from using the command **!suggest**." % (blocked_users))
+        await ctx.send(f"`{blocked_users}` have been blocked from using the command **!suggest**.")
 
     @suggest.command(name='unblock')
     @commands.is_owner()
@@ -721,7 +721,7 @@ class Misc(commands.Cog):
                 "Do **not** abuse it and do **not** use it for innapropriate things that will result in your access being taken away again."
             )
         unblocked_users = " | ".join(unblocked_list)
-        await ctx.send("`%s` have been allowed to use the command **!suggest** again." % (unblocked_users))
+        await ctx.send(f"`{unblocked_users}` have been allowed to use the command **!suggest** again.")
 
     @suggest.command(name='blocks')
     @commands.is_owner()
@@ -953,7 +953,7 @@ class Misc(commands.Cog):
 
     async def cog_command_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.MissingAnyRole):
-            await ctx.send("You must be at least `level 3+` in order to use this command! %s" % (ctx.author.mention))
+            await ctx.send(f"You must be at least `level 3+` in order to use this command! {ctx.author.mention}")
         else:
             if hasattr(ctx.command, 'on_error'):
                 return

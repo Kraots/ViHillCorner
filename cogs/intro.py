@@ -54,13 +54,13 @@ class Intros(commands.Cog):
 
         if results is not None:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-            view.message = msg = await ctx.send("You already have intro set, would you like to edit your intro? %s" % (ctx.author.mention), view=view)
+            view.message = msg = await ctx.send(f"You already have intro set, would you like to edit your intro? {ctx.author.mention}", view=view)
             await view.wait()
             if view.response is None:
                 return ctx.command.reset_cooldown(ctx)
 
             elif view.response is False:
-                e = "Cancelled. %s" % (ctx.author.mention)
+                e = f"Cancelled. {ctx.author.mention}"
                 ctx.command.reset_cooldown(ctx)
                 return await msg.edit(content=e, view=view)
 
@@ -71,43 +71,43 @@ class Intros(commands.Cog):
                 except KeyError:
                     pass
 
-                await channel.send("What's your name? {}\n\n*To cancel type `!cancel`*".format(ctx.author.mention))
+                await channel.send(f"What's your name? {ctx.author.mention}\n\n*To cancel type `!cancel`*")
 
                 try:
                     name = await self.bot.wait_for('message', timeout=180, check=check)
                     if name.content.lower() == '!cancel':
-                        await channel.send("Cancelled. %s" % (ctx.author.mention))
+                        await channel.send(f"Cancelled. {ctx.author.mention}")
                         ctx.command.reset_cooldown(ctx)
                         return
 
                 except asyncio.TimeoutError:
-                    await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+                    await ctx.send(f"Ran out of time. {ctx.author.mention}")
                     ctx.command.reset_cooldown(ctx)
                     return
 
                 else:
-                    await channel.send("Where are you from? {}".format(ctx.author.mention))
+                    await channel.send(f"Where are you from? {ctx.author.mention}")
 
                     try:
                         location = await self.bot.wait_for('message', timeout=180, check=check)
                         if location.content.lower() == '!cancel':
-                            await channel.send("Cancelled. %s" % (ctx.author.mention))
+                            await channel.send(f"Cancelled. {ctx.author.mention}")
                             ctx.command.reset_cooldown(ctx)
                             return
 
                     except asyncio.TimeoutError:
-                        await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+                        await ctx.send(f"Ran out of time. {ctx.author.mention}")
                         ctx.command.reset_cooldown(ctx)
                         return
 
                     else:
-                        await channel.send("How old are you? {}".format(ctx.author.mention))
+                        await channel.send(f"How old are you? {ctx.author.mention}")
 
                         try:
                             while True:
                                 age = await self.bot.wait_for('message', timeout=180, check=check)
                                 if age.content.lower() == '!cancel':
-                                    await channel.send("Cancelled. %s" % (ctx.author.mention))
+                                    await channel.send(f"Cancelled. {ctx.author.mention}")
                                     ctx.command.reset_cooldown(ctx)
                                     return
                                 try:
@@ -120,7 +120,7 @@ class Intros(commands.Cog):
                                     await channel.send("Must be number.")
 
                         except asyncio.TimeoutError:
-                            await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+                            await ctx.send(f"Ran out of time. {ctx.author.mention}")
                             ctx.command.reset_cooldown(ctx)
                             return
 
@@ -130,12 +130,12 @@ class Intros(commands.Cog):
                             try:
                                 gender = await self.bot.wait_for('message', timeout=180, check=check)
                                 if gender.content.lower() == '!cancel':
-                                    await channel.send("Cancelled. %s" % (ctx.author.mention))
+                                    await channel.send(f"Cancelled. {ctx.author.mention}")
                                     ctx.command.reset_cooldown(ctx)
                                     return
 
                             except asyncio.TimeoutError:
-                                await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+                                await ctx.send(f"Ran out of time. {ctx.author.mention}")
                                 ctx.command.reset_cooldown(ctx)
                                 return
 
@@ -147,7 +147,7 @@ class Intros(commands.Cog):
                                         prestatuss = await self.bot.wait_for('message', timeout=180, check=check)
                                         status = prestatuss.content.lower()
                                         if status == '!cancel':
-                                            await channel.send("Cancelled. %s" % (ctx.author.mention))
+                                            await channel.send(f"Cancelled. {ctx.author.mention}")
                                             ctx.command.reset_cooldown(ctx)
                                             return
                                         elif status in ('single', 'taken', 'complicated'):
@@ -156,22 +156,22 @@ class Intros(commands.Cog):
                                             await channel.send("Please only choose from `single` | `taken` | `complicated`")
 
                                 except asyncio.TimeoutError:
-                                    await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+                                    await ctx.send(f"Ran out of time. {ctx.author.mention}")
                                     ctx.command.reset_cooldown(ctx)
                                     return
 
                                 else:
-                                    await channel.send("What are u interested to? {}".format(ctx.author.mention))
+                                    await channel.send(f"What are u interested to? {ctx.author.mention}")
 
                                     try:
                                         interests = await self.bot.wait_for('message', timeout=360, check=check)
                                         if interests.content.lower() == '!cancel':
-                                            await channel.send("Cancelled. %s" % (ctx.author.mention))
+                                            await channel.send(f"Cancelled. {ctx.author.mention}")
                                             ctx.command.reset_cooldown(ctx)
                                             return
 
                                     except asyncio.TimeoutError:
-                                        await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+                                        await ctx.send(f"Ran out of time. {ctx.author.mention}")
                                         ctx.command.reset_cooldown(ctx)
                                         return
 
@@ -219,38 +219,38 @@ class Intros(commands.Cog):
             try:
                 name = await self.bot.wait_for('message', timeout=180, check=check)
                 if name.content.lower() == '!cancel':
-                    await channel.send("Cancelled. %s" % (ctx.author.mention))
+                    await channel.send(f"Cancelled. {ctx.author.mention}")
                     ctx.command.reset_cooldown(ctx)
                     return
 
             except asyncio.TimeoutError:
-                await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+                await ctx.send(f"Ran out of time. {ctx.author.mention}")
                 ctx.command.reset_cooldown(ctx)
                 return
 
             else:
-                await channel.send("Where are you from? {}".format(ctx.author.mention))
+                await channel.send(f"Where are you from? {ctx.author.mention}")
 
                 try:
                     location = await self.bot.wait_for('message', timeout=180, check=check)
                     if location.content.lower() == '!cancel':
-                        await channel.send("Cancelled. %s" % (ctx.author.mention))
+                        await channel.send(f"Cancelled. {ctx.author.mention}")
                         ctx.command.reset_cooldown(ctx)
                         return
 
                 except asyncio.TimeoutError:
-                    await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+                    await ctx.send(f"Ran out of time. {ctx.author.mention}")
                     ctx.command.reset_cooldown(ctx)
                     return
 
                 else:
-                    await channel.send("How old are you? {}".format(ctx.author.mention))
+                    await channel.send(f"How old are you? {ctx.author.mention}")
 
                     try:
                         while True:
                             age = await self.bot.wait_for('message', timeout=180, check=check)
                             if age.content.lower() == '!cancel':
-                                await channel.send("Cancelled. %s" % (ctx.author.mention))
+                                await channel.send(f"Cancelled. {ctx.author.mention}")
                                 ctx.command.reset_cooldown(ctx)
                                 return
                             try:
@@ -263,34 +263,34 @@ class Intros(commands.Cog):
                                 await channel.send("Must be number.")
 
                     except asyncio.TimeoutError:
-                        await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+                        await ctx.send(f"Ran out of time. {ctx.author.mention}")
                         ctx.command.reset_cooldown(ctx)
                         return
 
                     else:
-                        await channel.send("What's your gender? {}".format(ctx.author.mention))
+                        await channel.send(f"What's your gender? {ctx.author.mention}")
 
                         try:
                             gender = await self.bot.wait_for('message', timeout=180, check=check)
                             if gender.content.lower() == '!cancel':
-                                await channel.send("Cancelled. %s" % (ctx.author.mention))
+                                await channel.send(f"Cancelled. {ctx.author.mention}")
                                 ctx.command.reset_cooldown(ctx)
                                 return
 
                         except asyncio.TimeoutError:
-                            await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+                            await ctx.send(f"Ran out of time. {ctx.author.mention}")
                             ctx.command.reset_cooldown(ctx)
                             return
 
                         else:
-                            await channel.send("Relationship status? `single` | `taken` | `complicated` {}".format(ctx.author.mention))
+                            await channel.send(f"Relationship status? `single` | `taken` | `complicated` {ctx.author.mention}")
 
                             try:
                                 while True:
                                     prestatuss = await self.bot.wait_for('message', timeout=180, check=check)
                                     status = prestatuss.content.lower()
                                     if status == '!cancel':
-                                        await channel.send("Cancelled. %s" % (ctx.author.mention))
+                                        await channel.send(f"Cancelled. {ctx.author.mention}")
                                         ctx.command.reset_cooldown(ctx)
                                         return
                                     elif status in ('single', 'taken', 'complicated'):
@@ -299,22 +299,22 @@ class Intros(commands.Cog):
                                         await channel.send("Please only choose from `single` | `taken` | `complicated`")
 
                             except asyncio.TimeoutError:
-                                await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+                                await ctx.send(f"Ran out of time. {ctx.author.mention}")
                                 ctx.command.reset_cooldown(ctx)
                                 return
 
                             else:
-                                await channel.send("What are u interested to? {}".format(ctx.author.mention))
+                                await channel.send(f"What are u interested to? {ctx.author.mention}")
 
                                 try:
                                     interests = await self.bot.wait_for('message', timeout=360, check=check)
                                     if interests.content.lower() == '!cancel':
-                                        await channel.send("Cancelled. %s" % (ctx.author.mention))
+                                        await channel.send(f"Cancelled. {ctx.author.mention}")
                                         ctx.command.reset_cooldown(ctx)
                                         return
 
                                 except asyncio.TimeoutError:
-                                    await ctx.send("Ran out of time. %s" % (ctx.author.mention))
+                                    await ctx.send(f"Ran out of time. {ctx.author.mention}")
                                     ctx.command.reset_cooldown(ctx)
                                     return
 
@@ -360,7 +360,7 @@ class Intros(commands.Cog):
 
         if results is not None:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-            view.message = msg = await ctx.send("Are you sure you want to delete your intro? %s" % (ctx.author.mention), view=view)
+            view.message = msg = await ctx.send(f"Are you sure you want to delete your intro? {ctx.author.mention}", view=view)
             await view.wait()
             if view.response is None:
                 return ctx.command.reset_cooldown(ctx)
@@ -376,11 +376,11 @@ class Intros(commands.Cog):
                 except Exception as e:
                     print(results['intro_id'])
                     print(e)
-                e = "Intro deleted. %s" % (ctx.author.mention)
+                e = f"Intro deleted. {ctx.author.mention}"
                 return await msg.edit(content=e, view=view)
 
             elif view.response is False:
-                e = "Intro has not been deleted. %s" % (ctx.author.mention)
+                e = f"Intro has not been deleted. {ctx.author.mention}"
                 return await msg.edit(content=e, view=view)
 
         else:

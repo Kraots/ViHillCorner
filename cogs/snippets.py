@@ -69,7 +69,7 @@ class Snippets(commands.Cog):
             p = SnippetPages(ctx=ctx, entries=entries, per_page=7, color=Colours.reds)
             await p.start()
         except Exception:
-            await ctx.send('No snippets found. %s' % (ctx.author.mention))
+            await ctx.send(f'No snippets found. {ctx.author.mention}')
 
     @snippet.command(name='leaderboard', aliases=('lb', 'top',))
     async def snippet_leaderboard(self, ctx: Context):
@@ -99,7 +99,7 @@ class Snippets(commands.Cog):
             p = SnippetPages(ctx=ctx, entries=entries, per_page=7, color=Colours.reds)
             await p.start()
         except Exception:
-            await ctx.send('You do not own any snippets. %s' % (ctx.author.mention))
+            await ctx.send(f'You do not own any snippets. {ctx.author.mention}')
 
     @snippet.command(name='info')
     async def snippet_info(self, ctx: Context, *, snippet_name: str = None):
@@ -111,7 +111,7 @@ class Snippets(commands.Cog):
         snippet: Snippet = await Snippet.find_one({'_id': snippet_name.lower()})
 
         if snippet is None:
-            return await ctx.send("Snippet **%s** does not exist! %s" % (snippet_name, ctx.author.mention))
+            return await ctx.send(f"Snippet **{snippet_name}** does not exist! {ctx.author.mention}")
 
         _sorted: list[Snippet] = await Snippet.find().sort('uses_count', -1).to_list(100000)
         rank = 0
@@ -159,11 +159,11 @@ class Snippets(commands.Cog):
 
         snippet: Snippet = await Snippet.find_one({'_id': snippet_name.lower()})
         if snippet is not None:
-            return await ctx.send("Snippet name (`%s`) is already taken. %s" % (snippet_name, ctx.author.mention))
+            return await ctx.send(f"Snippet name (`{snippet_name}`) is already taken. {ctx.author.mention}")
         for x in ('kraots', 'carrots', 'carots', 'carot', 'carrot'):
             if x in snippet_name.lower():
                 if ctx.author.id != 374622847672254466:
-                    return await ctx.send("You cannot create a snippet with that name. %s" % (ctx.author.mention))
+                    return await ctx.send(f"You cannot create a snippet with that name. {ctx.author.mention}")
 
         if len(snippet_name) >= 50:
             await ctx.send("Snippet's name cannot be that long! Max is: `50`")
@@ -229,7 +229,7 @@ class Snippets(commands.Cog):
 
         snippet: Snippet = await Snippet.find_one({'_id': snippet_name.lower()})
         if snippet is None:
-            return await ctx.send("Snippet `%s` does not exist! %s" % (snippet_name, ctx.author.mention))
+            return await ctx.send(f"Snippet `{snippet_name}` does not exist! {ctx.author.mention}")
 
         if ctx.author.id != 374622847672254466:
             if ctx.author.id != snippet.owner_id:
@@ -237,7 +237,7 @@ class Snippets(commands.Cog):
                 return
         else:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-            view.message = msg = await ctx.send("Are you sure you want to delete the snippet `%s`? %s" % (snippet_name, ctx.author.mention), view=view)
+            view.message = msg = await ctx.send(f"Are you sure you want to delete the snippet `{snippet_name}`? {ctx.author.mention}", view=view)
             await view.wait()
             if view.response is True:
                 await snippet.delete()
@@ -279,7 +279,7 @@ class Snippets(commands.Cog):
 
     async def cog_command_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.MissingAnyRole):
-            await ctx.send("You must be at least `level 55+` in order to use this command! %s" % (ctx.author.mention))
+            await ctx.send(f"You must be at least `level 55+` in order to use this command! {ctx.author.mention}")
         else:
             if hasattr(ctx.command, 'on_error'):
                 return

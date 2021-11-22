@@ -126,15 +126,15 @@ class ToDo(commands.Cog):
             return await ctx.reply("You do not have any todo list.")
 
         view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-        view.message = msg = await ctx.send("Are you sure you want to delete your todo list? %s" % (ctx.author.mention), view=view)
+        view.message = msg = await ctx.send(f"Are you sure you want to delete your todo list? {ctx.author.mention}", view=view)
         await view.wait()
         if view.response is True:
             await res.delete()
-            e = "Succesfully deleted your todo list. %s" % (ctx.author.mention)
+            e = f"Succesfully deleted your todo list. {ctx.author.mention}"
             return await msg.edit(content=e, view=view)
 
         elif view.response is False:
-            e = "Okay, your todo list has not been deleted. %s" % (ctx.author.mention)
+            e = f"Okay, your todo list has not been deleted. {ctx.author.mention}"
             return await msg.edit(content=e, view=view)
 
     @commands.Cog.listener()
