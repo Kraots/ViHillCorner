@@ -126,8 +126,8 @@ class Snippets(commands.Cog):
         em.set_author(name=snippet_owner, icon_url=snippet_owner.display_avatar)
         em.add_field(name="Owner", value=snippet_owner.mention)
         em.add_field(name="Uses", value=snippet.uses_count)
-        em.add_field(name="Rank", value="`#{}`".format(rank))
-        em.set_footer(text="Snippet created at • {}".format(snippet.created_at))
+        em.add_field(name="Rank", value=f"`#{rank}`")
+        em.set_footer(text=f"Snippet created at • {snippet.created_at}")
 
         await ctx.send(embed=em)
 

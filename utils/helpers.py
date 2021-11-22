@@ -94,7 +94,7 @@ def package_version(package_name: str) -> Optional[str]:
 
 
 def format_balance(balance: int):
-    cBalance = "{:,}".format(balance)
+    cBalance = f"{balance:,}"
     sBalance = cBalance.split(",")
     if len(sBalance) == 1:
         return str(balance).replace('.0', '')

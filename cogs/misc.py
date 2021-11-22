@@ -318,7 +318,7 @@ class Misc(commands.Cog):
         major = sys.version_info.major
         minor = sys.version_info.minor
         micro = sys.version_info.micro
-        py_version = "{}.{}.{}".format(major, minor, micro)
+        py_version = f"{major}.{minor}.{micro}"
         botinfo = disnake.Embed(title="", color=Colours.light_pink, timestamp=ctx.message.created_at.replace(tzinfo=None))
         botinfo.set_footer(text=f'Requested by: {ctx.author}', icon_url=ctx.author.display_avatar)
         botinfo.add_field(name="Name | ID :", value=f"{self.bot.user} | {self.bot.user.id}", inline=False)
@@ -408,13 +408,8 @@ class Misc(commands.Cog):
         for i in guild.members:
             if str(i.status) == 'online' or str(i.status) == 'idle' or str(i.status) == 'dnd':
                 online += 1
-        all_users = []
-        for user in guild.members:
-            all_users.append('{0.name}#{0.discriminator}'.format(user))
-        all_users.sort()
 
         channel_count = len([x for x in guild.channels if type(x) == disnake.channel.TextChannel])
-
         role_count = len(guild.roles)
         emoji_count = len(guild.emojis)
 
@@ -495,8 +490,8 @@ class Misc(commands.Cog):
                 m.add_field(name="By:", value=activity.artist, inline=False)
                 m.add_field(name="On:", value=activity.album, inline=False)
                 m1, s1 = divmod(int(activity.duration.seconds), 60)
-                song_length = '{:02}:{:02}'.format(m1, s1)
-                playing_for = '{:02}:{:02}'.format(diff.minutes, diff.seconds)
+                song_length = f'{m1:02}:{s1:02}'
+                playing_for = f'{diff.minute:02}:{diff.second:02}'
                 m.add_field(name="Duration:", value=f"{playing_for} - {song_length}")
                 m.add_field(name="Total Duration:", value=song_length, inline=False)
                 m.set_thumbnail(url=activity.album_cover_url)
@@ -539,7 +534,7 @@ class Misc(commands.Cog):
 
         embed = disnake.Embed(description=msg.content, color=msg.author.color, timestamp=msg.created_at.replace(tzinfo=None))
         embed.set_author(name=msg.author, icon_url=msg.author.display_avatar)
-        embed.set_footer(text="Deleted in `{}`".format(msg.channel))
+        embed.set_footer(text=f"Deleted in `{msg.channel}`")
         if msg.attachments:
             embed.set_image(url=msg.attachments[0].proxy_url)
         ref = msg.reference
@@ -585,7 +580,7 @@ class Misc(commands.Cog):
 
         embed = disnake.Embed(description=msg.content, color=msg.author.color, timestamp=msg.created_at.replace(tzinfo=None))
         embed.set_author(name=msg.author, icon_url=msg.author.display_avatar)
-        embed.set_footer(text="Deleted in `{}`".format(msg.channel))
+        embed.set_footer(text=f"Deleted in `{msg.channel}`")
         if msg.attachments:
             embed.set_image(url=msg.attachments[0].proxy_url)
         await ctx.send(embed=embed)
@@ -921,7 +916,7 @@ class Misc(commands.Cog):
 
         elif isinstance(error, commands.CommandOnCooldown):
             await ctx.message.delete()
-            msg = 'Your on cooldown, please try again in **{:.2f}**s.'.format(error.retry_after)
+            msg = f'You\'re on cooldown, please try again in **{error.retry_after:.2f}**s.'
             await ctx.send(msg, delete_after=3)
 
         elif isinstance(error, commands.MissingRequiredArgument):

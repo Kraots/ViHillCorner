@@ -207,7 +207,7 @@ class Levels(commands.Cog):
         xp = ((50 * ((lvl - 1)**2)) + (50 * (lvl - 1)))
         mem.xp = xp
         await mem.commit()
-        await ctx.send("Set level `{}` for **{}**.".format(lvl, member.display_name))
+        await ctx.send(f"Set level `{lvl}` for **{member.display_name}**.")
 
     @rank.command(name='leaderboard', aliases=['lb', 'top'])
     async def rank_leaderboard(self, ctx: Context):

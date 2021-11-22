@@ -51,9 +51,9 @@ class TimeConverter(commands.Converter):
             try:
                 time += time_dict[k] * float(v)
             except KeyError:
-                raise commands.BadArgument("{} is an invalid time-key! h/m/s/d are valid!".format(k))
+                raise commands.BadArgument(f"{k} is an invalid time-key! h/m/s/d are valid!")
             except ValueError:
-                raise commands.BadArgument("{} is not a number!".format(v))
+                raise commands.BadArgument(f"{v} is not a number!")
         return time
 
 
@@ -166,7 +166,10 @@ class PollInteractiveMenu(disnake.ui.View):
         em = disnake.Embed(
             color=disnake.Color.green(),
             title='Expires: ' + disnake.utils.format_dt(expire_date, 'R'),
-            description='\n'.join([f'{NUMBER_EMOJIS[index]} **->** {option}' for index, option in enumerate(self.options)])
+            description='\n'.join(
+                [f'{NUMBER_EMOJIS[index]} **->** {option}'
+                    for index, option in enumerate(self.options)]
+            )
         )
         em.set_author(name=f'Poll by: {self.ctx.author}', icon_url=self.ctx.author.display_avatar.url)
         em.set_footer(text='Once you voted you cannot remove your vote or vote again! Choose wisely.')
@@ -813,7 +816,7 @@ class Moderator(commands.Cog):
             await member.send(msg)
         except disnake.HTTPException:
             pass
-        await member.edit(roles=new_roles, reason='{}: "Unmute"'.format(ctx.author))
+        await member.edit(roles=new_roles, reason=f'{ctx.author}: "Unmute"')
         await ctx.send(embed=disnake.Embed(color=Colours.red, description=f"`{member}` has been unmuted."))
 
         em = disnake.Embed(color=Colours.reds, title="___UNMUTE___", timestamp=ctx.message.created_at.replace(tzinfo=None))

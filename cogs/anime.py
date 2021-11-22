@@ -257,7 +257,7 @@ class Anime(commands.Cog):
 
         if data:
             await data.delete()
-            await ctx.send("Succesfully removed `{}` from the database.".format(member.display_name))
+            await ctx.send(f"Succesfully removed `{member.display_name}` from the database.")
 
         else:
             await ctx.send("User not in the database!")
@@ -271,7 +271,7 @@ class Anime(commands.Cog):
 
         if data:
             await data.delete()
-            await ctx.send("Succesfully removed `{}` from the database.".format(member.display_name))
+            await ctx.send(f"Succesfully removed `{member.display_name}` from the database.")
 
         else:
             await ctx.send("User not in the database!")

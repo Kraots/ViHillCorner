@@ -281,7 +281,7 @@ class NSFW(commands.Cog):
 
         elif choice == "add":
             if result is not None:
-                await ctx.send("You are restricted from using that command, therefore your permissions have not been changed! {}".format(user.mention))
+                await ctx.send(f"You are restricted from using that command, therefore your permissions have not been changed! {user.mention}")
                 return
 
             else:

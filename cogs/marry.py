@@ -50,13 +50,13 @@ class Marriages(commands.Cog):
             if member.id in all_users:
                 mem: Marriage = await Marriage.find_one({"_id": member.id})
                 usr = self.bot.get_user(mem.married_to)
-                await ctx.send("`{}` is already married to `{}`.".format(member.display_name, usr.display_name))
+                await ctx.send(f"`{member.display_name}` is already married to `{usr.display_name}`.")
                 return
 
             elif ctx.author.id in all_users:
                 mem: Marriage = await Marriage.find_one({"_id": ctx.author.id})
                 usr = self.bot.get_user(mem.married_to)
-                await ctx.send("You are already married to `{}`.".format(usr.display_name))
+                await ctx.send(f"You are already married to `{usr.display_name}`.")
 
             else:
                 view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.", member)

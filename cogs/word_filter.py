@@ -150,7 +150,7 @@ class FilterCog(commands.Cog):
                                     new_roles = [role for role in message.author.roles] + [muted]
                                 await message.author.edit(roles=new_roles, reason='Filter Mute (bad words)')
                                 msg1 = "You have been muted in `ViHill Corner`."
-                                em = disnake.Embed(description="**Reason:** [Bad Words]({})\n**Time:** `{}`".format(message.jump_url, time_convert[mute_time]))
+                                em = disnake.Embed(description=f"**Reason:** [Bad Words]({message.jump_url})\n**Time:** `{time_convert[mute_time]}`")
                                 await message.author.send(msg1, embed=em)
                                 msg2 = f"**{message.author}** has been muted."
                                 ju = await message.channel.send(msg2, embed=em)
@@ -394,7 +394,7 @@ class FilterCog(commands.Cog):
                                     new_roles = [role for role in after.author.roles] + [muted]
                                 await after.author.edit(roles=new_roles, reason='Filter Mute (bad words)')
                                 msg1 = "You have been muted in `ViHill Corner`."
-                                em = disnake.Embed(description="**Reason:** [Bad Words]({})\n**Time:** `{}`".format(after.jump_url, time_convert[mute_time]))
+                                em = disnake.Embed(description=f"**Reason:** [Bad Words]({after.jump_url})\n**Time:** `{time_convert[mute_time]}`")
                                 await after.author.send(msg1, embed=em)
                                 msg2 = f"**{after.author}** has been muted."
                                 ju = await after.channel.send(msg2, embed=em)

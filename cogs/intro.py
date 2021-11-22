@@ -125,7 +125,7 @@ class Intros(commands.Cog):
                             return
 
                         else:
-                            await channel.send("What's your gender? {}".format(ctx.author.mention))
+                            await channel.send(f"What's your gender? {ctx.author.mention}")
 
                             try:
                                 gender = await self.bot.wait_for('message', timeout=180, check=check)
@@ -140,7 +140,7 @@ class Intros(commands.Cog):
                                 return
 
                             else:
-                                await channel.send("Relationship status? `single` | `taken` | `complicated` {}".format(ctx.author.mention))
+                                await channel.send(f"Relationship status? `single` | `taken` | `complicated` {ctx.author.mention}")
 
                                 try:
                                     while True:
@@ -214,7 +214,7 @@ class Intros(commands.Cog):
 
         else:
 
-            await channel.send("What's your name? {}\n\n*To cancel type `!cancel`*".format(ctx.author.mention))
+            await channel.send(f"What's your name? {ctx.author.mention}\n\n*To cancel type `!cancel`*")
 
             try:
                 name = await self.bot.wait_for('message', timeout=180, check=check)

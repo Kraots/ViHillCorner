@@ -94,9 +94,9 @@ class General(commands.Cog):
         else:
             await self.bot.loop.run_in_executor(None, take_ss, url)
             f = disnake.File(fp='ss.png', filename='ss.png')
-            em = disnake.Embed(color=Colours.light_pink, title="Here's your screen shot of `{}`".format(url))
+            em = disnake.Embed(color=Colours.light_pink, title=f"Here's your screen shot of `{url}`")
             em.set_image(url='attachment://ss.png')
-            em.set_footer(text="Requested by: {}".format(ctx.author), icon_url=ctx.author.display_avatar)
+            em.set_footer(text=f"Requested by: {ctx.author}", icon_url=ctx.author.display_avatar)
             await ctx.send(embed=em, file=f, reference=ctx.replied_reference)
 
     @commands.command(name="perm-calc")

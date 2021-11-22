@@ -391,16 +391,14 @@ class Actions(commands.Cog):
 
                 elif not ctx.author.id == user.id:
                     await ctx.send(
-                        "That user is married to `{}`, and only they can kiss that person!".format(
-                            user.display_name
-                        )
+                        f"That user is married to `{user.display_name}`, and only they can kiss that person!"
                     )
 
     async def cog_command_error(self, ctx: Context, error):
         if isinstance(error, commands.errors.MissingAnyRole):
             await ctx.send(
                 f"You must be at least `level 15+` in order to use this command! {ctx.author.mention}"
-                )
+            )
         else:
             if hasattr(ctx.command, "on_error"):
                 return
