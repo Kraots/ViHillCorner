@@ -333,7 +333,7 @@ class Economy(commands.Cog):
 
         if results is None:
             ctx.command.reset_cooldown(ctx)
-            await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             return
         else:
             dateNow = datetime.datetime.utcnow()
@@ -418,10 +418,10 @@ class Economy(commands.Cog):
 
         try:
             await self.db.insert_one(post)
-            await ctx.send("Succesfully registered! %s" % (ctx.author.mention))
+            await ctx.send(f"Succesfully registered! {ctx.author.mention}")
 
         except pymongo.errors.DuplicateKeyError:
-            await ctx.send("You are already registered! %s" % (ctx.author.mention))
+            await ctx.send(f"You are already registered! {ctx.author.mention}")
 
     @commands.command(name='unregister')
     async def eco_unregister(self, ctx: Context):
@@ -434,11 +434,11 @@ class Economy(commands.Cog):
         results = await self.db.find_one({"_id": user.id})
         if results is None:
             ctx.command.reset_cooldown(ctx)
-            await ctx.send("You are not registered! %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! {ctx.author.mention}")
             return
 
         await self.db.delete_one({"_id": user.id})
-        await ctx.send("Succesfully unregistered! %s" % (ctx.author.mention))
+        await ctx.send(f"Succesfully unregistered! {ctx.author.mention}")
 
     @commands.command(aliases=['bag'])
     async def inventory(self, ctx: Context, member: disnake.Member = None):
@@ -453,10 +453,10 @@ class Economy(commands.Cog):
         if user_db is None:
             if member.id == ctx.author.id:
                 ctx.command.reset_cooldown(ctx)
-                return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+                return await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             else:
                 ctx.command.reset_cooldown(ctx)
-                return await ctx.send("User is not registered! %s" % (ctx.author.mention))
+                return await ctx.send(f"User is not registered! {ctx.author.mention}")
         _count = 0
         for item in user_db['items']:
             if item['owned'] == 0:
@@ -757,7 +757,7 @@ class Economy(commands.Cog):
         user_db = await self.db.find_one({'_id': ctx.author.id})
         if user_db is None:
             ctx.command.reset_cooldown(ctx)
-            return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            return await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
         if len(user_db['items_in_use']) == 0:
             return await ctx.reply('You do not have any items in use currently.')
 
@@ -785,7 +785,7 @@ class Economy(commands.Cog):
         user_db = await self.db.find_one({'_id': ctx.author.id})
         if user_db is None:
             ctx.command.reset_cooldown(ctx)
-            return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            return await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
 
         for item in user_db['items']:
             if item['item_name'] == 'fishing pole':
@@ -845,7 +845,7 @@ class Economy(commands.Cog):
         user_db = await self.db.find_one({'_id': ctx.author.id})
         if user_db is None:
             ctx.command.reset_cooldown(ctx)
-            return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            return await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
 
         for item in user_db['items']:
             if item['item_name'] == 'hunting rifle':
@@ -920,7 +920,7 @@ class Economy(commands.Cog):
             view.message = await ctx.send('**Where do you want to search?**\n*Pick an option below to start searching that location*', view=view)
         else:
             ctx.command.reset_cooldown(ctx)
-            return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            return await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
 
     @commands.command(name='passive')
     async def eco_passive(self, ctx: Context, *, option: str = None):
@@ -934,7 +934,7 @@ class Economy(commands.Cog):
         user_db = await self.db.find_one({'_id': ctx.author.id})
         if user_db is None:
             ctx.command.reset_cooldown(ctx)
-            return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            return await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
         elif option is None:
             return await ctx.send(f"Your current passive is {'**enabled.**' if user_db['passive'] is True else '**disabled.**'}")
         option = option.lower()
@@ -973,10 +973,10 @@ class Economy(commands.Cog):
         if user_db is None:
             if member.id == member.id:
                 ctx.command.reset_cooldown(ctx)
-                await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+                await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             else:
                 ctx.command.reset_cooldown(ctx)
-                await ctx.send("User is not registered! %s" % (ctx.author.mention))
+                await ctx.send(f"User is not registered! {ctx.author.mention}")
             return
 
         results = await self.db.find().sort('wallet', -1).to_list(100000)
@@ -1159,7 +1159,7 @@ class Economy(commands.Cog):
         if results is not None:
 
             if amount is None:
-                await ctx.send('Please enter the amount you want to withdraw. %s' % (ctx.author.mention))
+                await ctx.send(f'Please enter the amount you want to withdraw. {ctx.author.mention}')
                 return
 
             bal = results["bank"]
@@ -1177,24 +1177,24 @@ class Economy(commands.Cog):
                 return await ctx.reply("Not a number!")
 
             if amount > bal:
-                await ctx.send('You do not own that much carrots! %s' % (ctx.author.mention))
+                await ctx.send(f'You do not own that much carrots! {ctx.author.mention}')
                 return
 
             elif bal < 1:
-                await ctx.send("{} You do not have that much carrots in your bank. Carrots in bank: **{:,}**".format(ctx.author.mention, bal))
+                await ctx.send(f"{ctx.author.mention} You do not have that much carrots in your bank. Carrots in bank: **{bal:,}**")
                 return
 
             elif amount < 1:
-                await ctx.send('Invalid amount. %s' % (ctx.author.mention))
+                await ctx.send(f'Invalid amount. {ctx.author.mention}')
                 return
 
             await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": amount}})
             await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"bank": -amount}})
 
-            await ctx.send("Successfully withdrew **{:,}** <:carrots:822122757654577183> ! {}".format(amount, ctx.author.mention))
+            await ctx.send(f"Successfully withdrew **{amount:,}** <:carrots:822122757654577183> ! {ctx.author.mention}")
 
         else:
-            await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -1210,7 +1210,7 @@ class Economy(commands.Cog):
         if results is not None:
 
             if amount is None:
-                await ctx.send('Please enter the amount you want to deposit. %s' % (ctx.author.mention))
+                await ctx.send(f'Please enter the amount you want to deposit. {ctx.author.mention}')
                 return
 
             bal = results["wallet"]
@@ -1227,11 +1227,11 @@ class Economy(commands.Cog):
                 return await ctx.reply("Not a number!")
 
             if amount > bal:
-                await ctx.send('You do not own that much carrots! %s' % (ctx.author.mention))
+                await ctx.send(f'You do not own that much carrots! {ctx.author.mention}')
                 return
 
             elif bal < 1:
-                await ctx.send("{} You do not have that much carrots in your wallet. Carrots in wallet: **{:,}**".format(ctx.author.mention, bal))
+                await ctx.send(f"{ctx.author.mention} You do not have that much carrots in your wallet. Carrots in wallet: **{bal:,}**")
                 return
 
             elif amount < 1:
@@ -1241,10 +1241,10 @@ class Economy(commands.Cog):
             await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": -amount}})
             await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"bank": amount}})
 
-            await ctx.send("Successfully deposited **{:,}** <:carrots:822122757654577183> ! {}".format(amount, ctx.author.mention))
+            await ctx.send(f"Successfully deposited **{amount:,}** <:carrots:822122757654577183> ! {ctx.author.mention}")
 
         else:
-            await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -1268,7 +1268,7 @@ class Economy(commands.Cog):
                 return await ctx.reply('That user cannot receive carrots because they have passive **enabled.**')
 
             if amount is None:
-                await ctx.send('Please enter the amount you want to withdraw. %s' % (ctx.author.mention))
+                await ctx.send(f'Please enter the amount you want to withdraw. {ctx.author.mention}')
                 return
 
             bal = results["wallet"]
@@ -1285,7 +1285,7 @@ class Economy(commands.Cog):
                 return await ctx.reply("Not a number!")
 
             if amount > bal:
-                await ctx.send('You do not own that much carrots! %s' % (ctx.author.mention))
+                await ctx.send(f'You do not own that much carrots! {ctx.author.mention}')
                 return
 
             elif bal < 100:
@@ -1293,7 +1293,7 @@ class Economy(commands.Cog):
                 return
 
             if amount < 100:
-                await ctx.send('You cannot give less than `100` <:carrots:822122757654577183> %s.' % (ctx.author.mention))
+                await ctx.send(f'You cannot give less than `100` <:carrots:822122757654577183> {ctx.author.mention}.')
                 return
 
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.", member)
@@ -1311,7 +1311,7 @@ class Economy(commands.Cog):
 
         else:
             ctx.command.reset_cooldown(ctx)
-            await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             return
 
     @commands.command(aliases=["steal"])
@@ -1323,14 +1323,14 @@ class Economy(commands.Cog):
             return ctx.command.reset_cooldown(ctx)
 
         if member is None:
-            await ctx.send("You must specify the person you want to rob/steal from. %s" % (ctx.author.mention))
+            await ctx.send(f"You must specify the person you want to rob/steal from. {ctx.author.mention}")
             ctx.command.reset_cooldown(ctx)
             return
         results = await self.db.find_one({"_id": ctx.author.id})
 
         if results is not None:
             if member is ctx.author:
-                await ctx.send("You cannot rob yourself. %s" % (ctx.author.mention))
+                await ctx.send(f"You cannot rob yourself. {ctx.author.mention}")
                 ctx.command.reset_cooldown(ctx)
                 return
 
@@ -1352,12 +1352,12 @@ class Economy(commands.Cog):
             author_bal = results["wallet"]
 
             if author_bal < 350:
-                await ctx.send("You need `350` <:carrots:822122757654577183>  to rob someone! %s" % (ctx.author.mention))
+                await ctx.send(f"You need `350` <:carrots:822122757654577183>  to rob someone! {ctx.author.mention}")
                 ctx.command.reset_cooldown(ctx)
                 return
 
             if user_bal < 250:
-                await ctx.send('The user must have at least `250` <:carrots:822122757654577183> ! %s' % (ctx.author.mention))
+                await ctx.send(f'The user must have at least `250` <:carrots:822122757654577183> ! {ctx.author.mention}')
                 ctx.command.reset_cooldown(ctx)
                 return
 
@@ -1369,15 +1369,15 @@ class Economy(commands.Cog):
                 await self.db.update_one({"_id": author.id}, {"$inc": {"wallet": earnings}})
                 await self.db.update_one({"_id": user.id}, {"$inc": {"wallet": -earnings}})
 
-                await ctx.send("You robbed **{}** and got **{:,}** <:carrots:822122757654577183> ! {}".format(member.display_name, earnings, ctx.author.mention))  # noqa
+                await ctx.send(f"You robbed **{member.display_name}** and got **{earnings:,}** <:carrots:822122757654577183> ! {ctx.author.mention}")  # noqa
 
             else:
                 await self.db.update_one({"_id": author.id}, {"$inc": {"wallet": -350}})
 
-                await ctx.send("You failed in stealing from that person and you lost `350` <:carrots:822122757654577183> %s" % (ctx.author.mention))
+                await ctx.send(f"You failed in stealing from that person and you lost `350` <:carrots:822122757654577183> {ctx.author.mention}")
 
         else:
-            await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -1394,7 +1394,7 @@ class Economy(commands.Cog):
         if results is not None:
 
             if amount is None:
-                await ctx.send('Please enter the amount. %s' % (ctx.author.mention))
+                await ctx.send(f'Please enter the amount. {ctx.author.mention}')
                 ctx.command.reset_cooldown(ctx)
                 return
 
@@ -1412,12 +1412,12 @@ class Economy(commands.Cog):
                 return await ctx.reply("Not a number!")
 
             if amount > bal:
-                await ctx.send('You do not own that much carrots! %s' % (ctx.author.mention))
+                await ctx.send(f'You do not own that much carrots! {ctx.author.mention}')
                 ctx.command.reset_cooldown(ctx)
                 return
 
             if amount < 300:
-                await ctx.send('You must bet more than `300` <:carrots:822122757654577183>. %s' % (ctx.author.mention))
+                await ctx.send(f'You must bet more than `300` <:carrots:822122757654577183>. {ctx.author.mention}')
                 ctx.command.reset_cooldown(ctx)
                 return
 
@@ -1533,7 +1533,7 @@ class Economy(commands.Cog):
                 await msg.edit(embed=lostembed)
 
         else:
-            await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -1555,7 +1555,7 @@ class Economy(commands.Cog):
             await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"wallet": earnings}})
 
         else:
-            await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -1576,7 +1576,7 @@ class Economy(commands.Cog):
             await self.db.update_one({"_id": ctx.author.id}, {"$inc": {"bank": 5000}})
 
         else:
-            await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -1626,7 +1626,7 @@ class Economy(commands.Cog):
                 return
 
         else:
-            await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -1659,7 +1659,7 @@ class Economy(commands.Cog):
                         attempt = int(msg.content)
                         break
                     except ValueError:
-                        await msg.reply("Not a number! %s" % (ctx.author.mention))
+                        await msg.reply(f"Not a number! {ctx.author.mention}")
                 if attempt > number:
                     index += 1
                     if index == 3:
@@ -1681,7 +1681,7 @@ class Economy(commands.Cog):
                     await msg.reply(f'You guessed it! Good job! You got **{win_amt}** <:carrots:822122757654577183>. The number was **{number}**.')
                     return
         else:
-            await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -1756,7 +1756,7 @@ class Economy(commands.Cog):
                 ctx.command.reset_cooldown(ctx)
                 return
         else:
-            await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -1816,7 +1816,7 @@ class Economy(commands.Cog):
                 return
 
         else:
-            await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
             ctx.command.reset_cooldown(ctx)
             return
 
@@ -1831,7 +1831,7 @@ class Economy(commands.Cog):
         results = await self.db.find_one({"_id": ctx.author.id})
         if results is None:
             ctx.command.reset_cooldown(ctx)
-            return await ctx.send("You are not registered! Type: `!register` to register. %s" % (ctx.author.mention))
+            return await ctx.send(f"You are not registered! Type: `!register` to register. {ctx.author.mention}")
 
         view = RPSView(self.db, ctx)
         view.message = await ctx.send('Please choose by clicking one of the buttons below.', view=view)

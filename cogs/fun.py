@@ -1075,9 +1075,9 @@ class Fun(commands.Cog):
         user = await self.db2.find_one({'_id': member.id})
         if user is None:
             if member == ctx.author:
-                await ctx.send("You never played trivia before! %s" % (ctx.author.mention))
+                await ctx.send(f"You never played trivia before! {ctx.author.mention}")
                 return
-            await ctx.send("That user never played trivia before! %s" % (ctx.author.mention))
+            await ctx.send(f"That user never played trivia before! {ctx.author.mention}")
             return
 
         rank = 0
@@ -1090,12 +1090,12 @@ class Fun(commands.Cog):
         if member == ctx.author:
             title = "Here are your points:"
         else:
-            title = "Here are %s's points:" % (member.display_name)
+            title = f"Here are {member.display_name}'s points:"
 
         em = disnake.Embed(color=Colours.light_pink, title=title)
         em.set_thumbnail(url=member.display_avatar)
-        em.add_field(name="Points:", value="**%s**" % (user['points']), inline=False)
-        em.add_field(name="Rank:", value="`#%s`" % (rank), inline=False)
+        em.add_field(name="Points:", value=f"**{user['points']}**", inline=False)
+        em.add_field(name="Rank:", value=f"`#{rank}`", inline=False)
         await ctx.send(embed=em)
 
     @trivia.command(name='leaderboard', aliases=['lb', 'top'])
@@ -1112,7 +1112,7 @@ class Fun(commands.Cog):
         for data in rankings:
             rank += 1
             user = ctx.guild.get_member(data['_id'])
-            em.add_field(name="`#%s` %s" % (rank, user.display_name), value="**%s** points" % (data['points']), inline=False)
+            em.add_field(name=f"`#{rank}` {user.display_name}", value=f"**{data['points']}** points", inline=False)
 
         await ctx.send(embed=em)
 
@@ -1129,7 +1129,7 @@ class Fun(commands.Cog):
             return
 
         await self.db2.update_one({'_id': member.id}, {'$set': {'points': amount}})
-        await ctx.send("Succesfully set the points for user `%s` to **%s**." % (member.display_name, amount))
+        await ctx.send(f"Succesfully set the points for user `{member.display_name}` to **{amount}**.")
 
     @trivia_points.command(name='add')
     @commands.is_owner()
@@ -1144,7 +1144,7 @@ class Fun(commands.Cog):
             return
 
         await self.db2.update_one({'_id': member.id}, {'$inc': {'points': amount}})
-        await ctx.send("Succesfully added **%s** points for member `%s`." % (amount, member.display_name))
+        await ctx.send(f"Succesfully added **{amount}** points for member `{member.display_name}`.")
 
     @trivia_points.command(name='reset')
     @commands.is_owner()
@@ -1159,7 +1159,7 @@ class Fun(commands.Cog):
             return
 
         await self.db2.update_one({'_id': member.id}, {'$set': {'points': 0}})
-        await ctx.send("Succesfully reset points for user `%s`." % (member.display_name))
+        await ctx.send(f"Succesfully reset points for user `{member.display_name}`.")
 
     @trivia_points.command(name='gift', aliases=['give'])
     async def trivia_points_gift(self, ctx: Context, amount: str, member: disnake.Member = None):
@@ -1169,16 +1169,16 @@ class Fun(commands.Cog):
             return
 
         if member is None:
-            await ctx.send("You must specify the member you wish to give points to %s." % (ctx.author.mention))
+            await ctx.send(f"You must specify the member you wish to give points to {ctx.author.mention}.")
             return
         elif member == ctx.author:
-            await ctx.send("You cannot gift yourself... It doesn't really make any sense does it? %s" % (ctx.author.mention))
+            await ctx.send(f"You cannot gift yourself... It doesn't really make any sense does it? {ctx.author.mention}")
             return
 
         user = await self.db2.find_one({'_id': ctx.author.id})
         memberDb = await self.db2.find_one({'_id': member.id})
         if user is None:
-            await ctx.send("You have never played trivia before. You cannot use this command. %s" % (ctx.author.mention))
+            await ctx.send(f"You have never played trivia before. You cannot use this command. {ctx.author.mention}")
             return
         try:
             amount = int(amount)
@@ -1186,31 +1186,31 @@ class Fun(commands.Cog):
             if amount == 'all':
                 amount = user['points']
             else:
-                await ctx.send("The amount must be a number. %s" % (ctx.author.mention))
+                await ctx.send(f"The amount must be a number. {ctx.author.mention}")
                 return
         if user['points'] < amount:
-            await ctx.send("You don't have that many points. %s" % (ctx.author.mention))
+            await ctx.send(f"You don't have that many points. {ctx.author.mention}")
             return
         elif amount < 5:
-            await ctx.send("You cannot give less than **5** points. %s" % (ctx.author.mention))
+            await ctx.send(f"You cannot give less than **5** points. {ctx.author.mention}")
             return
         elif str(amount)[-1] not in ('5', '0'):
-            await ctx.send("The number must always end in **5** or **0**. %s" % (ctx.author.mention))
+            await ctx.send(f"The number must always end in **5** or **0**. {ctx.author.mention}")
             return
         elif memberDb is None:
-            await ctx.send("That user has never played trivia before. You give points to them. %s" % (ctx.author.mention))
+            await ctx.send(f"That user has never played trivia before. You give points to them. {ctx.author.mention}")
             return
         view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.", member)
-        view.message = msg = await ctx.send("%s wants to give you **%s** points. Do you accept? %s" % (ctx.author.mention, amount, member.mention), view=view)
+        view.message = msg = await ctx.send(f"{ctx.author.mention} wants to give you **{amount}** points. Do you accept? {member.mention}", view=view)
         await view.wait()
         if view.response is True:
             await self.db2.update_one({'_id': ctx.author.id}, {'$inc': {'points': -amount}})
             await self.db2.update_one({'_id': member.id}, {'$inc': {'points': amount}})
-            e = "%s has accepted. Succesfully gifted the points %s" % (member.mention, ctx.author.mention)
+            e = f"{member.mention} has accepted. Succesfully gifted the points {ctx.author.mention}"
             return await msg.edit(content=e, view=view)
 
         elif view.response is False:
-            e = "%s has rejected your gift. %s" % (member.mention, ctx.author.mention)
+            e = f"{member.mention} has rejected your gift. {ctx.author.mention}"
             return await msg.edit(content=e, view=view)
 
     @staticmethod

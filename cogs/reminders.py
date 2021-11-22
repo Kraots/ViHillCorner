@@ -84,15 +84,15 @@ class Reminders(commands.Cog):
         if res is not None:
             if res.user_id == ctx.author.id:
                 view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-                view.message = msg = await ctx.send("Are you sure you want to cancel that reminder? %s" % (ctx.author.mention), view=view)
+                view.message = msg = await ctx.send(f"Are you sure you want to cancel that reminder? {ctx.author.mention}", view=view)
                 await view.wait()
                 if view.response is True:
                     await res.delete()
-                    e = "Succesfully cancelled the reminder. %s" % (ctx.author.mention)
+                    e = f"Succesfully cancelled the reminder. {ctx.author.mention}" 
                     return await msg.edit(content=e, view=view)
 
                 elif view.response is False:
-                    e = "Reminder has not been cancelled. %s" % (ctx.author.mention)
+                    e = f"Reminder has not been cancelled. {ctx.author.mention}"
                     return await msg.edit(content=e, view=view)
             else:
                 await ctx.send("That reminder is not yours!")
@@ -108,16 +108,16 @@ class Reminders(commands.Cog):
         res: Reminder = await Reminder.find_one({"user_id": ctx.author.id})
         if res is not None:
             view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.")
-            view.message = msg = await ctx.send("Are you sure you want to clear your reminders? %s" % (ctx.author.mention), view=view)
+            view.message = msg = await ctx.send(f"Are you sure you want to clear your reminders? {ctx.author.mention}", view=view)
             await view.wait()
             if view.response is True:
                 async for remind in Reminder.find({'user_id': ctx.author.id}):
                     await remind.delete()
-                e = "Succesfully cleared all your reminders. %s" % (ctx.author.mention)
+                e = f"Succesfully cleared all your reminders. {ctx.author.mention}"
                 return await msg.edit(content=e, view=view)
 
             elif view.response is False:
-                e = "Reminders have not been cleared. %s" % (ctx.author.mention)
+                e = f"Reminders have not been cleared. {ctx.author.mention}"
                 return await msg.edit(content=e, view=view)
         else:
             await ctx.send("No currently running reminders.")

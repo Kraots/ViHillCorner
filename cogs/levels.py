@@ -275,25 +275,25 @@ class Levels(commands.Cog):
         em = disnake.Embed(color=Colours.light_pink, title="**Current Multipliers:**")
         em.add_field(
             name="Mod/Staff",
-            value="%sx (%s XP per message)" % (mod_multiplier, 20 * mod_multiplier),
+            value=f"{mod_multiplier}x ({20 * mod_multiplier} XP per message)",
             inline=False
         )
         em.add_field(
             name="Server Boosters",
-            value="%sx (%s XP per message)" % (boosters_multiplier, 15 * boosters_multiplier),
+            value=f"{boosters_multiplier}x ({15 * boosters_multiplier} XP per message)",
             inline=False
         )
         em.add_field(
             name="Members",
-            value="%sx (%s XP per message)" % (members_multiplier, 5 * members_multiplier),
+            value=f"{members_multiplier}x ({5 * members_multiplier} XP per message)",
             inline=False
         )
         em.add_field(
             name="Kraots",
-            value="%sx (%s XP per message)" % (kraots_multiplier, 30 * kraots_multiplier),
+            value=f"{kraots_multiplier}x ({30 * kraots_multiplier} XP per message)",
             inline=False
         )
-        em.set_footer(text="Requested By: %s" % (ctx.author), icon_url=ctx.author.display_avatar)
+        em.set_footer(text=f"Requested By: {ctx.author}", icon_url=ctx.author.display_avatar)
 
         await ctx.send(embed=em)
 
@@ -329,25 +329,25 @@ class Levels(commands.Cog):
             if group in ('mod', 'staff', 'mods'):
                 data.mod_xp_multiplier = multiplier
                 await data.commit()
-                await ctx.send("Set the multiplier for Mods/Staff members to **%s**." % (x))
+                await ctx.send(f"Set the multiplier for Mods/Staff members to **{x}**.")
                 return
 
             elif group in ('booster', 'boosters', 'serverbooster', 'serverboosters'):
                 data.booster_xp_multiplier = multiplier
                 await data.commit()
-                await ctx.send("Set the multiplier for Server Boosters to **%s**." % (x))
+                await ctx.send(f"Set the multiplier for Server Boosters to **{x}**.")
                 return
 
             elif group in ('member', 'members'):
                 data.xp_multiplier = multiplier
                 await data.commit()
-                await ctx.send("Set the multiplier for Members to **%s**." % (x))
+                await ctx.send(f"Set the multiplier for Members to **{x}**.")
                 return
 
             elif group in ('kraots', 'kraot'):
                 data.kraots_xp_multiplier = multiplier
                 await data.commit()
-                await ctx.send("Set the multiplier for Kraots to **%s**." % (x))
+                await ctx.send(f"Set the multiplier for Kraots to **{x}**.")
                 return
 
             elif group == "all":
@@ -356,7 +356,7 @@ class Levels(commands.Cog):
                 data.mod_xp_multiplier = multiplier
                 data.booster_xp_multiplier = multiplier
                 await data.commit()
-                await ctx.send("Set the multiplier for every group to **%s**." % (x))
+                await ctx.send(f"Set the multiplier for every group to **{x}**.")
 
     @multiplier.command()
     @commands.is_owner()
