@@ -65,6 +65,7 @@ class ViHillCorner(commands.Bot):
         self.base = deta.Base
         self.url = 'https://vihillcorner.deta.dev'
 
+        self.added_views = False
         self.add_check(self.check_dms)
         self.confirm_view = ConfirmView
         self.reraise = reraise
