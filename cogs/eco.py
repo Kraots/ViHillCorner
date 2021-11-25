@@ -32,7 +32,7 @@ class ShopEcoMenus(menus.ListPageSource):
             footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} items)'
             menu.embed.set_footer(text=footer)
 
-        menu.embed.description = f'Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.\n\n{pages}'
+        menu.embed.description = f'Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.\n\n{"\n".join(pages)}'
         return menu.embed
 
 
