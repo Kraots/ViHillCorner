@@ -19,7 +19,6 @@ trivia.py
 urllib3
 umongo[motor]
 mal-api
-flake8
 asyncdagpi
 yarl
 beautifulsoup4
