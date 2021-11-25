@@ -23,16 +23,17 @@ class ShopEcoMenus(menus.ListPageSource):
         super().__init__(entries, per_page=per_page)
 
     async def format_page(self, menu, entries):
-        pages = []
+        _pages = []
         for index, entry in enumerate(entries, start=menu.current_page * self.per_page):
-            pages.append(f'{entry}')
+            _pages.append(f'{entry}')
 
         maximum = self.get_max_pages()
         if maximum > 1:
             footer = f'Page {menu.current_page + 1}/{maximum} ({len(self.entries)} items)'
             menu.embed.set_footer(text=footer)
 
-        menu.embed.description = f'Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.\n\n{"\n".join(pages)}'
+        pages = '\n'.join(_pages)
+        menu.embed.description = f'Use `!shop buy <item_name>` to buy or `!shop sell <item_name>` to sell an item that you have.\n\n{pages}'
         return menu.embed
 
 
