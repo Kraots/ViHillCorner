@@ -134,7 +134,7 @@ class InteractiveTagCreation(disnake.ui.View):
         for child in self.children:
             if child.label == 'Confirm':
                 if self._edit:
-                    if self._edit.tag_content != self.content:
+                    if self._edit.content != self.content:
                         child.disabled = False
                         continue
                 elif self.name is not None and self.content is not None:

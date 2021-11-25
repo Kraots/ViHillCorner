@@ -106,7 +106,7 @@ class General(commands.Cog):
         em = disnake.Embed(
             color=Colours.light_pink,
             title="Here's the link to the permission calculator for bots.",
-            description="https://discordapi.com/permissions.html#8589934591"
+            description="https://discordapi.com/permissions.html#1099511627775"
         )
         await ctx.send(embed=em, reference=ctx.replied_reference)
 
