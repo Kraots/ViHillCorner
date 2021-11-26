@@ -59,7 +59,7 @@ class Marriages(commands.Cog):
                 await ctx.send(f"You are already married to `{usr.display_name}`.")
 
             else:
-                view = self.bot.confirm_view(ctx, f"{ctx.author.mention} Did not react in time.", member)
+                view = self.bot.confirm_view(ctx, f"{member.mention} Did not react in time.", member)
                 view.message = msg = await ctx.send(f"{member.mention} do you want to marry {ctx.author.mention}?", view=view)
                 await view.wait()
                 if view.response is True:
