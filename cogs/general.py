@@ -362,7 +362,7 @@ class General(commands.Cog):
 
     @commands.Cog.listener('on_message_edit')
     async def repeat_command(self, before: disnake.Message, after: disnake.Message):
-        if after.content.lower().startswith(('!run', '!e', '!eval')):
+        if after.content.lower().startswith(('!run', '!code', '!e', '!eval')):
             ctx = await self.bot.get_context(after)
             cmd = self.bot.get_command(after.content.lower().replace('!', ''))
             await after.add_reaction('🔁')
