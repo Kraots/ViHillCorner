@@ -25,3 +25,4 @@ beautifulsoup4
 lxml
 markdownify==0.6.1
 deta
+py-expression-eval
