@@ -1,3 +1,5 @@
+from py_expression_eval import Parser
+
 import disnake
 from disnake.ui import View
 
@@ -9,6 +11,7 @@ from .context import Context
 class Calculator(View):
     def __init__(self, ctx: Context, *, timeout=180.0):
         super().__init__(timeout=timeout)
+        self.parser = Parser()
         self.ctx = ctx
         self.to_calc = ''
 
@@ -38,7 +41,7 @@ class Calculator(View):
             return await self.message.edit(
                 content='Timed Out.',
                 embed=disnake.Embed(
-                    description=f'```py\n{eval(self.to_calc)}\n```',
+                    description=f'```py\n{self.parser.parse(self.to_calc.replace("÷", "/").replace("×", "*")).evaluate({})}\n```',
                     color=Colours.invisible
                 ),
                 view=self
@@ -176,7 +179,7 @@ class Calculator(View):
         await inter.response.defer()
         if len(self.to_calc) != 0:
             try:
-                res = eval(self.to_calc.replace('÷', '/').replace('×', '*'))
+                res = self.parser.parse(self.to_calc.replace('÷', '/').replace('×', '*')).evaluate({})
             except Exception:
                 res = 'Error.'
             await self.message.edit(embed=disnake.Embed(description=f'```py\n{res}\n```', color=Colours.invisible))
