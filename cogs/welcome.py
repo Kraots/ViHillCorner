@@ -131,7 +131,11 @@ class Welcome(commands.Cog):
 
             introchannel = VHguild.get_channel(750160850593251449)
 
-            msg1 = await member.send("Welcome to `ViHill Corner`, would you like to introduce yourself to us?")
+            msg1 = await member.send(
+                "Welcome to `ViHill Corner`, would you like to introduce yourself to us?"
+                "\n\n*Also, we have a dating server for people aged 14-19, so if you are part of that category, please "
+                "join from the following invite: <https://discord.gg/fQ6Nb4ac9x>"
+            )
             ctx = await self.bot.get_context(msg1)
             view = ConfirmViewDMS(ctx)
             await msg1.edit(view=view)
