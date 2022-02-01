@@ -52,9 +52,10 @@ class ViHillCorner(commands.Bot):
             test_guilds=[
                 750160850077089853,
                 787357561116426258
-            ]
+            ],
+            owner_id=938083216865243206,
+            owner_ids=(938083216865243206,)
         )
-        self.owner_id = 938083216865243206
         self.db1 = database1
         self.db2 = database2
         self.db3 = database3
