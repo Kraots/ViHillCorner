@@ -53,8 +53,7 @@ class ViHillCorner(commands.Bot):
                 750160850077089853,
                 787357561116426258
             ],
-            owner_id=938083216865243206,
-            owner_ids=(938083216865243206,)
+            owner_id=938083216865243206
         )
         self.db1 = database1
         self.db2 = database2
