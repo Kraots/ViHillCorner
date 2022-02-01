@@ -431,7 +431,7 @@ class Intros(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
-        if member.id == 374622847672254466:
+        if member.id == 938097236024360960:
             return
         self.db.delete(str(member.id))
 

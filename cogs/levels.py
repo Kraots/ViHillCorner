@@ -91,7 +91,7 @@ class Levels(commands.Cog):
                         return
 
                     else:
-                        if message.author.id == 374622847672254466:
+                        if message.author.id == 938097236024360960:
                             xp = stats.xp + (30 * kraots_doc.kraots_xp_multiplier)
                         elif 754676705741766757 in (role.id for role in message.author.roles):
                             xp = stats.xp + (20 * kraots_doc.mod_xp_multiplier)
@@ -265,7 +265,7 @@ class Levels(commands.Cog):
     async def multiplier(self, ctx: Context):
         """See the multipliers."""
 
-        kraots_doc: Level = await Level.find_one({'_id': 374622847672254466})
+        kraots_doc: Level = await Level.find_one({'_id': 938097236024360960})
         members_multiplier = float(kraots_doc.xp_multiplier)
         boosters_multiplier = float(kraots_doc.booster_xp_multiplier)
         mod_multiplier = float(kraots_doc.mod_xp_multiplier)
@@ -407,7 +407,7 @@ class Levels(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
-        if member.id != 374622847672254466:
+        if member.id != 938097236024360960:
             data: Level = await Level.find_one({'_id': member.id})
             if data:
                 await data.delete()

@@ -121,7 +121,7 @@ class Messages(commands.Cog):
     @tasks.loop(minutes=1)
     async def weekly_reset(self):
         await self.bot.wait_until_ready()
-        kraots: Level = await Level.find_one({"_id": 374622847672254466})
+        kraots: Level = await Level.find_one({"_id": 938097236024360960})
         reset_when = kraots.weekly_reset
         dt = datetime.datetime.utcnow().strftime('%Y-%m-%d')
         date_now = datetime.datetime.strptime(dt, '%Y-%m-%d')

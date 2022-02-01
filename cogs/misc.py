@@ -313,7 +313,7 @@ class Misc(commands.Cog):
         def format_date(dt):
             return f'{dt:%Y-%m-%d} ({time.human_timedelta(dt, accuracy=3)})'
 
-        update = await self.db.find_one({'_id': 374622847672254466})
+        update = await self.db.find_one({'_id': 938097236024360960})
         updatedMsg = update['update']
         major = sys.version_info.major
         minor = sys.version_info.minor
@@ -507,7 +507,7 @@ class Misc(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message: disnake.Message):
-        if message.author.id == 374622847672254466:
+        if message.author.id == 938097236024360960:
             return
         if message.author.bot:
             return
@@ -623,7 +623,7 @@ class Misc(commands.Cog):
     async def update(self, ctx: Context):
         """See what the latest update was."""
 
-        update = await self.db.find_one({'_id': 374622847672254466})
+        update = await self.db.find_one({'_id': 938097236024360960})
         updatedMsg = update['update']
         updatedDate = time.human_timedelta(dt=update['date'], accuracy=3, brief=False, suffix=True)
         em = disnake.Embed(title="Here's what's new to the bot:", description=f"{updatedMsg}\n\n*{updatedDate}*", color=Colours.red)
@@ -780,21 +780,21 @@ class Misc(commands.Cog):
 
         matches_description = re.findall(filter_invite, description)
         for description in matches_description:
-            if inter.author.id != 374622847672254466:
+            if inter.author.id != 938097236024360960:
                 return await inter.response.send_message("No invites allowed!", ephemeral=True)
         em = disnake.Embed(color=color, description=description)
 
         if title is not None:
             matches_title = re.findall(filter_invite, title)
             for title in matches_title:
-                if inter.author.id != 374622847672254466:
+                if inter.author.id != 938097236024360960:
                     return await inter.response.send_message("No invites allowed!", ephemeral=True)
             em.title = title
 
         if image_url is not None:
             matches_image_url = re.findall(filter_invite, image_url)
             for image_url in matches_image_url:
-                if inter.author.id != 374622847672254466:
+                if inter.author.id != 938097236024360960:
                     return await inter.response.send_message("No invites allowed!", ephemeral=True)
             em.set_image(url=image_url)
 
@@ -802,7 +802,7 @@ class Misc(commands.Cog):
         if footer is not None:
             matches = re.findall(filter_invite, footer)
             for footer in matches:
-                if inter.author.id != 374622847672254466:
+                if inter.author.id != 938097236024360960:
                     return await inter.response.send_message("No invites allowed!", ephemeral=True)
             em_footer['text'] = footer
 

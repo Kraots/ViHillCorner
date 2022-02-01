@@ -8,7 +8,7 @@ from utils.colors import Colours
 
 from main import ViHillCorner
 
-no_mute_these = (374622847672254466, 751724369683677275,)
+no_mute_these = (938097236024360960, 751724369683677275,)
 
 filter_invite = re.compile(r"(?:https?://)?discord(?:(?:app)?\.com/invite|\.gg)/?[a-zA-Z0-9]+/?")
 

@@ -162,7 +162,7 @@ class Snippets(commands.Cog):
             return await ctx.send(f"Snippet name (`{snippet_name}`) is already taken. {ctx.author.mention}")
         for x in ('kraots', 'carrots', 'carots', 'carot', 'carrot'):
             if x in snippet_name.lower():
-                if ctx.author.id != 374622847672254466:
+                if ctx.author.id != 938097236024360960:
                     return await ctx.send(f"You cannot create a snippet with that name. {ctx.author.mention}")
 
         if len(snippet_name) >= 50:
@@ -231,7 +231,7 @@ class Snippets(commands.Cog):
         if snippet is None:
             return await ctx.send(f"Snippet `{snippet_name}` does not exist! {ctx.author.mention}")
 
-        if ctx.author.id != 374622847672254466:
+        if ctx.author.id != 938097236024360960:
             if ctx.author.id != snippet.owner_id:
                 await ctx.send("You do not own this snippet!")
                 return
@@ -273,7 +273,7 @@ class Snippets(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
-        if member.id != 374622847672254466:
+        if member.id != 938097236024360960:
             async for snippet in Snippet.find({'owner_id': member.id}):
                 await snippet.delete()
 

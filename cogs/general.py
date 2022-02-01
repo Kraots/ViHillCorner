@@ -87,7 +87,7 @@ class General(commands.Cog):
     async def scrs(self, ctx: Context, url):
         """Take a screenshot of the website."""
 
-        if ctx.author.id != 374622847672254466:
+        if ctx.author.id != 938097236024360960:
             if str(url) in nono_list:
                 return await ctx.send("( ͡° ͜ʖ ͡°)")
 
@@ -126,7 +126,7 @@ class General(commands.Cog):
         def format_date(dt):
             return f'{dt:%Y-%m-%d %H:%M} ({time.human_timedelta(dt, accuracy=3)})'
 
-        if member.id == 374622847672254466:
+        if member.id == 938097236024360960:
             x = "2020-09-01 01:11"
             kraots_joined = datetime.datetime.strptime(x, "%Y-%m-%d %H:%M")
             embed = disnake.Embed(color=Colours.light_pink)

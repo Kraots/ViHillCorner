@@ -11,7 +11,7 @@ from .spam_filter import get_mute_time, time_convert
 
 from main import ViHillCorner
 
-no_mute_these = (374622847672254466, 751724369683677275)
+no_mute_these = (938097236024360960, 751724369683677275)
 
 bad_words = (
     "nigga",
@@ -173,7 +173,7 @@ class FilterCog(commands.Cog):
                         try:
                             _user = await self.db2.find_one({'_id': message.author.id})
                             if _user is None:
-                                kr = await self.db2.find_one({'_id': 374622847672254466})
+                                kr = await self.db2.find_one({'_id': 938097236024360960})
                                 new_index = kr['TotalInvalidNames'][-1] + 1
                                 old_list = kr['TotalInvalidNames']
                                 new_list = old_list + [new_index]
@@ -182,7 +182,7 @@ class FilterCog(commands.Cog):
                                     'InvalidNameIndex': new_index
                                 }
                                 await self.db2.insert_one(post)
-                                await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
+                                await self.db2.update_one({'_id': 938097236024360960}, {'$set': {'TotalInvalidNames': new_list}})
                                 new_nick = f'UnpingableName{new_index}'
                                 new_nick_again = new_nick
                             else:
@@ -208,7 +208,7 @@ class FilterCog(commands.Cog):
                             try:
                                 _user = await self.db2.find_one({'_id': message.author.id})
                                 if _user is None:
-                                    kr = await self.db2.find_one({'_id': 374622847672254466})
+                                    kr = await self.db2.find_one({'_id': 938097236024360960})
                                     new_index = kr['TotalInvalidNames'][-1] + 1
                                     old_list = kr['TotalInvalidNames']
                                     new_list = old_list + [new_index]
@@ -217,7 +217,7 @@ class FilterCog(commands.Cog):
                                         'InvalidNameIndex': new_index
                                     }
                                     await self.db2.insert_one(post)
-                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
+                                    await self.db2.update_one({'_id': 938097236024360960}, {'$set': {'TotalInvalidNames': new_list}})
                                     new_nick = f'UnpingableName{new_index}'
                                     new_nick_again = new_nick
                                 else:
@@ -250,7 +250,7 @@ class FilterCog(commands.Cog):
                             try:
                                 _user = await self.db2.find_one({'_id': message.author.id})
                                 if _user is None:
-                                    kr = await self.db2.find_one({'_id': 374622847672254466})
+                                    kr = await self.db2.find_one({'_id': 938097236024360960})
                                     new_index = kr['TotalInvalidNames'][-1] + 1
                                     old_list = kr['TotalInvalidNames']
                                     new_list = old_list + [new_index]
@@ -259,7 +259,7 @@ class FilterCog(commands.Cog):
                                         'InvalidNameIndex': new_index
                                     }
                                     await self.db2.insert_one(post)
-                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
+                                    await self.db2.update_one({'_id': 938097236024360960}, {'$set': {'TotalInvalidNames': new_list}})
                                     new_nick = f'UnpingableName{new_index}'
                                     new_nick_again = new_nick
                                 else:
@@ -285,7 +285,7 @@ class FilterCog(commands.Cog):
                             try:
                                 _user = await self.db2.find_one({'_id': message.author.id})
                                 if _user is None:
-                                    kr = await self.db2.find_one({'_id': 374622847672254466})
+                                    kr = await self.db2.find_one({'_id': 938097236024360960})
                                     new_index = kr['TotalInvalidNames'][-1] + 1
                                     old_list = kr['TotalInvalidNames']
                                     new_list = old_list + [new_index]
@@ -294,7 +294,7 @@ class FilterCog(commands.Cog):
                                         'InvalidNameIndex': new_index
                                     }
                                     await self.db2.insert_one(post)
-                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
+                                    await self.db2.update_one({'_id': 938097236024360960}, {'$set': {'TotalInvalidNames': new_list}})
                                     new_nick = f'UnpingableName{new_index}'
                                     new_nick_again = new_nick
                                 else:
@@ -417,7 +417,7 @@ class FilterCog(commands.Cog):
                         try:
                             _user = await self.db2.find_one({'_id': after.author.id})
                             if _user is None:
-                                kr = await self.db2.find_one({'_id': 374622847672254466})
+                                kr = await self.db2.find_one({'_id': 938097236024360960})
                                 new_index = kr['TotalInvalidNames'][-1] + 1
                                 old_list = kr['TotalInvalidNames']
                                 new_list = old_list + [new_index]
@@ -426,7 +426,7 @@ class FilterCog(commands.Cog):
                                     'InvalidNameIndex': new_index
                                 }
                                 await self.db2.insert_one(post)
-                                await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
+                                await self.db2.update_one({'_id': 938097236024360960}, {'$set': {'TotalInvalidNames': new_list}})
                                 new_nick = f'UnpingableName{new_index}'
                                 new_nick_again = new_nick
                             else:
@@ -451,7 +451,7 @@ class FilterCog(commands.Cog):
                             try:
                                 _user = await self.db2.find_one({'_id': after.author.id})
                                 if _user is None:
-                                    kr = await self.db2.find_one({'_id': 374622847672254466})
+                                    kr = await self.db2.find_one({'_id': 938097236024360960})
                                     new_index = kr['TotalInvalidNames'][-1] + 1
                                     old_list = kr['TotalInvalidNames']
                                     new_list = old_list + [new_index]
@@ -460,7 +460,7 @@ class FilterCog(commands.Cog):
                                         'InvalidNameIndex': new_index
                                     }
                                     await self.db2.insert_one(post)
-                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
+                                    await self.db2.update_one({'_id': 938097236024360960}, {'$set': {'TotalInvalidNames': new_list}})
                                     new_nick = f'UnpingableName{new_index}'
                                     new_nick_again = new_nick
                                 else:
@@ -492,7 +492,7 @@ class FilterCog(commands.Cog):
                         try:
                             _user = await self.db2.find_one({'_id': after.author.id})
                             if _user is None:
-                                kr = await self.db2.find_one({'_id': 374622847672254466})
+                                kr = await self.db2.find_one({'_id': 938097236024360960})
                                 new_index = kr['TotalInvalidNames'][-1] + 1
                                 old_list = kr['TotalInvalidNames']
                                 new_list = old_list + [new_index]
@@ -501,7 +501,7 @@ class FilterCog(commands.Cog):
                                     'InvalidNameIndex': new_index
                                 }
                                 await self.db2.insert_one(post)
-                                await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
+                                await self.db2.update_one({'_id': 938097236024360960}, {'$set': {'TotalInvalidNames': new_list}})
                                 new_nick = f'UnpingableName{new_index}'
                                 new_nick_again = new_nick
                             else:
@@ -526,7 +526,7 @@ class FilterCog(commands.Cog):
                             try:
                                 _user = await self.db2.find_one({'_id': after.author.id})
                                 if _user is None:
-                                    kr = await self.db2.find_one({'_id': 374622847672254466})
+                                    kr = await self.db2.find_one({'_id': 938097236024360960})
                                     new_index = kr['TotalInvalidNames'][-1] + 1
                                     old_list = kr['TotalInvalidNames']
                                     new_list = old_list + [new_index]
@@ -535,7 +535,7 @@ class FilterCog(commands.Cog):
                                         'InvalidNameIndex': new_index
                                     }
                                     await self.db2.insert_one(post)
-                                    await self.db2.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
+                                    await self.db2.update_one({'_id': 938097236024360960}, {'$set': {'TotalInvalidNames': new_list}})
                                     new_nick = f'UnpingableName{new_index}'
                                     new_nick_again = new_nick
                                 else:

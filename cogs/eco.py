@@ -343,7 +343,7 @@ class Economy(commands.Cog):
             try:
                 daily = results['daily']
 
-                if ctx.author.id != 374622847672254466:
+                if ctx.author.id != 938097236024360960:
                     if dateNow < daily:
                         def format_date(dt):
                             return f"{time.human_timedelta(dt, accuracy=3)}"
@@ -942,7 +942,7 @@ class Economy(commands.Cog):
         option = option.lower()
         options = {'on': True, 'off': False}
 
-        if ctx.author.id != 374622847672254466:
+        if ctx.author.id != 938097236024360960:
             if datetime.datetime.utcnow() >= user_db['passive_cooldown']:
                 if option not in ('on', 'off'):
                     return await ctx.reply('Not a valid option')
@@ -1849,7 +1849,7 @@ class Economy(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
-        if member.id == 374622847672254466:
+        if member.id == 938097236024360960:
             return
         await self.db.delete_one({"_id": member.id})
 

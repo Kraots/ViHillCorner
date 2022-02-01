@@ -32,7 +32,7 @@ class NickFilter(commands.Cog):
     async def on_message(self, message: disnake.Message):
         if message.author.bot:
             return
-        elif message.author.id == 374622847672254466:
+        elif message.author.id == 938097236024360960:
             return
 
         if message.guild:
@@ -53,7 +53,7 @@ class NickFilter(commands.Cog):
             if good_count < 4:
                 user = await self.db.find_one({'_id': message.author.id})
                 if user is None:
-                    kr = await self.db.find_one({'_id': 374622847672254466})
+                    kr = await self.db.find_one({'_id': 938097236024360960})
                     new_index = kr['TotalInvalidNames'][-1] + 1
                     old_list = kr['TotalInvalidNames']
                     new_list = old_list + [new_index]
@@ -62,7 +62,7 @@ class NickFilter(commands.Cog):
                         'InvalidNameIndex': new_index
                     }
                     await self.db.insert_one(post)
-                    await self.db.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
+                    await self.db.update_one({'_id': 938097236024360960}, {'$set': {'TotalInvalidNames': new_list}})
                     new_nick = f'UnpingableName{new_index}'
                 else:
                     new_nick = f"UnpingableName{user['InvalidNameIndex']}"

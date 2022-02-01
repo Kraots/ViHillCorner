@@ -62,7 +62,7 @@ class Welcome(commands.Cog):
 
             if member.bot:
                 return
-            elif member.id == 374622847672254466:
+            elif member.id == 938097236024360960:
                 return
 
             user_name = str(member.name).lower()
@@ -82,7 +82,7 @@ class Welcome(commands.Cog):
             if good_count < 4:
                 user = await self.db4.find_one({'_id': member.id})
                 if user is None:
-                    kr = await self.db4.find_one({'_id': 374622847672254466})
+                    kr = await self.db4.find_one({'_id': 938097236024360960})
                     new_index = kr['TotalInvalidNames'][-1] + 1
                     old_list = kr['TotalInvalidNames']
                     new_list = old_list + [new_index]
@@ -91,7 +91,7 @@ class Welcome(commands.Cog):
                         'InvalidNameIndex': new_index
                     }
                     await self.db4.insert_one(post)
-                    await self.db4.update_one({'_id': 374622847672254466}, {'$set': {'TotalInvalidNames': new_list}})
+                    await self.db4.update_one({'_id': 938097236024360960}, {'$set': {'TotalInvalidNames': new_list}})
                     new_nick = f'UnpingableName{new_index}'
                 else:
                     new_nick = f"UnpingableName{user['InvalidNameIndex']}"

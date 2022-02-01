@@ -665,7 +665,7 @@ class Moderator(commands.Cog):
 
         is_staff = False
         if 754676705741766757 in (role.id for role in member.roles):
-            if ctx.author.id != 374622847672254466:
+            if ctx.author.id != 938097236024360960:
                 return await ctx.send("You can't mute mods or take any moderator action against them.")
             is_staff = True
 
@@ -791,12 +791,12 @@ class Moderator(commands.Cog):
         if result is not None:
             is_staff = result['staff']
             muted_by = result['muted_by']
-            if muted_by == 374622847672254466 and ctx.author.id != 374622847672254466:
+            if muted_by == 938097236024360960 and ctx.author.id != 938097236024360960:
                 return await ctx.send(f"`{member}` cannot be unmuted since the one who muted them was none other than my master <:yamete:857163308427902987>")
         else:
             if resultt is not None:
                 is_staff = resultt['staff']
-                if ctx.author.id != 374622847672254466:
+                if ctx.author.id != 938097236024360960:
                     return await ctx.send("Members muted by filters cannot be unmuted by anyone except from my master <:yamete:857163308427902987>")
             else:
                 return await ctx.reply("Member is not muted.")

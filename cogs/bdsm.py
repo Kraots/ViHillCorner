@@ -129,7 +129,7 @@ class Bdsm(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: disnake.Member):
-        if member.id != 374622847672254466:
+        if member.id != 938097236024360960:
             data: BDSM = await BDSM.find_one({'_id': member.id})
             if data:
                 await data.delete()

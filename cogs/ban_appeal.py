@@ -44,7 +44,7 @@ class OnBanAppealJoin(commands.Cog):
             await channel.purge(limit=1)
             await channel.set_permissions(member, read_messages=True)
             ch = member.guild.get_channel(788488359306592316)
-            await ch.send('A new member has joined the ban appeal. <@!374622847672254466> <@!747329236695777340>')
+            await ch.send('A new member has joined the ban appeal. <@!938097236024360960> <@!747329236695777340>')
 
     @commands.Cog.listener('on_member_remove')
     async def on_member_remove(self, member: disnake.Member):
@@ -62,7 +62,7 @@ class OnBanAppealJoin(commands.Cog):
         if message.guild:
             if message.guild.id == 788384492175884299:
                 if message.content.lower() == 'bye':
-                    if 788384677987352608 in (role.id for role in message.author.roles) or message.author.id == 374622847672254466:
+                    if 788384677987352608 in (role.id for role in message.author.roles) or message.author.id == 938097236024360960:
                         found = False
                         for obj in message.channel.overwrites:
                             if obj.id == int(message.channel.topic):
