@@ -134,7 +134,7 @@ class Welcome(commands.Cog):
             msg1 = await member.send(
                 "Welcome to `ViHill Corner`, would you like to introduce yourself to us?"
                 "\n\n*Also, we have a dating server for people aged 14-19, so if you are part of that category, please "
-                "join from the following invite: <https://discord.gg/fQ6Nb4ac9x>"
+                "join from the following invite: <https://discord.gg/Xd78hQr2Qw>"
             )
             ctx = await self.bot.get_context(msg1)
             view = ConfirmViewDMS(ctx)
