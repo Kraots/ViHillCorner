@@ -51,7 +51,7 @@ class ViHillCorner(commands.Bot):
             case_insensitive=True,
             test_guilds=[
                 750160850077089853,
-                787357561116426258
+                938411306762002453
             ],
             owner_id=938097236024360960
         )
