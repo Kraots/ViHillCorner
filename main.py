@@ -77,8 +77,7 @@ class ViHillCorner(commands.Bot):
             750160851822182486,
             750160851822182487,
             752164200222163016,
-            855126816271106061,
-            787359417674498088
+            938411306762002456,
         )
 
         self.dagpi_client = dagpi.Client(os.getenv('DAGPI_TOKEN'))
